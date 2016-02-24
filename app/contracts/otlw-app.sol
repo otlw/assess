@@ -1,18 +1,18 @@
-contract otlw-app 
+contract otlwApp
 {
-	function otlw-app()
-	{
-        }		
-	mapping (address => uint) public tokenBalance;
-	mapping (address => string) public tagName;
-	mapping (string => address) public tagAddress;
-	mapping (address => string[]) public acheivements;
-	function addTag(string name) returns(uint response)
-	{
-		if(tokenBalance[msg.sender] < 1) 
-			return 1;
-		if(tokenAddress[name] = 
-	function addAcheivment(address user, string acheivment)
-	{
-		
-	
+        function otlwApp()
+        {
+        }
+        mapping (address => uint) tokenBalance;
+        mapping (address => string) tagName;
+        mapping (string => address) tagAddress;
+        mapping (address => string[]) acheivements;
+        function addTag(string name) returns(uint response)
+        {
+                if(tokenBalance[msg.sender] < 1)
+                        return 1;
+                if(tagAddress[name] == 0)
+                        return 2;
+                
+        }
+}
