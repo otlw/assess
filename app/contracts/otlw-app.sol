@@ -4,11 +4,13 @@ contract Master
   {
 
   }
+  //Initialize master data store
   mapping(address => uint) tokenBalance;
   mapping(address => string) tagName;
   mapping(string => address) tagAddress;
   mapping(address => string[]) acheivements;
-  function addTag(string name, address[] parentList) returns(uint)
+
+  function addTag(string name, address[] parentList) returns(uint) //Creates a new tag contract
   {
     uint response = 0;
     if(tokenBalance[msg.sender] < 1)
@@ -25,7 +27,7 @@ contract Master
       address newTagAddress = address(newTag);
       tagName[newTagAddress] = name;
       tagAddress[name] = newTagAddress;
-      for(uint i=0; i<= parentList.length; i++)
+      for(uint i=0; i<= parentList.length; i++) //adds all the given parents
       {
         if(parentList[i]==0)
         {
@@ -42,13 +44,14 @@ contract Master
   }
 }
 
+//Defines the meta-contract for a Tag
 contract Tag
 {
-  address[] parents;
+  address[] parents; //The tags this is a subset of
   address masterAddress;
-  address[] owners;
-  mapping(address => address[]) assessmentHistory;
-  mapping(address => uint) scores;
+  address[] owners; //Those who have earned the tag
+  mapping(address => address[]) assessmentHistory; //All assessments completed
+  mapping(address => uint) scores; //All positive assessements scores
   function Tag()
   {
 
@@ -83,12 +86,13 @@ contract Tag
   }
 }
 
+//Defines the meta-contract for an assessment
 contract Assessment
 {
-  address assessee;
+  address assessee; //We need a better word for this
   address[] assessors;
-  mapping(address => uint[]) assessmentData;
-  mapping(address => uint[]) assessmentAnswers;
+  mapping(address => uint[]) assessmentData; //Given by the assessors as IPFS hashes
+  mapping(address => uint[]) assessmentAnswers; //Given by the assessee as IPFS hashes
   mapping(address => bool[]) assessmentResults;
   mapping(address => uint[]) assessmentScores;
 
@@ -110,6 +114,6 @@ contract Assessment
   }
   function cashout()
   {
-    
+
   }
 }
