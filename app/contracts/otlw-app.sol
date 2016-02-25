@@ -93,8 +93,8 @@ contract Assessment
   address[] assessors;
   mapping(address => uint[]) assessmentData; //Given by the assessors as IPFS hashes
   mapping(address => uint[]) assessmentAnswers; //Given by the assessee as IPFS hashes
-  mapping(address => bool[]) assessmentResults;
-  mapping(address => uint[]) assessmentScores;
+  mapping(address => bool[]) assessmentResults; //Pass/Fail given by assessors
+  mapping(address => uint[]) assessmentScores; //Numerical score given by assessors
 
   function Assessment()
   {
