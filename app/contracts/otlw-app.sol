@@ -85,6 +85,7 @@ contract Tag
     {
       owners.push(assessee);
       scores[assessee] = score;
+      master.acheivements[assessee].push(master.tagName[address(this)]);
     }
     assessmentHistory[assessee].push(assessment);
     return result;
