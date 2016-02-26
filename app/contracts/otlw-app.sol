@@ -39,7 +39,7 @@ contract Master
         }
       }
     }
-    newTag.setMaster(address(this));
+    newTag.setMaster(this);
     return response;
   }
 }
@@ -48,7 +48,7 @@ contract Master
 contract Tag
 {
   address[] parents; //The tags this is a subset of
-  address masterAddress;
+  Master master;
   address[] owners; //Those who have earned the tag
   mapping(address => address[]) assessmentHistory; //All assessments completed
   mapping(address => uint) scores; //All positive assessements scores
@@ -60,9 +60,9 @@ contract Tag
   {
     parents.push(parent);
   }
-  function setMaster(address master)
+  function setMaster(Master m)
   {
-    masterAddress = master;
+    master = m;
   }
   function getAssessors(uint randomNumber)
   {
@@ -73,6 +73,7 @@ contract Tag
     Assessment newAssessment;
     newAssessment.setAssessee(assessee);
     newAssessment.setAssessors(assessors);
+    newAssessment.setTag(this);
   }
   function getAssessmentResults(bool result, uint score, address assessee, address assessment) returns(bool)
   {
@@ -81,7 +82,7 @@ contract Tag
       owners.push(assessee);
       scores[assessee] = score;
     }
-    assessmentHistory[assessee] = assessment;
+    assessmentHistory[assessee].push(assessment);
     return result;
   }
 }
@@ -91,6 +92,7 @@ contract Assessment
 {
   address assessee; //We need a better word for this
   address[] assessors;
+  Tag tag;
   mapping(address => uint[]) assessmentData; //Given by the assessors as IPFS hashes
   mapping(address => uint[]) assessmentAnswers; //Given by the assessee as IPFS hashes
   mapping(address => bool[]) assessmentResults; //Pass/Fail given by assessors
@@ -107,6 +109,10 @@ contract Assessment
   function setAssessors(address[] newAssessors)
   {
     assessors = newAssessors;
+  }
+  function setTag(Tag t)
+  {
+    tag = t;
   }
   function assess()
   {
