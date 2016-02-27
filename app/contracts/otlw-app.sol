@@ -7,8 +7,9 @@ contract Master
   //Initialize master data store
   mapping(address => uint) tokenBalance;
   mapping(address => string) tagName;
-  mapping(string => address) tagAddress;
+  mapping(string => address) tagAddressFromName;
   mapping(address => Tag) tagImplementation;
+  mapping(Tag => address) tagAddressFromImplementation;
   mapping(address => string[]) acheivements;
 
   function addTag(string name, address[] parentList) returns(uint) //Creates a new tag contract
@@ -27,8 +28,9 @@ contract Master
       Tag newTag;
       address newTagAddress = address(newTag);
       tagName[newTagAddress] = name;
-      tagAddress[name] = newTagAddress;
+      tagAddressFromName[name] = newTagAddress;
       tagImplementation[newTagAddress] = newTag;
+      tagAddressFromImplementation[newTag] = newTagAddress;
       for(uint i=0; i<= parentList.length; i++) //adds all the given parents
       {
         if(parentList[i]==0)
@@ -37,7 +39,7 @@ contract Master
         }
         if(response==0)
         {
-          newTag.addParent(parentList[i],tagImplementation[parentList[i]]);
+          newTag.addParent(tagImplementation[parentList[i]]);
         }
       }
     }
@@ -49,7 +51,6 @@ contract Master
 //Defines the meta-contract for a Tag
 contract Tag
 {
-  address[] parents; //The tags this is a subset of
   Tag[] parentTags;
   Master master;
   address[] owners; //Those who have earned the tag
@@ -59,9 +60,8 @@ contract Tag
   {
 
   }
-  function addParent(address parent, Tag parentTag)
+  function addParent(Tag parentTag)
   {
-    parents.push(parent);
     parentTags.push(parentTag);
   }
   function setMaster(Master m)
