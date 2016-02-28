@@ -1,14 +1,15 @@
 contract Master
 {
-  function Master()
-  {
-
-  }
   //Initialize master data store
   mapping (address => uint) tokenBalance;
   mapping (address => string) tagName;
   mapping (string => address) tagAddressFromName;
   mapping (address => address[]) acheivements;
+
+  function Master()
+  {
+
+  }
 
   function mapTokenBalance(address a, uint b)
   {
@@ -46,6 +47,7 @@ contract Master
   {
     return acheivements[a].length;
   }
+
   function addTag(string name, address[] parentList) returns(uint) //Creates a new tag contract
   {
     uint response = 0;
@@ -63,6 +65,7 @@ contract Master
       address newTagAddress = address(newTag);
       tagName[newTagAddress] = name;
       tagAddressFromName[name] = newTagAddress;
+
       for(uint i=0; i<= parentList.length; i++) //adds all the given parents
       {
         if(parentList[i]==0)
@@ -90,26 +93,32 @@ contract Tag
   address[] owners; //Those who have earned the tag
   mapping(address => address[]) assessmentHistory; //All assessments completed
   mapping(address => uint) scores; //All positive assessements scores
+
   function Tag()
   {
 
   }
+
   function addParent(address parentTag)
   {
     parentTags.push(parentTag);
   }
+
   function setMaster(address m)
   {
     master = m;
   }
+
   function setName(string n)
   {
     name = n;
   }
+
   function getAssessors(uint randomNumber)
   {
 
   }
+
   function startAssessment(address assessee, address[] assessors)
   {
     Assessment newAssessment;
@@ -117,6 +126,7 @@ contract Tag
     newAssessment.setAssessors(assessors);
     newAssessment.setTag(address(this));
   }
+
   function getAssessmentResults(bool result, uint score, address assessee, address assessment) returns(bool)
   {
     if(result == true)
@@ -145,22 +155,27 @@ contract Assessment
   {
 
   }
+
   function setAssessee(address newAssessee)
   {
     assessee = newAssessee;
   }
+
   function setAssessors(address[] newAssessors)
   {
     assessors = newAssessors;
   }
+
   function setTag(address t)
   {
     tag = t;
   }
+
   function assess()
   {
 
   }
+
   function cashout()
   {
 
