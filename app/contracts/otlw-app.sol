@@ -9,9 +9,53 @@ contract Master
   mapping(address => string) tagName;
   mapping(string => address) tagAddressFromName;
   mapping(address => Tag) tagImplementation;
-  mapping(Tag => address) tagAddressFromImplementation;
+  //mapping(Tag => address) tagAddressFromImplementation;
   mapping(address => string[]) acheivements;
 
+  function mapTokenBalance(address a, uint b)
+  {
+    tokenBalance[a] = b;
+  }
+  function mapTagName(address a, string n)
+  {
+    tagName[a] = n;
+  }
+  function mapTagAddressFromName(string n, address a)
+  {
+    tagAddressFromName[n] = a;
+  }
+  function mapTagImplementation(address a, Tag t)
+  {
+    tagImplementation[a] = t;
+  }
+  function mapAcheivement(address a, string n)
+  {
+    acheivements[a].push(n);
+  }
+  function getTokenBalance(address a) returns(uint)
+  {
+    return tokenBalance[a];
+  }
+  function getTagName(address a) returns(string)
+  {
+    return tagName[a];
+  }
+  function getTagAddressFromName(string n) returns(address)
+  {
+    return tagAddressFromName[n];
+  }
+  function getTagImplementation(address a) returns(Tag)
+  {
+    return tagImplementation[a];
+  }
+  function getAcheivement(address a, uint i) returns(string)
+  {
+    return acheivements[a][i];
+  }
+  function getNumberOfAcheivements(address a) returns(uint)
+  {
+    return acheivements[a].length;
+  }
   function addTag(string name, address[] parentList) returns(uint) //Creates a new tag contract
   {
     uint response = 0;
@@ -19,7 +63,7 @@ contract Master
     {
       response += 1;
     }
-    if(tagAddress[name] == 0)
+    if(tagAddressFromName[name] == 0)
     {
       response += 10;
     }
@@ -30,7 +74,7 @@ contract Master
       tagName[newTagAddress] = name;
       tagAddressFromName[name] = newTagAddress;
       tagImplementation[newTagAddress] = newTag;
-      tagAddressFromImplementation[newTag] = newTagAddress;
+      //tagAddressFromImplementation[newTag] = newTagAddress;
       for(uint i=0; i<= parentList.length; i++) //adds all the given parents
       {
         if(parentList[i]==0)
@@ -44,6 +88,7 @@ contract Master
       }
     }
     newTag.setMaster(this);
+    newTag.setName(name);
     return response;
   }
 }
@@ -53,6 +98,7 @@ contract Tag
 {
   Tag[] parentTags;
   Master master;
+  string name;
   address[] owners; //Those who have earned the tag
   mapping(address => address[]) assessmentHistory; //All assessments completed
   mapping(address => uint) scores; //All positive assessements scores
@@ -67,6 +113,10 @@ contract Tag
   function setMaster(Master m)
   {
     master = m;
+  }
+  function setName(string n)
+  {
+    name = n;
   }
   function getAssessors(uint randomNumber)
   {
@@ -85,7 +135,7 @@ contract Tag
     {
       owners.push(assessee);
       scores[assessee] = score;
-      master.acheivements[assessee].push(master.tagName[address(this)]);
+      master.mapAcheivement(assessee,name);
     }
     assessmentHistory[assessee].push(assessment);
     return result;
