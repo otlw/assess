@@ -114,7 +114,7 @@ contract Tag
     name = n;
   }
 
-  function getAssessors(uint randomNumber)
+  function getAssessors(uint randomNumber) returns(address[])
   {
 
   }
@@ -127,7 +127,7 @@ contract Tag
     newAssessment.setTag(address(this));
   }
 
-  function getAssessmentResults(bool result, uint score, address assessee, address assessment) returns(bool)
+  function finishAssessment(bool result, uint score, address assessee, address assessment) returns(bool)
   {
     if(result == true)
     {
@@ -146,10 +146,12 @@ contract Assessment
   address assessee; //We need a better word for this
   address[] assessors;
   address tag;
-  mapping(address => uint[]) assessmentData; //Given by the assessors as IPFS hashes
+  mapping(address => uint[]) assessmentQuestions; //Given by the assessors as IPFS hashes
   mapping(address => uint[]) assessmentAnswers; //Given by the assessee as IPFS hashes
   mapping(address => bool[]) assessmentResults; //Pass/Fail given by assessors
   mapping(address => uint[]) assessmentScores; //Numerical score given by assessors
+  uint finalScore;
+  bool finalResult;
 
   function Assessment()
   {
@@ -174,6 +176,16 @@ contract Assessment
   function assess()
   {
 
+  }
+
+  function calculateResult()
+  {
+
+  }
+
+  function returnResults()
+  {
+    Tag(tag).finishAssessment(finalResult, finalScore, assessee, address(this))
   }
 
   function cashout()
