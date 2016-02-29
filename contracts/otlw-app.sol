@@ -177,6 +177,34 @@ contract Assessment
     tag = t;
   }
 
+  function setQuestion(address a, uint[] data)
+  {
+    assessmentQuestions[a] = data;
+  }
+
+  function getQuestion(address a) returns(uint[])
+  {
+    return assessmentQuestions[a];
+  }
+
+  function setAnswer(address a, uint[] data)
+  {
+    assessmentAnswers[a] = data;
+  }
+
+  function getAnswer(address a) returns(uint[])
+  {
+    return assessmentAnswers[a];
+  }
+
+  function setResult(address a, bool b, uint s)
+  {
+    Results memory results;
+    results.pass = b;
+    results.score = s;
+    assessmentResults[a] = results;
+  }
+
   function assess()
   {
 
@@ -189,7 +217,7 @@ contract Assessment
 
   function returnResults()
   {
-    Tag(tag).finishAssessment(finalResult, finalScore, assessee, address(this))
+    Tag(tag).finishAssessment(finalResult, finalScore, assessee, address(this));
   }
 
   function cashout()
