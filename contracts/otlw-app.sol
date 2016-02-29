@@ -146,10 +146,14 @@ contract Assessment
   address assessee; //We need a better word for this
   address[] assessors;
   address tag;
+  struct Results
+  {
+    bool pass;
+    uint score;
+  }
   mapping(address => uint[]) assessmentQuestions; //Given by the assessors as IPFS hashes
   mapping(address => uint[]) assessmentAnswers; //Given by the assessee as IPFS hashes
-  mapping(address => bool[]) assessmentResults; //Pass/Fail given by assessors
-  mapping(address => uint[]) assessmentScores; //Numerical score given by assessors
+  mapping(address => Results) assessmentResults; //Pass/Fail and Score given by assessors
   uint finalScore;
   bool finalResult;
 
