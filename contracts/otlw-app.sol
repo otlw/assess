@@ -114,17 +114,37 @@ contract Tag
     name = n;
   }
 
-  function getAssessors(uint randomNumber) returns(address[])
+  function setAssessorPool(uint s, address a, address assessment)
   {
-
+    for(uint i = 0; i < Tag(a).owners.length && assessment.poolSizeRemaining != 0; i++)
+    {
+      if(pool.length < .1*Tag(a).owners.length)
+      {
+        Assessment(assessment).addToAssessorPool(Tag(a).owners[getRandom(Tag(a).owners.length)]);
+        s--;
+      }
+      else
+      {
+        for(uint j = 0; j < Tag(a).parentTags.length; j++)
+        {
+          setAssessorPool(s, Tag(a).parentTags[j], assessment);
+        }
+      }
+      if(s == 0)
+      {
+        Assessment(assessment).setAssessors();
+      }
+    }
+    Assessment(assessment).poolSizeRemaining = s;
   }
 
-  function startAssessment(address assessee, address[] assessors)
+  function startAssessment(address assessee, uint size)
   {
     Assessment newAssessment;
     newAssessment.setAssessee(assessee);
-    newAssessment.setAssessors(assessors);
     newAssessment.setTag(address(this));
+    newAssessment.setNumberOfAssessors(size);
+    setAssessorPool(size*20, address(this), address(newAssessment));
   }
 
   function finishAssessment(bool result, uint score, address assessee, address assessment) returns(bool)
@@ -144,8 +164,11 @@ contract Tag
 contract Assessment
 {
   address assessee; //We need a better word for this
+  address[] assessorPool;
   address[] assessors;
   address tag;
+  uint poolSizeRemaining;
+  uint numberOfAssessors;
   struct Results
   {
     bool pass;
@@ -167,9 +190,22 @@ contract Assessment
     assessee = newAssessee;
   }
 
-  function setAssessors(address[] newAssessors)
+  function setNumberOfAssessors(uint n)
   {
-    assessors = newAssessors;
+    numberOfAssessors = n;
+  }
+
+  function addToAssessorPool(address a)
+  {
+    assessorPool.push(a);
+  }
+
+  function setAssessors()
+  {
+    for(uint i = 0, i < n, i++)
+    {
+      assessors.push(assessorPool[getRandom(assessorPool.length)]);
+    }
   }
 
   function setTag(address t)
