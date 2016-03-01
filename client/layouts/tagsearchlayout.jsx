@@ -10,7 +10,7 @@ TagSearchLayout = React.createClass({
     // Loads items from the Tasks collection and puts them on this.data.tasks
     getMeteorData() {
       return {
-        tags: AllTags.find({}).fetch(),
+        tags: SearchTags.find({}).fetch(),
       };
     },
 
@@ -19,7 +19,9 @@ TagSearchLayout = React.createClass({
 
     // Find the text field via the React ref
     var text = React.findDOMNode(this.refs.textInput).value.trim();
-    Meteor.call("updateSearchTags", text);
+
+    //Send to blockchain search function
+
     // Clear form
     React.findDOMNode(this.refs.textInput).value = "";
   },
@@ -33,7 +35,7 @@ TagSearchLayout = React.createClass({
   render() {
     return (
       <div>
-        <p id="tag_search_header">SEARCH TAGS ({Meteor.call("getSearchTagsLength")})</p>
+        <p id="tag_search_header">SEARCH TAGS</p>
         <form id="tag_search_bar_wrapper" onSubmit={this.handleSubmit} >
           <input
             id="tag_search_bar"

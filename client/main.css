@@ -32,7 +32,8 @@ body {
   height: 50%;
   margin: 0 auto;
   border-radius: 15px;
-  box-shadow: 1px 1px 10px 1px rgba(68,68,68,1);
+  /*box-shadow: 1px 1px 10px 1px rgba(68,68,68,1);*/
+  border: 1px solid #c2c7d0;
   background-color: #ffffff;
   margin-top: 30px;
 }

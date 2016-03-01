@@ -10,6 +10,6 @@ FlowRouter.route('/', {
 
 FlowRouter.route('/青出于蓝', {
   action: function() {
-    ReactLayout.render(MainLayout, { header: <HeaderLayout />, sidebar: <DeleterLayout />,  main: <PlaceholderLayout />});
+    ReactLayout.render(MainLayout, { header: <HeaderLayout />, sidebar: <PlaceholderLayout />,  main: <PlaceholderLayout />});
   }
 });
