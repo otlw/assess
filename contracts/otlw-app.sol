@@ -114,14 +114,14 @@ contract Tag
     name = n;
   }
 
-  function setAssessorPool(uint s, address a, address assessment)
+  function setAssessorPool(address a, address assessment)
   {
-    for(uint i = 0; i < Tag(a).owners.length && assessment.poolSizeRemaining != 0; i++)
+    for(uint i = 0; i < Tag(a).owners.length && Assessment(assessment).poolSizeRemaining != 0; i++)
     {
       if(pool.length < .1*Tag(a).owners.length)
       {
         Assessment(assessment).addToAssessorPool(Tag(a).owners[getRandom(Tag(a).owners.length)]);
-        s--;
+        Assessment(assessment).poolSizeRemaining--;
       }
       else
       {
@@ -130,12 +130,11 @@ contract Tag
           setAssessorPool(s, Tag(a).parentTags[j], assessment);
         }
       }
-      if(s == 0)
+      if(Assessment(assessment).poolSizeRemaining =< 0)
       {
         Assessment(assessment).setAssessors();
       }
     }
-    Assessment(assessment).poolSizeRemaining = s;
   }
 
   function startAssessment(address assessee, uint size)
@@ -144,7 +143,8 @@ contract Tag
     newAssessment.setAssessee(assessee);
     newAssessment.setTag(address(this));
     newAssessment.setNumberOfAssessors(size);
-    setAssessorPool(size*20, address(this), address(newAssessment));
+    newAssessment.setAssessmentPoolSize(size*20)
+    setAssessorPool(address(this), address(newAssessment));
   }
 
   function finishAssessment(bool result, uint score, address assessee, address assessment) returns(bool)
@@ -195,6 +195,10 @@ contract Assessment
     numberOfAssessors = n;
   }
 
+  function setAssessmentPoolSize(uint n)
+  {
+    poolSizeRemaining = n;
+  }
   function addToAssessorPool(address a)
   {
     assessorPool.push(a);
