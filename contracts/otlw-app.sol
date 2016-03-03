@@ -4,7 +4,7 @@ contract Master
   mapping (address => uint) tokenBalance;
   mapping (address => string) tagName;
   mapping (string => address) tagAddressFromName;
-  mapping (address => address[]) acheivements;
+  mapping (address => address[]) achievements;
 
   function Master()
   {
@@ -23,9 +23,9 @@ contract Master
   {
     tagAddressFromName[n] = a;
   }
-  function mapAcheivement(address a, address t)
+  function mapAchievement(address a, address t)
   {
-    acheivements[a].push(t);
+    achievements[a].push(t);
   }
   function getTokenBalance(address a) returns(uint)
   {
@@ -39,13 +39,13 @@ contract Master
   {
     return tagAddressFromName[n];
   }
-  function getAcheivement(address a) returns(address[])
+  function getAchievement(address a) returns(address[])
   {
-    return acheivements[a];
+    return achievements[a];
   }
-  function getNumberOfAcheivements(address a) returns(uint)
+  function getNumberOfachievments(address a) returns(uint)
   {
-    return acheivements[a].length;
+    return achievments[a].length;
   }
 
   function addTag(string name, address[] parentList) returns(uint) //Creates a new tag contract
@@ -153,7 +153,7 @@ contract Tag
     {
       owners.push(assessee);
       scores[assessee] = score;
-      Master(master).mapAcheivement(assessee,address(this));
+      Master(master).mapachievment(assessee,address(this));
     }
     assessmentHistory[assessee].push(assessment);
     return result;
