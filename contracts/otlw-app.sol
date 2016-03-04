@@ -11,7 +11,7 @@ contract Master
   function Master()
   {
     tokenBalance[address(this)] = 1;
-    address[] a;
+    address[] memory a;
     uint useless = addTag("account", a);
   }
 
@@ -31,9 +31,9 @@ contract Master
   {
     achievements[user].push(achievment);
   }
-  function mapAvailability(address user, bool availability)
+  function mapAvailability(address user, bool available)
   {
-    availability[user] = availability;
+    availability[user] = available;
   }
 
   function getTokenBalance(address user) returns(uint)
@@ -54,7 +54,7 @@ contract Master
   }
   function getNumberOfachievments(address user) returns(uint)
   {
-    return achievments[user].length;
+    return achievements[user].length;
   }
   function getAvailability(address user) returns(bool)
   {
@@ -119,27 +119,57 @@ contract Tag
     master = masterAddress;
   }
 
+  function getOwners() returns(address[])
+  {
+    return owners;
+  }
+
+  function getOwnerLength() returns(uint)
+  {
+    return owners.length;
+  }
+
+  function getOwner(uint index) returns(address)
+  {
+      return owners[index];
+  }
+
+  function getParents() returns(address[])
+  {
+    return parentTags;
+  }
+
+  function getParentsLength() returns(uint)
+  {
+    return parentTags.length;
+  }
+
+  function getParent(uint index) returns(address)
+  {
+      return parentTags[index];
+  }
+
   function setAssessorPool(address tagAddress, address assessment)
   {
-    for(uint i = 0; i < Tag(tagAddress).owners.length && Assessment(assessment).poolSizeRemaining != 0; i++)
+    for(uint i = 0; i < Tag(tagAddress).getOwnerLength() && Assessment(assessment).getAssessmentPoolSize() != 0; i++)
     {
-      if(pool.length < .1*Tag(tagAddress).owners.length)
+      if(Assessment(assessment).getAssessorPoolLength() < Tag(tagAddress).getOwnerLength()/10)
       {
-        address random = Tag(tagAddress).owners[getRandom(Tag(tagAddress).owners.length)];
+        address random = Tag(tagAddress).getOwner(getRandom(Tag(tagAddress).getOwnerLength()-1));
         if(Master(master).getAvailability(random) == true)
         {
-          Assessment(assessment).addToAssessorPool();
-          Assessment(assessment).poolSizeRemaining--;
+          Assessment(assessment).addToAssessorPool(random);
+          Assessment(assessment).setAssessmentPoolSize(Assessment(assessment).getAssessmentPoolSize() -1);
         }
       }
       else
       {
-        for(uint j = 0; j < Tag(tagAddress).parentTags.length; j++)
+        for(uint j = 0; j < Tag(tagAddress).getParentsLength(); j++)
         {
-          setAssessorPool(Tag(tagAddress).parentTags[j], assessment);
+          setAssessorPool(Tag(tagAddress).getParent(j), assessment);
         }
       }
-      if(Assessment(assessment).poolSizeRemaining =< 0)
+      if(Assessment(assessment).getAssessmentPoolSize() <= 0)
       {
         Assessment(assessment).setAssessors();
       }
@@ -148,9 +178,9 @@ contract Tag
 
   function startAssessment(address assessee, uint size)
   {
-    Assessment newAssessment = new Assessment(assessee, address.this);
+    Assessment newAssessment = new Assessment(assessee, address(this));
     newAssessment.setNumberOfAssessors(size);
-    newAssessment.setAssessmentPoolSize(size*20)
+    newAssessment.setAssessmentPoolSize(size*20);
     setAssessorPool(address(this), address(newAssessment));
   }
 
@@ -206,6 +236,12 @@ contract Assessment
   {
     poolSizeRemaining = sizeRemaining;
   }
+
+  function getAssessmentPoolSize() returns(uint)
+  {
+    return poolSizeRemaining;
+  }
+
   function addToAssessorPool(address potentialAddress)
   {
     assessorPool.push(potentialAddress);
@@ -213,32 +249,37 @@ contract Assessment
 
   function setAssessors()
   {
-    for(uint i = 0, i < numberOfAssessors, i++)
+    for(uint i = 0; i < numberOfAssessors; i++)
     {
       assessors.push(assessorPool[getRandom(assessorPool.length)]);
     }
+  }
+
+  function getAssessorPoolLength() returns(uint)
+  {
+      return assessorPool.length;
   }
 
   function getRandom(uint i) returns(uint)
   {
     return 12;
   }
-  function setQuestion(address assessorAddress, uint[] data)
+  function setQuestion(address assessorAddress, string data)
   {
     assessmentQuestions[assessorAddress] = data;
   }
 
-  function getQuestion(address assessorAddress) returns(uint[])
+  function getQuestion(address assessorAddress) returns(string)
   {
     return assessmentQuestions[assessorAddress];
   }
 
-  function setAnswer(address assesseeAddress, uint[] data)
+  function setAnswer(address assesseeAddress, string data)
   {
     assessmentAnswers[assesseeAddress] = data;
   }
 
-  function getAnswer(address assesseeAddress) returns(uint[])
+  function getAnswer(address assesseeAddress) returns(string)
   {
     return assessmentAnswers[assesseeAddress];
   }
@@ -248,7 +289,7 @@ contract Assessment
     Results memory results;
     results.pass = pass;
     results.score = score;
-    assessmentResults[a] = results;
+    assessmentResults[assessorAddress] = results;
   }
 
   function assess()
@@ -279,16 +320,15 @@ contract User
   address[] acheivements;
   string userData;
 
-  function User(address userAddress, address masterAddress, string ipfsHash)
+  function User(address userAddress, address masterAddress)
   {
     user = userAddress;
     master = masterAddress;
-    userData = ipfsHash;
   }
 
   function setUserData(string hash)
   {
-    userData hash;
+    userData = hash;
   }
 
   function getUserData() returns(string)
