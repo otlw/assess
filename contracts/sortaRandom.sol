@@ -1,24 +1,14 @@
-contract RandomNumbers
-{
-  function sortaRandomGen() returns(uint) // function to hash a bunch o' blocks to get a "sorta" random number (SECURITY UNTESTED)
-  {
-    uint[10] memory blockHashes;
-    uint currentBlock = block.number
-    uint kindaRandom; // integer to hold the final random variable
-    uint sumHash; // integer to hold the sum of the hashes
+import "api.sol";
 
-    for(uint i = 0; i <= 10; i++) // for loop to fill the blockHashes array
-    {
-      blockHashes[i] = uint(block.blockhash(currentBlock)); // adds the integer of the current blocks's hash to the array
-      currentBlock -= 1; // grabs the previous block
-    }
-  for(uint j = 0; j <= 10; j++) // for loop to sum the hashes
-  {
-    sumHash += blockHashes[j];
-    sumHash = uint(sha3(sumHash));
-  }
 
-  kindaRandom = uint(sha3(sumHash));
-  return kindaRandom;
+contract RandomNumbers is usingOraclize {
+
+
+  function sortaRandomGen() returns(uint) { //function using oraclize to get a random number from wolfram alpha
+
+    oraclize_setNetwork(networkID_mainnet);
+
+    return uint(oraclize_query("WolframAlpha", "random number between 0 and 100"));
+
   }
 }
