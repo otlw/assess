@@ -5,6 +5,7 @@ contract Master
   mapping (address => string) tagName;
   mapping (string => address) tagAddressFromName;
   mapping (address => address[]) achievements;
+  mapping (address => bool) availability;
 
   function Master()
   {
@@ -27,6 +28,11 @@ contract Master
   {
     achievements[a].push(t);
   }
+  function mapAvailability(address a, bool b)
+  {
+    availability[a] = b;
+  }
+
   function getTokenBalance(address a) returns(uint)
   {
     return tokenBalance[a];
@@ -47,6 +53,11 @@ contract Master
   {
     return achievments[a].length;
   }
+  function getAvailability(address a) returns(bool)
+  {
+    return availability[a] = true;
+  }
+
 
   function addTag(string name, address[] parentList) returns(uint) //Creates a new tag contract
   {
@@ -105,8 +116,12 @@ contract Tag
     {
       if(pool.length < .1*Tag(a).owners.length)
       {
-        Assessment(assessment).addToAssessorPool(Tag(a).owners[getRandom(Tag(a).owners.length)]);
-        Assessment(assessment).poolSizeRemaining--;
+        address random = Tag(a).owners[getRandom(Tag(a).owners.length)];
+        if(Master(master).getAvailability(random) == true)
+        {
+          Assessment(assessment).addToAssessorPool();
+          Assessment(assessment).poolSizeRemaining--;
+        }
       }
       else
       {
@@ -124,9 +139,7 @@ contract Tag
 
   function startAssessment(address assessee, uint size)
   {
-    Assessment newAssessment;
-    newAssessment.setAssessee(assessee);
-    newAssessment.setTag(address(this));
+    Assessment newAssessment = new Assessment(assessee, address.this);
     newAssessment.setNumberOfAssessors(size);
     newAssessment.setAssessmentPoolSize(size*20)
     setAssessorPool(address(this), address(newAssessment));
@@ -165,14 +178,10 @@ contract Assessment
   uint finalScore;
   bool finalResult;
 
-  function Assessment()
+  function Assessment(address a, address t)
   {
-
-  }
-
-  function setAssessee(address newAssessee)
-  {
-    assessee = newAssessee;
+    assessee = a;
+    tag = t;
   }
 
   function setNumberOfAssessors(uint n)
@@ -195,11 +204,6 @@ contract Assessment
     {
       assessors.push(assessorPool[getRandom(assessorPool.length)]);
     }
-  }
-
-  function setTag(address t)
-  {
-    tag = t;
   }
 
   function setQuestion(address a, uint[] data)
