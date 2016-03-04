@@ -10,55 +10,62 @@ contract Master
 
   function Master()
   {
-
+    tokenBalance[address(this)] = 1;
+    address[] a;
+    uint useless = addTag("account", a);
   }
 
-  function mapTokenBalance(address a, uint b)
+  function mapTokenBalance(address user, uint balance)
   {
-    tokenBalance[a] = b;
+    tokenBalance[user] = balance;
   }
-  function mapTagName(address a, string n)
+  function mapTagName(address tagAddress, string name)
   {
-    tagName[a] = n;
+    tagName[tagAddress] = name;
   }
-  function mapTagAddressFromName(string n, address a)
+  function mapTagAddressFromName(string name, address tagAddress)
   {
-    tagAddressFromName[n] = a;
+    tagAddressFromName[name] = tagAddress;
   }
-  function mapAchievement(address a, address t)
+  function mapAchievement(address user, address achievment)
   {
-    achievements[a].push(t);
+    achievements[user].push(achievment);
   }
-  function mapAvailability(address a, bool b)
+  function mapAvailability(address user, bool availability)
   {
-    availability[a] = b;
-  }
-
-  function getTokenBalance(address a) returns(uint)
-  {
-    return tokenBalance[a];
-  }
-  function getTagName(address a) returns(string)
-  {
-    return tagName[a];
-  }
-  function getTagAddressFromName(string n) returns(address)
-  {
-    return tagAddressFromName[n];
-  }
-  function getAchievement(address a) returns(address[])
-  {
-    return achievements[a];
-  }
-  function getNumberOfachievments(address a) returns(uint)
-  {
-    return achievments[a].length;
-  }
-  function getAvailability(address a) returns(bool)
-  {
-    return availability[a] = true;
+    availability[user] = availability;
   }
 
+  function getTokenBalance(address user) returns(uint)
+  {
+    return tokenBalance[user];
+  }
+  function getTagName(address tagAddress) returns(string)
+  {
+    return tagName[tagAddress];
+  }
+  function getTagAddressFromName(string name) returns(address)
+  {
+    return tagAddressFromName[name];
+  }
+  function getAchievement(address user) returns(address[])
+  {
+    return achievements[user];
+  }
+  function getNumberOfachievments(address user) returns(uint)
+  {
+    return achievments[user].length;
+  }
+  function getAvailability(address user) returns(bool)
+  {
+    return availability[user] = true;
+  }
+
+  function addUser()
+  {
+    User newUser = new User(msg.sender, address(this));
+    Tag(tagAddressFromName["account"]).startAssessment(address(newUser),5);
+  }
 
   function addTag(string name, address[] parentList) returns(uint) //Creates a new tag contract
   {
@@ -89,7 +96,7 @@ contract Master
       address newTagAddress = address(newTag);
       tagName[newTagAddress] = name;
       tagAddressFromName[name] = newTagAddress;
-
+      tokenBalance[msg.sender] -= 1;
     }
     return response;
   }
@@ -105,20 +112,20 @@ contract Tag
   mapping(address => address[]) assessmentHistory; //All assessments completed
   mapping(address => uint) scores; //All positive assessements scores
 
-  function Tag(string n, address[] p, address m)
+  function Tag(string tagName, address[] parents, address masterAddress)
   {
-    name = n;
-    parentTags = p;
-    master = m;
+    name = tagName;
+    parentTags = parents;
+    master = masterAddress;
   }
 
-  function setAssessorPool(address a, address assessment)
+  function setAssessorPool(address tagAddress, address assessment)
   {
-    for(uint i = 0; i < Tag(a).owners.length && Assessment(assessment).poolSizeRemaining != 0; i++)
+    for(uint i = 0; i < Tag(tagAddress).owners.length && Assessment(assessment).poolSizeRemaining != 0; i++)
     {
-      if(pool.length < .1*Tag(a).owners.length)
+      if(pool.length < .1*Tag(tagAddress).owners.length)
       {
-        address random = Tag(a).owners[getRandom(Tag(a).owners.length)];
+        address random = Tag(tagAddress).owners[getRandom(Tag(tagAddress).owners.length)];
         if(Master(master).getAvailability(random) == true)
         {
           Assessment(assessment).addToAssessorPool();
@@ -127,9 +134,9 @@ contract Tag
       }
       else
       {
-        for(uint j = 0; j < Tag(a).parentTags.length; j++)
+        for(uint j = 0; j < Tag(tagAddress).parentTags.length; j++)
         {
-          setAssessorPool(s, Tag(a).parentTags[j], assessment);
+          setAssessorPool(Tag(tagAddress).parentTags[j], assessment);
         }
       }
       if(Assessment(assessment).poolSizeRemaining =< 0)
@@ -153,10 +160,14 @@ contract Tag
     {
       owners.push(assessee);
       scores[assessee] = score;
-      Master(master).mapachievment(assessee,address(this));
+      Master(master).mapAchievement(assessee,address(this));
     }
     assessmentHistory[assessee].push(assessment);
     return result;
+  }
+  function getRandom(uint i) returns(uint)
+  {
+    return 12;
   }
 }
 
@@ -180,59 +191,67 @@ contract Assessment
   uint finalScore;
   bool finalResult;
 
-  function Assessment(address a, address t)
+  function Assessment(address assesseeAddress, address tagAddress)
   {
-    assessee = a;
-    tag = t;
+    assessee = assesseeAddress;
+    tag = tagAddress;
   }
 
-  function setNumberOfAssessors(uint n)
+  function setNumberOfAssessors(uint number)
   {
-    numberOfAssessors = n;
+    numberOfAssessors = number;
   }
 
-  function setAssessmentPoolSize(uint n)
+  function setAssessmentPoolSize(uint sizeRemaining)
   {
-    poolSizeRemaining = n;
+    poolSizeRemaining = sizeRemaining;
   }
-  function addToAssessorPool(address a)
+  function addToAssessorPool(address potentialAddress)
   {
-    assessorPool.push(a);
+    assessorPool.push(potentialAddress);
   }
 
   function setAssessors()
   {
-    for(uint i = 0, i < n, i++)
+    for(uint i = 0, i < numberOfAssessors, i++)
     {
       assessors.push(assessorPool[getRandom(assessorPool.length)]);
     }
   }
+<<<<<<< HEAD
 
+  function setQuestion(address assessorAddress, uint[] data)
+=======
+  function getRandom(uint i) returns(uint)
+  {
+    return 12;
+  }
   function setQuestion(address a, uint[] data)
+>>>>>>> 61c1a726e1d14df3ac21e8924e1029ac230d9559
   {
-    assessmentQuestions[a] = data;
+    assessmentQuestions[assessorAddress] = data;
   }
 
-  function getQuestion(address a) returns(uint[])
+  function getQuestion(address assessorAddress) returns(uint[])
   {
-    return assessmentQuestions[a];
+    return assessmentQuestions[assessorAddress];
   }
 
-  function setAnswer(address a, uint[] data)
+  function setAnswer(address assesseeAddress, uint[] data)
   {
-    assessmentAnswers[a] = data;
+    assessmentAnswers[assesseeAddress] = data;
   }
 
-  function getAnswer(address a) returns(uint[])
+  function getAnswer(address assesseeAddress) returns(uint[])
   {
-    return assessmentAnswers[a];
+    return assessmentAnswers[assesseeAddress];
   }
 
-  function setResult(address a, bool b, uint s)
+  function setResult(address assessorAddress, bool pass, uint score)
   {
     Results memory results;
-    results.pass = b;
-    results.score = s;
+    results.pass = pass;
+    results.score = score;
     assessmentResults[a] = results;
   }
 
@@ -260,16 +279,33 @@ contract Assessment
 contract User
 {
   address user;
-  uint balance;
   address master;
   address[] acheivements;
   string userData;
 
-  function User(address u, address m, string s)
+<<<<<<< HEAD
+  function User(address userAddress, address masterAddress, string ipfsHash)
+  {
+    user = userAddress;
+    master = masterAddress;
+    userData = ipfsHash;
+  }
+  
+=======
+  function User(address u, address m)
   {
     user = u;
     master = m;
-    userData = s;
   }
 
+  function setUserData(string hash)
+  {
+    userData hash;
+  }
+
+  function getUserData() returns(string)
+  {
+      return userData;
+  }
+>>>>>>> 61c1a726e1d14df3ac21e8924e1029ac230d9559
 }
