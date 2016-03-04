@@ -192,6 +192,10 @@ contract Tag
       scores[assessee] = score;
       Master(master).mapAchievement(assessee,address(this));
     }
+    if(result == false && address(this) == Master(master).getTagAddressFromName("account"))
+    {
+      User(assessee).selfdestruct(master);
+    }
     assessmentHistory[assessee].push(assessment);
     return result;
   }
@@ -220,12 +224,13 @@ contract Assessment
   mapping(address => Results) assessmentResults; //Pass/Fail and Score given by assessors
   uint finalScore;
   bool finalResult;
-  
+  uint startTime;
 
   function Assessment(address assesseeAddress, address tagAddress)
   {
     assessee = assesseeAddress;
     tag = tagAddress;
+    startTime = block.timestamp;
   }
 
   function setNumberOfAssessors(uint number)
