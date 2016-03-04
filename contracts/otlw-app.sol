@@ -51,6 +51,7 @@ contract Master
   function addTag(string name, address[] parentList) returns(uint) //Creates a new tag contract
   {
     uint response = 0;
+    address[] parents;
     if(tokenBalance[msg.sender] < 1)
     {
       response += 1;
@@ -61,25 +62,22 @@ contract Master
     }
     if(response==0)
     {
-      Tag newTag = new Tag();
-      address newTagAddress = address(newTag);
-      tagName[newTagAddress] = name;
-      tagAddressFromName[name] = newTagAddress;
-
       for(uint i=0; i<= parentList.length; i++) //adds all the given parents
       {
         if(parentList[i]==0)
         {
-          response += 100;
+          response += 100*(10**i);
         }
-        if(response==0)
+        else
         {
-          newTag.addParent(parentList[i]);
+          parents.push(parentList[i]);
         }
       }
+      Tag newTag = new Tag(name, parents, address(this));
+      address newTagAddress = address(newTag);
+      tagName[newTagAddress] = name;
+      tagAddressFromName[name] = newTagAddress;
     }
-    newTag.setMaster(address(this));
-    newTag.setName(name);
     return response;
   }
 }
@@ -94,24 +92,11 @@ contract Tag
   mapping(address => address[]) assessmentHistory; //All assessments completed
   mapping(address => uint) scores; //All positive assessements scores
 
-  function Tag()
-  {
-
-  }
-
-  function addParent(address parentTag)
-  {
-    parentTags.push(parentTag);
-  }
-
-  function setMaster(address m)
-  {
-    master = m;
-  }
-
-  function setName(string n)
+  function Tag(string n, address[] p, address m)
   {
     name = n;
+    parentTags = p;
+    master = m;
   }
 
   function setAssessorPool(address a, address assessment)
