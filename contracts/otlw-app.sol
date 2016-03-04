@@ -6,6 +6,7 @@ contract Master
   mapping (string => address) tagAddressFromName;
   mapping (address => address[]) achievements;
   mapping (address => bool) availability;
+  mapping (address => address) users;
 
   function Master()
   {
@@ -88,6 +89,7 @@ contract Master
       address newTagAddress = address(newTag);
       tagName[newTagAddress] = name;
       tagAddressFromName[name] = newTagAddress;
+
     }
     return response;
   }
@@ -172,8 +174,8 @@ contract Assessment
     bool pass;
     uint score;
   }
-  mapping(address => uint[]) assessmentQuestions; //Given by the assessors as IPFS hashes
-  mapping(address => uint[]) assessmentAnswers; //Given by the assessee as IPFS hashes
+  mapping(address => string) assessmentQuestions; //Given by the assessors as IPFS hashes
+  mapping(address => string) assessmentAnswers; //Given by the assessee as IPFS hashes
   mapping(address => Results) assessmentResults; //Pass/Fail and Score given by assessors
   uint finalScore;
   bool finalResult;
@@ -253,4 +255,21 @@ contract Assessment
   {
 
   }
+}
+
+contract User
+{
+  address user;
+  uint balance;
+  address master;
+  address[] acheivements;
+  string userData;
+
+  function User(address u, address m, string s)
+  {
+    user = u;
+    master = m;
+    userData = s;
+  }
+
 }
