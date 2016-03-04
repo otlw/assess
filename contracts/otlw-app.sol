@@ -220,6 +220,7 @@ contract Assessment
   mapping(address => Results) assessmentResults; //Pass/Fail and Score given by assessors
   uint finalScore;
   bool finalResult;
+  
 
   function Assessment(address assesseeAddress, address tagAddress)
   {
@@ -320,10 +321,21 @@ contract User
   address[] acheivements;
   string userData;
 
+  event Notification
+  ( string _description,
+    address _sender,
+    address _user,
+    address _tag);
+
   function User(address userAddress, address masterAddress)
   {
     user = userAddress;
     master = masterAddress;
+  }
+
+  function notification(string description, address tag)
+  {
+    Notification(description, msg.sender, address(this), tag);
   }
 
   function setUserData(string hash)
