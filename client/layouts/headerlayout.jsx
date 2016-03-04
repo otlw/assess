@@ -6,9 +6,9 @@ HeaderLayout = React.createClass({
   render() {
     return (
       <div id="header_link_wrapper">
-        <a href="/" id="header_image_link">Logo and link to home</a>
-        <p id="header_title">Hvergelmir</p>
-        <p id="header_image_link">Future drop down menu</p>
+        <a href="/" id="header_item">Find Tag</a>
+        <a href="activity" id="header_item">Activity</a>
+        <a href="settings" id="header_item">Settings</a>
       </div>
     );
   }

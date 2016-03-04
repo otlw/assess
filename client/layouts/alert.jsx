@@ -7,7 +7,7 @@ Alert = React.createClass({
   },
   render() {
     return (
-      <li id="alert_item"><a href="/青出于蓝">{this.props.alert.text}</a></li>
+      <li id="alert_item"><a href="/activity">{this.props.alert.text}</a></li>
     );
   }
 });

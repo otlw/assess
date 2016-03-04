@@ -4,12 +4,30 @@ Version: 2.0.0
 */
 FlowRouter.route('/', {
   action: function() {
-    ReactLayout.render(MainLayout, { header: <HeaderLayout />, sidebar: <AlertLayout />,  main: <TagSearchLayout />});
+    ReactLayout.render(MainLayout, { navigation: <TagFeedLayout />, sidebar: <AlertLayout />,  main: <TagSearchLayout />});
   }
 });
 
-FlowRouter.route('/青出于蓝', {
+FlowRouter.route('/marked', {
   action: function() {
-    ReactLayout.render(MainLayout, { header: <HeaderLayout />, sidebar: <PlaceholderLayout />,  main: <PlaceholderLayout />});
+    ReactLayout.render(MainLayout, { navigation: <TagFeedLayout />, sidebar: <AlertLayout />,  main: <PlaceholderLayout />});
+  }
+});
+
+FlowRouter.route('/completed', {
+  action: function() {
+    ReactLayout.render(MainLayout, { navigation: <TagFeedLayout />, sidebar: <AlertLayout />,  main: <PlaceholderLayout />});
+  }
+});
+
+FlowRouter.route('/activity', {
+  action: function() {
+    ReactLayout.render(MainLayout, { navigation: <PlaceholderLayout />, sidebar: <PlaceholderLayout />,  main: <PlaceholderLayout />});
+  }
+});
+
+FlowRouter.route('/settings', {
+  action: function() {
+    ReactLayout.render(MainLayout, { navigation: <PlaceholderLayout />, sidebar: <PlaceholderLayout />,  main: <PlaceholderLayout />});
   }
 });

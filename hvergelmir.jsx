@@ -9,6 +9,9 @@ if (Meteor.isClient) {
   // This code is executed on the client only
   Meteor.subscribe("alerts");
   Meteor.subscribe("search-tags");
+  Meteor.startup(function () {
+   // Use Meteor.startup to render the component after the page is ready
+ });
 }
 
 if (Meteor.isServer) {
@@ -24,5 +27,13 @@ if (Meteor.isServer) {
 Meteor.methods({
   getAlertsLength(){
     return SearchTags.find({}).count();
+  },
+
+  clearSearchTags(){
+    SearchTags.remove({});
+  },
+
+  updateSearchTags(searchTerm){
+    SearchTags.insert({name: searchEngine(searchTerm)});
   }
 });

@@ -21,7 +21,7 @@ TagSearchLayout = React.createClass({
     var text = React.findDOMNode(this.refs.textInput).value.trim();
 
     //Send to blockchain search function
-
+    Meteor.call("updateSearchTags", text);
     // Clear form
     React.findDOMNode(this.refs.textInput).value = "";
   },
