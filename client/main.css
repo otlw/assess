@@ -26,6 +26,13 @@ li {
   list-style: none;
 }
 
+#title {
+  font-size: 15px;
+  margin-top: 30px;
+  color: #c2c7d0;
+  width: 100%;
+}
+
 /*
 Mainlayout css
 */
@@ -166,12 +173,6 @@ Header css
 /*
 Tag css
 */
-#tag_search_header {
-  font-size: 15px;
-  margin-top: 30px;
-  color: #c2c7d0;
-  width: 100%;
-}
 
 #tag_search_bar {
   width: 96%;
@@ -196,35 +197,27 @@ Tag css
 }
 
 /*
-Tag Feed css
+Feed css
 */
-#tag_feed_wrapper {
+#feed_wrapper {
   width: 70%;
   margin: 0 auto;
 }
 
-#tag_feed_header {
-  font-size: 15px;
-  margin-top: 30px;
-  color: #c2c7d0;
-  width: 100%;
-}
-
-#tag_feed_link_wrapper {
+#feed_link_wrapper {
   margin: 0;
   padding: 0;
 }
 
-#tag_feed_link {
+#feed_link {
   list-style: none;
   margin: 7px 0px 7px 0px;
   padding: 0;
 }
 
-#tag_feed_item {
+#feed_item {
   font-size: 25px;
   margin-top: 30px;
   color: #c2c7d0;
   text-align: left;
-}
 }

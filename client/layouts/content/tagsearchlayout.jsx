@@ -35,7 +35,7 @@ TagSearchLayout = React.createClass({
   render() {
     return (
       <div>
-        <p id="tag_search_header">SEARCH TAGS</p>
+        <p id="title">SEARCH TAGS</p>
         <form id="tag_search_bar_wrapper" onSubmit={this.handleSubmit} >
           <input
             id="tag_search_bar"

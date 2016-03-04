@@ -8,7 +8,7 @@ HeaderLayout = React.createClass({
       <div id="header_link_wrapper">
         <a href="/" id="header_item">Find Tag</a>
         <a href="activity" id="header_item">Activity</a>
-        <a href="settings" id="header_item">Settings</a>
+        <a href="settings" id="header_item">Options</a>
       </div>
     );
   }

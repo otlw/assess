@@ -24,7 +24,7 @@ AlertLayout = React.createClass({
     return (
       <div id="alerts">
         <div id="alerts_header">
-          <p id="alerts_title">Alerts ({Meteor.call("getAlertsLength")})</p>
+          <p id="alerts_title">Alerts [{Meteor.call("getAlertsLength")}]</p>
         </div>
         <ul id="alerts_list">
           {this.renderAlerts()}
