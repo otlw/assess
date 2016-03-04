@@ -218,16 +218,12 @@ contract Assessment
       assessors.push(assessorPool[getRandom(assessorPool.length)]);
     }
   }
-<<<<<<< HEAD
 
-  function setQuestion(address assessorAddress, uint[] data)
-=======
   function getRandom(uint i) returns(uint)
   {
     return 12;
   }
-  function setQuestion(address a, uint[] data)
->>>>>>> 61c1a726e1d14df3ac21e8924e1029ac230d9559
+  function setQuestion(address assessorAddress, uint[] data)
   {
     assessmentQuestions[assessorAddress] = data;
   }
@@ -283,19 +279,11 @@ contract User
   address[] acheivements;
   string userData;
 
-<<<<<<< HEAD
   function User(address userAddress, address masterAddress, string ipfsHash)
   {
     user = userAddress;
     master = masterAddress;
     userData = ipfsHash;
-  }
-  
-=======
-  function User(address u, address m)
-  {
-    user = u;
-    master = m;
   }
 
   function setUserData(string hash)
@@ -307,5 +295,4 @@ contract User
   {
       return userData;
   }
->>>>>>> 61c1a726e1d14df3ac21e8924e1029ac230d9559
 }
