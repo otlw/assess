@@ -194,7 +194,7 @@ contract Tag
     }
     if(result == false && address(this) == Master(master).getTagAddressFromName("account"))
     {
-      User(assessee).selfdestruct(master);
+      User(assessee).suicide();
     }
     assessmentHistory[assessee].push(assessment);
     return result;
@@ -350,6 +350,11 @@ contract User
 
   function getUserData() returns(string)
   {
-      return userData;
+    return userData;
+  }
+
+  function suicide()
+  {
+    selfdestruct(master);
   }
 }
