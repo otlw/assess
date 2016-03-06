@@ -184,7 +184,7 @@ contract Tag
       }
       if(Assessment(assessment).getAssessmentPoolSize() <= 0)
       {
-        Assessment(assessment).setPotentialAssessors();
+        Assessment(assessment).setPotentialAssessors(Assessment(assessment).getNumberOfAssessors());
       }
     }
   }
@@ -255,6 +255,11 @@ contract Assessment
     numberOfAssessors = number;
   }
 
+  function getNumberOfAssessors() returns(uint)
+  {
+    return numberOfAssessors;
+  }
+
   function setAssessmentPoolSize(uint sizeRemaining)
   {
     poolSizeRemaining = sizeRemaining;
@@ -270,9 +275,9 @@ contract Assessment
     assessorPool.push(potentialAddress);
   }
 
-  function setPotentialAssessors()
+  function setPotentialAssessors(uint numberOfAssessorsNeeded)
   {
-    for(uint i = 0; i < numberOfAssessors; i++)
+    for(uint i = 0; i < numberOfAssessorsNeeded; i++)
     {
       address randomAssessor = assessorPool[getRandom(assessorPool.length)];
       assessors[randomAssessor] = 3;
@@ -358,10 +363,9 @@ contract Assessment
         if(numberOfAssessors - finalAssessors.length != 0)
         {
           uint remaining = numberOfAssessors - finalAssessors.length;
-          numberOfAssessors = remaining;
           delete potentialAssessors;
           referenceTime = now;
-          setPotentialAssessors;
+          setPotentialAssessors(remaining);
         }
       }
     }
