@@ -21,7 +21,10 @@ contract Master
 
   function mapTokenBalance(address user, uint balance)
   {
-    tokenBalance[user] = balance;
+    if(tagName[msg.sender] = 0)
+    {
+      tokenBalance[user] = balance;
+    }
   }
   function mapTagName(address tagAddress, string name)
   {
@@ -220,7 +223,9 @@ contract Assessment
 {
   address assessee; //We need a better word for this
   address[] assessorPool;
-  address[] assessors;
+  mapping (address => uint) assessors;
+  address[] potentialAssessors;
+  address[] finalAssessors;
   address tag;
   uint poolSizeRemaining;
   uint numberOfAssessors;
@@ -229,19 +234,18 @@ contract Assessment
     bool pass;
     uint score;
   }
-  mapping(address => string) assessmentQuestions; //Given by the assessors as IPFS hashes
+  mapping(address => string) assessmentTasks; //Given by the assessors as IPFS hashes
   mapping(address => string) assessmentAnswers; //Given by the assessee as IPFS hashes
   mapping(address => Results) assessmentResults; //Pass/Fail and Score given by assessors
   uint finalScore;
   bool finalResult;
-  uint startTime;
-  event
+  uint referenceTime;
 
   function Assessment(address assesseeAddress, address tagAddress)
   {
     assessee = assesseeAddress;
     tag = tagAddress;
-    startTime = block.timestamp;
+    referenceTime = block.timestamp;
   }
 
   function setNumberOfAssessors(uint number)
@@ -264,13 +268,14 @@ contract Assessment
     assessorPool.push(potentialAddress);
   }
 
-  function setAssessors()
+  function setPotentialAssessors()
   {
     for(uint i = 0; i < numberOfAssessors; i++)
     {
       randomAssessor = assessorPool[getRandom(assessorPool.length)];
-      assessors.push(randomAssessor);
-      User(randomAssessor).notification("",tagAddress);
+      assessors[randomAssessor] = 3;
+      potentialAssessors.push(randomAssessor);
+      User(randomAssessor).notification("Called As A Potential Assessor",tag, 1);
     }
   }
 
@@ -283,14 +288,14 @@ contract Assessment
   {
     return 12;
   }
-  function setQuestion(address assessorAddress, string data)
+  function setTask(address assessorAddress, string data)
   {
-    assessmentQuestions[assessorAddress] = data;
+    assessmentTasks[assessorAddress] = data;
   }
 
-  function getQuestion(address assessorAddress) returns(string)
+  function getTask(address assessorAddress) returns(string)
   {
-    return assessmentQuestions[assessorAddress];
+    return assessmentTasks[assessorAddress];
   }
 
   function setAnswer(address assesseeAddress, string data)
@@ -321,9 +326,43 @@ contract Assessment
 
   }
 
-  function confirmAssessor()
+  function confirmAssessor(uint confirm)
   {
-
+    if(assessors[msg.sender] != 0)
+    {
+      if(now - referenceTime <= 181)
+      {
+        assessors[msg.sender] = confirm;
+        if(confirm == 1)
+        {
+          finalAssessors.push(msg.sender);
+          User(msg.sender).notification("Confirmed As Assessing", tag, 2);
+        }
+        if(confirm == 2)
+        {
+          User(msg.sender).notification("Confirmed As Not Assessing", tag, 3);
+        }
+      }
+      else
+      {
+        for(uint i = 0, i < potentialAssessors.length, i++)
+        {
+          if(assessors[msg.sender]==3)
+          {
+            User(msg.sender).notification("Did Not Respond In Time To Be Assessor", tag, 4);
+            Master(Tag(tag).master).mapTokenBalance(msg.sender, Master(Tag(tag).master).getTokenBalance(msg.sender) - 1);
+          }
+        }
+        if(numberOfAssessors - finalAssessors.length)
+        {
+          uint remaining = numberOfAssessors - finalAssessors.length;
+          numberOfAssessors = remaining;
+          delete potentialAssessors;
+          referenceTime = now;
+          setPotentialAssessors;
+        }
+      }
+    }
   }
 
   function returnResults()
@@ -348,7 +387,8 @@ contract User
   ( string _description,
     address _sender,
     address _user,
-    address _tag);
+    address _tag,
+    uint _code);
 
   function User(address userAddress, address masterAddress)
   {
@@ -356,9 +396,9 @@ contract User
     master = masterAddress;
   }
 
-  function notification(string description, address tag)
+  function notification(string description, address tag, uint code)
   {
-    Notification(description, msg.sender, address(this), tag);
+    Notification(description, msg.sender, address(this), tag, code);
   }
 
   function setUserData(string hash)
