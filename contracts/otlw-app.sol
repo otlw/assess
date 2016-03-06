@@ -7,6 +7,10 @@ contract Master
   mapping (address => address[]) achievements;
   mapping (address => bool) availability;
   mapping (address => address) users;
+  event TagCreation
+  ( string _tagName,
+    address _tagAddress,
+    address[] _parents);
 
   function Master()
   {
@@ -97,6 +101,7 @@ contract Master
       tagName[newTagAddress] = name;
       tagAddressFromName[name] = newTagAddress;
       tokenBalance[msg.sender] -= 1;
+      TagCreation(name, newTagAddress);
     }
     return response;
   }
@@ -111,6 +116,11 @@ contract Tag
   address[] owners; //Those who have earned the tag
   mapping(address => address[]) assessmentHistory; //All assessments completed
   mapping(address => uint) scores; //All positive assessements scores
+  event CompletedAssessment
+  ( address _assessee,
+    bool _pass,
+    uint _score,
+    address _assessment);
 
   function Tag(string tagName, address[] parents, address masterAddress)
   {
@@ -184,20 +194,20 @@ contract Tag
     setAssessorPool(address(this), address(newAssessment));
   }
 
-  function finishAssessment(bool result, uint score, address assessee, address assessment) returns(bool)
+  function finishAssessment(bool pass, uint score, address assessee, address assessment)
   {
-    if(result == true)
+    if(pass == true)
     {
       owners.push(assessee);
       scores[assessee] = score;
       Master(master).mapAchievement(assessee,address(this));
     }
-    if(result == false && address(this) == Master(master).getTagAddressFromName("account"))
+    if(pass == false && address(this) == Master(master).getTagAddressFromName("account"))
     {
       User(assessee).suicide();
     }
     assessmentHistory[assessee].push(assessment);
-    return result;
+    CompletedAssessment(assessee, pass, score, assessment);
   }
   function getRandom(uint i) returns(uint)
   {
@@ -225,6 +235,7 @@ contract Assessment
   uint finalScore;
   bool finalResult;
   uint startTime;
+  event
 
   function Assessment(address assesseeAddress, address tagAddress)
   {
@@ -257,7 +268,9 @@ contract Assessment
   {
     for(uint i = 0; i < numberOfAssessors; i++)
     {
-      assessors.push(assessorPool[getRandom(assessorPool.length)]);
+      randomAssessor = assessorPool[getRandom(assessorPool.length)];
+      assessors.push(randomAssessor);
+      User(randomAssessor).notification("",tagAddress);
     }
   }
 
@@ -304,6 +317,11 @@ contract Assessment
   }
 
   function calculateResult()
+  {
+
+  }
+
+  function confirmAssessor()
   {
 
   }
