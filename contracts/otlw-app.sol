@@ -21,7 +21,7 @@ contract Master
 
   function mapTokenBalance(address user, uint balance)
   {
-    if(tagName[msg.sender] = 0)
+    if(tagAddressFromName[tagName[msg.sender]] == 0)
     {
       tokenBalance[user] = balance;
     }
@@ -104,7 +104,7 @@ contract Master
       tagName[newTagAddress] = name;
       tagAddressFromName[name] = newTagAddress;
       tokenBalance[msg.sender] -= 1;
-      TagCreation(name, newTagAddress);
+      TagCreation(name, newTagAddress, parents);
     }
     return response;
   }
@@ -184,14 +184,14 @@ contract Tag
       }
       if(Assessment(assessment).getAssessmentPoolSize() <= 0)
       {
-        Assessment(assessment).setAssessors();
+        Assessment(assessment).setPotentialAssessors();
       }
     }
   }
 
   function startAssessment(address assessee, uint size)
   {
-    Assessment newAssessment = new Assessment(assessee, address(this));
+    Assessment newAssessment = new Assessment(assessee, address(this), master);
     newAssessment.setNumberOfAssessors(size);
     newAssessment.setAssessmentPoolSize(size*20);
     setAssessorPool(address(this), address(newAssessment));
@@ -227,6 +227,7 @@ contract Assessment
   address[] potentialAssessors;
   address[] finalAssessors;
   address tag;
+  address master;
   uint poolSizeRemaining;
   uint numberOfAssessors;
   struct Results
@@ -241,10 +242,11 @@ contract Assessment
   bool finalResult;
   uint referenceTime;
 
-  function Assessment(address assesseeAddress, address tagAddress)
+  function Assessment(address assesseeAddress, address tagAddress, address masterAddress)
   {
     assessee = assesseeAddress;
     tag = tagAddress;
+    master = masterAddress;
     referenceTime = block.timestamp;
   }
 
@@ -272,7 +274,7 @@ contract Assessment
   {
     for(uint i = 0; i < numberOfAssessors; i++)
     {
-      randomAssessor = assessorPool[getRandom(assessorPool.length)];
+      address randomAssessor = assessorPool[getRandom(assessorPool.length)];
       assessors[randomAssessor] = 3;
       potentialAssessors.push(randomAssessor);
       User(randomAssessor).notification("Called As A Potential Assessor",tag, 1);
@@ -345,15 +347,15 @@ contract Assessment
       }
       else
       {
-        for(uint i = 0, i < potentialAssessors.length, i++)
+        for(uint i = 0; i < potentialAssessors.length; i++)
         {
           if(assessors[msg.sender]==3)
           {
             User(msg.sender).notification("Did Not Respond In Time To Be Assessor", tag, 4);
-            Master(Tag(tag).master).mapTokenBalance(msg.sender, Master(Tag(tag).master).getTokenBalance(msg.sender) - 1);
+            Master(master).mapTokenBalance(msg.sender, Master(master).getTokenBalance(msg.sender) - 1);
           }
         }
-        if(numberOfAssessors - finalAssessors.length)
+        if(numberOfAssessors - finalAssessors.length != 0)
         {
           uint remaining = numberOfAssessors - finalAssessors.length;
           numberOfAssessors = remaining;
