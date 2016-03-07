@@ -67,6 +67,10 @@ contract Master
   {
     return availability[user] = true;
   }
+  function getTagDescription(string nameOfTag) returns(string tagDescription)
+  {
+    return Tag(tagAddressFromName[nameOfTag]).getDescription();
+  }
 
   function addUser()
   {
@@ -74,7 +78,7 @@ contract Master
     Tag(tagAddressFromName["account"]).startAssessment(address(newUser),5);
   }
 
-  function addTag(string name, address[] parentList) returns(uint) //Creates a new tag contract
+  function addTag(string name, address[] parentList, string description) returns(uint) //Creates a new tag contract
   {
     uint response = 0;
     address[] parents;
@@ -99,7 +103,7 @@ contract Master
           parents.push(parentList[i]);
         }
       }
-      Tag newTag = new Tag(name, parents, address(this));
+      Tag newTag = new Tag(name, parents, address(this), description);
       address newTagAddress = address(newTag);
       tagName[newTagAddress] = name;
       tagAddressFromName[name] = newTagAddress;
@@ -116,6 +120,7 @@ contract Tag
   address[] parentTags;
   address master;
   string name;
+  string description;
   address[] owners; //Those who have earned the tag
   mapping(address => address[]) assessmentHistory; //All assessments completed
   mapping(address => uint) scores; //All positive assessements scores
@@ -125,11 +130,17 @@ contract Tag
     uint _score,
     address _assessment);
 
-  function Tag(string tagName, address[] parents, address masterAddress)
+  function Tag(string tagName, address[] parents, address masterAddress, string tagDescription)
   {
     name = tagName;
     parentTags = parents;
     master = masterAddress;
+    description = tagDescription;
+  }
+
+  function getDescription() returns(string)
+  {
+    return description;
   }
 
   function getOwners() returns(address[])
