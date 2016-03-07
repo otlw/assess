@@ -247,18 +247,22 @@ contract Assessment
     uint score;
   }
   mapping(address => string) assessmentTasks; //Given by the assessors as IPFS hashes
-  mapping(address => string) assessmentAnswers; //Given by the assessee as IPFS hashes
+  mapping(address => string) assessmentResponses; //Given by the assessee as IPFS hashes
   mapping(address => Results) assessmentResults; //Pass/Fail and Score given by assessors
   uint finalScore;
   bool finalResult;
-  uint referenceTime;
+  uint startReferenceTime;
+  uint confirmationReferenceTime;
+  uint taskSettingReferenceTime;
+  uint responseSettingReferenceTime;
+  uint assessmentReferenceTime;
 
   function Assessment(address assesseeAddress, address tagAddress, address masterAddress)
   {
     assessee = assesseeAddress;
     tag = tagAddress;
     master = masterAddress;
-    referenceTime = block.timestamp;
+    startReferenceTime = block.timestamp;
   }
 
   function setNumberOfAssessors(uint number)
@@ -295,6 +299,7 @@ contract Assessment
       potentialAssessors.push(randomAssessor);
       User(randomAssessor).notification("Called As A Potential Assessor",tag, 1);
     }
+    confirmationReferenceTime = now;
   }
 
   function getAssessorPoolLength() returns(uint)
@@ -309,14 +314,14 @@ contract Assessment
 
   function setTask(string data)
   {
-    if(assessors[msg.sender] == 1 && now - referenceTime <= 3600)
+    if(assessors[msg.sender] == 1 && now - taskSettingReferenceTime <= 3600)
     {
       assessmentTasks[msg.sender] = data;
       assessors[msg.sender] = 4;
       User(msg.sender).notification("Task Data Inputted", tag, 5);
       User(assessee).notification("New Task Available", tag, 7)
     }
-    if(now - referenceTime > 3600)
+    if(now - taskSettingReferenceTime > 3600)
     {
       bool invalidAssessment = false;
       for(uint i = 0; i < finalAssessors.length; i++)
@@ -359,22 +364,22 @@ contract Assessment
     return assessmentTasks[assessorAddress];
   }
 
-  function setAnswer(address assesseeAddress, string data)
+  function setResponse(address assesseeAddress, string data)
   {
-    assessmentAnswers[assesseeAddress] = data;
+    assessmentResponses[assesseeAddress] = data;
   }
 
-  function getAnswer(address assesseeAddress) returns(string)
+  function getResponse(address assesseeAddress) returns(string)
   {
-    return assessmentAnswers[assesseeAddress];
+    return assessmentResponses[assesseeAddress];
   }
 
-  function setResult(address assessorAddress, bool pass, uint score)
+  function setResult(bool pass, uint score)
   {
     Results memory results;
     results.pass = pass;
     results.score = score;
-    assessmentResults[assessorAddress] = results;
+    assessmentResults[msg.sender] = results;
   }
 
   function assess()
@@ -389,7 +394,7 @@ contract Assessment
 
   function confirmAssessor(uint confirm)
   {
-    if(assessors[msg.sender] != 0 && now - referenceTime <= 180)
+    if(assessors[msg.sender] != 0 && now - confirmationReferenceTime <= 180)
     {
       assessors[msg.sender] = confirm;
       if(confirm == 1)
@@ -402,7 +407,7 @@ contract Assessment
         User(msg.sender).notification("Confirmed As Not Assessing", tag, 3);
       }
     }
-    if(now - referenceTime > 180)
+    if(now - confirmationReferenceTime > 180)
     {
       for(uint i = 0; i < potentialAssessors.length; i++)
       {
@@ -422,7 +427,7 @@ contract Assessment
     }
     if(numberOfAssessors - finalAssessors.length == 0)
     {
-      referenceTime = now;
+      taskSettingReferenceTime = now;
     }
   }
 
