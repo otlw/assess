@@ -306,9 +306,52 @@ contract Assessment
   {
     return 12;
   }
-  function setTask(address assessorAddress, string data)
+
+  function setTask(string data)
   {
-    assessmentTasks[assessorAddress] = data;
+    if(assessors[msg.sender] == 1 && now - referenceTime <= 3600)
+    {
+      assessmentTasks[msg.sender] = data;
+      assessors[msg.sender] = 4;
+      User(msg.sender).notification("Task Data Inputted", tag, 5);
+      User(assessee).notification("New Task Available", tag, 7)
+    }
+    if(now - referenceTime > 3600)
+    {
+      bool invalidAssessment = false;
+      for(uint i = 0; i < finalAssessors.length; i++)
+      {
+        if(assessors[finalAssessors[i]]!=4)
+        {
+          User(finalAssessors[i]).notification("Did Not Submit Task On Time", tag, 6);
+          Master(master).mapTokenBalance(finalAssessors[i], Master(master).getTokenBalance(finalAssessors[i]) - 1);
+          invalidAssessment = true;
+        }
+      }
+      if(invalidAssessment = true)
+      {
+        cancelAssessment();
+      }
+    }
+    uint totalStatus
+    for(uint i = 0; i < finalAssessors.length; i++)
+    {
+      totalStatus += assessors[finalAssessors[i]];
+    }
+    if(totalStatus/4 == numberOfAssessors)
+    {
+      referenceTime = now;
+    }
+  }
+
+  function cancelAssessment()
+  {
+    User(assessee).notification("Assessment Cancled", tag, 8);
+    for(uint i = 0; i < finalAssessors.length; i++)
+    {
+      User(finalAssessors[i]).notification("Assessment Cancled", tag, 8);
+    }
+    selfdestruct(master);
   }
 
   function getTask(address assessorAddress) returns(string)
@@ -346,39 +389,40 @@ contract Assessment
 
   function confirmAssessor(uint confirm)
   {
-    if(assessors[msg.sender] != 0)
+    if(assessors[msg.sender] != 0 && now - referenceTime <= 180)
     {
-      if(now - referenceTime <= 181)
+      assessors[msg.sender] = confirm;
+      if(confirm == 1)
       {
-        assessors[msg.sender] = confirm;
-        if(confirm == 1)
+        finalAssessors.push(msg.sender);
+        User(msg.sender).notification("Confirmed As Assessing", tag, 2);
+      }
+      if(confirm == 2)
+      {
+        User(msg.sender).notification("Confirmed As Not Assessing", tag, 3);
+      }
+    }
+    if(now - referenceTime > 180)
+    {
+      for(uint i = 0; i < potentialAssessors.length; i++)
+      {
+        if(assessors[msg.sender]==3)
         {
-          finalAssessors.push(msg.sender);
-          User(msg.sender).notification("Confirmed As Assessing", tag, 2);
-        }
-        if(confirm == 2)
-        {
-          User(msg.sender).notification("Confirmed As Not Assessing", tag, 3);
+          User(msg.sender).notification("Did Not Respond In Time To Be Assessor", tag, 4);
+          Master(master).mapTokenBalance(msg.sender, Master(master).getTokenBalance(msg.sender) - 1);
         }
       }
-      else
+      if(numberOfAssessors - finalAssessors.length != 0)
       {
-        for(uint i = 0; i < potentialAssessors.length; i++)
-        {
-          if(assessors[msg.sender]==3)
-          {
-            User(msg.sender).notification("Did Not Respond In Time To Be Assessor", tag, 4);
-            Master(master).mapTokenBalance(msg.sender, Master(master).getTokenBalance(msg.sender) - 1);
-          }
-        }
-        if(numberOfAssessors - finalAssessors.length != 0)
-        {
-          uint remaining = numberOfAssessors - finalAssessors.length;
-          delete potentialAssessors;
-          referenceTime = now;
-          setPotentialAssessors(remaining);
-        }
+        uint remaining = numberOfAssessors - finalAssessors.length;
+        delete potentialAssessors;
+        referenceTime = now;
+        setPotentialAssessors(remaining);
       }
+    }
+    if(numberOfAssessors - finalAssessors.length == 0)
+    {
+      referenceTime = now;
     }
   }
 
