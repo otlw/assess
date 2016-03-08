@@ -7,6 +7,7 @@ contract Master
   mapping (address => address[]) achievements;
   mapping (address => bool) availability;
   mapping (address => address) users;
+
   event TagCreation
   ( string _tagName,
     address _tagAddress,
@@ -295,9 +296,12 @@ contract Assessment
     for(uint i = 0; i < numberOfAssessorsNeeded; i++)
     {
       address randomAssessor = assessorPool[getRandom(assessorPool.length)];
-      assessors[randomAssessor] = 3;
-      potentialAssessors.push(randomAssessor);
-      User(randomAssessor).notification("Called As A Potential Assessor",tag, 1);
+      if(assessors[randomAssessor] == 0 && 100/User(randomAssessor).getReputation() >= getRandom(100))
+      {
+        assessors[randomAssessor] = 3;
+        potentialAssessors.push(randomAssessor);
+        User(randomAssessor).notification("Called As A Potential Assessor",tag, 1);
+      }
     }
     confirmationReferenceTime = now;
   }
@@ -330,6 +334,7 @@ contract Assessment
         {
           User(finalAssessors[i]).notification("Did Not Submit Task On Time", tag, 6);
           Master(master).mapTokenBalance(finalAssessors[i], Master(master).getTokenBalance(finalAssessors[i]) - 1);
+          User(finalAssessors[i]).setReputation(User(finalAssessors[i]).getReputation() + 1);
           invalidAssessment = true;
         }
       }
@@ -448,6 +453,7 @@ contract User
   address master;
   address[] acheivements;
   string userData;
+  uint reputation;
 
   event Notification
   ( string _description,
@@ -460,6 +466,17 @@ contract User
   {
     user = userAddress;
     master = masterAddress;
+    reputation = 1;
+  }
+
+  function getReputation() returns uint
+  {
+    return reputation;
+  }
+
+  function setReputation(uint newReputation)
+  {
+    reputation = newReputation;
   }
 
   function notification(string description, address tag, uint code)
