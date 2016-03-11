@@ -252,18 +252,18 @@ contract Assessment
   mapping(address => Results) assessmentResults; //Pass/Fail and Score given by assessors
   uint finalScore;
   bool finalResult;
-  uint startReferenceTime;
-  uint confirmationReferenceTime;
-  uint taskSettingReferenceTime;
-  uint responseSettingReferenceTime;
-  uint assessmentReferenceTime;
+  uint taskCreationTime;
+  uint taskCompletionTime;
+  uint referenceTime;
+  uint numberCancelled;
 
-  function Assessment(address assesseeAddress, address tagAddress, address masterAddress)
+  function Assessment(address assesseeAddress, address tagAddress, address masterAddress, uint timeForTaskCreation)
   {
     assessee = assesseeAddress;
     tag = tagAddress;
     master = masterAddress;
     startReferenceTime = block.timestamp;
+    taskCreationTime = timeForTaskCreation;
   }
 
   function setNumberOfAssessors(uint number)
@@ -291,19 +291,21 @@ contract Assessment
     assessorPool.push(potentialAddress);
   }
 
-  function setPotentialAssessors(uint numberOfAssessorsNeeded)
+  function setPotentialAssessor()
   {
-    for(uint i = 0; i < numberOfAssessorsNeeded; i++)
+    bool potentialAssessorSet = false;
+    while(potentialAssessorSet == false)
     {
       address randomAssessor = assessorPool[getRandom(assessorPool.length)];
-      if(assessors[randomAssessor] == 0 && 100/User(randomAssessor).getReputation() >= getRandom(100))
+      if(assessors[randomAssessor] == 0)
       {
         assessors[randomAssessor] = 3;
         potentialAssessors.push(randomAssessor);
+        potentialAssessorSet = true;
         User(randomAssessor).notification("Called As A Potential Assessor",tag, 1);
       }
     }
-    confirmationReferenceTime = now;
+    referenceTime = now;
   }
 
   function getAssessorPoolLength() returns(uint)
@@ -397,42 +399,47 @@ contract Assessment
 
   }
 
-  function confirmAssessor(uint confirm)
+  function confirmAssessor(uint confirm, bool timeKnow)
   {
-    if(assessors[msg.sender] != 0 && now - confirmationReferenceTime <= 180)
+    if(numberCancelled >= numberOfAssessors)
     {
-      assessors[msg.sender] = confirm;
+      cancelAssessment();
+    }
+    if(assessors[potentialAssessors[potentialAssessors.length - 1]] != 0 && now - referenceTime <= 180)
+    {
+      assessors[potentialAssessors[potentialAssessors.length - 1]] = confirm;
       if(confirm == 1)
       {
-        finalAssessors.push(msg.sender);
-        User(msg.sender).notification("Confirmed As Assessing", tag, 2);
+        User(potentialAssessors[potentialAssessors.length -1]).notification("The Time Allocated For Setting The Assessment Task Is:" + taskCreationTime, tag, 2);
+        referenceTime = now;
       }
-      if(confirm == 2)
+      if(confirm == 2 || confirm == 4)
       {
-        User(msg.sender).notification("Confirmed As Not Assessing", tag, 3);
+        User(potentialAssessors[potentialAssessors.length -1]).notification("Confirmed As Not Assessing", tag, 3);
+        numberCancelled ++;
+        setPotentialAssessor();
+      }
+      if(confirm == 5)
+      {
+        finalAssessors.push(potentialAssessors[potentialAssessors.length -1]);
+        User(potentialAssessors[potentialAssessors.length -1]).notification("Confirmed As Assessing", tag, 9);
+        referenceTime = now;
       }
     }
     if(now - confirmationReferenceTime > 180)
     {
-      for(uint i = 0; i < potentialAssessors.length; i++)
+      if(timeKnow == false && assessors[potentialAssessors[potentialAssessors.length -1]]==3)
       {
-        if(assessors[msg.sender]==3)
-        {
-          User(msg.sender).notification("Did Not Respond In Time To Be Assessor", tag, 4);
-          Master(master).mapTokenBalance(msg.sender, Master(master).getTokenBalance(msg.sender) - 1);
-        }
+      User(potentialAssessors[potentialAssessors.length -1]).notification("Did Not Respond In Time To Be Assessor", tag, 4);
+      Master(master).mapTokenBalance(potentialAssessors[potentialAssessors.length -1],
+        Master(master).getTokenBalance(potentialAssessors[potentialAssessors.length -1]) - 1);
+      setPotentialAssessor();
       }
-      if(numberOfAssessors - finalAssessors.length != 0)
+      if(timeKnow == true && assessors[potentialAssessors[potentialAssessors.length -1]]==1)
       {
-        uint remaining = numberOfAssessors - finalAssessors.length;
-        delete potentialAssessors;
-        referenceTime = now;
-        setPotentialAssessors(remaining);
+        User(potentialAssessors[potentialAssessors.length -1]).notification("Did Not Respond In Time To Be Assessor", tag, 4);
+        setPotentialAssessor();
       }
-    }
-    if(numberOfAssessors - finalAssessors.length == 0)
-    {
-      taskSettingReferenceTime = now;
     }
   }
 
