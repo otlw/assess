@@ -219,7 +219,7 @@ contract Tag
     }
     if(pass == false && address(this) == Master(master).getTagAddressFromName("account"))
     {
-      User(assessee).suicide();
+      User(assessee).remove();
     }
     assessmentHistory[assessee].push(assessment);
     CompletedAssessment(assessee, pass, score, assessment);
@@ -359,7 +359,7 @@ contract Assessment
     {
       User(finalAssessors[i]).notification("Assessment Cancled", tag, 8);
     }
-    selfdestruct(master);
+    suicide(master);
   }
 
   function getTask(address assessorAddress) returns(string)
@@ -495,8 +495,8 @@ contract User
     return userData;
   }
 
-  function suicide()
+  function remove()
   {
-    selfdestruct(master);
+    suicide(master);
   }
 }
