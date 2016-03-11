@@ -246,7 +246,7 @@ contract Assessment
   mapping(address => int) assessmentResults; //Pass/Fail and Score given by assessors
   mapping(int => address) addressFromScore;
   address currentAssessor;
-  uint finalScore;
+  int finalScore;
   bool finalResult;
   uint taskCreationTime;
   uint taskCompletionTime;
@@ -427,6 +427,8 @@ contract Assessment
     int meanScore;
     int totalRelativeDistance;
     int meanAbsoluteDeviation;
+    uint largestClusterIndex = 0;
+    int averageScore;
     for(uint i = 0; i < numberOfAssessors; i++)
     {
       scores.push(assessmentResults[finalAssessors[i]]);
@@ -435,11 +437,8 @@ contract Assessment
     for(uint j = 0; j < scores.length; j++)
     {
       meanScore += scores[j];
-      if(j == scores.length - 1)
-      {
-        meanScore /= n;
-      }
     }
+    meanScore /= n;
     for(uint k = 0; k < scores.length; k++)
     {
       int distanceFromMean = scores[k] - meanScore;
@@ -459,7 +458,26 @@ contract Assessment
           clusters[l].push(scores[m]);
         }
       }
+      if(clusters[l].length > clusters[largestClusterIndex].length)
+      {
+        largestClusterIndex = l;
+      }
     }
+    for(uint n = 0; n < clusters[largestClusterIndex].length; n++)
+    {
+      averageScore += clusters[largestClusterIndex];
+    }
+    averageScore /= clusters[largestClusterIndex].length;
+    finalScore = averageScore;
+    if(averageScore > 0)
+    {
+      finalResult = true;
+    }
+    if(averageScore <= 0)
+    {
+      finalResult = false;
+    }
+    payout();
   }
 
   function confirmAssessor(uint confirm, bool timeKnow)
