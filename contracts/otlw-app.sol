@@ -236,7 +236,6 @@ contract Assessment
   address assessee; //We need a better word for this
   address[] assessorPool;
   mapping (address => uint) assessors;
-  address[] potentialAssessors;
   address[] finalAssessors;
   address tag;
   address master;
@@ -250,6 +249,7 @@ contract Assessment
   mapping(address => string) assessmentTasks; //Given by the assessors as IPFS hashes
   mapping(address => string) assessmentResponses; //Given by the assessee as IPFS hashes
   mapping(address => Results) assessmentResults; //Pass/Fail and Score given by assessors
+  address currentAssessor;
   uint finalScore;
   bool finalResult;
   uint taskCreationTime;
@@ -300,7 +300,7 @@ contract Assessment
       if(assessors[randomAssessor] == 0)
       {
         assessors[randomAssessor] = 3;
-        potentialAssessors.push(randomAssessor);
+        currentAssessor = andomAssessor;
         potentialAssessorSet = true;
         User(randomAssessor).notification("Called As A Potential Assessor",tag, 1);
       }
@@ -320,39 +320,24 @@ contract Assessment
 
   function setTask(string data)
   {
-    if(assessors[msg.sender] == 1 && now - taskSettingReferenceTime <= 3600)
+    if(numberCancelled >= numberOfAssessors)
     {
-      assessmentTasks[msg.sender] = data;
-      assessors[msg.sender] = 4;
-      User(msg.sender).notification("Task Data Inputted", tag, 5);
+      cancelAssessment();
+    }
+    if(assessors[currentAssessor] == 5 && now - referenceTime <= taskCreationTime)
+    {
+      assessmentTasks[currentAssessor] = data;
+      assessors[currentAssessor = 6;
+      User(currentAssessor).notification("Task Data Inputted", tag, 5);
       User(assessee).notification("New Task Available", tag, 7)
     }
-    if(now - taskSettingReferenceTime > 3600)
+    if(now - referenceTime > taskCreationTime && assessors[currentAssessor]!=5);
     {
-      bool invalidAssessment = false;
-      for(uint i = 0; i < finalAssessors.length; i++)
-      {
-        if(assessors[finalAssessors[i]]!=4)
-        {
-          User(finalAssessors[i]).notification("Did Not Submit Task On Time", tag, 6);
-          Master(master).mapTokenBalance(finalAssessors[i], Master(master).getTokenBalance(finalAssessors[i]) - 1);
-          User(finalAssessors[i]).setReputation(User(finalAssessors[i]).getReputation() + 1);
-          invalidAssessment = true;
-        }
-      }
-      if(invalidAssessment = true)
-      {
-        cancelAssessment();
-      }
-    }
-    uint totalStatus
-    for(uint i = 0; i < finalAssessors.length; i++)
-    {
-      totalStatus += assessors[finalAssessors[i]];
-    }
-    if(totalStatus/4 == numberOfAssessors)
-    {
-      referenceTime = now;
+      User(currentAssessor).notification("Did Not Submit Task On Time", tag, 6);
+      Master(master).mapTokenBalance(currentAssessor, Master(master).getTokenBalance(currentAssessor) - 1);
+      User(currentAssessor).setReputation(User(currentAssessor).getReputation() + 1);
+      numberCancelled++;
+      setPotentialAssessor;
     }
   }
 
@@ -405,39 +390,37 @@ contract Assessment
     {
       cancelAssessment();
     }
-    if(assessors[potentialAssessors[potentialAssessors.length - 1]] != 0 && now - referenceTime <= 180)
+    if(assessors[currentAssessor]] != 0 && now - referenceTime <= 180)
     {
-      assessors[potentialAssessors[potentialAssessors.length - 1]] = confirm;
+      assessors[currentAssessor]] = confirm;
       if(confirm == 1)
       {
-        User(potentialAssessors[potentialAssessors.length -1]).notification("The Time Allocated For Setting The Assessment Task Is:" + taskCreationTime, tag, 2);
+        User(currentAssessor).notification("The Time Allocated For Setting The Assessment Task Is:" + taskCreationTime, tag, 2);
         referenceTime = now;
       }
       if(confirm == 2 || confirm == 4)
       {
-        User(potentialAssessors[potentialAssessors.length -1]).notification("Confirmed As Not Assessing", tag, 3);
+        User(currentAssessor).notification("Confirmed As Not Assessing", tag, 3);
         numberCancelled ++;
         setPotentialAssessor();
       }
       if(confirm == 5)
       {
-        finalAssessors.push(potentialAssessors[potentialAssessors.length -1]);
-        User(potentialAssessors[potentialAssessors.length -1]).notification("Confirmed As Assessing", tag, 9);
+        User(currentAssessor).notification("Confirmed As Assessing", tag, 9);
         referenceTime = now;
       }
     }
     if(now - confirmationReferenceTime > 180)
     {
-      if(timeKnow == false && assessors[potentialAssessors[potentialAssessors.length -1]]==3)
+      if(timeKnow == false && assessors[currentAssessor]]==3)
       {
-      User(potentialAssessors[potentialAssessors.length -1]).notification("Did Not Respond In Time To Be Assessor", tag, 4);
-      Master(master).mapTokenBalance(potentialAssessors[potentialAssessors.length -1],
-        Master(master).getTokenBalance(potentialAssessors[potentialAssessors.length -1]) - 1);
+      User(currentAssessor).notification("Did Not Respond In Time To Be Assessor", tag, 4);
+      Master(master).mapTokenBalance(currentAssessor, Master(master).getTokenBalance(currentAssessor) - 1);
       setPotentialAssessor();
       }
-      if(timeKnow == true && assessors[potentialAssessors[potentialAssessors.length -1]]==1)
+      if(timeKnow == true && assessors[currentAssessor]==1)
       {
-        User(potentialAssessors[potentialAssessors.length -1]).notification("Did Not Respond In Time To Be Assessor", tag, 4);
+        User(currentAssessor).notification("Did Not Respond In Time To Be Assessor", tag, 4);
         setPotentialAssessor();
       }
     }
