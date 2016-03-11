@@ -17,7 +17,7 @@ contract Master
   {
     tokenBalance[address(this)] = 1;
     address[] memory a;
-    uint useless = addTag("account", a);
+    uint useless = addTag("account", a, "Initial Account Tag");
   }
 
   function mapTokenBalance(address user, uint balance)
@@ -66,17 +66,17 @@ contract Master
   }
   function getAvailability(address user) returns(bool)
   {
-    return availability[user] = true;
+    return availability[user];
   }
-  function getTagDescription(string nameOfTag) returns(string tagDescription)
+ function getTagDescription(address tagAddress) returns(string)
   {
-    return Tag(tagAddressFromName[nameOfTag]).getDescription();
+    return Tag(tagAddress).getDescription();
   }
 
   function addUser()
   {
     User newUser = new User(msg.sender, address(this));
-    Tag(tagAddressFromName["account"]).startAssessment(address(newUser),5);
+    Tag(tagAddressFromName["account"]).startAssessment(address(newUser),5, 600);
   }
 
   function addTag(string name, address[] parentList, string description) returns(uint) //Creates a new tag contract
@@ -156,7 +156,7 @@ contract Tag
 
   function getOwner(uint index) returns(address)
   {
-      return owners[index];
+    return owners[index];
   }
 
   function getParents() returns(address[])
@@ -196,14 +196,14 @@ contract Tag
       }
       if(Assessment(assessment).getAssessmentPoolSize() <= 0)
       {
-        Assessment(assessment).setPotentialAssessors(Assessment(assessment).getNumberOfAssessors());
+        Assessment(assessment).setPotentialAssessor();
       }
     }
   }
 
-  function startAssessment(address assessee, uint size)
+  function startAssessment(address assessee, uint size, uint timeForSettingTask)
   {
-    Assessment newAssessment = new Assessment(assessee, address(this), master);
+    Assessment newAssessment = new Assessment(assessee, address(this), master, timeForSettingTask);
     newAssessment.setNumberOfAssessors(size);
     newAssessment.setAssessmentPoolSize(size*20);
     setAssessorPool(address(this), address(newAssessment));
@@ -262,8 +262,18 @@ contract Assessment
     assessee = assesseeAddress;
     tag = tagAddress;
     master = masterAddress;
-    startReferenceTime = block.timestamp;
+    referenceTime = block.timestamp;
     taskCreationTime = timeForTaskCreation;
+  }
+
+  function getTaskCreationTime() returns(uint)
+  {
+      return taskCreationTime;
+  }
+
+  function getTaskCompletionTime() returns(uint)
+  {
+      return taskCompletionTime;
   }
 
   function setNumberOfAssessors(uint number)
@@ -300,7 +310,7 @@ contract Assessment
       if(assessors[randomAssessor] == 0)
       {
         assessors[randomAssessor] = 3;
-        currentAssessor = andomAssessor;
+        currentAssessor = randomAssessor;
         potentialAssessorSet = true;
         User(randomAssessor).notification("Called As A Potential Assessor",tag, 1);
       }
@@ -318,7 +328,7 @@ contract Assessment
     return 12;
   }
 
-  function setTask(string data)
+  function setTask(string data, uint timeLimit)
   {
     if(numberCancelled >= numberOfAssessors)
     {
@@ -327,11 +337,12 @@ contract Assessment
     if(assessors[currentAssessor] == 5 && now - referenceTime <= taskCreationTime)
     {
       assessmentTasks[currentAssessor] = data;
-      assessors[currentAssessor = 6;
+      taskCompletionTime = timeLimit;
+      assessors[currentAssessor] = 6;
       User(currentAssessor).notification("Task Data Inputted", tag, 5);
-      User(assessee).notification("New Task Available", tag, 7)
+      User(assessee).notification("New Task Available", tag, 7);
     }
-    if(now - referenceTime > taskCreationTime && assessors[currentAssessor]!=5);
+    if(now - referenceTime > taskCreationTime && assessors[currentAssessor]!=5)
     {
       User(currentAssessor).notification("Did Not Submit Task On Time", tag, 6);
       Master(master).mapTokenBalance(currentAssessor, Master(master).getTokenBalance(currentAssessor) - 1);
@@ -390,12 +401,12 @@ contract Assessment
     {
       cancelAssessment();
     }
-    if(assessors[currentAssessor]] != 0 && now - referenceTime <= 180)
+    if(assessors[currentAssessor] != 0 && now - referenceTime <= 180)
     {
-      assessors[currentAssessor]] = confirm;
+      assessors[currentAssessor] = confirm;
       if(confirm == 1)
       {
-        User(currentAssessor).notification("The Time Allocated For Setting The Assessment Task Is:" + taskCreationTime, tag, 2);
+        User(currentAssessor).notification("Confirmed As Potential Assessor", tag, 2);
         referenceTime = now;
       }
       if(confirm == 2 || confirm == 4)
@@ -410,9 +421,9 @@ contract Assessment
         referenceTime = now;
       }
     }
-    if(now - confirmationReferenceTime > 180)
+    if(now - referenceTime > 180)
     {
-      if(timeKnow == false && assessors[currentAssessor]]==3)
+      if(timeKnow == false && assessors[currentAssessor]==3)
       {
       User(currentAssessor).notification("Did Not Respond In Time To Be Assessor", tag, 4);
       Master(master).mapTokenBalance(currentAssessor, Master(master).getTokenBalance(currentAssessor) - 1);
@@ -459,7 +470,7 @@ contract User
     reputation = 1;
   }
 
-  function getReputation() returns uint
+  function getReputation() returns(uint)
   {
     return reputation;
   }
