@@ -241,14 +241,10 @@ contract Assessment
   address master;
   uint poolSizeRemaining;
   uint numberOfAssessors;
-  struct Results
-  {
-    bool pass;
-    uint score;
-  }
   mapping(address => string) assessmentTasks; //Given by the assessors as IPFS hashes
   mapping(address => string) assessmentResponses; //Given by the assessee as IPFS hashes
-  mapping(address => Results) assessmentResults; //Pass/Fail and Score given by assessors
+  mapping(address => int) assessmentResults; //Pass/Fail and Score given by assessors
+  mapping(int => address) addressFromScore;
   address currentAssessor;
   uint finalScore;
   bool finalResult;
@@ -376,7 +372,7 @@ contract Assessment
       assessmentResponses[currentAssessor] = data;
       assessors[currentAssessor] = 7;
       User(currentAssessor).notification("Task Response Inputted", tag, 10);
-      taskGradingTime = 1.5*(now - referenceTime);
+      taskGradingTime = (3*(now - referenceTime))/2;
       referenceTime = now;
     }
     if(now - referenceTime > taskCompletionTime && assessors[currentAssessor]!=6)
@@ -392,7 +388,7 @@ contract Assessment
     return assessmentResponses[assesseeAddress];
   }
 
-  function setResult(bool pass, uint score)
+  function setResult(int score)
   {
     if(numberCancelled >= numberOfAssessors)
     {
@@ -400,21 +396,18 @@ contract Assessment
     }
     if(assessors[currentAssessor] == 7 && now - referenceTime <= taskGradingTime)
     {
-      Results memory results;
-      results.pass = pass;
-      results.score = score;
-      assessmentResults[currentAssessor] = results;
+      assessmentResults[currentAssessor] = score;
       User(assessee).notification("Task Result Inputted", tag, 12);
       finalAssessors.push(currentAssessor);
     }
     if(now - referenceTime <= taskGradingTime && assessors[currentAssessor] != 7)
     {
       User(currentAssessor).notification("Did Not Submit Task Results On Time", tag, 13);
-      User(assessee).notification("Assessor Has Not Graded In Time", tag, 14)
+      User(assessee).notification("Assessor Has Not Graded In Time", tag, 14);
       Master(master).mapTokenBalance(currentAssessor, Master(master).getTokenBalance(assessee) - 1);
       User(currentAssessor).setReputation(User(currentAssessor).getReputation() + 1);
       numberCancelled++;
-      getPotentialAssessor();
+      setPotentialAssessor();
     }
     if(finalAssessors.length == numberOfAssessors)
     {
@@ -422,13 +415,51 @@ contract Assessment
     }
     if(finalAssessors.length < numberOfAssessors)
     {
-      getPotentialAssessor;
+      setPotentialAssessor;
     }
   }
 
   function calculateResult()
   {
-
+    int[][] clusters;
+    int[] scores;
+    int n = 0;
+    int meanScore;
+    int totalRelativeDistance;
+    int meanAbsoluteDeviation;
+    for(uint i = 0; i < numberOfAssessors; i++)
+    {
+      scores.push(assessmentResults[finalAssessors[i]]);
+      n++;
+    }
+    for(uint j = 0; j < scores.length; j++)
+    {
+      meanScore += scores[j];
+      if(j == scores.length - 1)
+      {
+        meanScore /= n;
+      }
+    }
+    for(uint k = 0; k < scores.length; k++)
+    {
+      int distanceFromMean = scores[k] - meanScore;
+      if(distanceFromMean < 0)
+      {
+        distanceFromMean *= -1;
+      }
+      totalRelativeDistance += distanceFromMean;
+    }
+    meanAbsoluteDeviation = totalRelativeDistance/n;
+    for(uint l = 0; l < scores.length; l++)
+    {
+      for(uint m = 0; m < scores.length; m++)
+      {
+        if(scores[l] - scores[m] <= meanAbsoluteDeviation)
+        {
+          clusters[l].push(scores[m]);
+        }
+      }
+    }
   }
 
   function confirmAssessor(uint confirm, bool timeKnow)
