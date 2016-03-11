@@ -124,11 +124,11 @@ contract Tag
   string description;
   address[] owners; //Those who have earned the tag
   mapping(address => address[]) assessmentHistory; //All assessments completed
-  mapping(address => uint) scores; //All positive assessements scores
+  mapping(address => int) scores; //All assessements scores
   event CompletedAssessment
   ( address _assessee,
     bool _pass,
-    uint _score,
+    int _score,
     address _assessment);
 
   function Tag(string tagName, address[] parents, address masterAddress, string tagDescription)
@@ -209,7 +209,7 @@ contract Tag
     setAssessorPool(address(this), address(newAssessment));
   }
 
-  function finishAssessment(bool pass, uint score, address assessee, address assessment)
+  function finishAssessment(bool pass, int score, address assessee, address assessment)
   {
     if(pass == true)
     {
@@ -245,6 +245,7 @@ contract Assessment
   mapping(address => string) assessmentResponses; //Given by the assessee as IPFS hashes
   mapping(address => int) assessmentResults; //Pass/Fail and Score given by assessors
   mapping(int => address) addressFromScore;
+  mapping(int => bool) inRewardCluster;
   address currentAssessor;
   int finalScore;
   bool finalResult;
@@ -397,6 +398,7 @@ contract Assessment
     if(assessors[currentAssessor] == 7 && now - referenceTime <= taskGradingTime)
     {
       assessmentResults[currentAssessor] = score;
+      addressFromScore[score] = currentAssessor;
       User(assessee).notification("Task Result Inputted", tag, 12);
       finalAssessors.push(currentAssessor);
     }
@@ -437,6 +439,7 @@ contract Assessment
     for(uint j = 0; j < scores.length; j++)
     {
       meanScore += scores[j];
+      inRewardCluster[score] = false;
     }
     meanScore /= n;
     for(uint k = 0; k < scores.length; k++)
@@ -463,11 +466,12 @@ contract Assessment
         largestClusterIndex = l;
       }
     }
-    for(uint n = 0; n < clusters[largestClusterIndex].length; n++)
+    for(uint o = 0; o < clusters[largestClusterIndex].length; n++)
     {
-      averageScore += clusters[largestClusterIndex];
+      averageScore += clusters[largestClusterIndex][o];
+      inRewardCluster[clusters[largestClusterIndex][o]] = true;
     }
-    averageScore /= clusters[largestClusterIndex].length;
+    averageScore /= int(clusters[largestClusterIndex].length);
     finalScore = averageScore;
     if(averageScore > 0)
     {
@@ -527,9 +531,28 @@ contract Assessment
     Tag(tag).finishAssessment(finalResult, finalScore, assessee, address(this));
   }
 
-  function cashout()
+  function payout()
   {
-
+    for(uint i = 0; i < finalAssessors.length; i++)
+    {
+      int score = assessmentResults[finalAssessors[i]];
+      int scoreDistance = ((score - finalScore)*100)/finalScore;
+      if(scoreDistance < 0)
+      {
+        scoreDistance *= -1;
+      }
+      uint distance = uint(scoreDistance);
+      if(inRewardCluster(score) = true)
+      {
+        Master(master).setTokenBalance(Master(master).getTokenBalance(finalAssessors[i]) + (500/(100 - scoreDistance)));
+        User(finalAssessors[i]).notification("You Have Received Payment For Your Assessment", tag, 15);
+      }
+      if(inRewardCluster(score) = true)
+      {
+        Master(master).setTokenBalance(Master(master).getTokenBalance(finalAssessors[i]) - (500/(100 - scoreDistance)));
+        User(finalAssessors[i]).notification("You Have Received A Fine For Your Assessment", tag, 16);
+      }
+    }
   }
 }
 
