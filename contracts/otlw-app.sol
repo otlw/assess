@@ -254,6 +254,7 @@ contract Assessment
   bool finalResult;
   uint taskCreationTime;
   uint taskCompletionTime;
+  uint taskGradingTime;
   uint referenceTime;
   uint numberCancelled;
 
@@ -341,6 +342,7 @@ contract Assessment
       assessors[currentAssessor] = 6;
       User(currentAssessor).notification("Task Data Inputted", tag, 5);
       User(assessee).notification("New Task Available", tag, 7);
+      referenceTime = now;
     }
     if(now - referenceTime > taskCreationTime && assessors[currentAssessor]!=5)
     {
@@ -348,7 +350,7 @@ contract Assessment
       Master(master).mapTokenBalance(currentAssessor, Master(master).getTokenBalance(currentAssessor) - 1);
       User(currentAssessor).setReputation(User(currentAssessor).getReputation() + 1);
       numberCancelled++;
-      setPotentialAssessor;
+      setPotentialAssessor();
     }
   }
 
@@ -367,9 +369,22 @@ contract Assessment
     return assessmentTasks[assessorAddress];
   }
 
-  function setResponse(address assesseeAddress, string data)
+  function setResponse(string data)
   {
-    assessmentResponses[assesseeAddress] = data;
+    if(assessors[currentAssessor] == 6 && now - referenceTime <= taskCompletionTime)
+    {
+      assessmentResponses[currentAssessor] = data;
+      assessors[currentAssessor] = 7;
+      User(currentAssessor).notification("Task Response Inputted", tag, 10);
+      taskGradingTime = 1.5*(now - referenceTime);
+      referenceTime = now;
+    }
+    if(now - referenceTime > taskCompletionTime && assessors[currentAssessor]!=6)
+    {
+      User(assessee).notification("Did Not Submit Task Response On Time", tag, 11);
+      Master(master).mapTokenBalance(currentAssessor, Master(master).getTokenBalance(assessee) - 1);
+      cancelAssessment();
+    }
   }
 
   function getResponse(address assesseeAddress) returns(string)
@@ -379,15 +394,36 @@ contract Assessment
 
   function setResult(bool pass, uint score)
   {
-    Results memory results;
-    results.pass = pass;
-    results.score = score;
-    assessmentResults[msg.sender] = results;
-  }
-
-  function assess()
-  {
-
+    if(numberCancelled >= numberOfAssessors)
+    {
+      cancelAssessment();
+    }
+    if(assessors[currentAssessor] == 7 && now - referenceTime <= taskGradingTime)
+    {
+      Results memory results;
+      results.pass = pass;
+      results.score = score;
+      assessmentResults[currentAssessor] = results;
+      User(assessee).notification("Task Result Inputted", tag, 12);
+      finalAssessors.push(currentAssessor);
+    }
+    if(now - referenceTime <= taskGradingTime && assessors[currentAssessor] != 7)
+    {
+      User(currentAssessor).notification("Did Not Submit Task Results On Time", tag, 13);
+      User(assessee).notification("Assessor Has Not Graded In Time", tag, 14)
+      Master(master).mapTokenBalance(currentAssessor, Master(master).getTokenBalance(assessee) - 1);
+      User(currentAssessor).setReputation(User(currentAssessor).getReputation() + 1);
+      numberCancelled++;
+      getPotentialAssessor();
+    }
+    if(finalAssessors.length == numberOfAssessors)
+    {
+      calculateResult();
+    }
+    if(finalAssessors.length < numberOfAssessors)
+    {
+      getPotentialAssessor;
+    }
   }
 
   function calculateResult()
