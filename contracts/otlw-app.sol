@@ -17,7 +17,7 @@ contract Master
   {
     tokenBalance[address(this)] = 1;
     address[] memory a;
-    uint useless = addTag("account", a, "Initial Account Tag");
+    uint useless = addTag("account", a);
   }
 
   function mapTokenBalance(address user, uint balance)
@@ -68,10 +68,6 @@ contract Master
   {
     return availability[user];
   }
- function getTagDescription(address tagAddress) returns(string)
-  {
-    return Tag(tagAddress).getDescription();
-  }
 
   function addUser()
   {
@@ -79,7 +75,7 @@ contract Master
     Tag(tagAddressFromName["account"]).startAssessment(address(newUser),5, 600);
   }
 
-  function addTag(string name, address[] parentList, string description) returns(uint) //Creates a new tag contract
+  function addTag(string name, address[] parentList) returns(uint) //Creates a new tag contract
   {
     uint response = 0;
     address[] parents;
@@ -104,7 +100,7 @@ contract Master
           parents.push(parentList[i]);
         }
       }
-      Tag newTag = new Tag(name, parents, address(this), description);
+      Tag newTag = new Tag(name, parents, address(this));
       address newTagAddress = address(newTag);
       tagName[newTagAddress] = name;
       tagAddressFromName[name] = newTagAddress;
@@ -131,12 +127,11 @@ contract Tag
     int _score,
     address _assessment);
 
-  function Tag(string tagName, address[] parents, address masterAddress, string tagDescription)
+  function Tag(string tagName, address[] parents, address masterAddress)
   {
     name = tagName;
     parentTags = parents;
     master = masterAddress;
-    description = tagDescription;
   }
 
   function getDescription() returns(string)
@@ -439,7 +434,7 @@ contract Assessment
     for(uint j = 0; j < scores.length; j++)
     {
       meanScore += scores[j];
-      inRewardCluster[score] = false;
+      inRewardCluster[scores[j]] = false;
     }
     meanScore /= n;
     for(uint k = 0; k < scores.length; k++)
@@ -542,14 +537,14 @@ contract Assessment
         scoreDistance *= -1;
       }
       uint distance = uint(scoreDistance);
-      if(inRewardCluster(score) = true)
+      if(inRewardCluster[score] == true)
       {
-        Master(master).setTokenBalance(Master(master).getTokenBalance(finalAssessors[i]) + (500/(100 - scoreDistance)));
+        Master(master).mapTokenBalance(finalAssessors[i], Master(master).getTokenBalance(finalAssessors[i]) + uint((500/(100 - scoreDistance))));
         User(finalAssessors[i]).notification("You Have Received Payment For Your Assessment", tag, 15);
       }
-      if(inRewardCluster(score) = true)
+      if(inRewardCluster[score] == true)
       {
-        Master(master).setTokenBalance(Master(master).getTokenBalance(finalAssessors[i]) - (500/(100 - scoreDistance)));
+        Master(master).mapTokenBalance(finalAssessors[i], Master(master).getTokenBalance(finalAssessors[i]) - uint((500/(100 - scoreDistance))));
         User(finalAssessors[i]).notification("You Have Received A Fine For Your Assessment", tag, 16);
       }
     }
