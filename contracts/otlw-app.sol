@@ -416,21 +416,11 @@ contract Assessment
     }
   }
 
-  function calculateResult()
+  function calculateMAD(int[] scores, int n) returns(int)
   {
-    int[][] clusters;
-    int[] scores;
-    int n = 0;
     int meanScore;
     int totalRelativeDistance;
     int meanAbsoluteDeviation;
-    uint largestClusterIndex = 0;
-    int averageScore;
-    for(uint i = 0; i < numberOfAssessors; i++)
-    {
-      scores.push(assessmentResults[finalAssessors[i]]);
-      n++;
-    }
     for(uint j = 0; j < scores.length; j++)
     {
       meanScore += scores[j];
@@ -447,6 +437,21 @@ contract Assessment
       totalRelativeDistance += distanceFromMean;
     }
     meanAbsoluteDeviation = totalRelativeDistance/n;
+  }
+
+  function calculateResult()
+  {
+    int[][] clusters;
+    int[] scores;
+    int n = 0;
+    uint largestClusterIndex = 0;
+    int averageScore;
+    for(uint i = 0; i < numberOfAssessors; i++)
+    {
+      scores.push(assessmentResults[finalAssessors[i]]);
+      n++;
+    }
+    int meanAbsoluteDeviation = calculateMAD(scores,n);
     for(uint l = 0; l < scores.length; l++)
     {
       for(uint m = 0; m < scores.length; m++)
