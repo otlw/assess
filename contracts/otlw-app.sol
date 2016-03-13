@@ -87,7 +87,7 @@ contract Master
     {
       response += 1;
     }
-    if(tagAddressFromName[name] == 0)
+    if(tagAddressFromName[name] != 0)
     {
       response += 10;
     }
