@@ -5,7 +5,7 @@ Version: 2.0.0
 
 
 //Tag routes
-FlowRouter.route('/', {
+FlowRouter.route('/bossman', {
   action: function() {
     ReactLayout.render(MainLayout, { navigation: <TagFeedLayout />, sidebar: <AlertLayout />,  main: <TagSearchLayout />});
   }

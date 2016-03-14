@@ -3,6 +3,52 @@ Author: Xevinaly
 Version: 1.0.0
 */
 
+
+/*
+TestUI css
+*/
+
+#test_wrapper {
+  margin: 0px;
+  padding: 0px;
+  margin-left: 220px;
+}
+
+#test_sidebar {
+  position: fixed;
+  width: 220px;
+  margin: 0px;
+  padding: 0px;
+  height: 100%;
+  background-color: #12ac8e;
+}
+#test_list_wrapper {
+  width: 220px;
+  height: 100px;
+  overflow: hidden;
+  overflow-y: scroll;
+  margin: 0px;
+  padding: 0px;
+  background-color: #f8f9fa;
+  margin-top: 15px;
+}
+
+#test_item {
+  background-color: blue;
+}
+
+input {
+  width: 700px;
+  height: 100px;
+  font-size: 40px;
+}
+
+button {
+  width: 700px;
+  height: 100px;
+  font-size: 40px;
+}
+
 /*
 Main css
 */
