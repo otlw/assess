@@ -98,7 +98,7 @@ contract Master
   */
   function mapAvailability(address user, bool available)
   {
-    availability[user] = available; //maps the user's availability to assess to them
+    availability[user] = available;
   }
 
   function getTokenBalance(address user) returns(uint)
@@ -135,7 +135,7 @@ contract Master
   function addTag(string name, address[] parentList) returns(uint) //Creates a new tag contract
   {
     uint response = 0;
-    address[] parents;
+    address[] memory parents;
     if(tokenBalance[msg.sender] < 1)
     {
       response += 1;
@@ -154,7 +154,7 @@ contract Master
         }
         else
         {
-          parents.push(parentList[i]);
+          parents[i] = parentList[i];
         }
       }
       Tag newTag = new Tag(name, parents, address(this));
@@ -498,24 +498,25 @@ contract Assessment
 
   function calculateResult()
   {
-    int[][] clusters;
-    int[] scores;
-    int n = 0;
+    int[][] memory clusters;
+    int[] memory scores;
+    uint n = 0;
     uint largestClusterIndex = 0;
     int averageScore;
     for(uint i = 0; i < numberOfAssessors; i++)
     {
-      scores.push(assessmentResults[finalAssessors[i]]);
-      n++;
+      scores[i] = assessmentResults[finalAssessors[i]];
     }
-    int meanAbsoluteDeviation = calculateMAD(scores,n);
+    int meanAbsoluteDeviation = calculateMAD(scores,int(numberOfAssessors));
     for(uint l = 0; l < scores.length; l++)
     {
       for(uint m = 0; m < scores.length; m++)
       {
+        n = 0;
         if(scores[l] - scores[m] <= meanAbsoluteDeviation)
         {
-          clusters[l].push(scores[m]);
+          clusters[l][n] = (scores[m]);
+          n++;
         }
       }
       if(clusters[l].length > clusters[largestClusterIndex].length)
