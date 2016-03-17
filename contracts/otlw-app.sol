@@ -1,47 +1,104 @@
+/*
+@type: contract
+@name: Master
+@purpose: To store data for easy and secure access and to add tags and users to the system
+*/
 contract Master
 {
-  //Initialize master data store
-  mapping (address => uint) tokenBalance;
-  mapping (address => string) tagName;
-  mapping (string => address) tagAddressFromName;
-  mapping (address => address[]) achievements;
-  mapping (address => bool) availability;
-  mapping (address => address) users;
+  mapping (address => uint) tokenBalance; //Maps the addresses of users to their token balances
+  mapping (address => string) tagName; //Maps the address of tags to their names
+  mapping (string => address) tagAddressFromName; //Maps the names of tags to their addresses
+  mapping (address => address[]) achievements; //Maps the addresses of users to an array of addresses that contain the addresses of the tags that they have passed an assessment in
+  mapping (address => bool) availability; //Maps the addresses of users to their availability status for whether or not they can currently assess someone
+  mapping (address => address) users; //Maps the addresses of the users to their actual location of the blockchain
 
+  /*
+  @type: event
+  @name: TagCreation
+  @occasion: When a tag is created
+  @purpose: To help build a data store of tags
+  @stores: string _tagName = the name of the tag that was created
+  @stores: address _tagAddress = the address of the tag that was created
+  @stores: address[] _parents = the addresses of the parents of the tag that as created
+  */
   event TagCreation
   ( string _tagName,
     address _tagAddress,
     address[] _parents);
 
+  /*
+  @type: constructer function
+  @purpose: To initialize the master contract and have it make the account tag
+  @param: none
+  @returns: nothing
+  */
   function Master()
   {
-    tokenBalance[address(this)] = 1;
-    address[] memory a;
-    uint useless = addTag("account", a);
+    tokenBalance[address(this)] = 1; //Gives the master contract a temporary tokenBalance so that it may make the tag
+    address[] memory a; //Makes an empty array to serve as the parents of the tag
+    uint useless = addTag("account", a); //creates the account tag and gives the value of its error code to a relatively useless uint
   }
 
+  /*
+  @type: function
+  @purpose: To set a new token balance for a user
+  @param: address user = the address of the user whose token balance is to be mapped
+  @param: uint balance = the new token balance for the user
+  @returns: nothing
+  */
   function mapTokenBalance(address user, uint balance)
   {
-    if(tagAddressFromName[tagName[msg.sender]] == 0)
+    if(tagAddressFromName[tagName[msg.sender]] == 0) //makes sure this function is not called by a tag
     {
-      tokenBalance[user] = balance;
+      tokenBalance[user] = balance; //sets the token balance of the user
     }
   }
+
+  /*
+  @type: function
+  @purpose: To map the name of a tag to its address
+  @param: address tagAddress = the address of the tag being mapped
+  @param: string name = the name of the tag being mapped
+  @return: nothing
+  */
   function mapTagName(address tagAddress, string name)
   {
-    tagName[tagAddress] = name;
+    tagName[tagAddress] = name; //maps the name of the tag to its address
   }
+
+  /*
+  @type: function
+  @purpose: To map the address of a tag to its name
+  @param: string name = the name of the tag being mapped
+  @param: address tagAddress = the address of the tag being mapped
+  @returns: nothing
+  */
   function mapTagAddressFromName(string name, address tagAddress)
   {
-    tagAddressFromName[name] = tagAddress;
+    tagAddressFromName[name] = tagAddress; //maps the address of the tag to its name
   }
+
+  /*
+  @type: function
+  @purpose: To map the address of a user to the address of the tag that the user has just passed
+  @param: address user = the address of the user
+  @param: address acheivment = the address of the tag just passed
+  @returns: nothing
+  */
   function mapAchievement(address user, address achievment)
   {
-    achievements[user].push(achievment);
+    achievements[user].push(achievment); //adds the address of the tag to the end of the array that is mapped to the user
   }
+
+  /*
+  @type: function
+  @purpose: To map the user's availability to assess to the user's address
+  @param: address user = the address of the user
+  @param: bool available = the availa status of the user to assess
+  */
   function mapAvailability(address user, bool available)
   {
-    availability[user] = available;
+    availability[user] = available; //maps the user's availability to assess to them
   }
 
   function getTokenBalance(address user) returns(uint)
