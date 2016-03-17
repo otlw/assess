@@ -5,162 +5,106 @@ TestUI = React.createClass({
   // This mixin makes the getMeteorData method work
   mixins: [ReactMeteorData],
 
-// Loads items from the Tasks collection and puts them on this.data.tasks
+  // Loads items from the Tasks collection and puts them on this.data.tasks
   getMeteorData() {
     return {
-      events: Events.find({}, {sort: {createdAt: -1}}).fetch(),
-      testelements: TestElements.find({}).fetch()
+      tokenBalance: Session.get("Token Balance"),
+      searchedTag: Session.get("Searched Tag"),
+      assessmentAddress: Session.get("Assessment Address")
     }
   },
 
-  renderEvents() {
-    // Get tasks from this.data.tasks
-    return this.data.events.fetch().map((events) => {
-      return <Event key={events._id} eventx={events} />;
-    });
-  },
-
-  renderTestElements() {
-    // Get tasks from this.data.tasks
-    return this.data.testelements.map((testelements) => {
-      return <Event key={testelements._id} eventx={testelements} />;
-    });
-  },
-
-  updateTokenBalance() {
-    //Interpretation layer here
-    //var text = getTokenBalance();
-    var text = "234"
-    TestElements.update({type: "Token Balance"}, {$set: {data: text}});
-    Events.insert({
-      type: "Event",
-      text: "Updated token balance.",
-      createdAt: new Date(),
-    });
-  },
-
-  handleSubmit1(event) {
+  submitName(event) {
     event.preventDefault();
 
     //Interpretation layer here
     //var text = findTag(React.findDOMNode(this.refs.textInput1).value.trim());
-    var text = "13532452363456";
-    TestElements.update({type: "Tag Address"}, {$set: {data: text}});
-    Events.insert({
-      type: "Event",
-      text: "Called for a tag address, look left.",
-      createdAt: new Date(),
-    });
+    var text = '13532452363456';
+    Session.set("Current Tag", text);
     // Clear form
-    React.findDOMNode(this.refs.textInput1).value = "";
+    React.findDOMNode(this.refs.nameInput).value = "";
   },
 
-  handleSubmit2(event) {
+  submitAssessmentRequest(event) {
     event.preventDefault();
 
     //Interpretation layer here
     //sendAssessmentRequest(React.findDOMNode(this.refs.textInput2).value.trim());
-    Events.insert({
-      type: "Event",
-      text: "Started the assement process in a tag.",
-      createdAt: new Date(),
-    });
 
     // Clear form
-    React.findDOMNode(this.refs.textInput2).value = "";
+    React.findDOMNode(this.refs.assessmentAddress).value = "";
   },
 
-  handleSubmit3(event) {
+  submitScore(event) {
     event.preventDefault();
 
     //Interpretation layer here
     //submitScore(React.findDOMNode(this.refs.textInput3).value.trim());
-    Events.insert({
-      type: "Event",
-      text: "Submitted a score.",
-      createdAt: new Date(),
-    });
 
     // Clear form
-    React.findDOMNode(this.refs.textInput3).value = "";
+    React.findDOMNode(this.refs.scoreInput).value = "";
   },
 
-  handleSubmit4(event) {
+  submitTest(event) {
     event.preventDefault();
 
     //Interpretation layer here
     //submitAssessment(React.findDOMNode(this.refs.textInput3).value.trim());
-    Events.insert({
-      type: "Event",
-      text: "Submitted an assessment.",
-      createdAt: new Date(),
-    });
 
     // Clear form
-    React.findDOMNode(this.refs.textInput4).value = "";
+    React.findDOMNode(this.refs.testInput).value = "";
   },
 
-  handleSubmit5(event) {
+  submitAnswer(event) {
     event.preventDefault();
 
     //Interpretation layer here
     //submitAnswer(React.findDOMNode(this.refs.textInput3).value.trim());
-    Events.insert({
-      type: "Event",
-      text: "Sumitted an answer for review.",
-      createdAt: new Date(),
-    });
 
     // Clear form
-    React.findDOMNode(this.refs.textInput5).value = "";
+    React.findDOMNode(this.refs.answerInput).value = "";
   },
 
   render() {
     return (
       <div>
         <div id="test_sidebar">
-          <p>Important info and events.</p>
-          <ul id="test_list_wrapper">
-            {this.renderEvents}
-          </ul>
-          <ul id="test_list_wrapper">
-            {this.renderTestElements}
-          </ul>
-          <p>Events ({Events.find({}).count()})</p>
-          <p>Test Elements ({TestElements.find({}).count()})</p>
+          <p>Token Balance: {this.data.tokenBalance}</p>
+          <p>Assessment Address: {this.data.assessmentAddress}</p>
+          <p>Searched Tag: {this.data.searchedTag}</p>
         </div>
         <div id="test_wrapper">
-          <form className="address_test" onSubmit={this.handleSubmit1} >
+          <form className="address_test" onSubmit={this.submitName} >
             <input
               type="text"
-              ref="textInput1"
+              ref="nameInput"
               placeholder="Find address from string..." />
           </form>
-          <form className="assess_test" onSubmit={this.handleSubmit2} >
+          <form className="assess_test" onSubmit={this.submitAssessmentRequest} >
             <input
               type="text"
-              ref="textInput2"
+              ref="assessmentAddress"
               placeholder="Submit to initiate assessment..." />
           </form>
-          <form className="score_test" onSubmit={this.handleSubmit3} >
+          <form className="score_test" onSubmit={this.submitScore} >
             <input
               type="text"
-              ref="textInput3"
+              ref="scoreInput"
               placeholder="Submit a score..." />
           </form>
-          <form className="sumbit_test" onSubmit={this.handleSubmit4} >
+          <form className="sumbit_test" onSubmit={this.submitTest} >
             <input
               type="text"
-              ref="textInput4"
+              ref="testInput"
               placeholder="Submit a test..." />
           </form>
-          <form className="sumbit_answer" onSubmit={this.handleSubmit5} >
+          <form className="sumbit_answer" onSubmit={this.submitAnswer} >
             <input
               type="text"
-              ref="textInput5"
+              ref="answerInput"
               placeholder="Submit an answer..." />
           </form>
-          <button type="button" onClick={this.updateTokenBalance}>Update Token Balance</button>
+          <button type="button" onClick={Session.set("Token Balance", '546')}>Update Token Balance</button>
         </div>
       </div>
     );
