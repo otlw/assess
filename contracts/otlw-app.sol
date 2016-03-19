@@ -1,16 +1,6 @@
-/*
-@type: contract
-@name: Master
-@purpose: To store data for easy and secure access and to add tags and users to the system
-*/
-contract Master
+contract Creator
 {
-  mapping (address => uint) tokenBalance; //Maps the addresses of users to their token balances
-  mapping (address => string) tagName; //Maps the address of tags to their names
-  mapping (string => address) tagAddressFromName; //Maps the names of tags to their addresses
-  mapping (address => address[]) achievements; //Maps the addresses of users to an array of addresses that contain the addresses of the tags that they have passed an assessment in
-  mapping (address => bool) availability; //Maps the addresses of users to their availability status for whether or not they can currently assess someone
-  mapping (address => address) users; //Maps the addresses of the users to their actual location of the blockchain
+  address masterAddress;
 
   /*
   @type: event
@@ -26,17 +16,81 @@ contract Master
     address _tagAddress,
     address[] _parents);
 
+  function Creator()
+  {
+    Master master = new Master(address(this));
+    masterAddress = address(master);
+  }
+
+  function addUser()
+  {
+    User newUser = new User(msg.sender, masterAddress);
+    Tag(Master(masterAddress).getTagAddressFromName("account")).startAssessment(address(newUser),5, 600);
+  }
+
+  function addTag(string name, address[] parentList) returns(uint) //Creates a new tag contract
+  {
+    uint response = 0;
+    address[] memory parents;
+    if(Master(masterAddress).getTokenBalance(msg.sender) < 1)
+    {
+      response += 1;
+    }
+    if(Master(masterAddress).getTagAddressFromName(name) != 0)
+    {
+      response += 10;
+    }
+    if(response==0)
+    {
+      for(uint i=0; i<= parentList.length; i++) //adds all the given parents
+      {
+        if(parentList[i]==0)
+        {
+          response += 100*(10**i);
+        }
+        else
+        {
+          parents[i] = parentList[i];
+        }
+      }
+      Tag newTag = new Tag(name, parents, masterAddress);
+      address newTagAddress = address(newTag);
+      Master(masterAddress).mapTagName(newTagAddress,name);
+      Master(masterAddress).mapTagAddressFromName(name,newTagAddress);
+      Master(masterAddress).mapTokenBalance(msg.sender,Master(masterAddress).getTokenBalance(msg.sender) - 1);
+      TagCreation(name, newTagAddress, parents);
+    }
+    return response;
+  }
+}
+
+/*
+@type: contract
+@name: Master
+@purpose: To store data for easy and secure access
+*/
+contract Master
+{
+  address creatorAddress;
+  mapping (address => uint) tokenBalance; //Maps the addresses of users to their token balances
+  mapping (address => string) tagName; //Maps the address of tags to their names
+  mapping (string => address) tagAddressFromName; //Maps the names of tags to their addresses
+  mapping (address => address[]) achievements; //Maps the addresses of users to an array of addresses that contain the addresses of the tags that they have passed an assessment in
+  mapping (address => bool) availability; //Maps the addresses of users to their availability status for whether or not they can currently assess someone
+  mapping (address => address) users; //Maps the addresses of the users to their actual location of the blockchain
+
   /*
   @type: constructer function
   @purpose: To initialize the master contract and have it make the account tag
   @param: none
   @returns: nothing
   */
-  function Master()
+  function Master(address creator)
   {
+    creatorAddress = creator;
     tokenBalance[address(this)] = 1; //Gives the master contract a temporary tokenBalance so that it may make the tag
     address[] memory a; //Makes an empty array to serve as the parents of the tag
-    uint useless = addTag("account", a); //creates the account tag and gives the value of its error code to a relatively useless uint
+    uint useless = Creator(creatorAddress).addTag("account", a); //creates the account tag and gives the value of its error code to a relatively useless uint
   }
 
   /*
@@ -124,47 +178,6 @@ contract Master
   function getAvailability(address user) returns(bool)
   {
     return availability[user];
-  }
-
-  function addUser()
-  {
-    User newUser = new User(msg.sender, address(this));
-    Tag(tagAddressFromName["account"]).startAssessment(address(newUser),5, 600);
-  }
-
-  function addTag(string name, address[] parentList) returns(uint) //Creates a new tag contract
-  {
-    uint response = 0;
-    address[] memory parents;
-    if(tokenBalance[msg.sender] < 1)
-    {
-      response += 1;
-    }
-    if(tagAddressFromName[name] != 0)
-    {
-      response += 10;
-    }
-    if(response==0)
-    {
-      for(uint i=0; i<= parentList.length; i++) //adds all the given parents
-      {
-        if(parentList[i]==0)
-        {
-          response += 100*(10**i);
-        }
-        else
-        {
-          parents[i] = parentList[i];
-        }
-      }
-      Tag newTag = new Tag(name, parents, address(this));
-      address newTagAddress = address(newTag);
-      tagName[newTagAddress] = name;
-      tagAddressFromName[name] = newTagAddress;
-      tokenBalance[msg.sender] -= 1;
-      TagCreation(name, newTagAddress, parents);
-    }
-    return response;
   }
 }
 
