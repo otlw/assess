@@ -71,7 +71,7 @@ contract Creator
 */
 contract Master
 {
-  address creatorAddress;
+  address creatorAddress; //The address of the Creator contract
   mapping (address => uint) tokenBalance; //Maps the addresses of users to their token balances
   mapping (address => string) tagName; //Maps the address of tags to their names
   mapping (string => address) tagAddressFromName; //Maps the names of tags to their addresses
@@ -87,7 +87,7 @@ contract Master
   */
   function Master(address creator)
   {
-    creatorAddress = creator;
+    creatorAddress = creator; //Sets the address of the Creator contract
     tokenBalance[address(this)] = 1; //Gives the master contract a temporary tokenBalance so that it may make the tag
     address[] memory a; //Makes an empty array to serve as the parents of the tag
     uint useless = Creator(creatorAddress).addTag("account", a); //creates the account tag and gives the value of its error code to a relatively useless uint
@@ -149,32 +149,74 @@ contract Master
   @purpose: To map the user's availability to assess to the user's address
   @param: address user = the address of the user
   @param: bool available = the availa status of the user to assess
+  @returns: nothing
   */
   function mapAvailability(address user, bool available)
   {
     availability[user] = available;
   }
 
+  /*
+  @type: function
+  @purpose: To get the user's token balance
+  @param: address user = the address of the user
+  @returns: The token balance in the form of a uint
+  */
   function getTokenBalance(address user) returns(uint)
   {
     return tokenBalance[user];
   }
+
+  /*
+  @type: function
+  @purpose: To get the name of a tag from its address
+  @param: address tagAddress = the address of the tag
+  @returns: The name of the tag in the form of a string
+  */
   function getTagName(address tagAddress) returns(string)
   {
     return tagName[tagAddress];
   }
+
+  /*
+  @type: function
+  @purpose: To get the address of a tag from its name
+  @param: string name = the name of the tag
+  @returns: The address of the tag in the form of an address
+  */
   function getTagAddressFromName(string name) returns(address)
   {
     return tagAddressFromName[name];
   }
+
+  /*
+  @type: function
+  @purpose: To get the addresses of the tags that the user has achieved
+  @param: address user = the address of the user
+  @returns: The addresses of the tags that the user has achieved in the form of an array of addresses
+  */
   function getAchievement(address user) returns(address[])
   {
     return achievements[user];
   }
+
+  /*
+  @type: function
+  @purpose: To get the number of achievments of a user
+  @param: address user = the address of the user
+  @returns: The number of achievments of a user in the form of a uint
+  */
   function getNumberOfachievments(address user) returns(uint)
   {
     return achievements[user].length;
   }
+
+  /*
+  @type: function
+  @purpose: To get the availab of a user to assess
+  @param: address user = the address of the user
+  @returns: The availability of a user to assess in the form of a bool
+  */
   function getAvailability(address user) returns(bool)
   {
     return availability[user];
