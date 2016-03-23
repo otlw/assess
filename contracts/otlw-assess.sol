@@ -93,6 +93,11 @@ contract Master
     uint useless = Creator(creatorAddress).addTag("account", a); //creates the account tag and gives the value of its error code to a relatively useless uint
   }
 
+  function return4() returns uint
+  {
+      return 4;
+  }
+
   /*
   @type: function
   @purpose: To set a new token balance for a user
