@@ -71,6 +71,7 @@ contract Creator
 */
 contract Master
 {
+  event Four(uint _four);
   address creatorAddress; //The address of the Creator contract
   mapping (address => uint) tokenBalance; //Maps the addresses of users to their token balances
   mapping (address => string) tagName; //Maps the address of tags to their names
@@ -95,6 +96,7 @@ contract Master
 
   function return4() returns uint
   {
+      Four(4);
       return 4;
   }
 
