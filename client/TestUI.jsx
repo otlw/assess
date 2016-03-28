@@ -99,7 +99,7 @@ TestUI = React.createClass({
               ref="answerInput"
               placeholder="Submit an answer..." />
           </form>
-          <button type="button" onClick={}>Update Token Balance</button>
+          <button type="button">Update Token Balance</button>
         </div>
       </div>
     );
