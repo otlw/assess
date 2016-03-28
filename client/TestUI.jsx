@@ -8,9 +8,6 @@ TestUI = React.createClass({
   // Loads items from the Tasks collection and puts them on this.data.tasks
   getMeteorData() {
     return {
-      tokenBalance: Session.get("Token Balance"),
-      searchedTag: Session.get("Searched Tag"),
-      assessmentAddress: Session.get("Assessment Address")
     }
   },
 
@@ -20,7 +17,7 @@ TestUI = React.createClass({
     //Interpretation layer here
     //var text = findTag(React.findDOMNode(this.refs.textInput1).value.trim());
     var text = '13532452363456';
-    Session.set("Current Tag", text);
+    //Session.set("Current Tag", text);
     // Clear form
     React.findDOMNode(this.refs.nameInput).value = "";
   },
@@ -69,9 +66,7 @@ TestUI = React.createClass({
     return (
       <div>
         <div id="test_sidebar">
-          <p>Token Balance: {this.data.tokenBalance}</p>
-          <p>Assessment Address: {this.data.assessmentAddress}</p>
-          <p>Searched Tag: {this.data.searchedTag}</p>
+          <p>Return 4: {Master.return4()}</p>
         </div>
         <div id="test_wrapper">
           <form className="address_test" onSubmit={this.submitName} >
@@ -104,7 +99,7 @@ TestUI = React.createClass({
               ref="answerInput"
               placeholder="Submit an answer..." />
           </form>
-          <button type="button" onClick={Session.set("Token Balance", '546')}>Update Token Balance</button>
+          <button type="button" onClick={}>Update Token Balance</button>
         </div>
       </div>
     );
