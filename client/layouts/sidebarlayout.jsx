@@ -22,7 +22,7 @@ SidebarLayout = React.createClass({
     return (
       <div>
         <p id="sidebar_header">OTLW</p>
-        <p id="sidebar_header">{/*Master.return4()*/}</p>
+        <p id="sidebar_header">{Master.return4().toNumber()}</p>
         <ul id="sidebar_list">
           {this.renderLinks()}
         </ul>

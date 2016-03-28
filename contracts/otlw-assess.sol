@@ -28,7 +28,7 @@ contract Creator
     Tag(Master(masterAddress).getTagAddressFromName("account")).startAssessment(address(newUser),5, 600);
   }
 
-  function addTag(string name, address[] parentList) returns(uint) //Creates a new tag contract
+  function addTag(string name, address[] parentList) constant returns(uint) //Creates a new tag contract
   {
     uint response = 0;
     address[] memory parents;
@@ -99,7 +99,7 @@ contract Master
     uint useless = Creator(creatorAddress).addTag("account", a); //creates the account tag and gives the value of its error code to a relatively useless uint
   }
 
-  function return4() returns(uint)
+  function return4() constant returns(uint)
   {
       Four(4);
       return 4;
@@ -174,7 +174,7 @@ contract Master
   @param: address user = the address of the user
   @returns: The token balance in the form of a uint
   */
-  function getTokenBalance(address user) returns(uint)
+  function getTokenBalance(address user) constant returns(uint)
   {
     return tokenBalance[user];
   }
@@ -185,7 +185,7 @@ contract Master
   @param: address tagAddress = the address of the tag
   @returns: The name of the tag in the form of a string
   */
-  function getTagName(address tagAddress) returns(string)
+  function getTagName(address tagAddress) constant returns(string)
   {
     return tagName[tagAddress];
   }
@@ -196,7 +196,7 @@ contract Master
   @param: string name = the name of the tag
   @returns: The address of the tag in the form of an address
   */
-  function getTagAddressFromName(string name) returns(address)
+  function getTagAddressFromName(string name) constant returns(address)
   {
     return tagAddressFromName[name];
   }
@@ -207,7 +207,7 @@ contract Master
   @param: address user = the address of the user
   @returns: The addresses of the tags that the user has achieved in the form of an array of addresses
   */
-  function getAchievement(address user) returns(address[])
+  function getAchievement(address user) constant returns(address[])
   {
     return achievements[user];
   }
@@ -218,7 +218,7 @@ contract Master
   @param: address user = the address of the user
   @returns: The number of achievments of a user in the form of a uint
   */
-  function getNumberOfachievments(address user) returns(uint)
+  function getNumberOfachievments(address user) constant returns(uint)
   {
     return achievements[user].length;
   }
@@ -229,7 +229,7 @@ contract Master
   @param: address user = the address of the user
   @returns: The availability of a user to assess in the form of a bool
   */
-  function getAvailability(address user) returns(bool)
+  function getAvailability(address user) constant returns(bool)
   {
     return availability[user];
   }
@@ -262,32 +262,32 @@ contract Tag
     master = masterAddress;
   }
 
-  function getOwners() returns(address[])
+  function getOwners() constant returns(address[])
   {
     return owners;
   }
 
-  function getOwnerLength() returns(uint)
+  function getOwnerLength() constant returns(uint)
   {
     return owners.length;
   }
 
-  function getOwner(uint index) returns(address)
+  function getOwner(uint index) constant returns(address)
   {
     return owners[index];
   }
 
-  function getParents() returns(address[])
+  function getParents() constant returns(address[])
   {
     return parentTags;
   }
 
-  function getParentsLength() returns(uint)
+  function getParentsLength() constant returns(uint)
   {
     return parentTags.length;
   }
 
-  function getParent(uint index) returns(address)
+  function getParent(uint index) constant returns(address)
   {
       return parentTags[index];
   }
@@ -342,7 +342,7 @@ contract Tag
     assessmentHistory[assessee].push(assessment);
     CompletedAssessment(assessee, pass, score, assessment);
   }
-  function getRandom(uint i) returns(uint)
+  function getRandom(uint i) constant returns(uint)
   {
     return 12;
   }
@@ -387,12 +387,12 @@ contract Assessment
     taskCreationTime = timeForTaskCreation;
   }
 
-  function getTaskCreationTime() returns(uint)
+  function getTaskCreationTime() constant returns(uint)
   {
       return taskCreationTime;
   }
 
-  function getTaskCompletionTime() returns(uint)
+  function getTaskCompletionTime() constant returns(uint)
   {
       return taskCompletionTime;
   }
@@ -402,7 +402,7 @@ contract Assessment
     numberOfAssessors = number;
   }
 
-  function getNumberOfAssessors() returns(uint)
+  function getNumberOfAssessors() constant returns(uint)
   {
     return numberOfAssessors;
   }
@@ -412,7 +412,7 @@ contract Assessment
     poolSizeRemaining = sizeRemaining;
   }
 
-  function getAssessmentPoolSize() returns(uint)
+  function getAssessmentPoolSize() constant returns(uint)
   {
     return poolSizeRemaining;
   }
@@ -439,12 +439,12 @@ contract Assessment
     referenceTime = now;
   }
 
-  function getAssessorPoolLength() returns(uint)
+  function getAssessorPoolLength() constant returns(uint)
   {
       return assessorPool.length;
   }
 
-  function getRandom(uint i) returns(uint)
+  function getRandom(uint i) constant returns(uint)
   {
     return 12;
   }
@@ -484,7 +484,7 @@ contract Assessment
     suicide(master);
   }
 
-  function getTask(address assessorAddress) returns(string)
+  function getTask(address assessorAddress) constant returns(string)
   {
     return assessmentTasks[assessorAddress];
   }
@@ -507,7 +507,7 @@ contract Assessment
     }
   }
 
-  function getResponse(address assesseeAddress) returns(string)
+  function getResponse(address assesseeAddress) constant returns(string)
   {
     return assessmentResponses[assesseeAddress];
   }
@@ -544,7 +544,7 @@ contract Assessment
     }
   }
 
-  function calculateMAD(int[] scores, int n) returns(int)
+  function calculateMAD(int[] scores, int n) constant returns(int)
   {
     int meanScore;
     int totalRelativeDistance;
@@ -712,7 +712,7 @@ contract User
     reputation = 1;
   }
 
-  function getReputation() returns(uint)
+  function getReputation() constant returns(uint)
   {
     return reputation;
   }
@@ -732,7 +732,7 @@ contract User
     userData = hash;
   }
 
-  function getUserData() returns(string)
+  function getUserData() constant returns(string)
   {
     return userData;
   }
