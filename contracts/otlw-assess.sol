@@ -1,6 +1,6 @@
 contract Creator
 {
-  address masterAddress;
+  address public masterAddress;
 
   /*
   @type: event
@@ -62,6 +62,11 @@ contract Creator
     }
     return response;
   }
+
+  function remove(address reciever)
+  {
+    suicide(reciever);
+  }
 }
 
 /*
@@ -72,13 +77,13 @@ contract Creator
 contract Master
 {
   event Four(uint _four);
-  address creatorAddress; //The address of the Creator contract
-  mapping (address => uint) tokenBalance; //Maps the addresses of users to their token balances
-  mapping (address => string) tagName; //Maps the address of tags to their names
+  address public creatorAddress; //The address of the Creator contract
+  mapping (address => uint) public tokenBalance; //Maps the addresses of users to their token balances
+  mapping (address => string) public tagName; //Maps the address of tags to their names
   mapping (string => address) tagAddressFromName; //Maps the names of tags to their addresses
-  mapping (address => address[]) achievements; //Maps the addresses of users to an array of addresses that contain the addresses of the tags that they have passed an assessment in
-  mapping (address => bool) availability; //Maps the addresses of users to their availability status for whether or not they can currently assess someone
-  mapping (address => address) users; //Maps the addresses of the users to their actual location of the blockchain
+  mapping (address => address[]) public achievements; //Maps the addresses of users to an array of addresses that contain the addresses of the tags that they have passed an assessment in
+  mapping (address => bool) public availability; //Maps the addresses of users to their availability status for whether or not they can currently assess someone
+  mapping (address => address) public users; //Maps the addresses of the users to their actual location of the blockchain
 
   /*
   @type: constructer function
@@ -94,7 +99,7 @@ contract Master
     uint useless = Creator(creatorAddress).addTag("account", a); //creates the account tag and gives the value of its error code to a relatively useless uint
   }
 
-  function return4() returns uint
+  function return4() returns(uint)
   {
       Four(4);
       return 4;
@@ -228,15 +233,19 @@ contract Master
   {
     return availability[user];
   }
+
+  function remove(address reciever)
+  {
+    suicide(reciever);
+  }
 }
 
 //Defines the meta-contract for a Tag
 contract Tag
 {
-  address[] parentTags;
-  address master;
-  string name;
-  string description;
+  address[] public parentTags;
+  address public master;
+  string public name;
   address[] owners; //Those who have earned the tag
   mapping(address => address[]) assessmentHistory; //All assessments completed
   mapping(address => int) scores; //All assessements scores
@@ -251,11 +260,6 @@ contract Tag
     name = tagName;
     parentTags = parents;
     master = masterAddress;
-  }
-
-  function getDescription() returns(string)
-  {
-    return description;
   }
 
   function getOwners() returns(address[])
@@ -333,7 +337,7 @@ contract Tag
     }
     if(pass == false && address(this) == Master(master).getTagAddressFromName("account"))
     {
-      User(assessee).remove();
+      User(assessee).remove(master);
     }
     assessmentHistory[assessee].push(assessment);
     CompletedAssessment(assessee, pass, score, assessment);
@@ -341,6 +345,11 @@ contract Tag
   function getRandom(uint i) returns(uint)
   {
     return 12;
+  }
+
+  function remove(address reciever)
+  {
+    suicide(reciever);
   }
 }
 
@@ -674,13 +683,18 @@ contract Assessment
       }
     }
   }
+
+  function remove(address reciever)
+  {
+    suicide(reciever);
+  }
 }
 
 contract User
 {
   address user;
-  address master;
-  address[] acheivements;
+  address public master;
+  address[] public acheivements;
   string userData;
   uint reputation;
 
@@ -723,8 +737,8 @@ contract User
     return userData;
   }
 
-  function remove()
+  function remove(address reciever)
   {
-    suicide(master);
+    suicide(reciever);
   }
 }
