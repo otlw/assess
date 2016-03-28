@@ -11,7 +11,7 @@ SidebarLayout = React.createClass({
 
   //Actively render the current sidebar tab
   renderLinks() {
-    return ["ACTIVITY", "MARKED", "COMPLETED", "PROFILE", "SETTINGS", "TESTUI"].map((name) => {
+    return ["ACTIVITY", "MARKED", "COMPLETED", "PROFILE", "SETTINGS"].map((name) => {
       if(this.props.currentPage == name)
         return <li id="sidebar_item_current">{name}</li>;
       return <li id="sidebar_item"><a href={"/" + name}><span>{name}</span></a></li>;
@@ -22,7 +22,7 @@ SidebarLayout = React.createClass({
     return (
       <div>
         <p id="sidebar_header">OTLW</p>
-        <p id="sidebar_header"></p>
+        <p id="sidebar_header">{/*Master.return4()*/}</p>
         <ul id="sidebar_list">
           {this.renderLinks()}
         </ul>

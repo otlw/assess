@@ -45,13 +45,6 @@ FlowRouter.route('/SETTINGS', {
   }
 });
 
-//Settings
-FlowRouter.route('/TESTUI', {
-  action: function() {
-    ReactLayout.render(MainLayout, { fixedheaderelement: <FixedHeaderElementLayout backgroundcolor={"ffffff"} />, header: <a href="/SEARCH/:SETTINGS"><span>Search</span></a>, sidebar: <SidebarLayout currentPage={"SETTINGS"} />,  main: <TestUI />});
-  }
-});
-
 //Search Page
 FlowRouter.route('/SEARCH/:link', {
   action: function(params) {
