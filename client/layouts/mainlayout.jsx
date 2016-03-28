@@ -6,7 +6,7 @@ MainLayout = React.createClass({
   render() {
     return (
       <div id="wrapper">
-        <div id="fixed_header_element"><FixedHeaderElementLayout /></div>
+        <div id="fixed_header_element">{this.props.fixedheaderelement}</div>
         <div id="absolute_sidebar">{this.props.sidebar}</div>
         <div id="content_wrapper">
           <div id="header">{this.props.header}</div>
