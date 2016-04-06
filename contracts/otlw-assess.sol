@@ -1,6 +1,6 @@
 contract Creator
 {
-  address public masterAddress;
+  address masterAddress;
 
   /*
   @type: event
@@ -42,7 +42,7 @@ contract Creator
     }
     if(response==0)
     {
-      for(uint i=0; i<= parentList.length; i++) //adds all the given parents
+      for(uint i=0; i <= parentList.length; i++) //adds all the given parents
       {
         if(parentList[i]==0)
         {
@@ -58,6 +58,10 @@ contract Creator
       Master(masterAddress).mapTagName(newTagAddress,name);
       Master(masterAddress).mapTagAddressFromName(name,newTagAddress);
       Master(masterAddress).mapTokenBalance(msg.sender,Master(masterAddress).getTokenBalance(msg.sender) - 1);
+      for(uint j=0; j <= parents.length; j++)
+      {
+        Tag(parents[j]).addChild(newTagAddress);
+      }
       TagCreation(name, newTagAddress, parents);
     }
     return response;
@@ -77,13 +81,13 @@ contract Creator
 contract Master
 {
   event Four(uint _four);
-  address public creatorAddress; //The address of the Creator contract
-  mapping (address => uint) public tokenBalance; //Maps the addresses of users to their token balances
-  mapping (address => string) public tagName; //Maps the address of tags to their names
+  address creatorAddress; //The address of the Creator contract
+  mapping (address => uint)  tokenBalance; //Maps the addresses of users to their token balances
+  mapping (address => string)  tagName; //Maps the address of tags to their names
   mapping (string => address) tagAddressFromName; //Maps the names of tags to their addresses
-  mapping (address => address[]) public achievements; //Maps the addresses of users to an array of addresses that contain the addresses of the tags that they have passed an assessment in
-  mapping (address => bool) public availability; //Maps the addresses of users to their availability status for whether or not they can currently assess someone
-  mapping (address => address) public users; //Maps the addresses of the users to their actual location of the blockchain
+  mapping (address => address[])  achievements; //Maps the addresses of users to an array of addresses that contain the addresses of the tags that they have passed an assessment in
+  mapping (address => bool)  availability; //Maps the addresses of users to their availability status for whether or not they can currently assess someone
+  mapping (address => address)  users; //Maps the addresses of the users to their actual location of the blockchain
 
   /*
   @type: constructer function
@@ -243,9 +247,10 @@ contract Master
 //Defines the meta-contract for a Tag
 contract Tag
 {
-  address[] public parentTags;
-  address public master;
-  string public name;
+  address[] parentTags;
+  address[] childTags;
+  address master;
+  string name;
   address[] owners; //Those who have earned the tag
   mapping(address => address[]) assessmentHistory; //All assessments completed
   mapping(address => int) scores; //All assessements scores
@@ -292,6 +297,31 @@ contract Tag
       return parentTags[index];
   }
 
+  function addParent(address parentAddress)
+  {
+      parentTags.push(parentAddress);
+  }
+
+  function getChildren() constant returns(address[])
+  {
+    return childTags;
+  }
+
+  function getChildrenLength() constant returns(uint)
+  {
+    return childTags.length;
+  }
+
+  function getChild(uint index) constant returns(address)
+  {
+      return childTags[index];
+  }
+
+  function addChild(address childAddress)
+  {
+      childTags.push(childAddress);
+  }
+
   function setAssessorPool(address tagAddress, address assessment)
   {
     for(uint i = 0; i < Tag(tagAddress).getOwnerLength() && Assessment(assessment).getAssessmentPoolSize() != 0; i++)
@@ -310,6 +340,11 @@ contract Tag
         for(uint j = 0; j < Tag(tagAddress).getParentsLength(); j++)
         {
           setAssessorPool(Tag(tagAddress).getParent(j), assessment);
+        }
+
+        for(uint k = 0; k < Tag(tagAddress).getChildrenLength(); k++)
+        {
+          setAssessorPool(Tag(tagAddress).getChild(k), assessment);
         }
       }
       if(Assessment(assessment).getAssessmentPoolSize() <= 0)
@@ -693,8 +728,8 @@ contract Assessment
 contract User
 {
   address user;
-  address public master;
-  address[] public acheivements;
+  address master;
+  address[]  acheivements;
   string userData;
   uint reputation;
 
