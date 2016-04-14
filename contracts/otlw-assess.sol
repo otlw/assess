@@ -22,10 +22,11 @@ contract Creator
     masterAddress = address(master);
   }
 
-  function addUser()
+  function addUser(address userAddress) constant returns(address)
   {
-    User newUser = new User(msg.sender, masterAddress);
+    User newUser = new User(userAddress, masterAddress);
     Tag(Master(masterAddress).getTagAddressFromName("account")).startAssessment(address(newUser),5, 600);
+    return address(newUser);
   }
 
   function addTag(string name, address[] parentList) constant returns(uint) //Creates a new tag contract
@@ -575,7 +576,7 @@ contract Assessment
     }
     if(finalAssessors.length < numberOfAssessors)
     {
-      setPotentialAssessor;
+      setPotentialAssessor();
     }
   }
 
@@ -645,7 +646,7 @@ contract Assessment
     {
       finalResult = false;
     }
-    payout();
+    payout(clusters[largestClusterIndex].length);
   }
 
   function confirmAssessor(uint confirm, bool timeKnow)
@@ -695,7 +696,7 @@ contract Assessment
     Tag(tag).finishAssessment(finalResult, finalScore, assessee, address(this));
   }
 
-  function payout()
+  function payout(uint largestSize)
   {
     for(uint i = 0; i < finalAssessors.length; i++)
     {
@@ -706,14 +707,15 @@ contract Assessment
         scoreDistance *= -1;
       }
       uint distance = uint(scoreDistance);
+      uint payoutValue = uint((500/(100 - scoreDistance))) * (finalAssessors.length/largestSize);
       if(inRewardCluster[score] == true)
       {
-        Master(master).mapTokenBalance(finalAssessors[i], Master(master).getTokenBalance(finalAssessors[i]) + uint((500/(100 - scoreDistance))));
+        Master(master).mapTokenBalance(finalAssessors[i], Master(master).getTokenBalance(finalAssessors[i]) + payoutValue);
         User(finalAssessors[i]).notification("You Have Received Payment For Your Assessment", tag, 15);
       }
       if(inRewardCluster[score] == true)
       {
-        Master(master).mapTokenBalance(finalAssessors[i], Master(master).getTokenBalance(finalAssessors[i]) - uint((500/(100 - scoreDistance))));
+        Master(master).mapTokenBalance(finalAssessors[i], Master(master).getTokenBalance(finalAssessors[i]) - payoutValue);
         User(finalAssessors[i]).notification("You Have Received A Fine For Your Assessment", tag, 16);
       }
     }
