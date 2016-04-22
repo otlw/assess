@@ -1,6 +1,6 @@
 contract Creator
 {
-  address masterAddress;
+  address[] masterList;
 
   /*
   @type: event
@@ -18,18 +18,24 @@ contract Creator
 
   function Creator()
   {
-    Master master = new Master(address(this));
-    masterAddress = address(master);
+
   }
 
-  function addUser(address userAddress) constant returns(address)
+  function addMaster() constant returns(address)
+  {
+    Master newMaster = new Master(address(this));
+    masterList.push(address(newMaster));
+    return address(newMaster);
+  }
+
+  function addUser(address userAddress, address masterAddress) constant returns(address)
   {
     User newUser = new User(userAddress, masterAddress);
     Tag(Master(masterAddress).getTagAddressFromName("account")).startAssessment(address(newUser),5, 600);
     return address(newUser);
   }
 
-  function addTag(string name, address[] parentList) constant returns(uint) //Creates a new tag contract
+  function addTag(string name, address[] parentList, address masterAddress) constant returns(uint) //Creates a new tag contract
   {
     uint response = 0;
     address[] memory parents;
@@ -101,7 +107,7 @@ contract Master
     creatorAddress = creator; //Sets the address of the Creator contract
     tokenBalance[address(this)] = 1; //Gives the master contract a temporary tokenBalance so that it may make the tag
     address[] memory a; //Makes an empty array to serve as the parents of the tag
-    uint useless = Creator(creatorAddress).addTag("account", a); //creates the account tag and gives the value of its error code to a relatively useless uint
+    uint useless = Creator(creatorAddress).addTag("account", a, address(this)); //creates the account tag and gives the value of its error code to a relatively useless uint
   }
 
   function return4() constant returns(uint)
