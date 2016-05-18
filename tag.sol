@@ -3,6 +3,7 @@ import "master.sol";
 import "creator.sol";
 import "assessment.sol";
 import "user.sol";
+import "tagMaker.sol";
 
 //Defines the meta-contract for a Tag
 contract Tag
@@ -82,7 +83,7 @@ contract Tag
       childTags.push(childAddress);
   }
 
-  function setAssessorPool(address tagAddress, address assessment)
+  function setAssessorPool(address tagAddress, address assessment, uint size)
   {
     for(uint i = 0; i < Tag(tagAddress).getOwnerLength() && Assessment(assessment).getAssessmentPoolSize() != 0; i++)
     {
@@ -99,27 +100,27 @@ contract Tag
       {
         for(uint j = 0; j < Tag(tagAddress).getParentsLength(); j++)
         {
-          setAssessorPool(Tag(tagAddress).getParent(j), assessment);
+          setAssessorPool(Tag(tagAddress).getParent(j), assessment, size);
         }
 
         for(uint k = 0; k < Tag(tagAddress).getChildrenLength(); k++)
         {
-          setAssessorPool(Tag(tagAddress).getChild(k), assessment);
+          setAssessorPool(Tag(tagAddress).getChild(k), assessment, size);
         }
       }
       if(Assessment(assessment).getAssessmentPoolSize() <= 0)
       {
-        Assessment(assessment).setPotentialAssessor();
+        Assessment(assessment).setPotentialAssessor(size);
       }
     }
   }
 
-  function startAssessment(address assessee, uint size, uint timeForSettingTask)
+  function startAssessment(address assessee, uint size)
   {
-    Assessment newAssessment = new Assessment(assessee, address(this), master, timeForSettingTask);
+    Assessment newAssessment = new Assessment(assessee, address(this), master);
     newAssessment.setNumberOfAssessors(size);
     newAssessment.setAssessmentPoolSize(size*20);
-    setAssessorPool(address(this), address(newAssessment));
+    setAssessorPool(address(this), address(newAssessment),size);
   }
 
   function finishAssessment(bool pass, int score, address assessee, address assessment)

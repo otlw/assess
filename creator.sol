@@ -3,6 +3,7 @@ import "master.sol";
 import "tag.sol";
 import "assessment.sol";
 import "user.sol";
+import "tagMaker.sol";
 
 contract Creator
 {
@@ -22,9 +23,10 @@ contract Creator
     address _tagAddress,
     address[] _parents);
 
-  function Creator()
+  address tagMakerAddress;
+  function Creator(address theTagMaker)
   {
-
+    tagMakerAddress = theTagMaker;
   }
 
   function addMaster() constant returns(address)
@@ -37,46 +39,13 @@ contract Creator
   function addUser(address userAddress, address masterAddress) constant returns(address)
   {
     User newUser = new User(userAddress, masterAddress);
-    Tag(Master(masterAddress).getTagAddressFromName("account")).startAssessment(address(newUser),5, 600);
+    Tag(Master(masterAddress).getTagAddressFromName("account")).startAssessment(address(newUser),5);
     return address(newUser);
   }
 
   function addTag(string name, address[] parentList, address masterAddress) constant returns(uint) //Creates a new tag contract
   {
-    uint response = 0;
-    address[] memory parents;
-    if(Master(masterAddress).getTokenBalance(msg.sender) < 1)
-    {
-      response += 1;
-    }
-    if(Master(masterAddress).getTagAddressFromName(name) != 0)
-    {
-      response += 10;
-    }
-    if(response==0)
-    {
-      for(uint i=0; i <= parentList.length; i++) //adds all the given parents
-      {
-        if(parentList[i]==0)
-        {
-          response += 100*(10**i);
-        }
-        else
-        {
-          parents[i] = parentList[i];
-        }
-      }
-      Tag newTag = new Tag(name, parents, masterAddress);
-      address newTagAddress = address(newTag);
-      Master(masterAddress).mapTagName(newTagAddress,name);
-      Master(masterAddress).mapTagAddressFromName(name,newTagAddress);
-      Master(masterAddress).mapTokenBalance(msg.sender,Master(masterAddress).getTokenBalance(msg.sender) - 1);
-      for(uint j=0; j <= parents.length; j++)
-      {
-        Tag(parents[j]).addChild(newTagAddress);
-      }
-      TagCreation(name, newTagAddress, parents);
-    }
+    uint response = TagMaker(tagMakerAddress).makeTag(name,parentList,masterAddress);
     return response;
   }
 

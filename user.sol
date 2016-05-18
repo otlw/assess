@@ -3,6 +3,7 @@ import "master.sol";
 import "tag.sol";
 import "assessment.sol";
 import "creator.sol";
+import "tagMaker.sol";
 
 contract User
 {

@@ -169,6 +169,13 @@ contract Master
     return availability[user];
   }
 
+  function mapTagStuff(address tagAddress, string tagName, address maker)
+  {
+    mapTagName(tagAddress,tagName);
+    mapTagAddressFromName(tagName,tagAddress);
+    mapTokenBalance(maker,getTokenBalance(maker) - 1);
+  }
+
   function remove(address reciever)
   {
     suicide(reciever);
