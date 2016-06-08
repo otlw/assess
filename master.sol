@@ -3,6 +3,7 @@ import "creator.sol";
 import "tag.sol";
 import "assessment.sol";
 import "user.sol";
+import "tagMaker.sol"
 
 /*
 @type: contract
@@ -11,7 +12,6 @@ import "user.sol";
 */
 contract Master
 {
-  event Four(uint _four);
   address creatorAddress; //The address of the Creator contract
   mapping (address => uint)  tokenBalance; //Maps the addresses of users to their token balances
   mapping (address => string)  tagName; //Maps the address of tags to their names
@@ -21,7 +21,7 @@ contract Master
   mapping (address => address)  users; //Maps the addresses of the users to their actual location of the blockchain
 
   /*
-  @type: constructer function
+  @type: constructor function
   @purpose: To initialize the master contract and have it make the account tag
   @param: none
   @returns: nothing

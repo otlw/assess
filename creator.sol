@@ -8,22 +8,16 @@ import "tagMaker.sol";
 contract Creator
 {
   address[] masterList;
-
-  /*
-  @type: event
-  @name: TagCreation
-  @occasion: When a tag is created
-  @purpose: To help build a data store of tags
-  @stores: string _tagName = the name of the tag that was created
-  @stores: address _tagAddress = the address of the tag that was created
-  @stores: address[] _parents = the addresses of the parents of the tag that as created
-  */
-  event TagCreation
-  ( string _tagName,
-    address _tagAddress,
-    address[] _parents);
-
   address tagMakerAddress;
+
+  event MasterCreation(address _masterAddress);
+  event UserCreation(address _userAddress);
+  /*
+  @type: constructor function
+  @purpose: To initialize the master contract and have it make the account tag
+  @param: none
+  @returns: nothing
+  */
   function Creator(address theTagMaker)
   {
     tagMakerAddress = theTagMaker;
@@ -33,6 +27,7 @@ contract Creator
   {
     Master newMaster = new Master(address(this));
     masterList.push(address(newMaster));
+    MasterCreation(address(newMaster));
     return address(newMaster);
   }
 
@@ -40,6 +35,7 @@ contract Creator
   {
     User newUser = new User(userAddress, masterAddress);
     Tag(Master(masterAddress).getTagAddressFromName("account")).startAssessment(address(newUser),5);
+    UserCreation(address newUser);
     return address(newUser);
   }
 
