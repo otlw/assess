@@ -9,19 +9,19 @@ import "creator.sol";
 contract TagMaker
 {
 
-    /*
+  /*
   @type: event
   @name: TagCreation
   @occasion: When a tag is created
   @purpose: To help build a data store of tags
-  @stores: string _tagName = the name of the tag that was created
-  @stores: address _tagAddress = the address of the tag that was created
-  @stores: address[] _parents = the addresses of the parents of the tag that as created
+  @stores: string _tagName
+  @stores: address _tagAddress
+  @stores: address[] _parents
   */
   event TagCreation
-  ( string _tagName,
-    address _tagAddress,
-    address[] _parents);
+  ( string _tagName, //the name of the tag that was created
+    address _tagAddress, //the address of the tag that was created
+    address[] _parents); //the addresses of the parents of the tag that as created
 
   function TagMaker()
   {

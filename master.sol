@@ -23,7 +23,7 @@ contract Master
   /*
   @type: constructor function
   @purpose: To initialize the master contract and have it make the account tag
-  @param: none
+  @param: address creator = the address of the creator contract
   @returns: nothing
   */
   function Master(address creator)
@@ -32,12 +32,6 @@ contract Master
     tokenBalance[address(this)] = 1; //Gives the master contract a temporary tokenBalance so that it may make the tag
     address[] memory a; //Makes an empty array to serve as the parents of the tag
     uint useless = Creator(creatorAddress).addTag("account", a, address(this)); //creates the account tag and gives the value of its error code to a relatively useless uint
-  }
-
-  function return4() constant returns(uint)
-  {
-      Four(4);
-      return 4;
   }
 
   /*
@@ -160,7 +154,7 @@ contract Master
 
   /*
   @type: function
-  @purpose: To get the availab of a user to assess
+  @purpose: To get the availability of a user to assess
   @param: address user = the address of the user
   @returns: The availability of a user to assess in the form of a bool
   */
@@ -169,13 +163,26 @@ contract Master
     return availability[user];
   }
 
+  /*
+  @type: function
+  @purpose: To map the values associated with a tag
+  @param: address tagAddress = the address of the tag being mapped
+  @param: string tagName = the name of the tag being mapped
+  @param: address maker = the name of the person who created the tag
+  @returns: none
+  */
   function mapTagStuff(address tagAddress, string tagName, address maker)
   {
-    mapTagName(tagAddress,tagName);
-    mapTagAddressFromName(tagName,tagAddress);
-    mapTokenBalance(maker,getTokenBalance(maker) - 1);
+    mapTagName(tagAddress,tagName); //Maps the tag name to the tag address
+    mapTagAddressFromName(tagName,tagAddress); //Maps the tag address the the tag name
+    mapTokenBalance(maker,getTokenBalance(maker) - 1); //Removes the cost of making a tag from the
   }
 
+  /*
+  @type: function
+  @purpose: to remove this contract
+  @param: address receiver = the address of the wallet that will receive of the ether
+  */
   function remove(address reciever)
   {
     suicide(reciever);
