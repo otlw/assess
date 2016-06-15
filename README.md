@@ -1,6 +1,8 @@
 About
 ========
 
+[![Join the chat at https://gitter.im/otlw/otlw-assess](https://badges.gitter.im/otlw/otlw-assess.svg)](https://gitter.im/otlw/otlw-assess?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 An Ethereum based solution for peer assessment based on a participatory token economy. You get tokens through assessment, you pay them to get assessed. This system is an abstracted assessment framework capable of assessing anything that can be defined through a hierarchical ontology. 
 
 Installation
