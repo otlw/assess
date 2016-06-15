@@ -1,9 +1,8 @@
 import "lib/random.sol";
-import "master.sol";
+import "userMaster.sol";
 import "tag.sol";
 import "assessment.sol";
-import "creator.sol";
-import "tagMaker.sol";
+import "tagMaster.sol";
 
 contract User
 {

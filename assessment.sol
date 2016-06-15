@@ -1,7 +1,6 @@
 import "lib/random.sol";
-import "master.sol";
+import "userMaster.sol";
 import "tag.sol";
-import "creator.sol";
 import "user.sol";
 import "tagMaker.sol";
 
@@ -13,7 +12,8 @@ contract Assessment
   mapping (address => uint) assessors;
   address[] finalAssessors;
   address tag;
-  address master;
+  address userMaster;
+  address tagMaster;
   uint poolSizeRemaining;
   uint numberOfAssessors;
   mapping(address => string) assessmentTasks; //Given by the assessors as IPFS hashes
@@ -30,11 +30,12 @@ contract Assessment
   uint doneAssessors;
   uint resultsSet;
 
-  function Assessment(address assesseeAddress, address tagAddress, address masterAddress)
+  function Assessment(address assesseeAddress, address tagAddress, address userMasterAddress, address tagMasterAddress)
   {
     assessee = assesseeAddress;
     tag = tagAddress;
-    master = masterAddress;
+    userMaster = userMasterAddress;
+    tagMaster = tagMasterAddress;
     referenceTime = block.timestamp;
   }
 
@@ -153,7 +154,7 @@ contract Assessment
     {
       User(finalAssessors[i]).notification("Assessment Cancled", tag, 8);
     }
-    suicide(master);
+    suicide(tagMaster);
   }
 
   function doneAssessing()
@@ -274,12 +275,12 @@ contract Assessment
       uint payoutValue = uint((500/(100 - scoreDistance))) * (finalAssessors.length/largestSize);
       if(inRewardCluster[score] == true)
       {
-        Master(master).mapTokenBalance(finalAssessors[i], Master(master).getTokenBalance(finalAssessors[i]) + payoutValue);
+        UserMaster(userMaster).mapTokenBalance(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) + payoutValue);
         User(finalAssessors[i]).notification("You Have Received Payment For Your Assessment", tag, 15);
       }
       if(inRewardCluster[score] == true)
       {
-        Master(master).mapTokenBalance(finalAssessors[i], Master(master).getTokenBalance(finalAssessors[i]) - payoutValue);
+        UserMaster(userMaster).mapTokenBalance(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) - payoutValue);
         User(finalAssessors[i]).notification("You Have Received A Fine For Your Assessment", tag, 16);
       }
     }

@@ -1,17 +1,17 @@
 import "lib/random.sol";
-import "master.sol";
-import "creator.sol";
+import "userMaster.sol";
 import "assessment.sol";
 import "user.sol";
-import "tagMaker.sol";
+import "tagMaster.sol";
 
 //Defines the meta-contract for a Tag
 contract Tag
 {
   address[] parentTags;
   address[] childTags;
-  address master;
-  string name;
+  address userMaster;
+  address tagMaster;
+  bytes32 name;
   address[] owners; //Those who have earned the tag
   mapping(address => address[]) assessmentHistory; //All assessments completed
   mapping(address => int) scores; //All assessements scores
@@ -21,11 +21,12 @@ contract Tag
     int _score,
     address _assessment);
 
-  function Tag(string tagName, address[] parents, address masterAddress)
+  function Tag(bytes32 tagName, address[] parents, address userMasterAddress, address tagMasterAddress)
   {
     name = tagName;
     parentTags = parents;
-    master = masterAddress;
+    userMaster = userMasterAddress;
+    tagMaster = tagMasterAddress;
   }
 
   function getOwners() constant returns(address[])
@@ -90,7 +91,7 @@ contract Tag
       if(Assessment(assessment).getAssessorPoolLength() < Tag(tagAddress).getOwnerLength()/10)
       {
         address random = Tag(tagAddress).getOwner(getRandom(Tag(tagAddress).getOwnerLength()-1));
-        if(Master(master).getAvailability(random) == true)
+        if(UserMaster(userMaster).getAvailability(random) == true)
         {
           Assessment(assessment).addToAssessorPool(random);
           Assessment(assessment).setAssessmentPoolSize(Assessment(assessment).getAssessmentPoolSize() -1);
@@ -117,7 +118,7 @@ contract Tag
 
   function startAssessment(address assessee, uint size)
   {
-    Assessment newAssessment = new Assessment(assessee, address(this), master);
+    Assessment newAssessment = new Assessment(assessee, address(this), userMaster, tagMaster);
     newAssessment.setNumberOfAssessors(size);
     newAssessment.setAssessmentPoolSize(size*20);
     setAssessorPool(address(this), address(newAssessment),size);
@@ -129,11 +130,11 @@ contract Tag
     {
       owners.push(assessee);
       scores[assessee] = score;
-      Master(master).mapAchievement(assessee,address(this));
+      UserMaster(userMaster).mapAchievement(assessee,address(this));
     }
-    if(pass == false && address(this) == Master(master).getTagAddressFromName("account"))
+    if(pass == false && address(this) == TagMaster(tagMaster).getTagAddressFromName("account"))
     {
-      User(assessee).remove(master);
+      User(assessee).remove(userMaster);
     }
     assessmentHistory[assessee].push(assessment);
     CompletedAssessment(assessee, pass, score, assessment);
