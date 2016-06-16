@@ -10,6 +10,7 @@ contract TagMaster
   mapping (bytes32 => address) tagAddressFromName; //Maps the names of tags to their addresses
   address userMasterAddress;
   bool locked = false;
+  address randomAddress;
 
   /*
   @type: event
@@ -27,7 +28,8 @@ contract TagMaster
 
   function TagMaster()
   {
-
+    Random random = new Random();
+    randomAddress = address(random);
   }
 
   function setUserMasterAddress(address userMaster)
@@ -106,7 +108,7 @@ contract TagMaster
           parents[i] = parentList[i];
         }
       }
-      Tag newTag = new Tag(name, parents, userMasterAddress, address(this));
+      Tag newTag = new Tag(name, parents, userMasterAddress, address(this), randomAddress);
       address newTagAddress = address(newTag);
       mapTagName(newTagAddress,name); //Maps the tag name to the tag address
       mapTagAddressFromName(name,newTagAddress); //Maps the tag address the the tag name

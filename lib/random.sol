@@ -1,20 +1,12 @@
-import "api.sol";
-
-contract RandomNumbers is usingOraclize
+contract Random
 {
-  function getSeedNumber() returns(uint)
+  function getRandom(uint seed, uint max) constant returns (uint randomNumber) //Based on the original function written by github user alexvandesande
   {
-    oraclize_setNetwork(networkID_mainnet);
-    return uint(oraclize_query("WolframAlpha", "random number between 0 and 100"));
+    return(uint(sha3(block.blockhash(block.number-1), seed))%max);
   }
 
-  function getRandom(uint max) returns(uint)
+  function getRandom(uint seed, uint min, uint max) constant returns (uint randomNumber) //Based on the original function written by github user alexvandesande
   {
-    return ((getSeedNumber()/100)*max);
-  }
-
-  function getRandom(uint min, uint max) returns(uint)
-  {
-    return ((getSeedNumber()/100)*(max-min)+min);
+    return(uint(sha3(block.blockhash(block.number-1), seed))%(max+min) + min);
   }
 }

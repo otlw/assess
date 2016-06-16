@@ -2,7 +2,7 @@ import "lib/random.sol";
 import "userMaster.sol";
 import "tag.sol";
 import "user.sol";
-import "tagMaker.sol";
+import "tagMaster.sol";
 
 //Defines the meta-contract for an assessment
 contract Assessment
@@ -256,11 +256,6 @@ contract Assessment
     payout(clusters[largestClusterIndex].length);
   }
 
-  function returnResults()
-  {
-    Tag(tag).finishAssessment(finalResult, finalScore, assessee, address(this));
-  }
-
   function payout(uint largestSize)
   {
     for(uint i = 0; i < finalAssessors.length; i++)
@@ -275,15 +270,20 @@ contract Assessment
       uint payoutValue = uint((500/(100 - scoreDistance))) * (finalAssessors.length/largestSize);
       if(inRewardCluster[score] == true)
       {
-        UserMaster(userMaster).mapTokenBalance(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) + payoutValue);
+        Tag(tag).pay(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) + payoutValue);
         User(finalAssessors[i]).notification("You Have Received Payment For Your Assessment", tag, 15);
       }
       if(inRewardCluster[score] == true)
       {
-        UserMaster(userMaster).mapTokenBalance(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) - payoutValue);
+        Tag(tag).pay(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) - payoutValue);
         User(finalAssessors[i]).notification("You Have Received A Fine For Your Assessment", tag, 16);
       }
     }
+  }
+
+  function returnResults()
+  {
+    Tag(tag).finishAssessment(finalResult, finalScore, assessee, address(this));
   }
 
   function remove(address reciever)

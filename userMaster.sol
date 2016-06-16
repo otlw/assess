@@ -2,7 +2,7 @@ import "lib/random.sol";
 import "tag.sol";
 import "assessment.sol";
 import "user.sol";
-import "tagMaker.sol";
+import "tagMaster.sol";
 
 /*
 @type: contract
