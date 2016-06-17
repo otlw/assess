@@ -6,8 +6,9 @@ import "user.sol";
 
 contract TagMaster
 {
-  mapping (address => bytes32)  tagName; //Maps the address of tags to their names
-  mapping (bytes32 => address) tagAddressFromName; //Maps the names of tags to their addresses
+  mapping (address => string) tagName; //Maps the address of tags to their names
+  mapping (string => address) tagAddressFromName; //Maps the names of tags to their addresses
+  mapping (address => bool) tagExists;
   address userMasterAddress;
   bool locked = false;
   address randomAddress;
@@ -22,7 +23,7 @@ contract TagMaster
   @stores: address[] _parents
   */
   event TagCreation
-  ( bytes32 _tagName, //the name of the tag that was created
+  ( string _tagName, //the name of the tag that was created
     address _tagAddress, //the address of the tag that was created
     address[] _parents); //the addresses of the parents of the tag that as created
 
@@ -30,6 +31,11 @@ contract TagMaster
   {
     Random random = new Random();
     randomAddress = address(random);
+  }
+
+  function checkTag(address tagAddress) returns(bool)
+  {
+   return tagExists[tagAddress];
   }
 
   function setUserMasterAddress(address userMaster)
@@ -48,7 +54,7 @@ contract TagMaster
   @param: string name = the name of the tag being mapped
   @return: nothing
   */
-  function mapTagName(address tagAddress, bytes32 name)
+  function mapTagName(address tagAddress, string name)
   {
     tagName[tagAddress] = name; //maps the name of the tag to its address
   }
@@ -60,7 +66,7 @@ contract TagMaster
   @param: address tagAddress = the address of the tag being mapped
   @returns: nothing
   */
-  function mapTagAddressFromName(bytes32 name, address tagAddress)
+  function mapTagAddressFromName(string name, address tagAddress)
   {
     tagAddressFromName[name] = tagAddress; //maps the address of the tag to its name
   }
@@ -71,7 +77,7 @@ contract TagMaster
   @param: address tagAddress = the address of the tag
   @returns: The name of the tag in the form of a string
   */
-  function getTagName(address tagAddress) constant returns(bytes32)
+  function getTagName(address tagAddress) constant returns(string)
   {
     return tagName[tagAddress];
   }
@@ -82,12 +88,12 @@ contract TagMaster
   @param: string name = the name of the tag
   @returns: The address of the tag in the form of an address
   */
-  function getTagAddressFromName(bytes32 name) constant returns(address)
+  function getTagAddressFromName(string name) constant returns(address)
   {
     return tagAddressFromName[name];
   }
 
-  function makeTag(bytes32 name, address[] parentList) returns(uint) //Creates a new tag contract
+  function makeTag(string name, address[] parentList) returns(uint) //Creates a new tag contract
   {
     uint response = 0;
     address[] memory parents;
@@ -97,7 +103,7 @@ contract TagMaster
     }
     if(response==0)
     {
-      for(uint i=0; i <= parentList.length; i++) //adds all the given parents
+      for(uint i=0; i < parentList.length; i++) //adds all the given parents
       {
         if(parentList[i]==0)
         {
@@ -112,7 +118,8 @@ contract TagMaster
       address newTagAddress = address(newTag);
       mapTagName(newTagAddress,name); //Maps the tag name to the tag address
       mapTagAddressFromName(name,newTagAddress); //Maps the tag address the the tag name
-      for(uint j=0; j <= parents.length; j++)
+      tagExists[newTagAddress] = true;
+      for(uint j=0; j < parents.length; j++)
       {
         Tag(parents[j]).addChild(newTagAddress);
       }

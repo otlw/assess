@@ -12,7 +12,7 @@ contract Tag
   address userMaster;
   address tagMaster;
   address random;
-  bytes32 name;
+  string name;
   address[] owners; //Those who have earned the tag
   mapping(address => address[]) assessmentHistory; //All assessments completed
   mapping(address => bool) assessmentExists; //All existing assessments
@@ -22,13 +22,21 @@ contract Tag
     int _score,
     address _assessment);
 
-  function Tag(bytes32 tagName, address[] parents, address userMasterAddress, address tagMasterAddress, address randomAddress)
+  function Tag(string tagName, address[] parents, address userMasterAddress, address tagMasterAddress, address randomAddress)
   {
     name = tagName;
     parentTags = parents;
     userMaster = userMasterAddress;
     random = randomAddress;
     tagMaster = tagMasterAddress;
+  }
+
+  function addFirstUser(address firstUser)
+  {
+    if(owners.length == 0)
+    {
+      owners.push(firstUser);
+    }
   }
 
   function getOwners() constant returns(address[])

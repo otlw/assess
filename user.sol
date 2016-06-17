@@ -8,7 +8,7 @@ contract User
 {
   address user;
   address master;
-  address[]  acheivements;
+  address[] acheivements;
   string userData;
   uint reputation;
 
