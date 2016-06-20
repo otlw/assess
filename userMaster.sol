@@ -36,9 +36,13 @@ contract UserMaster
 
   function firstUser()
   {
-    User newUser = new User(0x83A6175DA23563D9DC3A9CDA1ec77EB02abF2630, address(this)); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
-    Tag(TagMaster(tagMasterAddress).getTagAddressFromName("account")).addFirstUser(address(newUser));
-    UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
+    for(uint i = 0; i < 10; i++)
+    {
+      User newUser = new User(0x83A6175DA23563D9DC3A9CDA1ec77EB02abF2630, address(this)); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
+      availability[address(newUser)] = true;
+      Tag(TagMaster(tagMasterAddress).getTagAddressFromName("account")).addFirstUser(address(newUser));
+      UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
+    }
   }
 
   /*

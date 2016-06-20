@@ -14,6 +14,7 @@ contract Assessment
   address tag;
   address userMaster;
   address tagMaster;
+  address random;
   uint poolSizeRemaining;
   uint numberOfAssessors;
   mapping(address => string) assessmentTasks; //Given by the assessors as IPFS hashes
@@ -30,14 +31,17 @@ contract Assessment
   uint doneAssessors;
   uint resultsSet;
 
-  function Assessment(address assesseeAddress, address tagAddress, address userMasterAddress, address tagMasterAddress)
+  function Assessment(address assesseeAddress, address tagAddress, address userMasterAddress, address tagMasterAddress, address randomAddress)
   {
     assessee = assesseeAddress;
     tag = tagAddress;
     userMaster = userMasterAddress;
     tagMaster = tagMasterAddress;
+    random = randomAddress;
     referenceTime = block.timestamp;
   }
+
+  event PotentialAssessorSet(address _potentialAssessor);
 
   function setNumberOfAssessors(uint number)
   {
@@ -68,16 +72,19 @@ contract Assessment
   {
     bool potentialAssessorSet = false;
     numberCancelled = 0;
+    randomNumber = Random(random).getRandom(assessorPool.length, assessorPool.length);
     for(uint i = 0; i < needed; i++)
     {
       while(potentialAssessorSet == false)
       {
-        address randomAssessor = assessorPool[getRandom(assessorPool.length)];
+        address randomAssessor = assessorPool[randomNumber];
         if(assessors[randomAssessor] == 0)
         {
           assessors[randomAssessor] = 3;
           potentialAssessors.push(randomAssessor);
           User(randomAssessor).notification("Called As A Potential Assessor",tag, 1);
+          randomNumber = Random(random).getRandom(assessorPool.length, randomNumber);
+          PotentialAssessorSet(randomAssessor);
           potentialAssessorSet = true;
         }
       }
@@ -91,14 +98,9 @@ contract Assessment
       return assessorPool.length;
   }
 
-  function getRandom(uint i) constant returns(uint)
-  {
-    return 12;
-  }
-
   function confirmAssessor(uint confirm)
   {
-  if(assessors[msg.sender] != 0 && now - referenceTime <= 180)
+    if(assessors[msg.sender] != 0 && now - referenceTime <= 180)
     {
       assessors[msg.sender] = confirm;
       if(confirm == 1)

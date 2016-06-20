@@ -33,7 +33,7 @@ contract Tag
 
   function addFirstUser(address firstUser)
   {
-    if(owners.length == 0)
+    if(owners.length < 200)
     {
       owners.push(firstUser);
     }
@@ -128,7 +128,7 @@ function setAssessorPool(address tagAddress, address assessment, uint size, uint
 
   function startAssessment(address assessee, uint size)
   {
-    Assessment newAssessment = new Assessment(assessee, address(this), userMaster, tagMaster);
+    Assessment newAssessment = new Assessment(assessee, address(this), userMaster, tagMaster, random);
     assessmentExists[address(newAssessment)] = true;
     newAssessment.setNumberOfAssessors(size);
     newAssessment.setAssessmentPoolSize(size*20);

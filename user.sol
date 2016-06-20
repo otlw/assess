@@ -10,7 +10,6 @@ contract User
   address master;
   address[] acheivements;
   string userData;
-  uint reputation;
 
   event Notification
   ( string _description,
@@ -23,17 +22,26 @@ contract User
   {
     user = userAddress;
     master = masterAddress;
-    reputation = 1;
   }
 
-  function getReputation() constant returns(uint)
+  function confirmAssessment(address assessment, uint confirm)
   {
-    return reputation;
+    Assessment(assessment).confirmAssessor(confirm);
   }
 
-  function setReputation(uint newReputation)
+  function setAssessmentData(address assessment, string data)
   {
-    reputation = newReputation;
+    Assessment(assessment).setData(data);
+  }
+
+  function doneAssessing(address assessment)
+  {
+    Assessment(assessment).doneAssessing();
+  }
+
+  function setResult(address assessment, int score)
+  {
+    Assessment(assessment).setResult(score);
   }
 
   function notification(string description, address tag, uint code)
