@@ -293,6 +293,7 @@ contract Assessment
         User(finalAssessors[i]).notification("You Have Received A Fine For Your Assessment", tag, 16);
       }
     }
+    returnResults();
   }
 
   function returnResults()
