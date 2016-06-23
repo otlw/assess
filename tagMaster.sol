@@ -23,7 +23,8 @@ contract TagMaster
   @stores: address[] _parents
   */
   event TagCreation
-  ( string _tagName, //the name of the tag that was created
+  ( uint _response, //the error code of the procedure
+    string _tagName, //the name of the tag that was created
     address _tagAddress, //the address of the tag that was created
     address[] _parents); //the addresses of the parents of the tag that as created
 
@@ -93,7 +94,7 @@ contract TagMaster
     return tagAddressFromName[name];
   }
 
-  function makeTag(string name, address[] parentList) returns(uint) //Creates a new tag contract
+  function makeTag(string name, address[] parentList, uint assessmentSize)
   {
     uint response = 0;
     address[] memory parents;
@@ -101,20 +102,24 @@ contract TagMaster
     {
       response += 1;
     }
+    if(assessmentSize == 0)
+    {
+      response += 10;
+    }
     if(response==0)
     {
       for(uint i=0; i < parentList.length; i++) //adds all the given parents
       {
         if(parentList[i]==0)
         {
-          response += 10*(10**i);
+          response += 100*(10**i);
         }
         else
         {
           parents[i] = parentList[i];
         }
       }
-      Tag newTag = new Tag(name, parents, userMasterAddress, address(this), randomAddress);
+      Tag newTag = new Tag(name, parents, userMasterAddress, address(this), randomAddress, assessmentSize);
       address newTagAddress = address(newTag);
       mapTagName(newTagAddress,name); //Maps the tag name to the tag address
       mapTagAddressFromName(name,newTagAddress); //Maps the tag address the the tag name
@@ -123,9 +128,8 @@ contract TagMaster
       {
         Tag(parents[j]).addChild(newTagAddress);
       }
-    TagCreation(name, newTagAddress, parents);
     }
-    return response;
+    TagCreation(response, name, newTagAddress, parents);
   }
 
   function remove(address reciever)

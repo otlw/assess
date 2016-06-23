@@ -10,6 +10,7 @@ contract Assessment
   address assessee; //We need a better word for this
   address[] assessorPool;
   mapping (address => uint) assessors;
+  uint calledAssessors = 0;
   address[] finalAssessors;
   address tag;
   address userMaster;
@@ -20,16 +21,15 @@ contract Assessment
   mapping(address => string) assessmentTasks; //Given by the assessors as IPFS hashes
   mapping(address => string) assessmentResponses; //Given by the assessee as IPFS hashes
   mapping(address => int) assessmentResults; //Pass/Fail and Score given by assessors
-  mapping(int => address) addressFromScore;
   mapping(int => bool) inRewardCluster;
   mapping(address => string[]) data;
   address[] potentialAssessors;
   int finalScore;
   bool finalResult;
   uint referenceTime;
-  uint numberCancelled;
-  uint doneAssessors;
-  uint resultsSet;
+  uint numberCancelled = 0;
+  uint doneAssessors = 0;
+  uint resultsSet = 0;
 
   function Assessment(address assesseeAddress, address tagAddress, address userMasterAddress, address tagMasterAddress, address randomAddress)
   {
@@ -42,6 +42,7 @@ contract Assessment
   }
 
   event PotentialAssessorSet(address _potentialAssessor);
+  event DataSet(address _dataSetter, uint _index);
 
   function setNumberOfAssessors(uint number)
   {
@@ -70,27 +71,35 @@ contract Assessment
 
   function setPotentialAssessor(uint needed)
   {
-    bool potentialAssessorSet = false;
-    numberCancelled = 0;
-    randomNumber = Random(random).getRandom(assessorPool.length, assessorPool.length);
-    for(uint i = 0; i < needed; i++)
+    if(assessorPool.length - calledAssessors < needed)
     {
-      while(potentialAssessorSet == false)
-      {
-        address randomAssessor = assessorPool[randomNumber];
-        if(assessors[randomAssessor] == 0)
-        {
-          assessors[randomAssessor] = 3;
-          potentialAssessors.push(randomAssessor);
-          User(randomAssessor).notification("Called As A Potential Assessor",tag, 1);
-          randomNumber = Random(random).getRandom(assessorPool.length, randomNumber);
-          PotentialAssessorSet(randomAssessor);
-          potentialAssessorSet = true;
-        }
-      }
-      potentialAssessorSet = false;
+      cancelAssessment();
     }
-    referenceTime = now;
+    else
+    {
+      bool potentialAssessorSet = false;
+      numberCancelled = 0;
+      uint randomNumber = Random(random).getRandom(assessorPool.length, assessorPool.length);
+      for(uint i = 0; i < needed; i++)
+      {
+        while(potentialAssessorSet == false)
+        {
+          address randomAssessor = assessorPool[randomNumber];
+          if(assessors[randomAssessor] == 0)
+          {
+            assessors[randomAssessor] = 3;
+            potentialAssessors.push(randomAssessor);
+            calledAssessors++;
+            User(randomAssessor).notification("Called As A Potential Assessor",tag, 1);
+            randomNumber = Random(random).getRandom(assessorPool.length, randomNumber);
+            PotentialAssessorSet(randomAssessor);
+            potentialAssessorSet = true;
+          }
+        }
+        potentialAssessorSet = false;
+      }
+      referenceTime = now;
+    }
   }
 
   function getAssessorPoolLength() constant returns(uint)
@@ -100,7 +109,7 @@ contract Assessment
 
   function confirmAssessor(uint confirm)
   {
-    if(assessors[msg.sender] != 0 && now - referenceTime <= 180)
+    if(assessors[msg.sender] != 0 && now - referenceTime <= 300)
     {
       assessors[msg.sender] = confirm;
       if(confirm == 1)
@@ -115,15 +124,14 @@ contract Assessment
         numberCancelled ++;
       }
     }
-    if(now - referenceTime > 180)
+    if(now - referenceTime > 300)
     {
       for(uint i = 0; i < potentialAssessors.length; i++)
       {
-        address currentAssessor = potentialAssessors[i];
-        if(assessors[currentAssessor] == 3)
+        if(assessors[potentialAssessors[i]] == 3)
         {
-          User(currentAssessor).notification("Did Not Respond In Time To Be Assessor", tag, 4);
-          assessors[currentAssessor] = 4;
+          User(potentialAssessors[i]).notification("Did Not Respond In Time To Be Assessor", tag, 4);
+          assessors[potentialAssessors[i]] = 4;
           numberCancelled++;
         }
       }
@@ -147,6 +155,12 @@ contract Assessment
   function setData(string newData)
   {
     data[msg.sender].push(newData);
+    DataSet(msg.sender, data[msg.sender].length - 1);
+  }
+
+  function getData(address dataSetter, uint index) constant returns(string)
+  {
+    return data[dataSetter][index];
   }
 
   function cancelAssessment()
@@ -177,12 +191,12 @@ contract Assessment
 
   function setResult(int score)
   {
-    if(doneAssessors == finalAssessors.length)
+    if(doneAssessors == finalAssessors.length && assessors[msg.sender] == 5)
     {
       assessmentResults[msg.sender] = score;
-      addressFromScore[score] = msg.sender;
+      assessors[msg.sender] = 6;
+      resultsSet++;
     }
-
     if(resultsSet == finalAssessors.length)
     {
       calculateResult();
@@ -210,16 +224,16 @@ contract Assessment
       totalRelativeDistance += distanceFromMean;
     }
     meanAbsoluteDeviation = totalRelativeDistance/n;
+    return meanAbsoluteDeviation;
   }
 
   function calculateResult()
   {
-    int[][] memory clusters;
-    int[] memory scores;
-    uint n = 0;
+    mapping(uint => int[]) clusters;
+    int[] memory scores = new int[] (finalAssessors.length);
     uint largestClusterIndex = 0;
     int averageScore;
-    for(uint i = 0; i < numberOfAssessors; i++)
+    for(uint i = 0; i < finalAssessors.length; i++)
     {
       scores[i] = assessmentResults[finalAssessors[i]];
     }
@@ -228,11 +242,9 @@ contract Assessment
     {
       for(uint m = 0; m < scores.length; m++)
       {
-        n = 0;
         if(scores[l] - scores[m] <= meanAbsoluteDeviation)
         {
-          clusters[l][n] = (scores[m]);
-          n++;
+          clusters[l].push(scores[m]);
         }
       }
       if(clusters[l].length > clusters[largestClusterIndex].length)
@@ -240,7 +252,7 @@ contract Assessment
         largestClusterIndex = l;
       }
     }
-    for(uint o = 0; o < clusters[largestClusterIndex].length; n++)
+    for(uint o = 0; o < clusters[largestClusterIndex].length; o++)
     {
       averageScore += clusters[largestClusterIndex][o];
       inRewardCluster[clusters[largestClusterIndex][o]] = true;
@@ -275,7 +287,7 @@ contract Assessment
         Tag(tag).pay(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) + payoutValue);
         User(finalAssessors[i]).notification("You Have Received Payment For Your Assessment", tag, 15);
       }
-      if(inRewardCluster[score] == true)
+      if(inRewardCluster[score] == false)
       {
         Tag(tag).pay(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) - payoutValue);
         User(finalAssessors[i]).notification("You Have Received A Fine For Your Assessment", tag, 16);
