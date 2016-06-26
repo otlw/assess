@@ -17,6 +17,31 @@ contract Tag
   address[] owners; //Those who have earned the tag
   mapping(address => address[]) assessmentHistory; //All assessments completed
   mapping(address => bool) assessmentExists; //All existing assessments
+
+  modifier onlyUserMaster
+  {
+    if(msg.sender != userMaster)
+    {
+      throw;
+    }
+  }
+
+  modifier onlyTagMaster
+  {
+    if(msg.sender != tagMaster)
+    {
+      throw;
+    }
+  }
+
+  modifier onlyThis
+  {
+    if(msg.sender != address(this))
+    {
+      throw;
+    }
+  }
+
   event CompletedAssessment
   ( address _assessee,
     bool _pass,
@@ -33,9 +58,9 @@ contract Tag
     size = sizeOfAssessment;
   }
 
-  function addFirstUser(address firstUser)
+  function addFirstUser(address firstUser) onlyUserMaster
   {
-    if(owners.length < 200)
+    if(owners.length == 0)
     {
       owners.push(firstUser);
     }
@@ -68,12 +93,12 @@ contract Tag
 
   function getParent(uint index) constant returns(address)
   {
-      return parentTags[index];
+    return parentTags[index];
   }
 
-  function addParent(address parentAddress)
+  function addParent(address parentAddress) onlyTagMaster
   {
-      parentTags.push(parentAddress);
+    parentTags.push(parentAddress);
   }
 
   function getChildren() constant returns(address[])
@@ -88,15 +113,15 @@ contract Tag
 
   function getChild(uint index) constant returns(address)
   {
-      return childTags[index];
+    return childTags[index];
   }
 
-  function addChild(address childAddress)
+  function addChild(address childAddress) onlyTagMaster
   {
-      childTags.push(childAddress);
+    childTags.push(childAddress);
   }
 
-function setAssessorPool(address tagAddress, address assessment, uint seed)
+function setAssessorPool(address tagAddress, address assessment, uint seed) onlyThis
   {
     if(Tag(TagMaster(tagMaster).getTagAddressFromName("account")).getOwnerLength() < Assessment(assessment).getAssessmentPoolSize())
     {
@@ -136,36 +161,50 @@ function setAssessorPool(address tagAddress, address assessment, uint seed)
     }
   }
 
-  function startAssessment(address assessee)
+  function makeAssessment(address assessee)
   {
     Assessment newAssessment = new Assessment(assessee, address(this), userMaster, tagMaster, random);
     assessmentExists[address(newAssessment)] = true;
     newAssessment.setNumberOfAssessors(size);
     newAssessment.setAssessmentPoolSize(size*20);
-    setAssessorPool(address(this), address(newAssessment), size);
+  }
+
+  function startAssessment(address assessment, uint size)
+  {
+    if(block.number - Assessment(assessment).getReferenceBlock() >= 4 && block.number - Assessment(assessment).getReferenceBlock() <= 6)
+    {
+      setAssessorPool(address(this), assessment, size);
+    }
+    else
+    {
+      Assessment(assessment).cancelAssessment();
+    }
   }
 
   function finishAssessment(bool pass, int score, address assessee, address assessment)
   {
-    if(pass == true)
+    if(msg.sender == assessment)
     {
-      owners.push(assessee);
-      UserMaster(userMaster).mapAchievement(assessee,address(this));
+      if(pass == true)
+      {
+        owners.push(assessee);
+        UserMaster(userMaster).mapAchievement(assessee,address(this));
+      }
+      if(pass == false && address(this) == TagMaster(tagMaster).getTagAddressFromName("account"))
+      {
+        User(assessee).remove(userMaster);
+      }
+      assessmentHistory[assessee].push(assessment);
+      CompletedAssessment(assessee, pass, score, assessment);
     }
-    if(pass == false && address(this) == TagMaster(tagMaster).getTagAddressFromName("account"))
-    {
-      User(assessee).remove(userMaster);
-    }
-    assessmentHistory[assessee].push(assessment);
-    CompletedAssessment(assessee, pass, score, assessment);
   }
 
-  function pay(address user, uint amount)
+  function pay(address user, int amount) onlyThis
   {
-   if(assessmentExists[msg.sender] = true)
-   {
-    UserMaster(userMaster).mapTokenBalance(user, amount);
-   }
+    if(assessmentExists[msg.sender] = true)
+    {
+      UserMaster(userMaster).mapTokenBalance(user, amount);
+    }
   }
 
   function remove(address reciever)

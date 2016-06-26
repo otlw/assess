@@ -27,9 +27,42 @@ contract Assessment
   int finalScore;
   bool finalResult;
   uint referenceTime;
+  uint referenceBlock;
   uint numberCancelled = 0;
   uint doneAssessors = 0;
   uint resultsSet = 0;
+
+  modifier onlyTag
+  {
+    if(msg.sender != tag)
+    {
+      throw;
+    }
+  }
+
+  modifier onlyThis
+  {
+    if(msg.sender != address(this))
+    {
+      throw;
+    }
+  }
+
+  modifier onlyAssessorAssessee
+  {
+    if(msg.sender != assessee && assessors[msg.sender] != 1)
+    {
+      throw;
+    }
+  }
+
+  modifier onlyTagAssessment
+  {
+    if(msg.sender != address(this) && msg.sender != tag)
+    {
+      throw;
+    }
+  }
 
   function Assessment(address assesseeAddress, address tagAddress, address userMasterAddress, address tagMasterAddress, address randomAddress)
   {
@@ -39,32 +72,41 @@ contract Assessment
     tagMaster = tagMasterAddress;
     random = randomAddress;
     referenceTime = block.timestamp;
+    referenceBlock = block.number;
+    User(assessee).notification("Assessment made", tag, 0);
   }
 
   event PotentialAssessorSet(address _potentialAssessor);
   event DataSet(address _dataSetter, uint _index);
 
-  function setNumberOfAssessors(uint number)
+  function getReferenceBlock() onlyTag returns(uint)
+  {
+    return referenceBlock;
+  }
+  function setNumberOfAssessors(uint number) onlyTag
   {
     numberOfAssessors = number;
   }
 
-  function getNumberOfAssessors() constant returns(uint)
+  function getNumberOfAssessors() onlyTag constant returns(uint)
   {
     return numberOfAssessors;
   }
 
-  function setAssessmentPoolSize(uint sizeRemaining)
+  function setAssessmentPoolSize(uint sizeRemaining) onlyTag
   {
-    poolSizeRemaining = sizeRemaining;
+    if(poolSizeRemaining > 0)
+    {
+      poolSizeRemaining = sizeRemaining;
+    }
   }
 
-  function getAssessmentPoolSize() constant returns(uint)
+  function getAssessmentPoolSize() onlyTag constant returns(uint)
   {
     return poolSizeRemaining;
   }
 
-  function addToAssessorPool(address potentialAddress)
+  function addToAssessorPool(address potentialAddress) onlyTag
   {
     assessorPool.push(potentialAddress);
   }
@@ -75,7 +117,7 @@ contract Assessment
     {
       cancelAssessment();
     }
-    else
+    else if(msg.sender == address(this) || msg.sender == tag)
     {
       bool potentialAssessorSet = false;
       numberCancelled = 0;
@@ -102,9 +144,9 @@ contract Assessment
     }
   }
 
-  function getAssessorPoolLength() constant returns(uint)
+  function getAssessorPoolLength() onlyTag constant returns(uint)
   {
-      return assessorPool.length;
+    return assessorPool.length;
   }
 
   function confirmAssessor(uint confirm)
@@ -143,7 +185,7 @@ contract Assessment
     }
   }
 
-  function notifyStart()
+  function notifyStart() onlyThis
   {
     for(uint i = 0; i < finalAssessors.length; i++)
     {
@@ -152,7 +194,7 @@ contract Assessment
     User(assessee).notification("Assessment Has Started", tag, 17);
   }
 
-  function setData(string newData)
+  function setData(string newData) onlyAssessorAssessee
   {
     data[msg.sender].push(newData);
     DataSet(msg.sender, data[msg.sender].length - 1);
@@ -163,7 +205,7 @@ contract Assessment
     return data[dataSetter][index];
   }
 
-  function cancelAssessment()
+  function cancelAssessment() onlyTagAssessment
   {
     User(assessee).notification("Assessment Cancled", tag, 8);
     for(uint i = 0; i < finalAssessors.length; i++)
@@ -186,16 +228,29 @@ contract Assessment
       {
         User(finalAssessors[i]).notification("Send in Score", tag, 18);
       }
+      referenceTime = block.number; //use referenceTime to refer to the block number instead of timestamp
     }
   }
 
   function setResult(int score)
   {
-    if(doneAssessors == finalAssessors.length && assessors[msg.sender] == 5)
+    if(doneAssessors == finalAssessors.length && assessors[msg.sender] == 5 && block.number - referenceTime == 5)
     {
       assessmentResults[msg.sender] = score;
       assessors[msg.sender] = 6;
       resultsSet++;
+    }
+    if(resultsSet < finalAssessors.length && block.number - referenceTime > 5)
+    {
+      for(uint i = 0; i < finalAssessors.length; i++)
+      {
+        if(assessors[finalAssessors[i]] == 5)
+        {
+          assessmentResults[finalAssessors[i]] = score;
+          assessors[finalAssessors[i]] = 6;
+          resultsSet++;
+        }
+      }
     }
     if(resultsSet == finalAssessors.length)
     {
@@ -203,7 +258,7 @@ contract Assessment
     }
   }
 
-  function calculateMAD(int[] scores, int n) constant returns(int)
+  function calculateMAD(int[] scores, int n) onlyThis constant returns(int)
   {
     int meanScore;
     int totalRelativeDistance;
@@ -227,7 +282,7 @@ contract Assessment
     return meanAbsoluteDeviation;
   }
 
-  function calculateResult()
+  function calculateResult() onlyThis
   {
     mapping(uint => int[]) clusters;
     int[] memory scores = new int[] (finalAssessors.length);
@@ -270,7 +325,7 @@ contract Assessment
     payout(clusters[largestClusterIndex].length);
   }
 
-  function payout(uint largestSize)
+  function payout(uint largestSize) onlyThis
   {
     for(uint i = 0; i < finalAssessors.length; i++)
     {
@@ -280,8 +335,7 @@ contract Assessment
       {
         scoreDistance *= -1;
       }
-      uint distance = uint(scoreDistance);
-      uint payoutValue = uint((500/(100 - scoreDistance))) * (finalAssessors.length/largestSize);
+      int payoutValue = ((500/(100 - scoreDistance))) * int(finalAssessors.length/largestSize);
       if(inRewardCluster[score] == true)
       {
         Tag(tag).pay(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) + payoutValue);
@@ -296,13 +350,8 @@ contract Assessment
     returnResults();
   }
 
-  function returnResults()
+  function returnResults() onlyThis
   {
     Tag(tag).finishAssessment(finalResult, finalScore, assessee, address(this));
-  }
-
-  function remove(address reciever)
-  {
-    suicide(reciever);
   }
 }

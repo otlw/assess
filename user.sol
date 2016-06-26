@@ -11,6 +11,14 @@ contract User
   address[] acheivements;
   string userData;
 
+  modifier onlyUser
+  {
+    if(msg.sender != user)
+    {
+      throw;
+    }
+  }
+
   event Notification
   ( string _description,
     address _sender,
@@ -24,22 +32,27 @@ contract User
     master = masterAddress;
   }
 
-  function confirmAssessment(address assessment, uint confirm)
+  function setAvailability(bool available) onlyUser
+  {
+    UserMaster(master).mapAvailability(address(this), available);
+  }
+
+  function confirmAssessment(address assessment, uint confirm) onlyUser
   {
     Assessment(assessment).confirmAssessor(confirm);
   }
 
-  function setAssessmentData(address assessment, string data)
+  function setAssessmentData(address assessment, string data) onlyUser
   {
     Assessment(assessment).setData(data);
   }
 
-  function doneAssessing(address assessment)
+  function doneAssessing(address assessment) onlyUser
   {
     Assessment(assessment).doneAssessing();
   }
 
-  function setResult(address assessment, int score)
+  function setResult(address assessment, int score) onlyUser
   {
     Assessment(assessment).setResult(score);
   }
@@ -49,7 +62,7 @@ contract User
     Notification(description, msg.sender, address(this), tag, code);
   }
 
-  function setUserData(string hash)
+  function setUserData(string hash) onlyUser
   {
     userData = hash;
   }
@@ -59,7 +72,7 @@ contract User
     return userData;
   }
 
-  function remove(address reciever)
+  function remove(address reciever) onlyUser
   {
     suicide(reciever);
   }

@@ -13,6 +13,14 @@ contract TagMaster
   bool locked = false;
   address randomAddress;
 
+  modifier onlyThis
+  {
+    if(msg.sender != address(this))
+    {
+      throw;
+    }
+  }
+
   /*
   @type: event
   @name: TagCreation
@@ -55,7 +63,7 @@ contract TagMaster
   @param: string name = the name of the tag being mapped
   @return: nothing
   */
-  function mapTagName(address tagAddress, string name)
+  function mapTagName(address tagAddress, string name) onlyThis
   {
     tagName[tagAddress] = name; //maps the name of the tag to its address
   }
@@ -67,7 +75,7 @@ contract TagMaster
   @param: address tagAddress = the address of the tag being mapped
   @returns: nothing
   */
-  function mapTagAddressFromName(string name, address tagAddress)
+  function mapTagAddressFromName(string name, address tagAddress) onlyThis
   {
     tagAddressFromName[name] = tagAddress; //maps the address of the tag to its name
   }
@@ -97,7 +105,7 @@ contract TagMaster
   function makeTag(string name, address[] parentList, uint assessmentSize)
   {
     uint response = 0;
-    address[] memory parents;
+    address[] memory parents = new address[] (parentList.length);
     if(getTagAddressFromName(name) != 0)
     {
       response += 1;
@@ -106,19 +114,23 @@ contract TagMaster
     {
       response += 10;
     }
+    if(parentList.length == 0)
+    {
+      parents[0] = getTagAddressFromName("account");
+    }
+    for(uint i=0; i < parentList.length; i++) //adds all the given parents
+    {
+      if(checkTag(parentList[i])==true)
+      {
+        response += 100*(10**i);
+      }
+      else
+      {
+        parents[i] = parentList[i];
+      }
+    }
     if(response==0)
     {
-      for(uint i=0; i < parentList.length; i++) //adds all the given parents
-      {
-        if(parentList[i]==0)
-        {
-          response += 100*(10**i);
-        }
-        else
-        {
-          parents[i] = parentList[i];
-        }
-      }
       Tag newTag = new Tag(name, parents, userMasterAddress, address(this), randomAddress, assessmentSize);
       address newTagAddress = address(newTag);
       mapTagName(newTagAddress,name); //Maps the tag name to the tag address
@@ -132,7 +144,7 @@ contract TagMaster
     TagCreation(response, name, newTagAddress, parents);
   }
 
-  function remove(address reciever)
+  function remove(address reciever) //remove after testing
   {
     suicide(reciever);
   }

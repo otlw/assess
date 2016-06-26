@@ -12,11 +12,20 @@ import "tagMaster.sol";
 contract UserMaster
 {
   address tagMasterAddress; //The address of the tagMaster contract
-  mapping (address => uint)  tokenBalance; //Maps the addresses of users to their token balances
+  mapping (address => int)  tokenBalance; //Maps the addresses of users to their token balances
   mapping (address => address[])  achievements; //Maps the addresses of users to an array of addresses that contain the addresses of the tags that they have passed an assessment in
   mapping (address => bool)  availability; //Maps the addresses of users to their availability status for whether or not they can currently assess someone
   mapping (address => address)  users; //Maps the addresses of the users to their actual location of the blockchain
+  bool firstUserMade = false;
   event UserCreation(address _userAddress); //address of the created user contract
+
+  modifier onlyTag
+  {
+    if(TagMaster(tagMasterAddress).checkTag(msg.sender) == false)
+    {
+      throw;
+    }
+  }
 
   /*
   @type: constructor function
@@ -36,10 +45,14 @@ contract UserMaster
 
   function firstUser()
   {
-    User newUser = new User(0x83A6175DA23563D9DC3A9CDA1ec77EB02abF2630, address(this)); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
-    availability[address(newUser)] = true;
-    Tag(TagMaster(tagMasterAddress).getTagAddressFromName("account")).addFirstUser(address(newUser));
-    UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
+    if(firstUserMade == false)
+    {
+      User newUser = new User(0x83A6175DA23563D9DC3A9CDA1ec77EB02abF2630, address(this)); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
+      availability[address(newUser)] = true;
+      Tag(TagMaster(tagMasterAddress).getTagAddressFromName("account")).addFirstUser(address(newUser));
+      UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
+      firstUserMade = true;
+    }
   }
 
   /*
@@ -52,7 +65,7 @@ contract UserMaster
   function addUser(address userAddress)
   {
     User newUser = new User(userAddress, address(this)); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
-    Tag(TagMaster(tagMasterAddress).getTagAddressFromName("account")).startAssessment(address(newUser)); //Starts the account tag assessment process for the newly created tag to make sure it isnt a shitty bot
+    Tag(TagMaster(tagMasterAddress).getTagAddressFromName("account")).makeAssessment(address(newUser)); //Starts the account tag assessment process for the newly created tag to make sure it isnt a shitty bot
     UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
   }
 
@@ -63,7 +76,7 @@ contract UserMaster
   @param: address acheivment = the address of the tag just passed
   @returns: nothing
   */
-  function mapAchievement(address user, address achievment)
+  function mapAchievement(address user, address achievment) onlyTag
   {
     achievements[user].push(achievment); //adds the address of the tag to the end of the array that is mapped to the user
   }
@@ -77,7 +90,10 @@ contract UserMaster
   */
   function mapAvailability(address user, bool available)
   {
-    availability[user] = available;
+    if(msg.sender == user)
+    {
+      availability[user] = available;
+    }
   }
 
   /*
@@ -87,12 +103,9 @@ contract UserMaster
   @param: uint balance = the new token balance for the user
   @returns: nothing
   */
-  function mapTokenBalance(address user, uint balance)
+  function mapTokenBalance(address user, int balance) onlyTag
   {
-    if(TagMaster(tagMasterAddress).checkTag(msg.sender) == true) //makes sure this function is only called by a tag
-    {
-      tokenBalance[user] = balance; //sets the token balance of the user
-    }
+    tokenBalance[user] = balance; //sets the token balance of the user
   }
 
   /*
@@ -101,7 +114,7 @@ contract UserMaster
   @param: address user = the address of the user
   @returns: The token balance in the form of a uint
   */
-  function getTokenBalance(address user) constant returns(uint)
+  function getTokenBalance(address user) constant returns(int)
   {
     return tokenBalance[user];
   }
@@ -144,7 +157,7 @@ contract UserMaster
   @purpose: to remove this contract
   @param: address receiver = the address of the wallet that will receive of the ether
   */
-  function remove(address reciever)
+  function remove(address reciever) //remove after testing
   {
     suicide(reciever);
   }
