@@ -31,6 +31,7 @@ contract Assessment
   uint numberCancelled = 0;
   uint doneAssessors = 0;
   uint resultsSet = 0;
+  uint assessmentTime;
 
   modifier onlyTag
   {
@@ -64,7 +65,7 @@ contract Assessment
     }
   }
 
-  function Assessment(address assesseeAddress, address tagAddress, address userMasterAddress, address tagMasterAddress, address randomAddress)
+  function Assessment(address assesseeAddress, address tagAddress, address userMasterAddress, address tagMasterAddress, address randomAddress, uint time)
   {
     assessee = assesseeAddress;
     tag = tagAddress;
@@ -73,6 +74,7 @@ contract Assessment
     random = randomAddress;
     referenceTime = block.timestamp;
     referenceBlock = block.number;
+    assessmentTime = time;
     User(assessee).notification("Assessment made", tag, 0);
   }
 
@@ -192,6 +194,7 @@ contract Assessment
       User(finalAssessors[i]).notification("Assessment Has Started", tag, 17);
     }
     User(assessee).notification("Assessment Has Started", tag, 17);
+    referenceTime = now;
   }
 
   function setData(string newData) onlyAssessorAssessee
@@ -222,11 +225,22 @@ contract Assessment
       assessors[msg.sender] = 5;
       doneAssessors++;
     }
-    if(doneAssessors == finalAssessors.length)
+    if(referenceTime - now > assessmentTime && doneAssessors != finalAssessors.length)
     {
       for(uint i = 0; i < finalAssessors.length; i++)
       {
-        User(finalAssessors[i]).notification("Send in Score", tag, 18);
+        if(assessors[finalAssessors[i]] == 1)
+        {
+          assessors[finalAssessors[i]] = 5;
+          doneAssessors++;
+        }
+      }
+    }
+    if(doneAssessors == finalAssessors.length)
+    {
+      for(uint n = 0; n < finalAssessors.length; n++)
+      {
+        User(finalAssessors[n]).notification("Send in Score", tag, 18);
       }
       referenceTime = block.number; //use referenceTime to refer to the block number instead of timestamp
     }
@@ -246,7 +260,7 @@ contract Assessment
       {
         if(assessors[finalAssessors[i]] == 5)
         {
-          assessmentResults[finalAssessors[i]] = score;
+          assessmentResults[finalAssessors[i]] = 0;
           assessors[finalAssessors[i]] = 6;
           resultsSet++;
         }
@@ -335,7 +349,7 @@ contract Assessment
       {
         scoreDistance *= -1;
       }
-      int payoutValue = ((500/(100 - scoreDistance))) * int(finalAssessors.length/largestSize);
+      int payoutValue = (int(assessmentTime)/(100 - scoreDistance)) * int(finalAssessors.length/largestSize);
       if(inRewardCluster[score] == true)
       {
         Tag(tag).pay(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) + payoutValue);
@@ -345,6 +359,11 @@ contract Assessment
       {
         Tag(tag).pay(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) - payoutValue);
         User(finalAssessors[i]).notification("You Have Received A Fine For Your Assessment", tag, 16);
+      }
+      Tag(tag).pay(assessee, UserMaster(userMaster).getTokenBalance(assessee) - int(assessmentTime));
+      if(TagMaster(tagMaster).getTagAddressFromName("account") != tag)
+      {
+        User(assessee).notification("You have been charged for your assessment", tag, 19);
       }
     }
     returnResults();

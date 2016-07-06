@@ -65,7 +65,7 @@ contract UserMaster
   function addUser(address userAddress)
   {
     User newUser = new User(userAddress, address(this)); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
-    Tag(TagMaster(tagMasterAddress).getTagAddressFromName("account")).makeAssessment(address(newUser)); //Starts the account tag assessment process for the newly created tag to make sure it isnt a shitty bot
+    Tag(TagMaster(tagMasterAddress).getTagAddressFromName("account")).makeAssessment(address(newUser), 600); //Starts the account tag assessment process for the newly created tag to make sure it isnt a shitty bot
     UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
   }
 
