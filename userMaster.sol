@@ -19,11 +19,16 @@ contract UserMaster
   bool firstUserMade = false;
   event UserCreation(address _userAddress); //address of the created user contract
 
+  /*
+  @type: modifier
+  @name: onlyTag
+  @purpose: to only allow the Tag contract to call a function to which this modifier is applied
+  */
   modifier onlyTag
   {
-    if(TagMaster(tagMasterAddress).checkTag(msg.sender) == false)
+    if(TagMaster(tagMasterAddress).checkTag(msg.sender) == false) //checks if the address calling the function is not a tag
     {
-      throw;
+      throw; //throws out the fucntion call
     }
   }
 
@@ -38,20 +43,30 @@ contract UserMaster
     tagMasterAddress = tagMaster; //Sets the address of the tagMaster contract
   }
 
+  /*
+  @type: function
+  @purpose: To get the address of the Tag Master
+  @returns: The address of the Tag Master
+  */
   function getTagMasterAddress() returns(address)
   {
     return tagMasterAddress;
   }
 
+  /*
+  @type: function
+  @purpose: To create the first user in the system
+  @returns: nothing
+  */
   function firstUser()
   {
-    if(firstUserMade == false)
+    if(firstUserMade == false) //Checks to make sure the first user has not already been made
     {
-      User newUser = new User(0x83A6175DA23563D9DC3A9CDA1ec77EB02abF2630, address(this)); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
-      availability[address(newUser)] = true;
-      Tag(TagMaster(tagMasterAddress).getTagAddressFromName("account")).addFirstUser(address(newUser));
+      User newUser = new User(0x83A6175DA23563D9DC3A9CDA1ec77EB02abF2630, address(this)); //Makes a new user that represents Jared's address
+      availability[address(newUser)] = true; //Sets the availability of this user to true
+      Tag(TagMaster(tagMasterAddress).getTagAddressFromName("account")).addFirstUser(address(newUser)); //Gives the first user the account tag so it can be used to verify users made later
       UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
-      firstUserMade = true;
+      firstUserMade = true; //Sets firstUserMade to true so this function will not be able to create more users
     }
   }
 
@@ -90,9 +105,9 @@ contract UserMaster
   */
   function mapAvailability(address user, bool available)
   {
-    if(msg.sender == user)
+    if(msg.sender == user) //checks if the address that is calling the function is the same as the user whose availability is being set
     {
-      availability[user] = available;
+      availability[user] = available; //sets the availability of the user specified in the parameter to the availability specified in the parameter
     }
   }
 
