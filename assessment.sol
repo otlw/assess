@@ -349,7 +349,7 @@ contract Assessment
       {
         scoreDistance *= -1;
       }
-      int payoutValue = (int(assessmentTime)/(100 - scoreDistance)) * int(finalAssessors.length/largestSize);
+      int payoutValue = (int(assessmentTime*finalAssessors.length)/(100 - scoreDistance)) * int(finalAssessors.length/largestSize);
       if(inRewardCluster[score] == true)
       {
         Tag(tag).pay(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) + payoutValue);
@@ -360,9 +360,9 @@ contract Assessment
         Tag(tag).pay(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) - payoutValue);
         User(finalAssessors[i]).notification("You Have Received A Fine For Your Assessment", tag, 16);
       }
-      Tag(tag).pay(assessee, UserMaster(userMaster).getTokenBalance(assessee) - int(assessmentTime));
       if(TagMaster(tagMaster).getTagAddressFromName("account") != tag)
       {
+        Tag(tag).pay(assessee, UserMaster(userMaster).getTokenBalance(assessee) - int(assessmentTime*finalAssessors.length));
         User(assessee).notification("You have been charged for your assessment", tag, 19);
       }
     }

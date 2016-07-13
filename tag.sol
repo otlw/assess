@@ -13,11 +13,12 @@ contract Tag
   address tagMaster;
   address random;
   string name;
-  uint size;
   int maxScore = 0;
+  uint maxSize = 5;
   address[] owners; //Those who have earned the tag
-  mapping(address => address[]) assessmentHistory; //All assessments completed
+  mapping (address => address[]) assessmentHistory; //All assessments completed
   mapping (address => int) currentScores;
+  mapping (address => uint) assessmentSizes;
   mapping(address => bool) assessmentExists; //All existing assessments
 
   modifier onlyUserMaster
@@ -50,14 +51,13 @@ contract Tag
     int _score,
     address _assessment);
 
-  function Tag(string tagName, address[] parents, address userMasterAddress, address tagMasterAddress, address randomAddress, uint sizeOfAssessment)
+  function Tag(string tagName, address[] parents, address userMasterAddress, address tagMasterAddress, address randomAddress)
   {
     name = tagName;
     parentTags = parents;
     userMaster = userMasterAddress;
     random = randomAddress;
     tagMaster = tagMasterAddress;
-    size = sizeOfAssessment;
   }
 
   function addFirstUser(address firstUser) onlyUserMaster
@@ -71,6 +71,11 @@ contract Tag
   function getCurrentScore(address user) constant returns(int)
   {
     return currentScores[user];
+  }
+
+  function getAssessmentSize(address user) constant returns(uint)
+  {
+    return assessmentSizes[user];
   }
 
   function getOwners() constant returns(address[])
@@ -133,7 +138,7 @@ contract Tag
     return name;
   }
 
-  function setAssessorPool(address tagAddress, address assessment, uint seed) onlyThis
+  function setAssessorPool(address tagAddress, address assessment, uint seed, uint size) onlyThis
   {
     if(Tag(TagMaster(tagMaster).getTagAddressFromName("account")).getOwnerLength() < Assessment(assessment).getAssessmentPoolSize())
     {
@@ -148,7 +153,7 @@ contract Tag
       if(Assessment(assessment).getAssessorPoolLength() < Tag(tagAddress).getOwnerLength()/10)
       {
         address randomUser = Tag(tagAddress).getOwner(Random(random).getRandom(seed + j, Tag(tagAddress).getOwnerLength()-1));
-        if(UserMaster(userMaster).getAvailability(randomUser) == true && uint(Tag(tagAddress).getCurrentScore(randomUser)) > (now%uint(maxScore)))
+        if(UserMaster(userMaster).getAvailability(randomUser) == true && (uint(Tag(tagAddress).getCurrentScore(randomUser))*Tag(tagAddress).getAssessmentSize(randomUser)) > (now%(uint(maxScore)*maxSize)))
         {
           Assessment(assessment).addToAssessorPool(randomUser);
           Assessment(assessment).setAssessmentPoolSize(Assessment(assessment).getAssessmentPoolSize() -1);
@@ -158,12 +163,12 @@ contract Tag
       {
         for(uint l = 0; l < Tag(tagAddress).getParentsLength(); l++)
         {
-          setAssessorPool(Tag(tagAddress).getParent(l), assessment, Random(random).getRandom(seed + l, Tag(tagAddress).getOwnerLength()-1));
+          setAssessorPool(Tag(tagAddress).getParent(l), assessment, Random(random).getRandom(seed + l, Tag(tagAddress).getOwnerLength()-1), size);
         }
 
         for(uint k = 0; k < Tag(tagAddress).getChildrenLength(); k++)
         {
-          setAssessorPool(Tag(tagAddress).getChild(k), assessment, Random(random).getRandom(seed + k, Tag(tagAddress).getOwnerLength()-1));
+          setAssessorPool(Tag(tagAddress).getChild(k), assessment, Random(random).getRandom(seed + k, Tag(tagAddress).getOwnerLength()-1), size);
         }
       }
       if(Assessment(assessment).getAssessmentPoolSize() <= 0)
@@ -173,19 +178,26 @@ contract Tag
     }
   }
 
-  function makeAssessment(address assessee, uint time)
+  function makeAssessment(address assessee, uint time, uint size)
   {
-    Assessment newAssessment = new Assessment(assessee, address(this), userMaster, tagMaster, random, time);
-    assessmentExists[address(newAssessment)] = true;
-    newAssessment.setNumberOfAssessors(size);
-    newAssessment.setAssessmentPoolSize(size*20);
+    if(size >= 5)
+    {
+      Assessment newAssessment = new Assessment(assessee, address(this), userMaster, tagMaster, random, time);
+      assessmentExists[address(newAssessment)] = true;
+      newAssessment.setNumberOfAssessors(size);
+      newAssessment.setAssessmentPoolSize(size*20);
+    }
+    else
+    {
+      throw;
+    }
   }
 
-  function startAssessment(address assessment, uint size)
+  function startAssessment(address assessment)
   {
     if(block.number - Assessment(assessment).getReferenceBlock() >= 4 && block.number - Assessment(assessment).getReferenceBlock() <= 6)
     {
-      setAssessorPool(address(this), assessment, size);
+      setAssessorPool(address(this), assessment, Assessment(assessment).getNumberOfAssessors(), Assessment(assessment).getNumberOfAssessors());
     }
     else
     {
@@ -208,9 +220,14 @@ contract Tag
       }
       assessmentHistory[assessee].push(assessment);
       currentScores[assessee] = score;
+      assessmentSizes[assessee] = Assessment(assessment).getNumberOfAssessors();
       if(score > maxScore)
       {
         maxScore = score;
+      }
+      if(Assessment(assessment).getNumberOfAssessors() > maxSize)
+      {
+        maxSize = Assessment(assessment).getNumberOfAssessors();
       }
       CompletedAssessment(assessee, pass, score, assessment);
     }

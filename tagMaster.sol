@@ -102,17 +102,13 @@ contract TagMaster
     return tagAddressFromName[name];
   }
 
-  function makeTag(string name, address[] parentList, uint assessmentSize)
+  function makeTag(string name, address[] parentList)
   {
     uint response = 0;
     address[] memory parents = new address[] (parentList.length);
     if(getTagAddressFromName(name) != 0)
     {
       response += 1;
-    }
-    if(assessmentSize == 0)
-    {
-      response += 10;
     }
     if(parentList.length == 0)
     {
@@ -131,7 +127,7 @@ contract TagMaster
     }
     if(response==0)
     {
-      Tag newTag = new Tag(name, parents, userMasterAddress, address(this), randomAddress, assessmentSize);
+      Tag newTag = new Tag(name, parents, userMasterAddress, address(this), randomAddress);
       address newTagAddress = address(newTag);
       mapTagName(newTagAddress,name); //Maps the tag name to the tag address
       mapTagAddressFromName(name,newTagAddress); //Maps the tag address the the tag name
