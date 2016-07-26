@@ -16,7 +16,7 @@ contract UserMaster
   mapping (address => address[])  achievements; //Maps the addresses of users to an array of addresses that contain the addresses of the tags that they have passed an assessment in
   mapping (address => bool)  availability; //Maps the addresses of users to their availability status for whether or not they can currently assess someone
   mapping (address => address)  users; //Maps the addresses of the users to their actual location of the blockchain
-  bool firstUserMade = false;
+  bool firstUserMade = false; //Keeps track of whether or not the first user has been made yet
   event UserCreation(address _userAddress); //address of the created user contract
 
   /*
