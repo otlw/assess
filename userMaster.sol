@@ -34,7 +34,7 @@ contract UserMaster
 
   /*
   @type: constructor function
-  @purpose: To initialize the master contract and have it make the account tag
+  @purpose: To initialize the userMaster contract and have it make the account tag
   @param: address creator = the address of the creator contract
   @returns: nothing
   */
@@ -171,8 +171,9 @@ contract UserMaster
   @type: function
   @purpose: to remove this contract
   @param: address receiver = the address of the wallet that will receive of the ether
+  @returns: nothing
   */
-  function remove(address reciever) //remove after testing
+  function remove(address reciever) onlyUser
   {
     suicide(reciever);
   }
