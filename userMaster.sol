@@ -33,6 +33,19 @@ contract UserMaster
   }
 
   /*
+  @type: modifier
+  @name: onlyThis
+  @purpose: to only allow the this contract to call a function to which this modifier is applied
+  */
+  modifier onlyThis
+  {
+    if(msg.sender != address(this)) //Checks if msg.sender is this contract
+    {
+      throw; //Throws out the function call if it isn't
+    }
+  }
+
+  /*
   @type: constructor function
   @purpose: To initialize the userMaster contract and have it make the account tag
   @param: address creator = the address of the creator contract
@@ -62,7 +75,7 @@ contract UserMaster
   {
     if(firstUserMade == false) //Checks to make sure the first user has not already been made
     {
-      User newUser = new User(0x83A6175DA23563D9DC3A9CDA1ec77EB02abF2630, address(this)); //Makes a new user that represents Jared's address
+      User newUser = new User(0x83A6175DA23563D9DC3A9CDA1ec77EB02abF2630, address(this), tagMasterAddress); //Makes a new user that represents Jared's address
       availability[address(newUser)] = true; //Sets the availability of this user to true
       Tag(TagMaster(tagMasterAddress).getTagAddressFromName("account")).addFirstUser(address(newUser)); //Gives the first user the account tag so it can be used to verify users made later
       UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
@@ -79,8 +92,8 @@ contract UserMaster
   */
   function addUser(address userAddress)
   {
-    User newUser = new User(userAddress, address(this)); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
-    Tag(TagMaster(tagMasterAddress).getTagAddressFromName("account")).makeAssessment(address(newUser), 600); //Starts the account tag assessment process for the newly created tag to make sure it isnt a shitty bot
+    User newUser = new User(userAddress, address(this), tagMasterAddress); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
+    Tag(TagMaster(tagMasterAddress).getTagAddressFromName("account")).makeAssessment(address(newUser), 5, 600); //Starts the account tag assessment process for the newly created tag to make sure it isnt a shitty bot
     UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
   }
 
@@ -173,7 +186,7 @@ contract UserMaster
   @param: address receiver = the address of the wallet that will receive of the ether
   @returns: nothing
   */
-  function remove(address reciever) onlyUser
+  function remove(address reciever) onlyThis
   {
     suicide(reciever);
   }

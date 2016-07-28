@@ -180,7 +180,7 @@ contract TagMaster
   @param: address receiver = the address of the wallet that will receive of the ether
   @returns: nothing
   */
-  function remove(address reciever) onlyUser
+  function remove(address reciever) onlyThis
   {
     suicide(reciever);
   }
