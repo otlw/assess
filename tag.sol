@@ -7,7 +7,7 @@ import "tagMaster.sol";
 /*
 @type: contract
 @name: Tag
-@purpose: To store tag data and create and store information abotu assessments of this tag
+@purpose: To store tag data and create and store information about assessments of this tag
 */
 contract Tag
 {
