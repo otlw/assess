@@ -4,34 +4,36 @@ import "tag.sol";
 import "user.sol";
 import "tagMaster.sol";
 
-//Defines the meta-contract for an assessment
+/*
+@type: contract
+@name: Assessment
+@purpose: To facilitate the assessment process
+*/
 contract Assessment
 {
-  address assessee; //We need a better word for this
-  address[] assessorPool;
-  mapping (address => uint) assessors;
-  uint calledAssessors = 0;
-  address[] finalAssessors;
-  address tag;
-  address userMaster;
-  address tagMaster;
-  address random;
-  uint poolSizeRemaining;
-  uint numberOfAssessors;
-  mapping(address => string) assessmentTasks; //Given by the assessors as IPFS hashes
-  mapping(address => string) assessmentResponses; //Given by the assessee as IPFS hashes
+  address assessee; //The address of the user being assessed
+  address[] assessorPool; //The addresses of the user's that the assessors are randomly selected from
+  mapping (address => uint) assessors; //A mapping of the assessors to their current status
+  uint calledAssessors = 0; //The number of assessors that have been called to assess
+  address[] finalAssessors; //The addresses of the final set of assessors who have completed the assessment process
+  address tag; //The address of the tag that is being assessed
+  address userMaster; //The address of the UserMaster
+  address tagMaster; //The address of the TagMaster
+  address random; //The address of the Random contract
+  uint poolSizeRemaining; //The remaining number of users to be added to the assessor pool
+  uint numberOfAssessors; //The number of assessors requested for this assessment
   mapping(address => int) assessmentResults; //Pass/Fail and Score given by assessors
-  mapping(int => bool) inRewardCluster;
-  mapping(address => string[]) data;
-  address[] potentialAssessors;
-  int finalScore;
-  bool finalResult;
-  uint referenceTime;
-  uint referenceBlock;
-  uint numberCancelled = 0;
-  uint doneAssessors = 0;
-  uint resultsSet = 0;
-  uint assessmentTime;
+  mapping(int => bool) inRewardCluster; //A bool that reflects whether or not a score is within the largest cluster of scores
+  mapping(address => string[]) data; //IFFS hashes of data that can be passed between the assessors and the assessee for the assessment to occur
+  address[] potentialAssessors; //The addresses of those randomly selected to be assessors (but may not have confirmed yes)
+  int finalScore; //The final score of the assessee
+  bool finalResult; //The final pass/fail result of the assessee
+  uint referenceTime; //Time used as reference to determine how much time has passed for a certain portion of the assessment
+  uint referenceBlock; //Block used as reference to determine how many blocks have passed for a certain portion of the assessment
+  uint numberCancelled = 0; //The number of assessors who have refused to join the assessment
+  uint doneAssessors = 0; //The number of assessors that are done assessing
+  uint resultsSet = 0; //The number of assessors who have set their score for the assessee
+  uint assessmentTime; //The amount of time allotted for the assessors to judge the assessee and determine their score
 
   modifier onlyTag
   {
