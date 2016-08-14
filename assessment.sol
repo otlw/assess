@@ -35,35 +35,55 @@ contract Assessment
   uint resultsSet = 0; //The number of assessors who have set their score for the assessee
   uint assessmentTime; //The amount of time allotted for the assessors to judge the assessee and determine their score
 
+  /*
+  @type: modifier
+  @name: onlyTag
+  @purpose: to only allow the Tag contract that spawned this assessment to call a function to which this modifier is applied
+  */
   modifier onlyTag
   {
-    if(msg.sender != tag)
+    if(msg.sender != tag) //checks if msg.sender is the tag that spawned this assessment
     {
-      throw;
+      throw; //throws the function call if not
     }
   }
 
+  /*
+  @type: modifier
+  @name: onlyThis
+  @purpose: to only allow the this contract to call a function to which this modifier is applied
+  */
   modifier onlyThis
   {
-    if(msg.sender != address(this))
+    if(msg.sender != address(this)) //Checks if msg.sender is this contract
     {
-      throw;
+      throw; //Throws out the function call if it isn't
     }
   }
 
+  /*
+  @type: modifier
+  @name: onlyAssessorAssessee
+  @purpose: to only allow the assessors and assessee to call a function to which this modifier is applied
+  */
   modifier onlyAssessorAssessee
   {
-    if(msg.sender != assessee && assessors[msg.sender] != 1)
+    if(msg.sender != assessee && assessors[msg.sender] == 0) //Checks if msg.sender has the same address as either the assessee or an assessor
     {
-      throw;
+      throw; //Throws the function call if not
     }
   }
 
+  /*
+  @type: modifier
+  @name: onlyTagAssessment
+  @purpose: to only allow the this contract or the Tag contract that spawned it to call a function to which this modifier is applied
+  */`
   modifier onlyTagAssessment
   {
-    if(msg.sender != address(this) && msg.sender != tag)
+    if(msg.sender != address(this) && msg.sender != tag) //Checks if msg.sender has the same address as this contract or the Tag that spawned it
     {
-      throw;
+      throw; //Throws the function call if not
     }
   }
 
