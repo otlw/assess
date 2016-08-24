@@ -363,6 +363,11 @@ contract Assessment
 
   function payout(uint largestSize) onlyThis
   {
+    if(TagMaster(tagMaster).getTagAddressFromName("account") != tag)
+    {
+      Tag(tag).pay(assessee, UserMaster(userMaster).getTokenBalance(assessee) - int(assessmentTime*finalAssessors.length));
+      User(assessee).notification("You have been charged for your assessment", tag, 19);
+    }
     for(uint i = 0; i < finalAssessors.length; i++)
     {
       int score = assessmentResults[finalAssessors[i]];
@@ -381,11 +386,6 @@ contract Assessment
       {
         Tag(tag).pay(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) - payoutValue);
         User(finalAssessors[i]).notification("You Have Received A Fine For Your Assessment", tag, 16);
-      }
-      if(TagMaster(tagMaster).getTagAddressFromName("account") != tag)
-      {
-        Tag(tag).pay(assessee, UserMaster(userMaster).getTokenBalance(assessee) - int(assessmentTime*finalAssessors.length));
-        User(assessee).notification("You have been charged for your assessment", tag, 19);
       }
     }
     returnResults();
