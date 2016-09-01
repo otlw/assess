@@ -47,7 +47,7 @@ contract UserMaster
 
   /*
   @type: constructor function
-  @purpose: To initialize the userMaster contract and have it make the account tag
+  @purpose: To initialize the userMaster contract
   @param: address creator = the address of the creator contract
   @returns: nothing
   */
@@ -77,7 +77,6 @@ contract UserMaster
     {
       User newUser = new User(0x83A6175DA23563D9DC3A9CDA1ec77EB02abF2630, address(this), tagMasterAddress); //Makes a new user that represents Jared's address
       availability[address(newUser)] = true; //Sets the availability of this user to true
-      Tag(TagMaster(tagMasterAddress).getTagAddressFromName("account")).addFirstUser(address(newUser)); //Gives the first user the account tag so it can be used to verify users made later
       UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
       firstUserMade = true; //Sets firstUserMade to true so this function will not be able to create more users
     }
@@ -93,7 +92,6 @@ contract UserMaster
   function addUser(address userAddress)
   {
     User newUser = new User(userAddress, address(this), tagMasterAddress); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
-    Tag(TagMaster(tagMasterAddress).getTagAddressFromName("account")).makeAssessment(address(newUser), 5, 600); //Starts the account tag assessment process for the newly created tag to make sure it isnt a shitty bot
     UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
   }
 

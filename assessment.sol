@@ -78,7 +78,7 @@ contract Assessment
   @type: modifier
   @name: onlyTagAssessment
   @purpose: to only allow the this contract or the Tag contract that spawned it to call a function to which this modifier is applied
-  */`
+  */
   modifier onlyTagAssessment
   {
     if(msg.sender != address(this) && msg.sender != tag) //Checks if msg.sender has the same address as this contract or the Tag that spawned it
@@ -363,11 +363,8 @@ contract Assessment
 
   function payout(uint largestSize) onlyThis
   {
-    if(TagMaster(tagMaster).getTagAddressFromName("account") != tag)
-    {
-      Tag(tag).pay(assessee, UserMaster(userMaster).getTokenBalance(assessee) - int(assessmentTime*finalAssessors.length));
-      User(assessee).notification("You have been charged for your assessment", tag, 19);
-    }
+    Tag(tag).pay(assessee, UserMaster(userMaster).getTokenBalance(assessee) - int(assessmentTime*finalAssessors.length));
+    User(assessee).notification("You have been charged for your assessment", tag, 19);
     for(uint i = 0; i < finalAssessors.length; i++)
     {
       int score = assessmentResults[finalAssessors[i]];

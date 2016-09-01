@@ -31,19 +31,6 @@ contract User
   }
 
   /*
-  @type: modifier
-  @name: onlyUserOrAccount
-  @purpose: to only allow the user's wallet contract or the account tag to call a function to which this modifier is applied
-  */
-  modifier onlyUserOrAccount
-  {
-    if(msg.sender != user && msg.sender != TagMaster(tagMaster).getTagAddressFromName("account")) //checks if msg.sender has the same address as the user's wallet or the account tag
-    {
-      throw; //throw the function call if not
-    }
-  }
-
-  /*
   @type: event
   @name: Notification
   @purpose: To provide a user with notifications
@@ -57,7 +44,7 @@ contract User
 
   /*
   @type: constructor function
-  @purpose: To initialize the user contract and have it make the account tag
+  @purpose: To initialize the user contract
   @param: address userAddress = the address of the user's wallet
   @param: address masterAddress = the address of the user master that spawned this user
   @returns: nothing
@@ -167,7 +154,7 @@ contract User
   @param: address receiver = the address of the wallet that will receive of the ether
   @returns: nothing
   */
-  function remove(address reciever) onlyUserOrAccount
+  function remove(address reciever) onlyUser
   {
     suicide(reciever);
   }

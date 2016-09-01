@@ -20,6 +20,7 @@ contract Tag
   int maxScore = 0; //The highest score acheived for this tag
   uint maxSize = 5; //The largest assessment taken for this tag
   address[] owners; //Those who have earned the tag
+  address mew;
   mapping (address => address[]) assessmentHistory; //All assessments completed
   mapping (address => int) currentScores; //The most recent score of a user
   mapping (address => uint) assessmentSizes; //The most recent size of an assessment taken by a user
@@ -77,7 +78,7 @@ contract Tag
 
   /*
   @type: constructor function
-  @purpose: To initialize the Tag contract and have it make the account tag
+  @purpose: To initialize the Tag contract
   @param: string tagName = the name of the tagName
   @param: address[] parents = the addresses of the tag's parents
   @param: address userMasterAddress = the address of the UserMaster contract
@@ -100,12 +101,17 @@ contract Tag
   @param: address firstUser = the address of the first user to own the tag
   @returns: nothing
   */
-  function addFirstUser(address firstUser) onlyUserMaster
+  function addUser(address user) onlyUserMaster
   {
-    if(owners.length == 0) //cheks if there aren't any owners yet
+    if(address(this) == mew)
     {
-      owners.push(firstUser); //If there aren't then firstUser is made to be an owner of this tag
+      owners.push(user); //If there aren't then firstUser is made to be an owner of this tag
     }
+  }
+
+  function setMew(address mewAddress) onlyTagMaster
+  {
+    mew = mewAddress;
   }
 
   /*
@@ -266,11 +272,11 @@ contract Tag
   */
   function setAssessorPool(address tagAddress, address assessment, uint seed, uint size) onlyThis
   {
-    if(Tag(TagMaster(tagMaster).getTagAddressFromName("account")).getOwnerLength() < Assessment(assessment).getAssessmentPoolSize()) //Checks if the requested pool size is greater than the number of users in the system
+    if(Tag(TagMaster(tagMaster).getTagAddressFromName("mew")).getOwnerLength() < Assessment(assessment).getAssessmentPoolSize()) //Checks if the requested pool size is greater than the number of users in the system
     {
-      for(uint i = 0; i < Tag(TagMaster(tagMaster).getTagAddressFromName("account")).getOwnerLength(); i++) //If so, all users in the system are added to the pool
+      for(uint i = 0; i < Tag(TagMaster(tagMaster).getTagAddressFromName("mew")).getOwnerLength(); i++) //If so, all users in the system are added to the pool
       {
-        Assessment(assessment).addToAssessorPool(Tag(TagMaster(tagMaster).getTagAddressFromName("account")).getOwner(i));
+        Assessment(assessment).addToAssessorPool(Tag(TagMaster(tagMaster).getTagAddressFromName("mew")).getOwner(i));
       }
       Assessment(assessment).setAssessmentPoolSize(0); //Sets the remaining amount of user's desired in the pool to 0
       Assessment(assessment).setPotentialAssessor(size); //Has the assessment select random potential assessors (the amount is dictated by the size variable)
@@ -371,10 +377,6 @@ contract Tag
       {
         owners.push(assessee); //Makes the assessee an owner of this tag
         UserMaster(userMaster).mapAchievement(assessee,address(this)); //Maps the assessee to this tag in the user master as one of the assessee's achievments
-      }
-      if(pass == false && address(this) == TagMaster(tagMaster).getTagAddressFromName("account"))
-      {
-        User(assessee).remove(userMaster); //If the assessee failed and this tag is the account tag the assesee's user is destroyed
       }
       assessmentHistory[assessee].push(assessment); //Adds the assessment to the assessment history array
       currentScores[assessee] = score; //Maps the assessee to their score

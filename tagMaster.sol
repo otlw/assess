@@ -17,6 +17,7 @@ contract TagMaster
   address userMasterAddress; //The address of the userMaster contract
   bool locked = false; //Keeps track of whether or not the function to set the userMasterAddress variable is locked yet or not
   address randomAddress; //The address of the random contract
+  address mewAddress;
 
   /*
   @type: modifier
@@ -48,7 +49,7 @@ contract TagMaster
 
   /*
   @type: constructor function
-  @purpose: To initialize the tagMaster contract and have it make the account tag
+  @purpose: To initialize the tagMaster contract and have it make the random contract
   @returns: nothing
   */
   function TagMaster()
@@ -79,6 +80,10 @@ contract TagMaster
     if(locked == false) //Checks if the userMasterAddress has already been set
     {
       userMasterAddress = userMaster; //Sets the userMasterAddress to the value of userMaster
+      address[] memory empty;
+      Tag newTag = new Tag("mew", empty, userMasterAddress, address(this), randomAddress);
+      mewAddress = address(newTag);
+      newTag.setMew(mewAddress);
       locked = true; //Makes it so this function cannot be called again
     }
   }
@@ -146,7 +151,7 @@ contract TagMaster
     }
     if(parentList.length == 0) //checks if the tag has no parents
     {
-      parents[0] = getTagAddressFromName("account"); //if it has no parents the account tag is set as its parent
+      parents[0] = getTagAddressFromName("mew"); //if it has no parents the mew tag is set as its parent
     }
     for(uint i=0; i < parentList.length; i++) //iterates over the parentList
     {
@@ -162,6 +167,7 @@ contract TagMaster
     if(response==0) //Checks if there were no errors so far
     {
       Tag newTag = new Tag(name, parents, userMasterAddress, address(this), randomAddress); //Makes a new tag with the provided data
+      newTag.setMew(mewAddress);
       address newTagAddress = address(newTag); //initializes an address variable and sets it equal to the address of the newly created tag
       mapTagName(newTagAddress,name); //Maps the tag name to the tag address
       mapTagAddressFromName(name,newTagAddress); //Maps the tag address the the tag name
