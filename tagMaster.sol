@@ -54,8 +54,6 @@ contract TagMaster
   */
   function TagMaster()
   {
-    Random random = new Random(); //Makes a new instance of the random contract
-    randomAddress = address(random); //Sets the value of randomAddress to the address of the newly created random contract
   }
 
   /*
@@ -75,11 +73,12 @@ contract TagMaster
   @param: address userMaster = the address of the userMaster contract
   @returns: nothing
   */
-  function setUserMasterAddress(address userMaster)
+  function init(address userMaster, address random)
   {
     if(locked == false) //Checks if the userMasterAddress has already been set
     {
       userMasterAddress = userMaster; //Sets the userMasterAddress to the value of userMaster
+      randomAddress = random;
       address[] memory empty;
       Tag newTag = new Tag("mew", empty, userMasterAddress, address(this), randomAddress);
       mewAddress = address(newTag);
@@ -178,16 +177,5 @@ contract TagMaster
       }
     }
     TagCreation(response, name, newTagAddress, parents); //Makes TagCreation event with provided data
-  }
-
-  /*
-  @type: function
-  @purpose: to remove this contract
-  @param: address receiver = the address of the wallet that will receive of the ether
-  @returns: nothing
-  */
-  function remove(address reciever) onlyThis
-  {
-    suicide(reciever);
   }
 }
