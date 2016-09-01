@@ -148,6 +148,11 @@ contract User
     return userData;
   }
 
+  function transferTokens(address user, int amount) constant returns(bool)
+  {
+    return UserMaster(master).transferTokens(user,amount);
+  }
+
   /*
   @type: function
   @purpose: to remove this contract

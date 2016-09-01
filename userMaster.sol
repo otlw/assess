@@ -178,6 +178,20 @@ contract UserMaster
     return availability[user];
   }
 
+  function transferTokens(address user, int amount) returns(bool)
+  {
+    if(amount > 0 && tokenBalance[msg.sender] > amount)
+    {
+      tokenBalance[msg.sender] -= amount;
+      tokenBalance[user] += amount;
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
   /*
   @type: function
   @purpose: to remove this contract
