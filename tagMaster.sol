@@ -73,16 +73,14 @@ contract TagMaster
   @param: address userMaster = the address of the userMaster contract
   @returns: nothing
   */
-  function init(address userMaster, address random)
+  function init(address userMaster, address random, address mew)
   {
-    if(locked == false) //Checks if the userMasterAddress has already been set
+    if(locked == false) //Checks if the function has already been called
     {
       userMasterAddress = userMaster; //Sets the userMasterAddress to the value of userMaster
       randomAddress = random;
-      address[] memory empty;
-      Tag newTag = new Tag("mew", empty, userMasterAddress, address(this), randomAddress);
-      mewAddress = address(newTag);
-      newTag.setMew(mewAddress);
+      mewAddress = mew;
+      Tag(mewAddress).setMew(mewAddress);
       locked = true; //Makes it so this function cannot be called again
     }
   }
