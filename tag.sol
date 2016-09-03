@@ -272,11 +272,11 @@ contract Tag
   */
   function setAssessorPool(address tagAddress, address assessment, uint seed, uint size) onlyThis
   {
-    if(Tag(TagMaster(tagMaster).getTagAddressFromName("mew")).getOwnerLength() < Assessment(assessment).getAssessmentPoolSize()) //Checks if the requested pool size is greater than the number of users in the system
+    if(Tag(mew).getOwnerLength() < Assessment(assessment).getAssessmentPoolSize()) //Checks if the requested pool size is greater than the number of users in the system
     {
-      for(uint i = 0; i < Tag(TagMaster(tagMaster).getTagAddressFromName("mew")).getOwnerLength(); i++) //If so, all users in the system are added to the pool
+      for(uint i = 0; i < Tag(mew).getOwnerLength(); i++) //If so, all users in the system are added to the pool
       {
-        Assessment(assessment).addToAssessorPool(Tag(TagMaster(tagMaster).getTagAddressFromName("mew")).getOwner(i));
+        Assessment(assessment).addToAssessorPool(Tag(mew).getOwner(i));
       }
       Assessment(assessment).setAssessmentPoolSize(0); //Sets the remaining amount of user's desired in the pool to 0
       Assessment(assessment).setPotentialAssessor(size); //Has the assessment select random potential assessors (the amount is dictated by the size variable)
