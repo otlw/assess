@@ -80,6 +80,17 @@ contract UserMaster
     UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
   }
 
+  function firstUser(address userAddress)
+  {
+    if(firstUserMade == false)
+    {
+      User newUser = new User(userAddress, address(this), tagMasterAddress); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
+      Tag(TagMaster(tagMasterAddress).getMew()).addUser(address(newUser));
+      UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
+      tokenBalance[address(newUser)] = 1000;
+    }
+  }
+
   /*
   @type: function
   @purpose: To map the address of a user to the address of the tag that the user has just passed
