@@ -68,22 +68,6 @@ contract UserMaster
 
   /*
   @type: function
-  @purpose: To create the first user in the system
-  @returns: nothing
-  */
-  function firstUser()
-  {
-    if(firstUserMade == false) //Checks to make sure the first user has not already been made
-    {
-      User newUser = new User(0x83A6175DA23563D9DC3A9CDA1ec77EB02abF2630, address(this), tagMasterAddress); //Makes a new user that represents Jared's address
-      availability[address(newUser)] = true; //Sets the availability of this user to true
-      UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
-      firstUserMade = true; //Sets firstUserMade to true so this function will not be able to create more users
-    }
-  }
-
-  /*
-  @type: function
   @purpose: To create a user contract
   @param: address userAddress = the address of the user's wallet
   @param: address masterAddress = the address of the master contract that stores this user's address
@@ -92,6 +76,7 @@ contract UserMaster
   function addUser(address userAddress)
   {
     User newUser = new User(userAddress, address(this), tagMasterAddress); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
+    Tag(TagMaster(tagMasterAddress).getMew()).addUser(address(newUser));
     UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
   }
 

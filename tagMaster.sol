@@ -67,6 +67,11 @@ contract TagMaster
    return tagExists[tagAddress];
   }
 
+  function getMew() returns(address)
+  {
+    return mewAddress;
+  }
+
   /*
   @type: function
   @purpose: To set the userMasterAddress
