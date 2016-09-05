@@ -110,12 +110,9 @@ contract UserMaster
   @param: bool available = the availa status of the user to assess
   @returns: nothing
   */
-  function mapAvailability(address user, bool available)
+  function mapAvailability(bool available)
   {
-    if(msg.sender == user) //checks if the address that is calling the function is the same as the user whose availability is being set
-    {
-      availability[user] = available; //sets the availability of the user specified in the parameter to the availability specified in the parameter
-    }
+    availability[msg.sender] = available; //sets the availability of the user specified in the parameter to the availability specified in the parameter
   }
 
   /*

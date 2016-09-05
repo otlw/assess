@@ -64,7 +64,7 @@ contract User
   */
   function setAvailability(bool available) onlyUser
   {
-    UserMaster(master).mapAvailability(address(this), available); //Sets the user's availability to the value of the parameter
+    UserMaster(master).mapAvailability(available); //Sets the user's availability to the value of the parameter
   }
 
   /*
@@ -148,7 +148,7 @@ contract User
     return userData;
   }
 
-  function transferTokens(address user, int amount) constant returns(bool)
+  function transferTokens(address user, int amount) onlyUser constant returns(bool)
   {
     return UserMaster(master).transferTokens(user,amount);
   }
