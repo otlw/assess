@@ -13,7 +13,7 @@ contract UserMaster
 {
   address tagMasterAddress; //The address of the tagMaster contract
   mapping (address => int)  tokenBalance; //Maps the addresses of users to their token balances
-  mapping (address => address[])  achievements; //Maps the addresses of users to an array of addresses that contain the addresses of the tags that they have passed an assessment in
+  mapping (address => address[])  history; //Maps the addresses of users to an array of addresses that contain the addresses of their assessments
   mapping (address => bool)  availability; //Maps the addresses of users to their availability status for whether or not they can currently assess someone
   mapping (address => address)  users; //Maps the addresses of the users to their actual location of the blockchain
   bool firstUserMade = false; //Keeps track of whether or not the first user has been made yet
@@ -95,12 +95,12 @@ contract UserMaster
   @type: function
   @purpose: To map the address of a user to the address of the tag that the user has just passed
   @param: address user = the address of the user
-  @param: address acheivment = the address of the tag just passed
+  @param: address assessment = the address of the assessment completed
   @returns: nothing
   */
-  function mapAchievement(address user, address achievment) onlyTag
+  function mapHistory(address user, address assessment) onlyTag
   {
-    achievements[user].push(achievment); //adds the address of the tag to the end of the array that is mapped to the user
+    history[user].push(assessment); //adds the address of the tag to the end of the array that is mapped to the user
   }
 
   /*
@@ -140,24 +140,24 @@ contract UserMaster
 
   /*
   @type: function
-  @purpose: To get the addresses of the tags that the user has achieved
+  @purpose: To get the addresses of the assessments that the user has completed
   @param: address user = the address of the user
-  @returns: The addresses of the tags that the user has achieved in the form of an array of addresses
+  @returns: The addresses of the assessments that the user has completed in the form of an array of addresses
   */
-  function getAchievement(address user) constant returns(address[])
+  function getHistory(address user) constant returns(address[])
   {
-    return achievements[user];
+    return history[user];
   }
 
   /*
   @type: function
-  @purpose: To get the number of achievments of a user
+  @purpose: To get the number of assessments completed by a user
   @param: address user = the address of the user
-  @returns: The number of achievments of a user in the form of a uint
+  @returns: The number of assessments that a user has completed in the form of a uint
   */
-  function getNumberOfachievments(address user) constant returns(uint)
+  function getNumberOfHistory(address user) constant returns(uint)
   {
-    return achievements[user].length;
+    return history[user].length;
   }
 
   /*

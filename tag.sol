@@ -376,8 +376,8 @@ contract Tag
       if(pass == true) //If the assessee passed
       {
         owners.push(assessee); //Makes the assessee an owner of this tag
-        UserMaster(userMaster).mapAchievement(assessee,address(this)); //Maps the assessee to this tag in the user master as one of the assessee's achievments
       }
+      UserMaster(userMaster).mapHistory(assessee,assessment); //Maps the assessee to the assessment in the user master as part of the assessee's history
       assessmentHistory[assessee].push(assessment); //Adds the assessment to the assessment history array
       currentScores[assessee] = score; //Maps the assessee to their score
       assessmentSizes[assessee] = Assessment(assessment).getNumberOfAssessors(); //Maps the assessee to the assessment size
