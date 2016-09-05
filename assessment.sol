@@ -40,12 +40,13 @@ contract Assessment
   @name: onlyTag
   @purpose: to only allow the Tag contract that spawned this assessment to call a function to which this modifier is applied
   */
-  modifier onlyTag
+  modifier onlyTag()
   {
     if(msg.sender != tag) //checks if msg.sender is the tag that spawned this assessment
     {
       throw; //throws the function call if not
     }
+    _;
   }
 
   /*
@@ -53,12 +54,13 @@ contract Assessment
   @name: onlyThis
   @purpose: to only allow the this contract to call a function to which this modifier is applied
   */
-  modifier onlyThis
+  modifier onlyThis()
   {
     if(msg.sender != address(this)) //Checks if msg.sender is this contract
     {
       throw; //Throws out the function call if it isn't
     }
+    _;
   }
 
   /*
@@ -66,12 +68,13 @@ contract Assessment
   @name: onlyAssessorAssessee
   @purpose: to only allow the assessors and assessee to call a function to which this modifier is applied
   */
-  modifier onlyAssessorAssessee
+  modifier onlyAssessorAssessee()
   {
     if(msg.sender != assessee && assessors[msg.sender] == 0) //Checks if msg.sender has the same address as either the assessee or an assessor
     {
       throw; //Throws the function call if not
     }
+    _;
   }
 
   /*
@@ -79,12 +82,13 @@ contract Assessment
   @name: onlyTagAssessment
   @purpose: to only allow the this contract or the Tag contract that spawned it to call a function to which this modifier is applied
   */
-  modifier onlyTagAssessment
+  modifier onlyTagAssessment()
   {
     if(msg.sender != address(this) && msg.sender != tag) //Checks if msg.sender has the same address as this contract or the Tag that spawned it
     {
       throw; //Throws the function call if not
     }
+    _;
   }
 
   function Assessment(address assesseeAddress, address tagAddress, address userMasterAddress, address tagMasterAddress, address randomAddress, uint time)
@@ -103,21 +107,21 @@ contract Assessment
   event PotentialAssessorSet(address _potentialAssessor);
   event DataSet(address _dataSetter, uint _index);
 
-  function getReferenceBlock() onlyTag returns(uint)
+  function getReferenceBlock() onlyTag() returns(uint)
   {
     return referenceBlock;
   }
-  function setNumberOfAssessors(uint number) onlyTag
+  function setNumberOfAssessors(uint number) onlyTag()
   {
     numberOfAssessors = number;
   }
 
-  function getNumberOfAssessors() onlyTag constant returns(uint)
+  function getNumberOfAssessors() onlyTag() constant returns(uint)
   {
     return numberOfAssessors;
   }
 
-  function setAssessmentPoolSize(uint sizeRemaining) onlyTag
+  function setAssessmentPoolSize(uint sizeRemaining) onlyTag()
   {
     if(poolSizeRemaining > 0)
     {
@@ -125,12 +129,12 @@ contract Assessment
     }
   }
 
-  function getAssessmentPoolSize() onlyTag constant returns(uint)
+  function getAssessmentPoolSize() onlyTag() constant returns(uint)
   {
     return poolSizeRemaining;
   }
 
-  function addToAssessorPool(address potentialAddress) onlyTag
+  function addToAssessorPool(address potentialAddress) onlyTag()
   {
     assessorPool.push(potentialAddress);
   }
@@ -168,7 +172,7 @@ contract Assessment
     }
   }
 
-  function getAssessorPoolLength() onlyTag constant returns(uint)
+  function getAssessorPoolLength() onlyTag() constant returns(uint)
   {
     return assessorPool.length;
   }
@@ -209,7 +213,7 @@ contract Assessment
     }
   }
 
-  function notifyStart() onlyThis
+  function notifyStart() onlyThis()
   {
     for(uint i = 0; i < finalAssessors.length; i++)
     {
@@ -219,7 +223,7 @@ contract Assessment
     referenceTime = now;
   }
 
-  function setData(string newData) onlyAssessorAssessee
+  function setData(string newData) onlyAssessorAssessee()
   {
     data[msg.sender].push(newData);
     DataSet(msg.sender, data[msg.sender].length - 1);
@@ -230,7 +234,7 @@ contract Assessment
     return data[dataSetter][index];
   }
 
-  function cancelAssessment() onlyTagAssessment
+  function cancelAssessment() onlyTagAssessment()
   {
     User(assessee).notification("Assessment Cancled", tag, 8);
     for(uint i = 0; i < finalAssessors.length; i++)
@@ -294,7 +298,7 @@ contract Assessment
     }
   }
 
-  function calculateMAD(int[] scores, int n) onlyThis constant returns(int)
+  function calculateMAD(int[] scores, int n) onlyThis() constant returns(int)
   {
     int meanScore;
     int totalRelativeDistance;
@@ -318,7 +322,7 @@ contract Assessment
     return meanAbsoluteDeviation;
   }
 
-  function calculateResult() onlyThis
+  function calculateResult() onlyThis()
   {
     mapping(uint => int[]) clusters;
     int[] memory scores = new int[] (finalAssessors.length);
@@ -361,7 +365,7 @@ contract Assessment
     payout(clusters[largestClusterIndex].length);
   }
 
-  function payout(uint largestSize) onlyThis
+  function payout(uint largestSize) onlyThis()
   {
     Tag(tag).pay(assessee, UserMaster(userMaster).getTokenBalance(assessee) - int(assessmentTime*finalAssessors.length));
     User(assessee).notification("You have been charged for your assessment", tag, 19);
@@ -388,7 +392,7 @@ contract Assessment
     returnResults();
   }
 
-  function returnResults() onlyThis
+  function returnResults() onlyThis()
   {
     Tag(tag).finishAssessment(finalResult, finalScore, assessee, address(this));
   }

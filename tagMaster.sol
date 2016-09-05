@@ -24,12 +24,13 @@ contract TagMaster
   @name: onlyThis
   @purpose: to only allow the this contract to call a function to which this modifier is applied
   */
-  modifier onlyThis
+  modifier onlyThis()
   {
     if(msg.sender != address(this)) //Checks if msg.sender is this contract
     {
       throw; //Throws out the function call if it isn't
     }
+    _;
   }
 
   /*
@@ -97,7 +98,7 @@ contract TagMaster
   @param: string name = the name of the tag being mapped
   @return: nothing
   */
-  function mapTagName(address tagAddress, string name) onlyThis
+  function mapTagName(address tagAddress, string name) onlyThis()
   {
     tagName[tagAddress] = name; //maps the name of the tag to its address
   }
@@ -109,7 +110,7 @@ contract TagMaster
   @param: address tagAddress = the address of the tag being mapped
   @returns: nothing
   */
-  function mapTagAddressFromName(string name, address tagAddress) onlyThis
+  function mapTagAddressFromName(string name, address tagAddress) onlyThis()
   {
     tagAddressFromName[name] = tagAddress; //maps the address of the tag to its name
   }

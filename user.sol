@@ -28,6 +28,7 @@ contract User
     {
       throw; //throws the function call if not
     }
+    _;
   }
 
   /*
@@ -62,7 +63,7 @@ contract User
   @param: bool available = the availability of the user
   @returns: nothing
   */
-  function setAvailability(bool available) onlyUser
+  function setAvailability(bool available) onlyUser()
   {
     UserMaster(master).mapAvailability(available); //Sets the user's availability to the value of the parameter
   }
@@ -74,7 +75,7 @@ contract User
   @param: uint confirm = The user's confirmation code
   @returns: nothing
   */
-  function confirmAssessment(address assessment, uint confirm) onlyUser
+  function confirmAssessment(address assessment, uint confirm) onlyUser()
   {
     Assessment(assessment).confirmAssessor(confirm); //Sends the user's confromation to the assessmnet
   }
@@ -86,7 +87,7 @@ contract User
   @param: string data = the IPFS hash
   @returns: nothing
   */
-  function setAssessmentData(address assessment, string data) onlyUser
+  function setAssessmentData(address assessment, string data) onlyUser()
   {
     Assessment(assessment).setData(data); //Gives the assessment the IPFS hash
   }
@@ -97,7 +98,7 @@ contract User
   @param: address assessment =  The assessment that the user has been called to assess
   @returns: nothing
   */
-  function doneAssessing(address assessment) onlyUser
+  function doneAssessing(address assessment) onlyUser()
   {
     Assessment(assessment).doneAssessing(); //Sets the user as done assessing in the assessment
   }
@@ -109,7 +110,7 @@ contract User
   @param: uint score = the score that the user decided on
   @returns: nothing
   */
-  function setResult(address assessment, int score) onlyUser
+  function setResult(address assessment, int score) onlyUser()
   {
     Assessment(assessment).setResult(score); //Sends to score to the assessment
   }
@@ -133,7 +134,7 @@ contract User
   @param: string hash = IPFS hash containing the user information
   @returns: nothing
   */
-  function setUserData(string hash) onlyUser
+  function setUserData(string hash) onlyUser()
   {
     userData = hash; //Sets userData to the hash value
   }
@@ -148,7 +149,7 @@ contract User
     return userData;
   }
 
-  function transferTokens(address user, int amount) onlyUser constant returns(bool)
+  function transferTokens(address user, int amount) onlyUser() constant returns(bool)
   {
     return UserMaster(master).transferTokens(user,amount);
   }
@@ -159,7 +160,7 @@ contract User
   @param: address receiver = the address of the wallet that will receive of the ether
   @returns: nothing
   */
-  function remove(address reciever) onlyUser
+  function remove(address reciever) onlyUser()
   {
     suicide(reciever);
   }

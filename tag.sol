@@ -31,12 +31,13 @@ contract Tag
   @name: onlyUserMaster
   @purpose: to only allow the UserMaster contract to call a function to which this modifier is applied
   */
-  modifier onlyUserMaster
+  modifier onlyUserMaster()
   {
     if(msg.sender != userMaster) //checks if msg.sender has the same address as userMaster
     {
       throw; //throws the function call if not
     }
+    _;
   }
 
   /*
@@ -44,12 +45,13 @@ contract Tag
   @name: onlyTagMaster
   @purpose: to only allow the TagMaster contract to call a function to which this modifier is applied
   */
-  modifier onlyTagMaster
+  modifier onlyTagMaster()
   {
     if(msg.sender != tagMaster) //checks if msg.sender has the same address as tagMaster
     {
       throw; //throws the function call if not
     }
+    _;
   }
 
   /*
@@ -57,12 +59,13 @@ contract Tag
   @name: onlyThis
   @purpose: to only allow the this contract to call a function to which this modifier is applied
   */
-  modifier onlyThis
+  modifier onlyThis()
   {
     if(msg.sender != address(this)) //Checks if msg.sender is this contract
     {
       throw; //Throws out the function call if it isn't
     }
+    _;
   }
 
   /*
@@ -101,7 +104,7 @@ contract Tag
   @param: address firstUser = the address of the first user to own the tag
   @returns: nothing
   */
-  function addUser(address user) onlyUserMaster
+  function addUser(address user) onlyUserMaster()
   {
     if(address(this) == mew)
     {
@@ -109,7 +112,7 @@ contract Tag
     }
   }
 
-  function setMew(address mewAddress) onlyTagMaster
+  function setMew(address mewAddress) onlyTagMaster()
   {
     mew = mewAddress;
   }
@@ -204,7 +207,7 @@ contract Tag
   @param: address parentAddress = the address of the new parent tag
   @returns: nothing
   */
-  function addParent(address parentAddress) onlyTagMaster
+  function addParent(address parentAddress) onlyTagMaster()
   {
     parentTags.push(parentAddress);
   }
@@ -246,7 +249,7 @@ contract Tag
   @param: address childAddress = the address of the new child tag
   @returns: nothing
   */
-  function addChild(address childAddress) onlyTagMaster
+  function addChild(address childAddress) onlyTagMaster()
   {
     childTags.push(childAddress);
   }
@@ -270,7 +273,7 @@ contract Tag
   @param: uint size = the desired size of the assessment
   @returns: nothing
   */
-  function setAssessorPool(address tagAddress, address assessment, uint seed, uint size) onlyThis
+  function setAssessorPool(address tagAddress, address assessment, uint seed, uint size) onlyThis()
   {
     if(Tag(mew).getOwnerLength() < Assessment(assessment).getAssessmentPoolSize()) //Checks if the requested pool size is greater than the number of users in the system
     {
@@ -413,7 +416,7 @@ contract Tag
   @param: address receiver = the address of the wallet that will receive of the ether
   @returns: nothing
   */
-  function remove(address reciever) onlyThis
+  function remove(address reciever) onlyThis()
   {
     suicide(reciever);
   }

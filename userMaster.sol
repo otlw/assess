@@ -24,12 +24,13 @@ contract UserMaster
   @name: onlyTag
   @purpose: to only allow the Tag contract to call a function to which this modifier is applied
   */
-  modifier onlyTag
+  modifier onlyTag()
   {
     if(TagMaster(tagMasterAddress).checkTag(msg.sender) == false) //checks if the address calling the function is not a tag
     {
       throw; //throws out the fucntion call
     }
+    _;
   }
 
   /*
@@ -37,12 +38,13 @@ contract UserMaster
   @name: onlyThis
   @purpose: to only allow the this contract to call a function to which this modifier is applied
   */
-  modifier onlyThis
+  modifier onlyThis()
   {
     if(msg.sender != address(this)) //Checks if msg.sender is this contract
     {
       throw; //Throws out the function call if it isn't
     }
+    _;
   }
 
   /*
@@ -98,7 +100,7 @@ contract UserMaster
   @param: address assessment = the address of the assessment completed
   @returns: nothing
   */
-  function mapHistory(address user, address assessment) onlyTag
+  function mapHistory(address user, address assessment) onlyTag()
   {
     history[user].push(assessment); //adds the address of the tag to the end of the array that is mapped to the user
   }
@@ -122,7 +124,7 @@ contract UserMaster
   @param: uint balance = the new token balance for the user
   @returns: nothing
   */
-  function mapTokenBalance(address user, int balance) onlyTag
+  function mapTokenBalance(address user, int balance) onlyTag()
   {
     tokenBalance[user] = balance; //sets the token balance of the user
   }
@@ -191,7 +193,7 @@ contract UserMaster
   @param: address receiver = the address of the wallet that will receive of the ether
   @returns: nothing
   */
-  function remove(address reciever) onlyThis
+  function remove(address reciever) onlyThis()
   {
     suicide(reciever);
   }
