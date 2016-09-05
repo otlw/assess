@@ -154,7 +154,7 @@ contract TagMaster
     }
     if(parentList.length == 0) //checks if the tag has no parents
     {
-      parents[0] = getTagAddressFromName("mew"); //if it has no parents the mew tag is set as its parent
+      parents[0] = mewAddress; //if it has no parents the mew tag is set as its parent
     }
     for(uint i=0; i < parentList.length; i++) //iterates over the parentList
     {

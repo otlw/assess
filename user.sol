@@ -149,7 +149,7 @@ contract User
     return userData;
   }
 
-  function transferTokens(address user, int amount) onlyUser() constant returns(bool)
+  function transferTokens(address user, int amount) onlyUser() returns(bool)
   {
     return UserMaster(master).transferTokens(user,amount);
   }
