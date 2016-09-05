@@ -22,13 +22,13 @@ contract User
   @name: onlyUser
   @purpose: to only allow the user's wallet contract to call a function to which this modifier is applied
   */
-  modifier onlyUser
+  modifier onlyUser()
   {
     if(msg.sender != user) //checks if msg.sender has the same address as the user's wallet
     {
       throw; //throws the function call if not
     }
-    _;
+    _
   }
 
   /*

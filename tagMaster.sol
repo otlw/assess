@@ -30,7 +30,7 @@ contract TagMaster
     {
       throw; //Throws out the function call if it isn't
     }
-    _;
+    _
   }
 
   /*

@@ -30,7 +30,7 @@ contract UserMaster
     {
       throw; //throws out the fucntion call
     }
-    _;
+    _
   }
 
   /*
@@ -44,7 +44,7 @@ contract UserMaster
     {
       throw; //Throws out the function call if it isn't
     }
-    _;
+    _
   }
 
   /*
