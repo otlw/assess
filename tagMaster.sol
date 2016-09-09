@@ -11,8 +11,6 @@ import "user.sol";
 */
 contract TagMaster
 {
-  mapping (address => string) tagName; //Maps the address of tags to their names
-  mapping (string => address) tagAddressFromName; //Maps the names of tags to their addresses
   mapping (address => bool) tagExists; //Maps tag addresses to a bool to confirm their existance
   address userMasterAddress; //The address of the userMaster contract
   bool locked = false; //Keeps track of whether or not the function to set the userMasterAddress variable is locked yet or not
@@ -93,28 +91,6 @@ contract TagMaster
 
   /*
   @type: function
-  @purpose: To get the name of a tag from its address
-  @param: address tagAddress = the address of the tag
-  @returns: The name of the tag in the form of a string
-  */
-  function getTagName(address tagAddress) constant returns(string)
-  {
-    return tagName[tagAddress];
-  }
-
-  /*
-  @type: function
-  @purpose: To get the address of a tag from its name
-  @param: string name = the name of the tag
-  @returns: The address of the tag in the form of an address
-  */
-  function getTagAddressFromName(string name) constant returns(address)
-  {
-    return tagAddressFromName[name];
-  }
-
-  /*
-  @type: function
   @purpose: To make a tag
   @param: string name = the name of the tag to be made
   @param: address[] parentList = an array of addresses containing the addresses of the tags parents
@@ -124,10 +100,6 @@ contract TagMaster
   {
     uint response = 0; //initializes the error code
     address[] memory parents = new address[] (parentList.length); //initializes an array in memory to hold the values in parentList
-    if(getTagAddressFromName(name) != 0) //checks if another tag already has this name
-    {
-      response += 1; //Modifies the error code to reflect that the name is already take (if it is)
-    }
     if(parentList.length == 0) //checks if the tag has no parents
     {
       parents[0] = mewAddress; //if it has no parents the mew tag is set as its parent
@@ -136,7 +108,7 @@ contract TagMaster
     {
       if(checkTag(parentList[i])==true) //checks if the parents exist
       {
-        response += 100*(10**i); //modifies the error code to reflect any nonexistant parents
+        response += (10**i); //modifies the error code to reflect any nonexistant parents
       }
       else
       {
@@ -148,8 +120,6 @@ contract TagMaster
       Tag newTag = new Tag(name, parents, userMasterAddress, address(this), randomAddress); //Makes a new tag with the provided data
       newTag.setMew(mewAddress);
       address newTagAddress = address(newTag); //initializes an address variable and sets it equal to the address of the newly created tag
-      tagName[newTagAddress] = name; //Maps the tag name to the tag address
-      tagAddressFromName[name] = newTagAddress; //Maps the tag address the the tag name
       tagExists[newTagAddress] = true; //Maps the tag address to true to show that it exists
       for(uint j=0; j < parents.length; j++) //Iterates of the parents array in memory
       {
