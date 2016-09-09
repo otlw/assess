@@ -28,7 +28,7 @@ contract User
     {
       throw; //throws the function call if not
     }
-    _
+    _;
   }
 
   /*

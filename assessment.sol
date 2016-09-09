@@ -46,7 +46,7 @@ contract Assessment
     {
       throw; //throws the function call if not
     }
-    _
+    _;
   }
 
   /*
@@ -60,7 +60,7 @@ contract Assessment
     {
       throw; //Throws out the function call if it isn't
     }
-    _
+    _;
   }
 
   /*
@@ -74,7 +74,7 @@ contract Assessment
     {
       throw; //Throws the function call if not
     }
-    _
+    _;
   }
 
   /*
@@ -88,7 +88,7 @@ contract Assessment
     {
       throw; //Throws the function call if not
     }
-    _
+    _;
   }
 
   function Assessment(address assesseeAddress, address tagAddress, address userMasterAddress, address tagMasterAddress, address randomAddress, uint time)

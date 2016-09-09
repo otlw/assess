@@ -37,7 +37,7 @@ contract Tag
     {
       throw; //throws the function call if not
     }
-    _
+    _;
   }
 
   /*
@@ -51,7 +51,7 @@ contract Tag
     {
       throw; //throws the function call if not
     }
-    _
+    _;
   }
 
   /*
@@ -65,7 +65,7 @@ contract Tag
     {
       throw; //Throws out the function call if it isn't
     }
-    _
+    _;
   }
 
   /*

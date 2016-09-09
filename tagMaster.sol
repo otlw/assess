@@ -30,7 +30,7 @@ contract TagMaster
     {
       throw; //Throws out the function call if it isn't
     }
-    _
+    _;
   }
 
   /*
@@ -93,30 +93,6 @@ contract TagMaster
 
   /*
   @type: function
-  @purpose: To map the name of a tag to its address
-  @param: address tagAddress = the address of the tag being mapped
-  @param: string name = the name of the tag being mapped
-  @return: nothing
-  */
-  function mapTagName(address tagAddress, string name) onlyThis()
-  {
-    tagName[tagAddress] = name; //maps the name of the tag to its address
-  }
-
-  /*
-  @type: function
-  @purpose: To map the address of a tag to its name
-  @param: string name = the name of the tag being mapped
-  @param: address tagAddress = the address of the tag being mapped
-  @returns: nothing
-  */
-  function mapTagAddressFromName(string name, address tagAddress) onlyThis()
-  {
-    tagAddressFromName[name] = tagAddress; //maps the address of the tag to its name
-  }
-
-  /*
-  @type: function
   @purpose: To get the name of a tag from its address
   @param: address tagAddress = the address of the tag
   @returns: The name of the tag in the form of a string
@@ -172,8 +148,8 @@ contract TagMaster
       Tag newTag = new Tag(name, parents, userMasterAddress, address(this), randomAddress); //Makes a new tag with the provided data
       newTag.setMew(mewAddress);
       address newTagAddress = address(newTag); //initializes an address variable and sets it equal to the address of the newly created tag
-      mapTagName(newTagAddress,name); //Maps the tag name to the tag address
-      mapTagAddressFromName(name,newTagAddress); //Maps the tag address the the tag name
+      tagName[newTagAddress] = name; //Maps the tag name to the tag address
+      tagAddressFromName[name] = newTagAddress; //Maps the tag address the the tag name
       tagExists[newTagAddress] = true; //Maps the tag address to true to show that it exists
       for(uint j=0; j < parents.length; j++) //Iterates of the parents array in memory
       {
