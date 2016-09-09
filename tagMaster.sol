@@ -99,11 +99,7 @@ contract TagMaster
   function makeTag(string name, address[] parentList)
   {
     uint response = 0; //initializes the error code
-    address[] memory parents = new address[] (parentList.length); //initializes an array in memory to hold the values in parentList
-    if(parentList.length == 0) //checks if the tag has no parents
-    {
-      parents[0] = mewAddress; //if it has no parents the mew tag is set as its parent
-    }
+    address[] memory parents = new address[] (parentList.length);
     for(uint i=0; i < parentList.length; i++) //iterates over the parentList
     {
       if(checkTag(parentList[i])==true) //checks if the parents exist
@@ -121,6 +117,10 @@ contract TagMaster
       newTag.setMew(mewAddress);
       address newTagAddress = address(newTag); //initializes an address variable and sets it equal to the address of the newly created tag
       tagExists[newTagAddress] = true; //Maps the tag address to true to show that it exists
+      if(parents.length == 0)
+      {
+        Tag(mewAddress).addChild(newTagAddress);
+      }
       for(uint j=0; j < parents.length; j++) //Iterates of the parents array in memory
       {
         Tag(parents[j]).addChild(newTagAddress); //Adds the newly created tag to each of the parents as a child

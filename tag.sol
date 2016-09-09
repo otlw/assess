@@ -115,6 +115,10 @@ contract Tag
   function setMew(address mewAddress) onlyTagMaster()
   {
     mew = mewAddress;
+    if(parentTags.length == 0)
+    {
+      parentTags.push(mew);
+    }
   }
 
   /*
