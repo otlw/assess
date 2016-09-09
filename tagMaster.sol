@@ -12,6 +12,8 @@ import "user.sol";
 contract TagMaster
 {
   mapping (address => bool) tagExists; //Maps tag addresses to a bool to confirm their existance
+  mapping (address => string) names; //Maps the tag address to its name
+  mapping (string => address) addresses; //Maps the tag name to its address
   address userMasterAddress; //The address of the userMaster contract
   bool locked = false; //Keeps track of whether or not the function to set the userMasterAddress variable is locked yet or not
   address randomAddress; //The address of the random contract
@@ -71,6 +73,16 @@ contract TagMaster
     return mewAddress;
   }
 
+  function getName(address tagAddress) constant returns(string)
+  {
+    return names[tagAddress];
+  }
+
+  function getAddress(string name) constant returns(address)
+  {
+    return addresses[name];
+  }
+
   /*
   @type: function
   @purpose: To set the userMasterAddress
@@ -117,6 +129,8 @@ contract TagMaster
       newTag.setMew(mewAddress);
       address newTagAddress = address(newTag); //initializes an address variable and sets it equal to the address of the newly created tag
       tagExists[newTagAddress] = true; //Maps the tag address to true to show that it exists
+      names[newTagAddress] = name;
+      addresses[name] = newTagAddress;
       if(parents.length == 0)
       {
         Tag(mewAddress).addChild(newTagAddress);
