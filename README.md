@@ -1,4 +1,4 @@
-[![Join the chat at https://gitter.im/otlw/otlw-assess](https://badges.gitter.im/otlw/otlw-assess.svg)](https://gitter.im/otlw/otlw-assess?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/otlw/assess](https://badges.gitter.im/otlw/assess.svg)](https://gitter.im/otlw/assess?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 About
 ========
