@@ -27,7 +27,6 @@ contract Assessment
   mapping(address => string[]) data; //IFFS hashes of data that can be passed between the assessors and the assessee for the assessment to occur
   address[] potentialAssessors; //The addresses of those randomly selected to be assessors (but may not have confirmed yes)
   int finalScore; //The final score of the assessee
-  bool finalResult; //The final pass/fail result of the assessee
   uint referenceTime; //Time used as reference to determine how much time has passed for a certain portion of the assessment
   uint referenceBlock; //Block used as reference to determine how many blocks have passed for a certain portion of the assessment
   uint numberCancelled = 0; //The number of assessors who have refused to join the assessment
@@ -356,14 +355,6 @@ contract Assessment
     }
     averageScore /= int(clusters[largestClusterIndex].length);
     finalScore = averageScore;
-    if(averageScore > 0)
-    {
-      finalResult = true;
-    }
-    if(averageScore <= 0)
-    {
-      finalResult = false;
-    }
     payout(clusters[largestClusterIndex].length);
   }
 
@@ -394,6 +385,6 @@ contract Assessment
 
   function returnResults() onlyThis()
   {
-    Tag(tag).finishAssessment(finalResult, finalScore, assessee, address(this));
+    Tag(tag).finishAssessment(finalScore, assessee, address(this));
   }
 }

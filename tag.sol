@@ -378,10 +378,19 @@ contract Tag
   @param: address assessment = the address of the assessment
   @returns: nothing
   */
-  function finishAssessment(bool pass, int score, address assessee, address assessment)
+  function finishAssessment(int score, address assessee, address assessment)
   {
     if(msg.sender == assessment) //Checks to make sure this function is being callled by the assessment
     {
+      bool pass;
+      if(score > 0)
+      {
+        pass = true;
+      }
+      else
+      {
+        pass = false;
+      }
       if(pass == true) //If the assessee passed
       {
         owners.push(assessee); //Makes the assessee an owner of this tag
