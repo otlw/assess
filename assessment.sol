@@ -28,7 +28,6 @@ contract Assessment
   address[] potentialAssessors; //The addresses of those randomly selected to be assessors (but may not have confirmed yes)
   int finalScore; //The final score of the assessee
   uint referenceTime; //Time used as reference to determine how much time has passed for a certain portion of the assessment
-  uint referenceBlock; //Block used as reference to determine how many blocks have passed for a certain portion of the assessment
   uint numberCancelled = 0; //The number of assessors who have refused to join the assessment
   uint doneAssessors = 0; //The number of assessors that are done assessing
   uint resultsSet = 0; //The number of assessors who have set their score for the assessee
@@ -98,7 +97,6 @@ contract Assessment
     tagMaster = tagMasterAddress;
     random = randomAddress;
     referenceTime = block.timestamp;
-    referenceBlock = block.number;
     assessmentTime = time;
     User(assessee).notification("Assessment made", tag, 0);
   }
@@ -106,10 +104,6 @@ contract Assessment
   event PotentialAssessorSet(address _potentialAssessor);
   event DataSet(address _dataSetter, uint _index);
 
-  function getReferenceBlock() onlyTag() returns(uint)
-  {
-    return referenceBlock;
-  }
   function setNumberOfAssessors(uint number) onlyTag()
   {
     numberOfAssessors = number;
