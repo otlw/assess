@@ -383,6 +383,7 @@ contract Tag
       if(pass == true) //If the assessee passed
       {
         owners.push(assessee); //Makes the assessee an owner of this tag
+        User(assessee).setAcheivement(assessment);
       }
       UserMaster(userMaster).mapHistory(assessee,assessment); //Maps the assessee to the assessment in the user master as part of the assessee's history
       assessmentHistory[assessee].push(assessment); //Adds the assessment to the assessment history array

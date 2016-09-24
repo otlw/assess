@@ -162,6 +162,16 @@ contract User
     return UserMaster(master).transferTokens(user,amount);
   }
 
+  function setAcheivement(address assessment) onlyTag()
+  {
+    acheivements[].push(assessment);
+  }
+
+  function getAssessment() constant returns(address[] assessments)
+  {
+    return acheivements;
+  }
+
   /*
   @type: function
   @purpose: to remove this contract
