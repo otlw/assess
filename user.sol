@@ -14,7 +14,7 @@ contract User
   address user; //The address of the user's wallet
   address master; //The address of the userMaster that spawned this user
   address tagMaster; //The address of the tagMaster
-  address[] acheivements; //The addresses of the tags that the user possesses
+  address[] acheivements; //The addresses of the tags and assessments that the user passed
   string userData; //An IPFS hash containing the user's data
 
   /*
@@ -31,6 +31,14 @@ contract User
     _;
   }
 
+  modifier onlyTag()
+  {
+    if(TagMaster(tagMaster).checkTag(msg.sender) == false)
+    {
+      throw;
+    }
+    _;
+  }
   /*
   @type: event
   @name: Notification
