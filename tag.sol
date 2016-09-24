@@ -336,12 +336,14 @@ contract Tag
   */
   function makeAssessment(address assessee, uint time, uint size)
   {
-    if(size >= 5) //Checks if the assessment has a size of at least 5
+    if(size >= 5 && UserMaster(userMaster).getTokenBalance(assessee) >= int(time*size)) //Checks if the assessment has a size of at least 5
     {
       Assessment newAssessment = new Assessment(assessee, address(this), userMaster, tagMaster, random, time); //Makes a new assessment with the given parameters
       assessmentExists[address(newAssessment)] = true; //Sets the assessment's existance to true
       newAssessment.setNumberOfAssessors(size); //Sets the number of assessors wanted in the assessment to equal size
       newAssessment.setAssessmentPoolSize(size*20); //Sets the number of users wanted to form the assessor pool to 20 times size
+      pay(assessee, UserMaster(userMaster).getTokenBalance(assessee) - int(time*size));
+      User(assessee).notification("You have been charged for your assessment", tag, 19);
     }
     else
     {

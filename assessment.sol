@@ -237,6 +237,8 @@ contract Assessment
   function cancelAssessment() onlyTagAssessment()
   {
     User(assessee).notification("Assessment Cancled", tag, 8);
+    Tag(tag).pay(assessee, UserMaster(userMaster).getTokenBalance(assessee) + int(assessmentTime*numberOfAssessors));
+    User(assessee).notification("You have been refunded for your assessment", tag, 20);
     for(uint i = 0; i < finalAssessors.length; i++)
     {
       User(finalAssessors[i]).notification("Assessment Cancled", tag, 8);
@@ -367,8 +369,6 @@ contract Assessment
 
   function payout(uint largestSize) onlyThis()
   {
-    Tag(tag).pay(assessee, UserMaster(userMaster).getTokenBalance(assessee) - int(assessmentTime*finalAssessors.length));
-    User(assessee).notification("You have been charged for your assessment", tag, 19);
     for(uint i = 0; i < finalAssessors.length; i++)
     {
       int score = assessmentResults[finalAssessors[i]];
