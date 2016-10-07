@@ -172,7 +172,7 @@ contract User
     return acheivements;
   }
 
-  function execute(address _to, uint _value, bytes _data) external onlyowner returns (bytes32 _r)
+  function execute(address _to, uint _value, bytes _data) external onlyUser() returns (bytes32 _r)
   {
     // first, take the opportunity to check that we're under the daily limit.
     if (underLimit(_value))
