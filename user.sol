@@ -16,6 +16,7 @@ contract User
   address tagMaster; //The address of the tagMaster
   address[] acheivements; //The addresses of the tags and assessments that the user passed
   string userData; //An IPFS hash containing the user's data
+  mapping (address => bool) tagPassed;
 
   /*
   @type: modifier
@@ -164,12 +165,22 @@ contract User
 
   function setAcheivement(address assessment) onlyTag()
   {
-    acheivements[].push(assessment);
+    acheivements.push(assessment);
   }
 
-  function getAssessment() constant returns(address[] assessments)
+  function getAssessment() constant returns(address[])
   {
     return acheivements;
+  }
+
+  function setTagPassed(bool passed) onlyTag()
+  {
+    tagsDone[msg.sender] = passed;
+  }
+
+  function getTagPassed(address tag) constant returns(bool)
+  {
+    return tagsDone[tag];
   }
 
   function execute(address _to, uint _value, bytes _data) external onlyUser() returns (bytes32 _r)
