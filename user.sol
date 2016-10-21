@@ -1,8 +1,8 @@
 import "lib/random.sol";
 import "userMaster.sol";
-import "tag.sol";
+import "concept.sol";
 import "assessment.sol";
-import "tagMaster.sol";
+import "conceptMaster.sol";
 
 /*
 @type: contract
@@ -13,10 +13,10 @@ contract User
 {
   address user; //The address of the user's wallet
   address master; //The address of the userMaster that spawned this user
-  address tagMaster; //The address of the tagMaster
-  address[] acheivements; //The addresses of the tags and assessments that the user passed
+  address conceptMaster; //The address of the conceptMaster
+  address[] acheivements; //The addresses of the concepts and assessments that the user passed
   string userData; //An IPFS hash containing the user's data
-  mapping (address => bool) tagPassed;
+  mapping (address => bool) conceptPassed;
 
   /*
   @type: modifier
@@ -32,9 +32,9 @@ contract User
     _;
   }
 
-  modifier onlyTag()
+  modifier onlyConcept()
   {
-    if(TagMaster(tagMaster).checkTag(msg.sender) == false)
+    if(ConceptMaster(conceptMaster).checkConcept(msg.sender) == false)
     {
       throw;
     }
@@ -49,7 +49,7 @@ contract User
   ( string _description, //A notification message
     address _sender, //The notification sender
     address _user, //The address of the user that received the notification
-    address _tag, //The address of the tag involved in this notification
+    address _concept, //The address of the concept involved in this notification
     uint _code); //The notification code
 
   /*
@@ -59,11 +59,11 @@ contract User
   @param: address masterAddress = the address of the user master that spawned this user
   @returns: nothing
   */
-  function User(address userAddress, address masterAddress, address tagMasterAddress)
+  function User(address userAddress, address masterAddress, address conceptMasterAddress)
   {
     user = userAddress; //Sets the user variable
     master = masterAddress; //Sets the master variable
-    tagMaster = tagMasterAddress; //Sets the tagMaster variable
+    conceptMaster = conceptMasterAddress; //Sets the conceptMaster variable
   }
 
   /*
@@ -128,13 +128,13 @@ contract User
   @type: function
   @purpose: To send this user a notification
   @param: string description = the notification message
-  @param: address tag = the address of the tag involved in this notification
-  @param: uint code = the address of the tag involved in this notification
+  @param: address concept = the address of the concept involved in this notification
+  @param: uint code = the address of the concept involved in this notification
   @returns: nothing
   */
-  function notification(string description, address tag, uint code)
+  function notification(string description, address concept, uint code)
   {
-    Notification(description, msg.sender, address(this), tag, code);
+    Notification(description, msg.sender, address(this), concept, code);
   }
 
   /*
@@ -163,7 +163,7 @@ contract User
     return UserMaster(master).transferTokens(user,amount);
   }
 
-  function setAcheivement(address assessment) onlyTag()
+  function setAcheivement(address assessment) onlyConcept()
   {
     acheivements.push(assessment);
   }
@@ -173,14 +173,14 @@ contract User
     return acheivements;
   }
 
-  function setTagPassed(bool passed) onlyTag()
+  function setConceptPassed(bool passed) onlyConcept()
   {
-    tagsDone[msg.sender] = passed;
+    conceptsDone[msg.sender] = passed;
   }
 
-  function getTagPassed(address tag) constant returns(bool)
+  function getConceptPassed(address concept) constant returns(bool)
   {
-    return tagsDone[tag];
+    return conceptsDone[concept];
   }
 
   function execute(address _to, uint _value, bytes _data) external onlyUser() returns (bytes32 _r)
