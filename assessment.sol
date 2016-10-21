@@ -1,8 +1,8 @@
 import "lib/random.sol";
 import "userMaster.sol";
-import "tag.sol";
+import "concept.sol";
 import "user.sol";
-import "tagMaster.sol";
+import "conceptMaster.sol";
 
 /*
 @type: contract
@@ -16,9 +16,9 @@ contract Assessment
   mapping (address => uint) assessors; //A mapping of the assessors to their current status
   uint calledAssessors = 0; //The number of assessors that have been called to assess
   address[] finalAssessors; //The addresses of the final set of assessors who have completed the assessment process
-  address tag; //The address of the tag that is being assessed
+  address concept; //The address of the concept that is being assessed
   address userMaster; //The address of the UserMaster
-  address tagMaster; //The address of the TagMaster
+  address conceptMaster; //The address of the ConceptMaster
   address random; //The address of the Random contract
   uint poolSizeRemaining; //The remaining number of users to be added to the assessor pool
   uint numberOfAssessors; //The number of assessors requested for this assessment
@@ -35,12 +35,12 @@ contract Assessment
 
   /*
   @type: modifier
-  @name: onlyTag
-  @purpose: to only allow the Tag contract that spawned this assessment to call a function to which this modifier is applied
+  @name: onlyConcept
+  @purpose: to only allow the Concept contract that spawned this assessment to call a function to which this modifier is applied
   */
-  modifier onlyTag()
+  modifier onlyConcept()
   {
-    if(msg.sender != tag) //checks if msg.sender is the tag that spawned this assessment
+    if(msg.sender != concept) //checks if msg.sender is the concept that spawned this assessment
     {
       throw; //throws the function call if not
     }
@@ -77,44 +77,44 @@ contract Assessment
 
   /*
   @type: modifier
-  @name: onlyTagAssessment
-  @purpose: to only allow the this contract or the Tag contract that spawned it to call a function to which this modifier is applied
+  @name: onlyConceptAssessment
+  @purpose: to only allow the this contract or the Concept contract that spawned it to call a function to which this modifier is applied
   */
-  modifier onlyTagAssessment()
+  modifier onlyConceptAssessment()
   {
-    if(msg.sender != address(this) && msg.sender != tag) //Checks if msg.sender has the same address as this contract or the Tag that spawned it
+    if(msg.sender != address(this) && msg.sender != concept) //Checks if msg.sender has the same address as this contract or the Concept that spawned it
     {
       throw; //Throws the function call if not
     }
     _;
   }
 
-  function Assessment(address assesseeAddress, address tagAddress, address userMasterAddress, address tagMasterAddress, address randomAddress, uint time)
+  function Assessment(address assesseeAddress, address conceptAddress, address userMasterAddress, address conceptMasterAddress, address randomAddress, uint time)
   {
     assessee = assesseeAddress;
-    tag = tagAddress;
+    concept = conceptAddress;
     userMaster = userMasterAddress;
-    tagMaster = tagMasterAddress;
+    conceptMaster = conceptMasterAddress;
     random = randomAddress;
     referenceTime = block.timestamp;
     assessmentTime = time;
-    User(assessee).notification("Assessment made", tag, 0);
+    User(assessee).notification("Assessment made", concept, 0);
   }
 
   event PotentialAssessorSet(address _potentialAssessor);
   event DataSet(address _dataSetter, uint _index);
 
-  function setNumberOfAssessors(uint number) onlyTag()
+  function setNumberOfAssessors(uint number) onlyConcept()
   {
     numberOfAssessors = number;
   }
 
-  function getNumberOfAssessors() onlyTag() constant returns(uint)
+  function getNumberOfAssessors() onlyConcept() constant returns(uint)
   {
     return numberOfAssessors;
   }
 
-  function setAssessmentPoolSize(uint sizeRemaining) onlyTag()
+  function setAssessmentPoolSize(uint sizeRemaining) onlyConcept()
   {
     if(poolSizeRemaining > 0)
     {
@@ -122,12 +122,12 @@ contract Assessment
     }
   }
 
-  function getAssessmentPoolSize() onlyTag() constant returns(uint)
+  function getAssessmentPoolSize() onlyConcept() constant returns(uint)
   {
     return poolSizeRemaining;
   }
 
-  function addToAssessorPool(address potentialAddress) onlyTag()
+  function addToAssessorPool(address potentialAddress) onlyConcept()
   {
     assessorPool.push(potentialAddress);
   }
@@ -138,7 +138,7 @@ contract Assessment
     {
       cancelAssessment();
     }
-    else if(msg.sender == address(this) || msg.sender == tag)
+    else if(msg.sender == address(this) || msg.sender == concept)
     {
       bool potentialAssessorSet = false;
       numberCancelled = 0;
@@ -153,7 +153,7 @@ contract Assessment
             assessors[randomAssessor] = 3;
             potentialAssessors.push(randomAssessor);
             calledAssessors++;
-            User(randomAssessor).notification("Called As A Potential Assessor",tag, 1);
+            User(randomAssessor).notification("Called As A Potential Assessor",concept, 1);
             randomNumber = Random(random).getRandom(assessorPool.length, randomNumber);
             PotentialAssessorSet(randomAssessor);
             potentialAssessorSet = true;
@@ -165,7 +165,7 @@ contract Assessment
     }
   }
 
-  function getAssessorPoolLength() onlyTag() constant returns(uint)
+  function getAssessorPoolLength() onlyConcept() constant returns(uint)
   {
     return assessorPool.length;
   }
@@ -177,13 +177,13 @@ contract Assessment
       assessors[msg.sender] = confirm;
       if(confirm == 1)
       {
-        User(msg.sender).notification("Confirmed As Assessing", tag, 2);
+        User(msg.sender).notification("Confirmed As Assessing", concept, 2);
         finalAssessors.push(msg.sender);
         referenceTime = now;
       }
       if(confirm == 2)
       {
-        User(msg.sender).notification("Confirmed As Not Assessing", tag, 3);
+        User(msg.sender).notification("Confirmed As Not Assessing", concept, 3);
         numberCancelled ++;
       }
     }
@@ -193,7 +193,7 @@ contract Assessment
       {
         if(assessors[potentialAssessors[i]] == 3)
         {
-          User(potentialAssessors[i]).notification("Did Not Respond In Time To Be Assessor", tag, 4);
+          User(potentialAssessors[i]).notification("Did Not Respond In Time To Be Assessor", concept, 4);
           assessors[potentialAssessors[i]] = 4;
           numberCancelled++;
         }
@@ -210,9 +210,9 @@ contract Assessment
   {
     for(uint i = 0; i < finalAssessors.length; i++)
     {
-      User(finalAssessors[i]).notification("Assessment Has Started", tag, 17);
+      User(finalAssessors[i]).notification("Assessment Has Started", concept, 17);
     }
-    User(assessee).notification("Assessment Has Started", tag, 17);
+    User(assessee).notification("Assessment Has Started", concept, 17);
     referenceTime = now;
   }
 
@@ -227,16 +227,16 @@ contract Assessment
     return data[dataSetter][index];
   }
 
-  function cancelAssessment() onlyTagAssessment()
+  function cancelAssessment() onlyConceptAssessment()
   {
-    User(assessee).notification("Assessment Cancled", tag, 8);
-    Tag(tag).pay(assessee, UserMaster(userMaster).getTokenBalance(assessee) + int(assessmentTime*numberOfAssessors));
-    User(assessee).notification("You have been refunded for your assessment", tag, 20);
+    User(assessee).notification("Assessment Cancled", concept, 8);
+    Concept(concept).pay(assessee, UserMaster(userMaster).getTokenBalance(assessee) + int(assessmentTime*numberOfAssessors));
+    User(assessee).notification("You have been refunded for your assessment", concept, 20);
     for(uint i = 0; i < finalAssessors.length; i++)
     {
-      User(finalAssessors[i]).notification("Assessment Cancled", tag, 8);
+      User(finalAssessors[i]).notification("Assessment Cancled", concept, 8);
     }
-    suicide(tagMaster);
+    suicide(conceptMaster);
   }
 
   function doneAssessing()
@@ -261,7 +261,7 @@ contract Assessment
     {
       for(uint n = 0; n < finalAssessors.length; n++)
       {
-        User(finalAssessors[n]).notification("Send in Score", tag, 18);
+        User(finalAssessors[n]).notification("Send in Score", concept, 18);
       }
       referenceTime = block.number; //use referenceTime to refer to the block number instead of timestamp
     }
@@ -365,13 +365,13 @@ contract Assessment
       int payoutValue = (int(assessmentTime*finalAssessors.length)/(100 - scoreDistance)) * int(finalAssessors.length/largestSize);
       if(inRewardCluster[score] == true)
       {
-        Tag(tag).pay(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) + payoutValue);
-        User(finalAssessors[i]).notification("You Have Received Payment For Your Assessment", tag, 15);
+        Concept(concept).pay(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) + payoutValue);
+        User(finalAssessors[i]).notification("You Have Received Payment For Your Assessment", concept, 15);
       }
       if(inRewardCluster[score] == false)
       {
-        Tag(tag).pay(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) - payoutValue);
-        User(finalAssessors[i]).notification("You Have Received A Fine For Your Assessment", tag, 16);
+        Concept(concept).pay(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) - payoutValue);
+        User(finalAssessors[i]).notification("You Have Received A Fine For Your Assessment", concept, 16);
       }
     }
     returnResults();
@@ -379,6 +379,6 @@ contract Assessment
 
   function returnResults() onlyThis()
   {
-    Tag(tag).finishAssessment(finalScore, assessee, address(this));
+    Concept(concept).finishAssessment(finalScore, assessee, address(this));
   }
 }

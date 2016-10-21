@@ -1,8 +1,8 @@
 import "lib/random.sol";
-import "tag.sol";
+import "concept.sol";
 import "assessment.sol";
 import "user.sol";
-import "tagMaster.sol";
+import "conceptMaster.sol";
 
 /*
 @type: contract
@@ -11,7 +11,7 @@ import "tagMaster.sol";
 */
 contract UserMaster
 {
-  address tagMasterAddress; //The address of the tagMaster contract
+  address conceptMasterAddress; //The address of the conceptMaster contract
   mapping (address => int)  tokenBalance; //Maps the addresses of users to their token balances
   mapping (address => address[])  history; //Maps the addresses of users to an array of addresses that contain the addresses of their assessments
   mapping (address => bool)  availability; //Maps the addresses of users to their availability status for whether or not they can currently assess someone
@@ -21,12 +21,12 @@ contract UserMaster
 
   /*
   @type: modifier
-  @name: onlyTag
-  @purpose: to only allow the Tag contract to call a function to which this modifier is applied
+  @name: onlyConcept
+  @purpose: to only allow the Concept contract to call a function to which this modifier is applied
   */
-  modifier onlyTag()
+  modifier onlyConcept()
   {
-    if(TagMaster(tagMasterAddress).checkTag(msg.sender) == false) //checks if the address calling the function is not a tag
+    if(ConceptMaster(conceptMasterAddress).checkConcept(msg.sender) == false) //checks if the address calling the function is not a concept
     {
       throw; //throws out the fucntion call
     }
@@ -53,19 +53,19 @@ contract UserMaster
   @param: address creator = the address of the creator contract
   @returns: nothing
   */
-  function UserMaster(address tagMaster)
+  function UserMaster(address conceptMaster)
   {
-    tagMasterAddress = tagMaster; //Sets the address of the tagMaster contract
+    conceptMasterAddress = conceptMaster; //Sets the address of the conceptMaster contract
   }
 
   /*
   @type: function
-  @purpose: To get the address of the Tag Master
-  @returns: The address of the Tag Master
+  @purpose: To get the address of the Concept Master
+  @returns: The address of the Concept Master
   */
-  function getTagMasterAddress() returns(address)
+  function getConceptMasterAddress() returns(address)
   {
-    return tagMasterAddress;
+    return conceptMasterAddress;
   }
 
   /*
@@ -77,8 +77,8 @@ contract UserMaster
   */
   function addUser(address userAddress)
   {
-    User newUser = new User(userAddress, address(this), tagMasterAddress); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
-    Tag(TagMaster(tagMasterAddress).getMew()).addUser(address(newUser));
+    User newUser = new User(userAddress, address(this), conceptMasterAddress); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
+    Concept(ConceptMaster(conceptMasterAddress).getMew()).addUser(address(newUser));
     UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
   }
 
@@ -86,8 +86,8 @@ contract UserMaster
   {
     if(firstUserMade == false)
     {
-      User newUser = new User(userAddress, address(this), tagMasterAddress); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
-      Tag(TagMaster(tagMasterAddress).getMew()).addUser(address(newUser));
+      User newUser = new User(userAddress, address(this), conceptMasterAddress); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
+      Concept(ConceptMaster(conceptMasterAddress).getMew()).addUser(address(newUser));
       UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
       tokenBalance[address(newUser)] = 1000;
     }
@@ -95,14 +95,14 @@ contract UserMaster
 
   /*
   @type: function
-  @purpose: To map the address of a user to the address of the tag that the user has just passed
+  @purpose: To map the address of a user to the address of the concept that the user has just passed
   @param: address user = the address of the user
   @param: address assessment = the address of the assessment completed
   @returns: nothing
   */
-  function mapHistory(address user, address assessment) onlyTag()
+  function mapHistory(address user, address assessment) onlyConcept()
   {
-    history[user].push(assessment); //adds the address of the tag to the end of the array that is mapped to the user
+    history[user].push(assessment); //adds the address of the concept to the end of the array that is mapped to the user
   }
 
   /*
@@ -124,7 +124,7 @@ contract UserMaster
   @param: uint balance = the new token balance for the user
   @returns: nothing
   */
-  function mapTokenBalance(address user, int balance) onlyTag()
+  function mapTokenBalance(address user, int balance) onlyConcept()
   {
     tokenBalance[user] = balance; //sets the token balance of the user
   }
