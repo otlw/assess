@@ -9,7 +9,7 @@ contract GroupRegistry
   address userMasterAddress;
 
   modifier onlyUser() {
-    if( userMaster(userMasterAddress).getTokenBalanzce(msg.sender) <= 0){
+    if( userMaster(userMasterAddress).getTokenBalance(msg.sender) <= 0){
       throw;
     }
     _;
