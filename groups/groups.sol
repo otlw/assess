@@ -23,7 +23,7 @@ contract GroupRegistry
 
   function addMember(address group) returns (bool success) onlyUser() payable()
   {
-    for (uint i = 0, i < Group(group).members.length(), i++)
+    for (uint i = 0, i < Group(group).requirements.length(), i++)
     {
       if(User(msg.sender).getConceptPassed(Group.requirements[i]) == false)
       {
