@@ -18,10 +18,6 @@ contract Group
     }
     _;
   }
-  modifier onlyMember()
-  {
-    if (msg.sender )
-  }
 
   function Group(address _concept, uint _size, address[] _requirements)
   {
@@ -47,7 +43,7 @@ contract Group
     {
       if(done[members[i]] == false)
       {
-        return
+        return;
       }
     }
     //Call some thing to do if the whole group is done here
