@@ -29,18 +29,18 @@ contract GroupRegistry
       return false;
     }
 
-    for (uint i = 0, i < Group(group).roles[role].requirements.length(), i++)
+    for (uint i = 0, i < Group(group).requirements.length(), i++)
     {
       if(User(msg.sender).getConceptPassed(Group.requirements[i]) == false)
       {
         return false;
       }
-      Group(group).addMember(msg.sender, role);
     }
+    Group(group).addMember(msg.sender);
     return true;
   }
 
-  function addGroup(address concept, uint size) onlyUser
+  function addGroup(address concept, uint size, address[] _requirements) onlyUser
   {
     Group newGroup = new Group(concept, size, msg.sender);
     groups[concept].push(address(Group));

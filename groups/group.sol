@@ -1,20 +1,14 @@
 import ../user.sol
-import ../userMaster.sol
 
 contract Group
 {
   uint public size;
   bytes32 public goal;
   address[] public members;
-  struct Role {
-    uint num;
-    bool needsAssessing;
-    address[] requirements;
-    address[] members;
-  }
-  role[] public Roles;
+  address[] public requirements;
   address concept;
   address registry;
+  mapping (address => bool) done;
 
   modifier onlyRegistry()
   {
@@ -24,18 +18,31 @@ contract Group
     }
     _;
   }
+  modifier onlyMember()
+  {
+    if (msg.sender )
+  }
 
-  function Group(address _concept, uint _size, address member)
+  function Group(address _concept, uint _size, address[] _requirements)
   {
     concept = _concept;
     registry = msg.sender;
+    requirements = _requirements;
     members.push(member);
     size = _size;
   }
 
-  function addMember(address member, uint _role) onlyRegistry()
+  function addMember(address member) onlyRegistry()
   {
-    role[_role].members.push();
-    members.push(member);
+    if(members.length() < size)
+    {
+      members.push(member);
+    }
   }
+
+  function setDone() onlyMember
+  {
+
+  }
+
 }
