@@ -40,9 +40,17 @@ contract Group
     }
   }
 
-  function setDone() onlyMember
+  function setDone()
   {
-
+    done(msg.sender) = true;
+    for(uint i = 0, if i <= members.length(), i++)
+    {
+      if(done[members[i]] == false)
+      {
+        return
+      }
+    }
+    //Call some thing to do if the whole group is done here
   }
 
 }

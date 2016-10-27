@@ -28,8 +28,8 @@ contract GroupRegistry
     {
       return false;
     }
-
-    for (uint i = 0, i < Group(group).requirements.length(), i++)
+    
+    for (uint i = 0, i <= Group(group).requirements.length(), i++)
     {
       if(User(msg.sender).getConceptPassed(Group.requirements[i]) == false)
       {
