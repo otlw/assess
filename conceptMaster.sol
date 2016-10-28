@@ -42,11 +42,7 @@ contract ConceptMaster
   @stores: address _conceptAddress
   @stores: address[] _parents
   */
-  event ConceptCreation
-  ( uint _response, //the error code of the procedure
-    string _conceptName, //the name of the concept that was created
-    address _conceptAddress, //the address of the concept that was created
-    address[] _parents); //the addresses of the parents of the concept that as created
+  event ConceptCreation (address _conceptAddress); //the address of the concept that was created
 
   /*
   @type: constructor function
@@ -80,7 +76,7 @@ contract ConceptMaster
       locked = true; //Makes it so this function cannot be called again
     }
   }
-  
+
   /*
   @type: function
   @purpose: To make a concept
@@ -88,38 +84,30 @@ contract ConceptMaster
   @param: address[] parentList = an array of addresses containing the addresses of the concepts parents
   @returns: nothing
   */
-  function makeConcept(string name, address[] parentList)
+  function makeConcept(string name, address[] parentList) returns (bool)
   {
-    uint response = 0; //initializes the error code
-    address[] memory parents = new address[] (parentList.length);
-    for(uint i=0; i < parentList.length; i++) //iterates over the parentList
+    if(addresses[name] == 0) //Checks if the name is not taken
     {
-      if(checkConcept(parentList[i])==false) //checks if the parents exist
-      {
-        response += (10**i); //modifies the error code to reflect any nonexistant parents
-      }
-      else
-      {
-        parents[i] = parentList[i]; //adds the parents that exist to the array in memory of parents
-      }
-    }
-    if(response==0) //Checks if there were no errors so far
-    {
-      Concept newConcept = new Concept(name, parents, userMasterAddress, address(this), randomAddress); //Makes a new concept with the provided data
+      Concept newConcept = new Concept(name, parentList, userMasterAddress, address(this), randomAddress); //Makes a new concept with the provided data
       newConcept.setMew(mewAddress);
       address newConceptAddress = address(newConcept); //initializes an address variable and sets it equal to the address of the newly created concept
       conceptExists[newConceptAddress] = true; //Maps the concept address to true to show that it exists
       names[newConceptAddress] = name;
       addresses[name] = newConceptAddress;
-      if(parents.length == 0)
+      if(parentList.length == 0)
       {
         Concept(mewAddress).addChild(newConceptAddress);
       }
-      for(uint j=0; j < parents.length; j++) //Iterates of the parents array in memory
+      for(uint j=0; j < parentList.length; j++) //Iterates of the parents array in memory
       {
-        Concept(parents[j]).addChild(newConceptAddress); //Adds the newly created concept to each of the parents as a child
+        Concept(parentList[j]).addChild(newConceptAddress); //Adds the newly created concept to each of the parents as a child
       }
+      ConceptCreation(newConceptAddress); //Makes ConceptCreation event with provided data
+      return true;
     }
-    ConceptCreation(response, name, newConceptAddress, parents); //Makes ConceptCreation event with provided data
+    else
+    {
+      return false;
+    }
   }
 }
