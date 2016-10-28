@@ -14,9 +14,9 @@ contract User
   address user; //The address of the user's wallet
   address master; //The address of the userMaster that spawned this user
   address conceptMaster; //The address of the conceptMaster
-  address[] acheivements; //The addresses of the concepts and assessments that the user passed
-  string userData; //An IPFS hash containing the user's data
-  mapping (address => bool) conceptPassed;
+  address[] public acheivements; //The addresses of the concepts and assessments that the user passed
+  string public userData; //An IPFS hash containing the user's data
+  mapping (address => bool) public conceptPassed;
 
   /*
   @type: modifier
@@ -34,7 +34,7 @@ contract User
 
   modifier onlyConcept()
   {
-    if(ConceptMaster(conceptMaster).checkConcept(msg.sender) == false)
+    if(ConceptMaster(conceptMaster).conceptExists(msg.sender) == false)
     {
       throw;
     }
@@ -148,16 +148,6 @@ contract User
     userData = hash; //Sets userData to the hash value
   }
 
-  /*
-  @type: function
-  @purpose: To get the user's IPFS hash containing their information
-  @returns: The IPFS hash containing the user information
-  */
-  function getUserData() constant returns(string)
-  {
-    return userData;
-  }
-
   function transferTokens(address user, int amount) onlyUser() returns(bool)
   {
     return UserMaster(master).transferTokens(user,amount);
@@ -168,19 +158,9 @@ contract User
     acheivements.push(assessment);
   }
 
-  function getAssessment() constant returns(address[])
-  {
-    return acheivements;
-  }
-
   function setConceptPassed(bool passed) onlyConcept()
   {
     conceptPassed[msg.sender] = passed;
-  }
-
-  function getConceptPassed(address concept) constant returns(bool)
-  {
-    return conceptPassed[concept];
   }
 
 

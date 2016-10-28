@@ -11,7 +11,7 @@ import "conceptMaster.sol";
 */
 contract UserMaster
 {
-  address conceptMasterAddress; //The address of the conceptMaster contract
+  address public conceptMasterAddress; //The address of the conceptMaster contract
   mapping (address => int)  tokenBalance; //Maps the addresses of users to their token balances
   mapping (address => address[])  history; //Maps the addresses of users to an array of addresses that contain the addresses of their assessments
   mapping (address => bool)  availability; //Maps the addresses of users to their availability status for whether or not they can currently assess someone
@@ -26,7 +26,7 @@ contract UserMaster
   */
   modifier onlyConcept()
   {
-    if(ConceptMaster(conceptMasterAddress).checkConcept(msg.sender) == false) //checks if the address calling the function is not a concept
+    if(ConceptMaster(conceptMasterAddress).conceptExists(msg.sender) == false) //checks if the address calling the function is not a concept
     {
       throw; //throws out the fucntion call
     }
@@ -60,16 +60,6 @@ contract UserMaster
 
   /*
   @type: function
-  @purpose: To get the address of the Concept Master
-  @returns: The address of the Concept Master
-  */
-  function getConceptMasterAddress() returns(address)
-  {
-    return conceptMasterAddress;
-  }
-
-  /*
-  @type: function
   @purpose: To create a user contract
   @param: address userAddress = the address of the user's wallet
   @param: address masterAddress = the address of the master contract that stores this user's address
@@ -78,7 +68,7 @@ contract UserMaster
   function addUser(address userAddress)
   {
     User newUser = new User(userAddress, address(this), conceptMasterAddress); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
-    Concept(ConceptMaster(conceptMasterAddress).getMew()).addUser(address(newUser));
+    Concept(ConceptMaster(conceptMasterAddress).mewAddress()).addUser(address(newUser));
     UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
   }
 
@@ -87,7 +77,7 @@ contract UserMaster
     if(firstUserMade == false)
     {
       User newUser = new User(userAddress, address(this), conceptMasterAddress); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
-      Concept(ConceptMaster(conceptMasterAddress).getMew()).addUser(address(newUser));
+      Concept(ConceptMaster(conceptMasterAddress).mewAddress()).addUser(address(newUser));
       UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
       tokenBalance[address(newUser)] = 1000;
     }

@@ -12,7 +12,7 @@ import "conceptMaster.sol";
 contract Assessment
 {
   address assessee; //The address of the user being assessed
-  address[] assessorPool; //The addresses of the user's that the assessors are randomly selected from
+  address[] public assessorPool; //The addresses of the user's that the assessors are randomly selected from
   mapping (address => uint) assessors; //A mapping of the assessors to their current status
   uint calledAssessors = 0; //The number of assessors that have been called to assess
   address[] finalAssessors; //The addresses of the final set of assessors who have completed the assessment process
@@ -20,14 +20,14 @@ contract Assessment
   address userMaster; //The address of the UserMaster
   address conceptMaster; //The address of the ConceptMaster
   address random; //The address of the Random contract
-  uint poolSizeRemaining; //The remaining number of users to be added to the assessor pool
-  uint numberOfAssessors; //The number of assessors requested for this assessment
+  uint public poolSizeRemaining; //The remaining number of users to be added to the assessor pool
+  uint public numberOfAssessors; //The number of assessors requested for this assessment
   mapping(address => int) assessmentResults; //Pass/Fail and Score given by assessors
   mapping(int => bool) inRewardCluster; //A bool that reflects whether or not a score is within the largest cluster of scores
-  mapping(address => string[]) data; //IFFS hashes of data that can be passed between the assessors and the assessee for the assessment to occur
+  mapping(address => string[]) public data; //IFFS hashes of data that can be passed between the assessors and the assessee for the assessment to occur
   address[] potentialAssessors; //The addresses of those randomly selected to be assessors (but may not have confirmed yes)
   int finalScore; //The final score of the assessee
-  uint referenceTime; //Time used as reference to determine how much time has passed for a certain portion of the assessment
+  uint public referenceTime; //Time used as reference to determine how much time has passed for a certain portion of the assessment
   uint numberCancelled = 0; //The number of assessors who have refused to join the assessment
   uint doneAssessors = 0; //The number of assessors that are done assessing
   uint resultsSet = 0; //The number of assessors who have set their score for the assessee
@@ -104,19 +104,9 @@ contract Assessment
   event PotentialAssessorSet(address _potentialAssessor);
   event DataSet(address _dataSetter, uint _index);
 
-  function getReferenceTime() constant returns(uint)
-  {
-    return referenceTime;
-  }
-
   function setNumberOfAssessors(uint number) onlyConcept()
   {
     numberOfAssessors = number;
-  }
-
-  function getNumberOfAssessors() onlyConcept() constant returns(uint)
-  {
-    return numberOfAssessors;
   }
 
   function setAssessmentPoolSize(uint sizeRemaining) onlyConcept()
@@ -125,11 +115,6 @@ contract Assessment
     {
       poolSizeRemaining = sizeRemaining;
     }
-  }
-
-  function getAssessmentPoolSize() onlyConcept() constant returns(uint)
-  {
-    return poolSizeRemaining;
   }
 
   function addToAssessorPool(address potentialAddress) onlyConcept()
@@ -168,11 +153,6 @@ contract Assessment
       }
       referenceTime = now;
     }
-  }
-
-  function getAssessorPoolLength() onlyConcept() constant returns(uint)
-  {
-    return assessorPool.length;
   }
 
   function confirmAssessor(uint confirm)
@@ -225,11 +205,6 @@ contract Assessment
   {
     data[msg.sender].push(newData);
     DataSet(msg.sender, data[msg.sender].length - 1);
-  }
-
-  function getData(address dataSetter, uint index) constant returns(string)
-  {
-    return data[dataSetter][index];
   }
 
   function cancelAssessment() onlyConceptAssessment()

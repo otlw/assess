@@ -11,13 +11,13 @@ import "user.sol";
 */
 contract ConceptMaster
 {
-  mapping (address => bool) conceptExists; //Maps concept addresses to a bool to confirm their existance
-  mapping (address => string) names; //Maps the concept address to its name
+  mapping (address => bool) public conceptExists; //Maps concept addresses to a bool to confirm their existance
+  mapping (address => string) public names; //Maps the concept address to its name
   mapping (string => address) addresses; //Maps the concept name to its address
   address userMasterAddress; //The address of the userMaster contract
   bool locked = false; //Keeps track of whether or not the function to set the userMasterAddress variable is locked yet or not
   address randomAddress; //The address of the random contract
-  address mewAddress;
+  address public mewAddress;
 
   /*
   @type: modifier
@@ -57,26 +57,6 @@ contract ConceptMaster
   {
   }
 
-  /*
-  @type: function
-  @purpose: To check if an address belongs to an existing concept
-  @param: address conceptAddress = the address to be checked
-  @returns: A bool corresponding to the existance of the concept
-  */
-  function checkConcept(address conceptAddress) returns(bool)
-  {
-   return conceptExists[conceptAddress];
-  }
-
-  function getMew() returns(address)
-  {
-    return mewAddress;
-  }
-
-  function getName(address conceptAddress) constant returns(string)
-  {
-    return names[conceptAddress];
-  }
 
   function getAddress(string name) constant returns(address)
   {
@@ -100,7 +80,7 @@ contract ConceptMaster
       locked = true; //Makes it so this function cannot be called again
     }
   }
-
+  
   /*
   @type: function
   @purpose: To make a concept
@@ -114,7 +94,7 @@ contract ConceptMaster
     address[] memory parents = new address[] (parentList.length);
     for(uint i=0; i < parentList.length; i++) //iterates over the parentList
     {
-      if(checkConcept(parentList[i])==true) //checks if the parents exist
+      if(checkConcept(parentList[i])==false) //checks if the parents exist
       {
         response += (10**i); //modifies the error code to reflect any nonexistant parents
       }

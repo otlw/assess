@@ -11,20 +11,20 @@ import "conceptMaster.sol";
 */
 contract Concept
 {
-  address[] parentConcepts; //The concepts that this concept is child to (ie: Calculus is child to Math)
-  address[] childConcepts; //The concepts that this concept is parent to (ie: Math is parent to Calculus)
+  address[] public parentConcepts; //The concepts that this concept is child to (ie: Calculus is child to Math)
+  address[] public childConcepts; //The concepts that this concept is parent to (ie: Math is parent to Calculus)
   address userMaster; //The address of the userMaster contract
   address conceptMaster; //The address of the conceptMaster contract
   address random; //The address of the random contract
-  string name; //The name of the concept
+  string public name; //The name of the concept
   int maxScore = 0; //The highest score acheived for this concept
   uint maxSize = 5; //The largest assessment taken for this concept
-  address[] owners; //Those who have earned the concept
+  address[] public owners; //Those who have earned the concept
   address mew;
-  mapping (address => address[]) assessmentHistory; //All assessments completed
-  mapping (address => int) currentScores; //The most recent score of a user
-  mapping (address => uint) assessmentSizes; //The most recent size of an assessment taken by a user
-  mapping(address => bool) assessmentExists; //All existing assessments
+  mapping (address => address[]) public assessmentHistory; //All assessments completed
+  mapping (address => int) public currentScores; //The most recent score of a user
+  mapping (address => uint) public assessmentSizes; //The most recent size of an assessment taken by a user
+  mapping(address => bool) public assessmentExists; //All existing assessments
 
   /*
   @type: modifier
@@ -75,7 +75,6 @@ contract Concept
   */
   event CompletedAssessment
   ( address _assessee, //The address of the user who took the assessment
-    bool _pass, //Whether or not the assessee passed the assessment
     int _score, //The score of the assessee
     address _assessment); //The address of the assessment
 
@@ -96,6 +95,36 @@ contract Concept
     userMaster = userMasterAddress; //sets the value of userMaster to that of userMasterAddress
     random = randomAddress; //sets the value of random to that of randomAddress
     conceptMaster = conceptMasterAddress; //sets the vale of conceptMaster to that of conceptMasterAddress
+  }
+
+  /*
+  @type: function
+  @purpose: To get the number of owners of this concept
+  @returns: The number of users that own this concept in the form of an uint
+  */
+  function getOwnerLength() constant returns(uint)
+  {
+    return owners.length;
+  }
+
+  /*
+  @type: function
+  @purpose: To get the number of parents for this concept
+  @returns: The number of parents for this concept in the form of an uint
+  */
+  function getParentsLength() constant returns(uint)
+  {
+    return parentConcepts.length;
+  }
+
+  /*
+  @type: function
+  @purpose: To get the number of children of this concept
+  @returns: The number of children of this concept in the form of an uint
+  */
+  function getChildrenLength() constant returns(uint)
+  {
+    return childConcepts.length;
   }
 
   /*
@@ -123,90 +152,6 @@ contract Concept
 
   /*
   @type: function
-  @purpose: To get the most recent score of a user
-  @param: address user = the user whose score is to be checked
-  @returns: The user's most recent score in the form of an int
-  */
-  function getCurrentScore(address user) constant returns(int)
-  {
-    return currentScores[user];
-  }
-
-  /*
-  @type: function
-  @purpose: To get the size of the most recent asssessment of a user
-  @param: address user = the user whose assessment size is to be checked
-  @returns: The user's most recent assessment size in the form of an uint
-  */
-  function getAssessmentSize(address user) constant returns(uint)
-  {
-    return assessmentSizes[user];
-  }
-
-  /*
-  @type: function
-  @purpose: To get the owners of this concept
-  @returns: The users that own this concept in the form of an array of addresses
-  */
-  function getOwners() constant returns(address[])
-  {
-    return owners;
-  }
-
-  /*
-  @type: function
-  @purpose: To get the number of owners of this concept
-  @returns: The number of users that own this concept in the form of an uint
-  */
-  function getOwnerLength() constant returns(uint)
-  {
-    return owners.length;
-  }
-
-  /*
-  @type: function
-  @purpose: To get a specific owner of this concept
-  @param: uint index = the index of the user in the owners array
-  @returns: The user that owns this concept with that index in the form of an address
-  */
-  function getOwner(uint index) constant returns(address)
-  {
-    return owners[index];
-  }
-
-  /*
-  @type: function
-  @purpose: To get the parents of this concept
-  @returns: The parents of this concept in the form of an array of addresses
-  */
-  function getParents() constant returns(address[])
-  {
-    return parentConcepts;
-  }
-
-  /*
-  @type: function
-  @purpose: To get the number of parents for this concept
-  @returns: The number of parents for this concept in the form of an uint
-  */
-  function getParentsLength() constant returns(uint)
-  {
-    return parentConcepts.length;
-  }
-
-  /*
-  @type: function
-  @purpose: To get a specific parent of this concept
-  @param: uint index = the index of the concept in the parentConcepts array
-  @returns: The concept that is parent to this concept with that index in the form of an address
-  */
-  function getParent(uint index) constant returns(address)
-  {
-    return parentConcepts[index];
-  }
-
-  /*
-  @type: function
   @purpose: To add a parent to the concept
   @param: address parentAddress = the address of the new parent concept
   @returns: nothing
@@ -214,37 +159,6 @@ contract Concept
   function addParent(address parentAddress) onlyConceptMaster()
   {
     parentConcepts.push(parentAddress);
-  }
-
-  /*
-  @type: function
-  @purpose: To get the children of this concept
-  @returns: The children of this concept in the form of an array of addresses
-  */
-  function getChildren() constant returns(address[])
-  {
-    return childConcepts;
-  }
-
-  /*
-  @type: function
-  @purpose: To get the number of children of this concept
-  @returns: The number of children of this concept in the form of an uint
-  */
-  function getChildrenLength() constant returns(uint)
-  {
-    return childConcepts.length;
-  }
-
-  /*
-  @type: function
-  @purpose: To get a specific child of this concept
-  @param: uint index = the index of the concept in the childConcepts array
-  @returns: The concept that is child to this concept with that index in the form of an address
-  */
-  function getChild(uint index) constant returns(address)
-  {
-    return childConcepts[index];
   }
 
   /*
@@ -260,16 +174,6 @@ contract Concept
 
   /*
   @type: function
-  @purpose: To get the name of this concept
-  @returns: The name of the concept in the form of a string
-  */
-  function getName() returns(string)
-  {
-    return name;
-  }
-
-  /*
-  @type: function
   @purpose: To recursively set the pool to draw assessors from in the assessment
   @param: address conceptAddress = the concept that assessors are currently being drawn from
   @param: address assessment = the address of the assessment that assessors are being drawn for
@@ -279,25 +183,25 @@ contract Concept
   */
   function setAssessorPool(address conceptAddress, address assessment, uint seed, uint size) onlyThis()
   {
-    if(Concept(mew).getOwnerLength() < Assessment(assessment).getAssessmentPoolSize()) //Checks if the requested pool size is greater than the number of users in the system
+    if(Concept(mew).getOwnerLength() < Assessment(assessment).poolSizeRemaining()) //Checks if the requested pool size is greater than the number of users in the system
     {
       for(uint i = 0; i < Concept(mew).getOwnerLength(); i++) //If so, all users in the system are added to the pool
       {
-        Assessment(assessment).addToAssessorPool(Concept(mew).getOwner(i));
+        Assessment(assessment).addToAssessorPool(Concept(mew).owners(i));
       }
       Assessment(assessment).setAssessmentPoolSize(0); //Sets the remaining amount of user's desired in the pool to 0
       Assessment(assessment).setPotentialAssessor(size); //Has the assessment select random potential assessors (the amount is dictated by the size variable)
     }
-    for(uint j = 0; j < Concept(conceptAddress).getOwnerLength() && Assessment(assessment).getAssessmentPoolSize() > 0; j++) //Iterates through all the owners of the concept corresponding to concept address while the remaining amount of user's desired in the pool is greater than 0
+    for(uint j = 0; j < Concept(conceptAddress).getOwnerLength() && Assessment(assessment).poolSizeRemaining() > 0; j++) //Iterates through all the owners of the concept corresponding to concept address while the remaining amount of user's desired in the pool is greater than 0
     {
       uint numberSet = 0; //initializes a variable to keep track of how many assessors this concept has added to the pool
       if(numberSet < Concept(conceptAddress).getOwnerLength()/10) //Checks if the number of assessors provided by this concept is less than 10% of the owners of the concept
       {
-        address randomUser = Concept(conceptAddress).getOwner(Random(random).getRandom(seed + j, Concept(conceptAddress).getOwnerLength()-1)); //gets a random owner of the concept
-        if(UserMaster(userMaster).getAvailability(randomUser) == true && (uint(Concept(conceptAddress).getCurrentScore(randomUser))*Concept(conceptAddress).getAssessmentSize(randomUser)) > (now%(uint(maxScore)*maxSize))) //Checks if the randomly drawn is available and then puts it through a random check that it has a higher chance of passing if it has had a higher score and a larger assessment
+        address randomUser = Concept(conceptAddress).owners(Random(random).getRandom(seed + j, Concept(conceptAddress).getOwnerLength()-1)); //gets a random owner of the concept
+        if(UserMaster(userMaster).getAvailability(randomUser) == true && (uint(Concept(conceptAddress).currentScores(randomUser))*Concept(conceptAddress).assessmentSizes(randomUser)) > (now%(uint(maxScore)*maxSize))) //Checks if the randomly drawn is available and then puts it through a random check that it has a higher chance of passing if it has had a higher score and a larger assessment
         {
           Assessment(assessment).addToAssessorPool(randomUser); //adds the randomly selected user to the assessor pool
-          Assessment(assessment).setAssessmentPoolSize(Assessment(assessment).getAssessmentPoolSize() -1); //reduces desired amount of users to be added to the assessor bool by 1
+          Assessment(assessment).setAssessmentPoolSize(Assessment(assessment).poolSizeRemaining() -1); //reduces desired amount of users to be added to the assessor bool by 1
           numberSet++; //increases numberSet by 1
         }
       }
@@ -306,7 +210,7 @@ contract Concept
         break; //exits this for loop if 10% or more of the concept owners are in the assessment pool
       }
     }
-    if(Assessment(assessment).getAssessmentPoolSize() <= 0) //Checks if the number of desired users remaining for the assessment pool is no greater than 0
+    if(Assessment(assessment).poolSizeRemaining() <= 0) //Checks if the number of desired users remaining for the assessment pool is no greater than 0
     {
       Assessment(assessment).setPotentialAssessor(size); //If so, the assessment selects random potential assessors (the amount is dictated by the size variable)
     }
@@ -316,11 +220,11 @@ contract Concept
       {
         if(l < Concept(conceptAddress).getParentsLength()) //Makes sure there are still parent concepts left to call
         {
-          setAssessorPool(Concept(conceptAddress).getParent(l), assessment, Random(random).getRandom(seed + l, Concept(conceptAddress).getOwnerLength()-1), size);
+          setAssessorPool(Concept(conceptAddress).parentConcepts(l), assessment, Random(random).getRandom(seed + l, Concept(conceptAddress).getOwnerLength()-1), size);
         }
         if(l < Concept(conceptAddress).getChildrenLength()) //Makes sure there are still child concepts left to call
         {
-          setAssessorPool(Concept(conceptAddress).getChild(l), assessment, Random(random).getRandom(seed + l, Concept(conceptAddress).getOwnerLength()-1), size);
+          setAssessorPool(Concept(conceptAddress).childConcepts(l), assessment, Random(random).getRandom(seed + l, Concept(conceptAddress).getOwnerLength()-1), size);
         }
       }
     }
@@ -359,9 +263,9 @@ contract Concept
   */
   function startAssessment(address assessment)
   {
-    if(block.number - Assessment(assessment).getReferenceTime() >= 4 && block.number - Assessment(assessment).getReferenceTime() <= 6) //Checks if this function is being called 4 to 6 blocks after the block in which the assessment was created
+    if(block.number - Assessment(assessment).referenceTime() >= 4 && block.number - Assessment(assessment).referenceTime() <= 6) //Checks if this function is being called 4 to 6 blocks after the block in which the assessment was created
     {
-      setAssessorPool(address(this), assessment, Assessment(assessment).getNumberOfAssessors(), Assessment(assessment).getNumberOfAssessors()); //Calls thge function to set the assessor pool
+      setAssessorPool(address(this), assessment, Assessment(assessment).numberOfAssessors(), Assessment(assessment).numberOfAssessors()); //Calls thge function to set the assessor pool
     }
     else
     {
@@ -382,16 +286,7 @@ contract Concept
   {
     if(msg.sender == assessment) //Checks to make sure this function is being callled by the assessment
     {
-      bool pass;
       if(score > 0)
-      {
-        pass = true;
-      }
-      else
-      {
-        pass = false;
-      }
-      if(pass == true) //If the assessee passed
       {
         owners.push(assessee); //Makes the assessee an owner of this concept
         User(assessee).setAcheivement(assessment);
@@ -400,16 +295,16 @@ contract Concept
       UserMaster(userMaster).mapHistory(assessee,assessment); //Maps the assessee to the assessment in the user master as part of the assessee's history
       assessmentHistory[assessee].push(assessment); //Adds the assessment to the assessment history array
       currentScores[assessee] = score; //Maps the assessee to their score
-      assessmentSizes[assessee] = Assessment(assessment).getNumberOfAssessors(); //Maps the assessee to the assessment size
+      assessmentSizes[assessee] = Assessment(assessment).numberOfAssessors(); //Maps the assessee to the assessment size
       if(score > maxScore)
       {
         maxScore = score; //If this assessment's score is higher that the current highest score than the maxScore variable is updated with this score
       }
-      if(Assessment(assessment).getNumberOfAssessors() > maxSize)
+      if(Assessment(assessment).numberOfAssessors() > maxSize)
       {
-        maxSize = Assessment(assessment).getNumberOfAssessors(); //If this assessment's size is larger that the current largest assessment size than the maxSize variable is updated with this size
+        maxSize = Assessment(assessment).numberOfAssessors(); //If this assessment's size is larger that the current largest assessment size than the maxSize variable is updated with this size
       }
-      CompletedAssessment(assessee, pass, score, assessment); //Makes an event with this assessment's data
+      CompletedAssessment(assessee, score, assessment); //Makes an event with this assessment's data
     }
   }
 
