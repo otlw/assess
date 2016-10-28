@@ -343,7 +343,7 @@ contract Concept
       newAssessment.setNumberOfAssessors(size); //Sets the number of assessors wanted in the assessment to equal size
       newAssessment.setAssessmentPoolSize(size*20); //Sets the number of users wanted to form the assessor pool to 20 times size
       pay(assessee, UserMaster(userMaster).getTokenBalance(assessee) - int(time*size));
-      User(assessee).notification("You have been charged for your assessment", concept, 19);
+      User(assessee).notification("You have been charged for your assessment", address(this), 19);
     }
     else
     {

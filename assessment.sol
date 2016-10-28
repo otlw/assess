@@ -108,6 +108,7 @@ contract Assessment
   {
     return referenceTime;
   }
+
   function setNumberOfAssessors(uint number) onlyConcept()
   {
     numberOfAssessors = number;
