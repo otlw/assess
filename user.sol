@@ -175,12 +175,12 @@ contract User
 
   function setConceptPassed(bool passed) onlyConcept()
   {
-    conceptsDone[msg.sender] = passed;
+    conceptPassed[msg.sender] = passed;
   }
 
   function getConceptPassed(address concept) constant returns(bool)
   {
-    return conceptsDone[concept];
+    return conceptPassed[concept];
   }
 
 
