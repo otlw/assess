@@ -183,26 +183,6 @@ contract User
     return conceptsDone[concept];
   }
 
-  function execute(address _to, uint _value, bytes _data) external onlyUser() returns (bytes32 _r)
-  {
-    // first, take the opportunity to check that we're under the daily limit.
-    if (underLimit(_value))
-    {
-      SingleTransact(msg.sender, _value, _to, _data);
-      // yes - just execute the call.
-      _to.call.value(_value)(_data);
-      return 0;
-    }
-    // determine our operation hash.
-    _r = sha3(msg.data, block.number);
-    if (!confirm(_r) && m_txs[_r].to == 0)
-    {
-      m_txs[_r].to = _to;
-      m_txs[_r].value = _value;
-      m_txs[_r].data = _data;
-      ConfirmationNeeded(_r, msg.sender, _value, _to, _data);
-    }
-  }
 
   /*
   @type: function
