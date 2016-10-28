@@ -104,6 +104,10 @@ contract Assessment
   event PotentialAssessorSet(address _potentialAssessor);
   event DataSet(address _dataSetter, uint _index);
 
+  function getReferenceTime() constant returns(uint)
+  {
+    return referenceTime;
+  }
   function setNumberOfAssessors(uint number) onlyConcept()
   {
     numberOfAssessors = number;

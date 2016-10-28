@@ -359,7 +359,7 @@ contract Concept
   */
   function startAssessment(address assessment)
   {
-    if(block.number - Assessment(assessment).getReferenceBlock() >= 4 && block.number - Assessment(assessment).getReferenceBlock() <= 6) //Checks if this function is being called 4 to 6 blocks after the block in which the assessment was created
+    if(block.number - Assessment(assessment).getReferenceTime() >= 4 && block.number - Assessment(assessment).getReferenceTime() <= 6) //Checks if this function is being called 4 to 6 blocks after the block in which the assessment was created
     {
       setAssessorPool(address(this), assessment, Assessment(assessment).getNumberOfAssessors(), Assessment(assessment).getNumberOfAssessors()); //Calls thge function to set the assessor pool
     }
@@ -371,7 +371,7 @@ contract Concept
 
   /*
   @type: function
-  @purpose: To finish the assessment process
+  @purpose: To finish the assessment processc
   @param: bool pass = whether or not the assessee passed the assessment
   @param: int score = the assessee's score
   @param: address assessee = the address of the assessee
