@@ -15,7 +15,7 @@ contract Assessment
   address[] public assessorPool; //The addresses of the user's that the assessors are randomly selected from
   mapping (address => uint) assessors; //A mapping of the assessors to their current status
   uint calledAssessors = 0; //The number of assessors that have been called to assess
-  address[] finalAssessors; //The addresses of the final set of assessors who have completed the assessment process
+  address[] finalAssessors; //The addresses of the final set of assessors who have agreed to the assessment process
   address concept; //The address of the concept that is being assessed
   address userMaster; //The address of the UserMaster
   address conceptMaster; //The address of the ConceptMaster
