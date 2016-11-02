@@ -122,7 +122,7 @@ contract Assessment
     assessorPool.push(potentialAddress);
   }
 
-  function setPotentialAssessor(uint needed)
+  function setPotentialAssessors(uint needed)
   {
     if(assessorPool.length - calledAssessors < needed)
     {
@@ -183,7 +183,7 @@ contract Assessment
           numberCancelled++;
         }
       }
-      setPotentialAssessor(numberCancelled);
+      setPotentialAssessors(numberCancelled);
     }
     if(numberCancelled == 0)
     {

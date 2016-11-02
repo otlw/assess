@@ -189,7 +189,7 @@ contract Concept
         Assessment(assessment).addToAssessorPool(Concept(mew).owners(i));
       }
       Assessment(assessment).setAssessmentPoolSize(0); //Sets the remaining amount of user's desired in the pool to 0
-      Assessment(assessment).setPotentialAssessor(size); //Has the assessment select random potential assessors (the amount is dictated by the size variable)
+      Assessment(assessment).setPotentialAssessors(size); //Has the assessment select random potential assessors (the amount is dictated by the size variable)
     }
     for(uint j = 0; j < Concept(conceptAddress).getOwnerLength() && Assessment(assessment).poolSizeRemaining() > 0; j++) //Iterates through all the owners of the concept corresponding to concept address while the remaining amount of user's desired in the pool is greater than 0
     {
@@ -211,7 +211,7 @@ contract Concept
     }
     if(Assessment(assessment).poolSizeRemaining() <= 0) //Checks if the number of desired users remaining for the assessment pool is no greater than 0
     {
-      Assessment(assessment).setPotentialAssessor(size); //If so, the assessment selects random potential assessors (the amount is dictated by the size variable)
+      Assessment(assessment).setPotentialAssessors(size); //If so, the assessment selects random potential assessors (the amount is dictated by the size variable)
     }
     else //If not
     {
