@@ -98,7 +98,7 @@ contract Assessment
     random = randomAddress;
     referenceTime = block.timestamp;
     assessmentTime = time;
-    User(assessee).notification("Assessment made", concept, 0);
+    User(assessee).notification(concept, 0); //Assessment made
   }
 
   event PotentialAssessorSet(address _potentialAssessor);
@@ -143,7 +143,7 @@ contract Assessment
             assessors[randomAssessor] = 3;
             potentialAssessors.push(randomAssessor);
             calledAssessors++;
-            User(randomAssessor).notification("Called As A Potential Assessor",concept, 1);
+            User(randomAssessor).notification(concept, 1); //Called As A Potential Assessor
             randomNumber = Random(random).getRandom(assessorPool.length, randomNumber);
             PotentialAssessorSet(randomAssessor);
             potentialAssessorSet = true;
@@ -162,13 +162,13 @@ contract Assessment
       assessors[msg.sender] = confirm;
       if(confirm == 1)
       {
-        User(msg.sender).notification("Confirmed As Assessing", concept, 2);
+        User(msg.sender).notification(concept, 2); //Confirmed As Assessing
         finalAssessors.push(msg.sender);
         referenceTime = now;
       }
       if(confirm == 2)
       {
-        User(msg.sender).notification("Confirmed As Not Assessing", concept, 3);
+        User(msg.sender).notification(concept, 3); //Confirmed As Not Assessing
         numberCancelled ++;
       }
     }
@@ -178,7 +178,7 @@ contract Assessment
       {
         if(assessors[potentialAssessors[i]] == 3)
         {
-          User(potentialAssessors[i]).notification("Did Not Respond In Time To Be Assessor", concept, 4);
+          User(potentialAssessors[i]).notification(concept, 4); //Did Not Respond In Time To Be Assessor
           assessors[potentialAssessors[i]] = 4;
           numberCancelled++;
         }
@@ -195,9 +195,9 @@ contract Assessment
   {
     for(uint i = 0; i < finalAssessors.length; i++)
     {
-      User(finalAssessors[i]).notification("Assessment Has Started", concept, 17);
+      User(finalAssessors[i]).notification(concept, 17); //Assessment Has Started
     }
-    User(assessee).notification("Assessment Has Started", concept, 17);
+    User(assessee).notification(concept, 17); //Assessment Has Started
     referenceTime = now;
   }
 
@@ -209,12 +209,12 @@ contract Assessment
 
   function cancelAssessment() onlyConceptAssessment()
   {
-    User(assessee).notification("Assessment Cancled", concept, 8);
+    User(assessee).notification(concept, 8); //Assessment Cancled
     Concept(concept).pay(assessee, UserMaster(userMaster).getTokenBalance(assessee) + int(assessmentTime*numberOfAssessors));
-    User(assessee).notification("You have been refunded for your assessment", concept, 20);
+    User(assessee).notification(concept, 20); //You have been refunded for your assessment
     for(uint i = 0; i < finalAssessors.length; i++)
     {
-      User(finalAssessors[i]).notification("Assessment Cancled", concept, 8);
+      User(finalAssessors[i]).notification(concept, 8); //Assessment Cancled
     }
     suicide(conceptMaster);
   }
@@ -241,7 +241,7 @@ contract Assessment
     {
       for(uint n = 0; n < finalAssessors.length; n++)
       {
-        User(finalAssessors[n]).notification("Send in Score", concept, 18);
+        User(finalAssessors[n]).notification(concept, 18); //Send in Score
       }
       referenceTime = block.number; //use referenceTime to refer to the block number instead of timestamp
     }
@@ -346,12 +346,12 @@ contract Assessment
       if(inRewardCluster[score] == true)
       {
         Concept(concept).pay(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) + payoutValue);
-        User(finalAssessors[i]).notification("You Have Received Payment For Your Assessment", concept, 15);
+        User(finalAssessors[i]).notification(concept, 15); //You Have Received Payment For Your Assessment
       }
       if(inRewardCluster[score] == false)
       {
         Concept(concept).pay(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) - payoutValue);
-        User(finalAssessors[i]).notification("You Have Received A Fine For Your Assessment", concept, 16);
+        User(finalAssessors[i]).notification(concept, 16); //You Have Received A Fine For Your Assessment
       }
     }
     returnResults();

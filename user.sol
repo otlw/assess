@@ -45,8 +45,7 @@ contract User
   @purpose: To provide a user with notifications
   */
   event Notification
-  ( string _description, //A notification message
-    address _sender, //The notification sender
+  ( address _sender, //The notification sender
     address _user, //The address of the user that received the notification
     address _concept, //The address of the concept involved in this notification
     uint _code); //The notification code
@@ -131,9 +130,9 @@ contract User
   @param: uint code = the address of the concept involved in this notification
   @returns: nothing
   */
-  function notification(string description, address concept, uint code)
+  function notification(address concept, uint code)
   {
-    Notification(description, msg.sender, address(this), concept, code);
+    Notification(msg.sender, address(this), concept, code);
   }
 
   /*
