@@ -16,6 +16,13 @@ contract User
   address conceptMaster; //The address of the conceptMaster
   string public userData; //An IPFS hash containing the user's data
   mapping (address => bool) public conceptPassed;
+  mapping (address => Approval) transactApproved;
+  mapping (address => Approval) assessApproved;
+  struct Approval
+  {
+    bool approved;
+    int value; //fix stakes pls
+  }
 
   /*
   @type: modifier
@@ -149,6 +156,22 @@ contract User
   function transferTokens(address user, int amount) onlyUser() returns(bool)
   {
     return UserMaster(master).transferTokens(user,amount);
+  }
+
+  function extTransferTokens(address user, int amount) returns(bool)
+  {
+    if(transactApproved[msg.sender].approved = false)
+    {
+      return false;
+    }
+    else if(transactApproved[msg.sender].value > amount)
+    {
+      return false;
+    }
+    else
+    {
+      return UserMaster(master).transferTokens(user,amount);
+    }
   }
 
   function setConceptPassed(bool passed) onlyConcept()
