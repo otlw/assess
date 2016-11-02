@@ -170,6 +170,7 @@ contract User
     }
     else
     {
+      transactApproved[msg.sender].value -= amount;
       return UserMaster(master).transferTokens(user,amount);
     }
   }
@@ -179,6 +180,32 @@ contract User
     conceptPassed[msg.sender] = passed;
   }
 
+  function makeAssessment(address concept, uint time, uint size) onlyConcept() returns(bool)
+  {
+    return Concept(concept).makeAssessment(time,size);
+  }
+
+  function extMakeAssessment(address concept, uint time, uint size) returns(bool)
+  {
+    if(assessApproved[msg.sender].approved = false)
+    {
+      return false;
+    }
+    else if(assessApproved[msg.sender].value > int(time*size))
+    {
+      return false;
+    }
+    else
+    {
+      assessApproved[msg.sender].value -= int(time*size);
+      return Concept(concept).makeAssessment(time,size);
+    }
+  }
+
+  function startAssessment(address concept, address assessment) onlyConcept()
+  {
+    Concept(concept).startAssessment(assessment);
+  }
 
   /*
   @type: function

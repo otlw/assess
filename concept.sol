@@ -232,25 +232,25 @@ contract Concept
   /*
   @type: function
   @purpose: To make a new assessment
-  @param: address assessee = the address of the assessee
   @param: uint time = the time that assessors will have to assess in this assessment
   @param: uint size = the size of the assessment
   @returns: nothing
   */
-  function makeAssessment(address assessee, uint time, uint size)
+  function makeAssessment(uint time, uint size) returns(bool)
   {
-    if(size >= 5 && UserMaster(userMaster).getTokenBalance(assessee) >= int(time*size)) //Checks if the assessment has a size of at least 5
+    if(size >= 5 && UserMaster(userMaster).getTokenBalance(msg.sender) >= int(time*size)) //Checks if the assessment has a size of at least 5
     {
-      Assessment newAssessment = new Assessment(assessee, address(this), userMaster, conceptMaster, random, time); //Makes a new assessment with the given parameters
+      Assessment newAssessment = new Assessment(msg.sender, address(this), userMaster, conceptMaster, random, time); //Makes a new assessment with the given parameters
       assessmentExists[address(newAssessment)] = true; //Sets the assessment's existance to true
       newAssessment.setNumberOfAssessors(size); //Sets the number of assessors wanted in the assessment to equal size
       newAssessment.setAssessmentPoolSize(size*20); //Sets the number of users wanted to form the assessor pool to 20 times size
-      pay(assessee, UserMaster(userMaster).getTokenBalance(assessee) - int(time*size));
-      User(assessee).notification(address(this), 19); //You have been charged for your assessment
+      pay(msg.sender, UserMaster(userMaster).getTokenBalance(msg.sender) - int(time*size));
+      User(msg.sender).notification(address(this), 19); //You have been charged for your assessment
+      return true;
     }
     else
     {
-      throw; //Throws out the function call if the size of the assessment is less than 5
+      return false;
     }
   }
 
