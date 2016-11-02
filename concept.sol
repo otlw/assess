@@ -88,9 +88,8 @@ contract Concept
   @param: address randomAddress = the address of the ransom contract
   @returns: nothing
   */
-  function Concept(string conceptName, address[] parents, address userMasterAddress, address conceptMasterAddress, address randomAddress)
+  function Concept(address[] parents, address userMasterAddress, address conceptMasterAddress, address randomAddress)
   {
-    name = conceptName; //sets to value of name to that of conceptName
     parentConcepts = parents; //sets the value of parentConcepts to that of parents
     userMaster = userMasterAddress; //sets the value of userMaster to that of userMasterAddress
     random = randomAddress; //sets the value of random to that of randomAddress
