@@ -289,7 +289,6 @@ contract Concept
       if(score > 0)
       {
         owners.push(assessee); //Makes the assessee an owner of this concept
-        User(assessee).setAcheivement(assessment);
         User(assessee).setConceptPassed(true);
       }
       UserMaster(userMaster).mapHistory(assessee,assessment); //Maps the assessee to the assessment in the user master as part of the assessee's history

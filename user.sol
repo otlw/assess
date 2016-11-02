@@ -14,7 +14,6 @@ contract User
   address user; //The address of the user's wallet
   address master; //The address of the userMaster that spawned this user
   address conceptMaster; //The address of the conceptMaster
-  address[] public acheivements; //The addresses of the concepts and assessments that the user passed
   string public userData; //An IPFS hash containing the user's data
   mapping (address => bool) public conceptPassed;
 
@@ -151,11 +150,6 @@ contract User
   function transferTokens(address user, int amount) onlyUser() returns(bool)
   {
     return UserMaster(master).transferTokens(user,amount);
-  }
-
-  function setAcheivement(address assessment) onlyConcept()
-  {
-    acheivements.push(assessment);
   }
 
   function setConceptPassed(bool passed) onlyConcept()
