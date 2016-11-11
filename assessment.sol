@@ -210,7 +210,7 @@ contract Assessment
   function cancelAssessment() onlyConceptAssessment()
   {
     User(assessee).notification(concept, 8); //Assessment Cancled
-    Concept(concept).pay(assessee, UserMaster(userMaster).getTokenBalance(assessee) + int(assessmentTime*numberOfAssessors));
+    Concept(concept).pay(assessee, UserMaster(userMaster).getBalance(assessee) + assessmentTime*numberOfAssessors);
     User(assessee).notification(concept, 20); //You have been refunded for your assessment
     for(uint i = 0; i < finalAssessors.length; i++)
     {
@@ -342,15 +342,15 @@ contract Assessment
       {
         scoreDistance *= -1;
       }
-      int payoutValue = (int(assessmentTime*finalAssessors.length)/(100 - scoreDistance)) * int(finalAssessors.length/largestSize);
+      uint payoutValue = ((assessmentTime*finalAssessors.length)/(100 - scoreDistance)) * (finalAssessors.length/largestSize);
       if(inRewardCluster[score] == true)
       {
-        Concept(concept).pay(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) + payoutValue);
+        Concept(concept).pay(finalAssessors[i], UserMaster(userMaster).getBalance(finalAssessors[i]) + payoutValue);
         User(finalAssessors[i]).notification(concept, 15); //You Have Received Payment For Your Assessment
       }
       if(inRewardCluster[score] == false)
       {
-        Concept(concept).pay(finalAssessors[i], UserMaster(userMaster).getTokenBalance(finalAssessors[i]) - payoutValue);
+        Concept(concept).pay(finalAssessors[i], UserMaster(userMaster).getBalance(finalAssessors[i]) - payoutValue);
         User(finalAssessors[i]).notification(concept, 16); //You Have Received A Fine For Your Assessment
       }
     }

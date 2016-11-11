@@ -153,12 +153,12 @@ contract User
     userData = hash; //Sets userData to the hash value
   }
 
-  function transferTokens(address user, int amount) onlyUser() returns(bool)
+  function transferTokens(address user, uint amount) onlyUser() returns(bool)
   {
-    return UserMaster(master).transferTokens(user,amount);
+    return UserMaster(master).transfer(user,amount);
   }
 
-  function extTransferTokens(address user, int amount) returns(bool)
+  function extTransferTokens(address user, uint amount) returns(bool)
   {
     if(transactApproved[msg.sender].approved = false)
     {
@@ -171,7 +171,7 @@ contract User
     else
     {
       transactApproved[msg.sender].value -= amount;
-      return UserMaster(master).transferTokens(user,amount);
+      return UserMaster(master).transfer(user,amount);
     }
   }
 

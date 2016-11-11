@@ -238,13 +238,13 @@ contract Concept
   */
   function makeAssessment(uint time, uint size) returns(bool)
   {
-    if(size >= 5 && UserMaster(userMaster).getTokenBalance(msg.sender) >= int(time*size)) //Checks if the assessment has a size of at least 5
+    if(size >= 5 && UserMaster(userMaster).getBalance(msg.sender) >= time*size) //Checks if the assessment has a size of at least 5
     {
       Assessment newAssessment = new Assessment(msg.sender, address(this), userMaster, conceptMaster, random, time); //Makes a new assessment with the given parameters
       assessmentExists[address(newAssessment)] = true; //Sets the assessment's existance to true
       newAssessment.setNumberOfAssessors(size); //Sets the number of assessors wanted in the assessment to equal size
       newAssessment.setAssessmentPoolSize(size*20); //Sets the number of users wanted to form the assessor pool to 20 times size
-      pay(msg.sender, UserMaster(userMaster).getTokenBalance(msg.sender) - int(time*size));
+      pay(msg.sender, UserMaster(userMaster).getBalance(msg.sender) - time*size);
       User(msg.sender).notification(address(this), 19); //You have been charged for your assessment
       return true;
     }
@@ -312,11 +312,11 @@ contract Concept
   @param: address user = the user to pay/charge
   @param: int amount = the user's new token balance
   */
-  function pay(address user, int amount)
+  function pay(address user, uint amount)
   {
     if(assessmentExists[msg.sender] = true) //Checks if msg.sender is an existing assessment
     {
-      UserMaster(userMaster).mapTokenBalance(user, amount); //Changes the user's token balance
+      UserMaster(userMaster).mapBalance(user, amount); //Changes the user's token balance
     }
   }
 

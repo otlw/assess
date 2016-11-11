@@ -12,7 +12,7 @@ import "conceptMaster.sol";
 contract UserMaster
 {
   address public conceptMasterAddress; //The address of the conceptMaster contract
-  mapping (address => int)  tokenBalance; //Maps the addresses of users to their token balances
+  mapping (address => uint)  balance; //Maps the addresses of users to their token balances
   mapping (address => address[])  history; //Maps the addresses of users to an array of addresses that contain the addresses of their assessments
   mapping (address => bool)  availability; //Maps the addresses of users to their availability status for whether or not they can currently assess someone
   mapping (address => address)  users; //Maps the addresses of the users to their account
@@ -79,7 +79,7 @@ contract UserMaster
       User newUser = new User(userAddress, address(this), conceptMasterAddress); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
       Concept(ConceptMaster(conceptMasterAddress).mewAddress()).addUser(address(newUser));
       UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
-      tokenBalance[address(newUser)] = 1000;
+      balance[address(newUser)] = 1000;
     }
   }
 
@@ -114,9 +114,9 @@ contract UserMaster
   @param: uint balance = the new token balance for the user
   @returns: nothing
   */
-  function mapTokenBalance(address user, int balance) onlyConcept()
+  function mapBalance(address user, uint newBalance) onlyConcept()
   {
-    tokenBalance[user] = balance; //sets the token balance of the user
+    balance[user] = newBalance; //sets the token balance of the user
   }
 
   /*
@@ -125,9 +125,9 @@ contract UserMaster
   @param: address user = the address of the user
   @returns: The token balance in the form of a uint
   */
-  function getTokenBalance(address user) constant returns(int)
+  function getBalance(address user) constant returns(uint)
   {
-    return tokenBalance[user];
+    return balance[user];
   }
 
   /*
@@ -163,12 +163,12 @@ contract UserMaster
     return availability[user];
   }
 
-  function transferTokens(address user, int amount) returns(bool)
+  function transfer(address user, uint amount) returns(bool)
   {
-    if(amount > 0 && tokenBalance[msg.sender] > amount)
+    if(balance[msg.sender] > amount)
     {
-      tokenBalance[msg.sender] -= amount;
-      tokenBalance[user] += amount;
+      balance[msg.sender] -= amount;
+      balance[user] += amount;
       return true;
     }
     else
