@@ -1,37 +1,31 @@
-import "lib/random.sol";
+import "lib/math.sol";
 import "userMaster.sol";
 import "concept.sol";
 import "user.sol";
 import "conceptMaster.sol";
 
-/*
-@type: contract
-@name: Assessment
-@purpose: To facilitate the assessment process
-*/
 contract Assessment
 {
   address assessee; //The address of the user being assessed
-  address[] public assessorPool; //The addresses of the user's that the assessors are randomly selected from
-  mapping (address => uint) assessors; //A mapping of the assessors to their current status
-  uint calledAssessors = 0; //The number of assessors that have been called to assess
-  address[] finalAssessors; //The addresses of the final set of assessors who have agreed to the assessment process
-  address concept; //The address of the concept that is being assessed
-  address userMaster; //The address of the UserMaster
-  address conceptMaster; //The address of the ConceptMaster
-  address random; //The address of the Random contract
-  uint public poolSizeRemaining; //The remaining number of users to be added to the assessor pool
-  uint public numberOfAssessors; //The number of assessors requested for this assessment
-  mapping(address => int) assessmentResults; //Pass/Fail and Score given by assessors
-  mapping(int => bool) inRewardCluster; //A bool that reflects whether or not a score is within the largest cluster of scores
+  address[] assessors;
+  mapping (address => uint) assessorState;
+  address[] assessorPool; //The addresses of the user's that the assessors are randomly selected from
+  address concept;
+  address userMaster;
+  address conceptMaster;
+  address math;
+  uint public startTime;
+  uint public size;
+  uint cost;
+  uint poolSizeRemaining;
   mapping(address => string[]) public data; //IFFS hashes of data that can be passed between the assessors and the assessee for the assessment to occur
-  address[] potentialAssessors; //The addresses of those randomly selected to be assessors (but may not have confirmed yes)
-  int finalScore; //The final score of the assessee
-  uint public referenceTime; //Time used as reference to determine how much time has passed for a certain portion of the assessment
-  uint numberCancelled = 0; //The number of assessors who have refused to join the assessment
-  uint doneAssessors = 0; //The number of assessors that are done assessing
-  uint resultsSet = 0; //The number of assessors who have set their score for the assessee
-  uint assessmentTime; //The amount of time allotted for the assessors to judge the assessee and determine their score
+  mapping(address => bytes32) commits;
+  mapping(address => uint) stake;
+  uint done = 0;
+  mapping(address => int) scores;
+  mapping(int => bool) inRewardCluster;
+  int finalScore;
+  event DataSet(address _dataSetter, uint _index);
 
   /*
   @type: modifier
@@ -68,7 +62,7 @@ contract Assessment
   */
   modifier onlyAssessorAssessee()
   {
-    if(msg.sender != assessee && assessors[msg.sender] == 0) //Checks if msg.sender has the same address as either the assessee or an assessor
+    if(msg.sender != assessee && assessorState[msg.sender] == 0) //Checks if msg.sender has the same address as either the assessee or an assessor
     {
       throw; //Throws the function call if not
     }
@@ -89,116 +83,114 @@ contract Assessment
     _;
   }
 
-  function Assessment(address assesseeAddress, address conceptAddress, address userMasterAddress, address conceptMasterAddress, address randomAddress, uint time)
+  function Assessment(address assesseeAddress, address userMasterAddress, address conceptMasterAddress, address mathAddress, uint assessmentSize, uint assessmentCost)
   {
     assessee = assesseeAddress;
-    concept = conceptAddress;
+    concept = msg.sender;
     userMaster = userMasterAddress;
     conceptMaster = conceptMasterAddress;
-    random = randomAddress;
-    referenceTime = block.timestamp;
-    assessmentTime = time;
+    math = mathAddress;
+    startTime = block.timestamp;
+    size = assessmentSize;
+    cost = assessmentCost;
+    poolSizeRemaining = size*20;
     User(assessee).notification(concept, 0); //Assessment made
   }
 
-  event PotentialAssessorSet(address _potentialAssessor);
-  event DataSet(address _dataSetter, uint _index);
 
-  function setNumberOfAssessors(uint number) onlyConcept()
+  function cancelAssessment() onlyConceptAssessment()
   {
-    numberOfAssessors = number;
-  }
-
-  function setAssessmentPoolSize(uint sizeRemaining) onlyConcept()
-  {
-    if(poolSizeRemaining > 0)
+    Concept(concept).setBalance(assessee, UserMaster(userMaster).getBalance(assessee) + cost*size);
+    User(assessee).notification(concept, 3); //Assessment Cancled and you have been refunded
+    for(uint i = 0; i < assessors.length; i++)
     {
-      poolSizeRemaining = sizeRemaining;
+      Concept(concept).setBalance(assessors[i], UserMaster(userMaster).getBalance(assessors[i]) + cost);
+      User(assessors[i]).notification(concept, 3); //Assessment Cancled and you have been refunded
     }
+    suicide(conceptMaster);
   }
 
-  function addToAssessorPool(address potentialAddress) onlyConcept()
+  /*
+  @type: function
+  @purpose: To recursively set the pool to draw assessors from in the assessment
+  @param: address conceptAddress = the concept that assessors are currently being drawn from
+  @param: address assessment = the address of the assessment that assessors are being drawn for
+  @param: uint seed = the seed number for random number generation
+  @param: uint size = the desired size of the assessment
+  @returns: nothing
+  */
+  function setAssessorPool(address conceptAddress, uint seed) onlyConceptAssessment()
   {
-    assessorPool.push(potentialAddress);
-  }
-
-  function setPotentialAssessors(uint needed)
-  {
-    if(assessorPool.length - calledAssessors < needed)
+    if(Concept(ConceptMaster(conceptMaster).mewAddress()).getOwnerLength() < poolSizeRemaining) //Checks if the requested pool size is greater than the number of users in the system
     {
-      cancelAssessment();
-    }
-    else if(msg.sender == address(this) || msg.sender == concept)
-    {
-      bool potentialAssessorSet = false;
-      numberCancelled = 0;
-      uint randomNumber = Random(random).getRandom(assessorPool.length, assessorPool.length);
-      for(uint i = 0; i < needed; i++)
+      for(uint i = 0; i < Concept(ConceptMaster(conceptMaster).mewAddress()).getOwnerLength(); i++) //If so, all users in the system are added to the pool
       {
-        while(potentialAssessorSet == false)
+        assessorPool.push(Concept(ConceptMaster(conceptMaster).mewAddress()).owners(i));
+        User(Concept(ConceptMaster(conceptMaster).mewAddress()).owners(i)).notification(concept, 1); //Called As A Potential Assessor
+        assessorState[Concept(ConceptMaster(conceptMaster).mewAddress()).owners(i)] = 1;
+      }
+      poolSizeRemaining = 0;
+    }
+    for(uint j = 0; j < Concept(conceptAddress).getOwnerLength() && poolSizeRemaining > 0; j++) //Iterates through all the owners of the concept corresponding to concept address while the remaining amount of user's desired in the pool is greater than 0
+    {
+      uint numberSet = 0; //initializes a variable to keep track of how many assessors this concept has added to the pool
+      if(numberSet < Concept(conceptAddress).getOwnerLength()/10) //Checks if the number of assessors provided by this concept is less than 10% of the owners of the concept
+      {
+        address randomUser = Concept(conceptAddress).owners(Math(math).getRandom(seed + j, Concept(conceptAddress).getOwnerLength()-1)); //gets a random owner of the concept
+        if(UserMaster(userMaster).getAvailability(randomUser) == true && (uint(Concept(conceptAddress).currentScores(randomUser))*Concept(conceptAddress).assessmentSizes(randomUser)) > (now%(uint(Concept(conceptAddress).maxScore())*Concept(conceptAddress).maxSize()))) //Checks if the randomly drawn is available and then puts it through a random check that it has a higher chance of passing if it has had a higher score and a larger assessment
         {
-          address randomAssessor = assessorPool[randomNumber];
-          if(assessors[randomAssessor] == 0)
-          {
-            assessors[randomAssessor] = 3;
-            potentialAssessors.push(randomAssessor);
-            calledAssessors++;
-            User(randomAssessor).notification(concept, 1); //Called As A Potential Assessor
-            randomNumber = Random(random).getRandom(assessorPool.length, randomNumber);
-            PotentialAssessorSet(randomAssessor);
-            potentialAssessorSet = true;
-          }
-        }
-        potentialAssessorSet = false;
-      }
-      referenceTime = now;
-    }
-  }
-
-  function confirmAssessor(uint confirm)
-  {
-    if(assessors[msg.sender] != 0 && now - referenceTime <= 300)
-    {
-      assessors[msg.sender] = confirm;
-      if(confirm == 1)
-      {
-        User(msg.sender).notification(concept, 2); //Confirmed As Assessing
-        finalAssessors.push(msg.sender);
-        referenceTime = now;
-      }
-      if(confirm == 2)
-      {
-        User(msg.sender).notification(concept, 3); //Confirmed As Not Assessing
-        numberCancelled ++;
-      }
-    }
-    if(now - referenceTime > 300)
-    {
-      for(uint i = 0; i < potentialAssessors.length; i++)
-      {
-        if(assessors[potentialAssessors[i]] == 3)
-        {
-          User(potentialAssessors[i]).notification(concept, 4); //Did Not Respond In Time To Be Assessor
-          assessors[potentialAssessors[i]] = 4;
-          numberCancelled++;
+          assessorPool.push(randomUser); //adds the randomly selected user to the assessor pool
+          User(randomUser).notification(concept, 1); //Called As A Potential Assessor
+          assessorState[randomUser] = 1;
+          poolSizeRemaining--; //reduces desired amount of users to be added to the assessor pool by 1
+          numberSet++; //increases numberSet by 1
         }
       }
-      setPotentialAssessors(numberCancelled);
+      else
+      {
+        break; //exits this for loop if 10% or more of the concept owners are in the assessment pool
+      }
     }
-    if(numberCancelled == 0)
+    for(uint l = 0; l < Concept(conceptAddress).getParentsLength() || l < Concept(conceptAddress).getChildrenLength(); l++) //Recursively calls this function in such a way that the parent and child concepts' owners will be used to potentially populate the assessment pool
+    {
+      if(l < Concept(conceptAddress).getParentsLength()) //Makes sure there are still parent concepts left to call
+      {
+        setAssessorPool(Concept(conceptAddress).parentConcepts(l), Math(math).getRandom(seed + l, Concept(conceptAddress).getOwnerLength()-1));
+      }
+      if(l < Concept(conceptAddress).getChildrenLength()) //Makes sure there are still child concepts left to call
+      {
+        setAssessorPool(Concept(conceptAddress).childConcepts(l), Math(math).getRandom(seed + l, Concept(conceptAddress).getOwnerLength()-1));
+      }
+    }
+  }
+
+  function confirmAssessor()
+  {
+    if(block.number - startTime <= 15 && assessorState[msg.sender] == 1 && assessors.length < size && UserMaster(userMaster).getBalance(msg.sender) >= cost)
+    {
+      assessors.push(msg.sender);
+      assessorState[msg.sender] = 2;
+      stake[msg.sender] = cost;
+      Concept(concept).setBalance(msg.sender,UserMaster(userMaster).getBalance(msg.sender) - cost);
+      User(msg.sender).notification(concept, 2); //Confirmed for assessing, stake has been taken
+    }
+    if(assessors.length == size)
     {
       notifyStart();
+    }
+    else if(block.number - startTime > 15 && assessors.length < size)
+    {
+      cancelAssessment();
     }
   }
 
   function notifyStart() onlyThis()
   {
-    for(uint i = 0; i < finalAssessors.length; i++)
+    for(uint i = 0; i < assessors.length; i++)
     {
-      User(finalAssessors[i]).notification(concept, 17); //Assessment Has Started
+      User(assessors[i]).notification(concept, 4); //Assessment Has Started
     }
-    User(assessee).notification(concept, 17); //Assessment Has Started
-    referenceTime = now;
+    User(assessee).notification(concept, 4); //Assessment Has Started
   }
 
   function setData(string newData) onlyAssessorAssessee()
@@ -207,114 +199,118 @@ contract Assessment
     DataSet(msg.sender, data[msg.sender].length - 1);
   }
 
-  function cancelAssessment() onlyConceptAssessment()
+  function commit(bytes32 hash)
   {
-    User(assessee).notification(concept, 8); //Assessment Cancled
-    Concept(concept).pay(assessee, UserMaster(userMaster).getBalance(assessee) + assessmentTime*numberOfAssessors);
-    User(assessee).notification(concept, 20); //You have been refunded for your assessment
-    for(uint i = 0; i < finalAssessors.length; i++)
+    if(assessorState[msg.sender] == 2)
     {
-      User(finalAssessors[i]).notification(concept, 8); //Assessment Cancled
-    }
-    suicide(conceptMaster);
-  }
-
-  function doneAssessing()
-  {
-    if(assessors[msg.sender] == 1)
-    {
-      assessors[msg.sender] = 5;
-      doneAssessors++;
-    }
-    if(referenceTime - now > assessmentTime && doneAssessors != finalAssessors.length)
-    {
-      for(uint i = 0; i < finalAssessors.length; i++)
+      commits[msg.sender] = hash;
+      assessorState[msg.sender] == 3;
+      done++;
+      if(done <= size/2)
       {
-        if(assessors[finalAssessors[i]] == 1)
+        startTime = block.number;
+      }
+    }
+    if(done > size/2)
+    {
+      for(uint i = 0; i < assessors.length; i++)
+      {
+        if(assessorState[assessors[i]] == 2)
         {
-          assessors[finalAssessors[i]] = 5;
-          doneAssessors++;
+          //burn da stakes
+        }
+        if(stake[assessors[i]] == 0)
+        {
+          assessorState[assessors[i]] = 4;
+          done++;
         }
       }
     }
-    if(doneAssessors == finalAssessors.length)
+    if(done == size)
     {
-      for(uint n = 0; n < finalAssessors.length; n++)
+      for(uint j = 0; j < assessors.length; j++)
       {
-        User(finalAssessors[n]).notification(concept, 18); //Send in Score
+        if(assessorState[assessors[j]] == 3)
+        {
+          User(assessors[j]).notification(concept, 5); //Send in Score
+        }
       }
-      referenceTime = block.number; //use referenceTime to refer to the block number instead of timestamp
+      startTime = block.number;
+      done = 0;
     }
   }
 
-  function setResult(int score)
+  function reveal(int score, bytes16 salt, address assessor)
   {
-    if(doneAssessors == finalAssessors.length && assessors[msg.sender] == 5 && block.number - referenceTime == 5)
+    if(block.number - startTime <= 10)
     {
-      assessmentResults[msg.sender] = score;
-      assessors[msg.sender] = 6;
-      resultsSet++;
-    }
-    if(resultsSet < finalAssessors.length && block.number - referenceTime > 5)
-    {
-      for(uint i = 0; i < finalAssessors.length; i++)
+      bytes32 hash = sha3(score,salt);
+      if(commits[assessor] == hash)
       {
-        if(assessors[finalAssessors[i]] == 5)
+        if(msg.sender == assessor)
         {
-          assessmentResults[finalAssessors[i]] = 0;
-          assessors[finalAssessors[i]] = 6;
-          resultsSet++;
+          scores[msg.sender] = score;
+          assessorState[assessor] = 5;
+          done++;
+        }
+        else
+        {
+          Concept(concept).setBalance(msg.sender,UserMaster(userMaster).getBalance(msg.sender) + stake[assessor]);
+          stake[assessor] = 0;
+          assessorState[assessor] = 4;
+        }
+      }
+      else if(msg.sender == assessor)
+      {
+        stake[assessor] = 0;
+        assessorState[assessor] = 4;
+        done++;
+      }
+    }
+    else
+    {
+      for(uint i = 0; i < assessors.length; i++)
+      {
+        if(assessorState[assessors[i]] == 3)
+        {
+          stake[assessors[i]] = 0;
+          assessorState[assessors[i]] = 4;
+          done++;
         }
       }
     }
-    if(resultsSet == finalAssessors.length)
+    if(done == size)
     {
       calculateResult();
     }
   }
 
-  function calculateMAD(int[] scores, int n) onlyThis() constant returns(int)
-  {
-    int meanScore;
-    int totalRelativeDistance;
-    int meanAbsoluteDeviation;
-    for(uint j = 0; j < scores.length; j++)
-    {
-      meanScore += scores[j];
-      inRewardCluster[scores[j]] = false;
-    }
-    meanScore /= n;
-    for(uint k = 0; k < scores.length; k++)
-    {
-      int distanceFromMean = scores[k] - meanScore;
-      if(distanceFromMean < 0)
-      {
-        distanceFromMean *= -1;
-      }
-      totalRelativeDistance += distanceFromMean;
-    }
-    meanAbsoluteDeviation = totalRelativeDistance/n;
-    return meanAbsoluteDeviation;
-  }
-
   function calculateResult() onlyThis()
   {
     mapping(uint => int[]) clusters;
-    int[] memory scores = new int[] (finalAssessors.length);
+    address[] finalAssessors;
+    for(uint j = 0; j < size; j++)
+    {
+      if(assessorState[assessors[i]] == 5)
+      {
+        finalAssessors.push(assessors[i]);
+      }
+    }
+    int[] memory score = new int[] (finalAssessors.length);
     uint largestClusterIndex = 0;
     int averageScore;
     for(uint i = 0; i < finalAssessors.length; i++)
     {
-      scores[i] = assessmentResults[finalAssessors[i]];
+      score[i] = scores[finalAssessors[i]];
     }
-    int meanAbsoluteDeviation = calculateMAD(scores,int(numberOfAssessors));
-    for(uint l = 0; l < scores.length; l++)
+    int meanAbsoluteDeviation = Math(math).calculateMAD(score,int(finalAssessors.length));
+    for(uint l = 0; l < score.length; l++)
     {
-      for(uint m = 0; m < scores.length; m++)
+      for(uint m = 0; m < score.length; m++)
       {
-        if(scores[l] - scores[m] <= meanAbsoluteDeviation)
+        if(score[l] - score[m] <= meanAbsoluteDeviation)
         {
-          clusters[l].push(scores[m]);
+          clusters[l].push(score[m]);
         }
       }
       if(clusters[l].length > clusters[largestClusterIndex].length)
@@ -334,24 +330,24 @@ contract Assessment
 
   function payout(uint largestSize) onlyThis()
   {
-    for(uint i = 0; i < finalAssessors.length; i++)
+    for(uint i = 0; i < size; i++)
     {
-      int score = assessmentResults[finalAssessors[i]];
+      int score = scores[assessors[i]];
       int scoreDistance = ((score - finalScore)*100)/finalScore;
       if(scoreDistance < 0)
       {
         scoreDistance *= -1;
       }
-      uint payoutValue = ((assessmentTime*finalAssessors.length)/(100 - scoreDistance)) * (finalAssessors.length/largestSize);
+      uint payoutValue = 1; //Figure out new payout algorithm
       if(inRewardCluster[score] == true)
       {
-        Concept(concept).pay(finalAssessors[i], UserMaster(userMaster).getBalance(finalAssessors[i]) + payoutValue);
-        User(finalAssessors[i]).notification(concept, 15); //You Have Received Payment For Your Assessment
+        Concept(concept).setBalance(assessors[i], UserMaster(userMaster).getBalance(assessors[i]) + payoutValue);
+        User(assessors[i]).notification(concept, 15); //You Have Received Payment For Your Assessment
       }
       if(inRewardCluster[score] == false)
       {
-        Concept(concept).pay(finalAssessors[i], UserMaster(userMaster).getBalance(finalAssessors[i]) - payoutValue);
-        User(finalAssessors[i]).notification(concept, 16); //You Have Received A Fine For Your Assessment
+        Concept(concept).setBalance(assessors[i], UserMaster(userMaster).getBalance(assessors[i]) - payoutValue);
+        User(assessors[i]).notification(concept, 16); //You Have Received A Fine For Your Assessment
       }
     }
     returnResults();

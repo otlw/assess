@@ -1,4 +1,3 @@
-import "lib/random.sol";
 import "userMaster.sol";
 import "concept.sol";
 import "assessment.sol";
@@ -21,7 +20,7 @@ contract User
   struct Approval
   {
     bool approved;
-    int value; //fix stakes pls
+    uint value; //fix stakes pls
   }
 
   /*
@@ -55,7 +54,14 @@ contract User
   ( address _sender, //The notification sender
     address _user, //The address of the user that received the notification
     address _concept, //The address of the concept involved in this notification
-    uint _code); //The notification code
+    uint _code); //The notification code, see below for code guide:
+    /*
+    1 = Called As A Potential Assessor
+    2 = Confirmed for assessing, stake has been taken
+    3 = Assessment Cancled and you have been refunded
+    4 = Assessment Has Started
+    5 = Send in Score
+    */
 
   /*
   @type: constructor function
@@ -89,9 +95,9 @@ contract User
   @param: uint confirm = The user's confirmation code
   @returns: nothing
   */
-  function confirmAssessment(address assessment, uint confirm) onlyUser()
+  function confirmAssessment(address assessment) onlyUser()
   {
-    Assessment(assessment).confirmAssessor(confirm); //Sends the user's confromation to the assessmnet
+    Assessment(assessment).confirmAssessor(); //Sends the user's confromation to the assessmnet
   }
 
   /*
@@ -112,9 +118,9 @@ contract User
   @param: address assessment =  The assessment that the user has been called to assess
   @returns: nothing
   */
-  function doneAssessing(address assessment) onlyUser()
+  function commit(address assessment, bytes32 hash) onlyUser()
   {
-    Assessment(assessment).doneAssessing(); //Sets the user as done assessing in the assessment
+    Assessment(assessment).commit(hash); //Sets the user as done assessing in the assessment
   }
 
   /*
@@ -124,9 +130,9 @@ contract User
   @param: uint score = the score that the user decided on
   @returns: nothing
   */
-  function setResult(address assessment, int score) onlyUser()
+  function reveal(address assessment, int score, bytes16 salt, address assessor) onlyUser()
   {
-    Assessment(assessment).setResult(score); //Sends to score to the assessment
+    Assessment(assessment).reveal(score,salt,assessor); //Sends to score to the assessment
   }
 
   /*
@@ -191,13 +197,13 @@ contract User
     {
       return false;
     }
-    else if(assessApproved[msg.sender].value > int(time*size))
+    else if(assessApproved[msg.sender].value > time*size)
     {
       return false;
     }
     else
     {
-      assessApproved[msg.sender].value -= int(time*size);
+      assessApproved[msg.sender].value -= time*size;
       return Concept(concept).makeAssessment(time,size);
     }
   }

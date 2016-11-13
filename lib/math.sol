@@ -1,10 +1,10 @@
 /*
 @type: contract
-@name: Random
-@purpose: To generate weak random numbers
+@name: Math
+@purpose: To provide a library of math functions
 */
 
-contract Random
+contract Math
 {
   /*
   @type: function
@@ -32,4 +32,27 @@ contract Random
   {
     return(uint(sha3(block.blockhash(block.number-1), seed))%(max-min+1) + min); //Hashes the seed number with the last blockhash to generate a random number and shifts it into the desired range by using a modulus and addition
   }
+
+  function calculateMAD(int[] data, int n) constant returns(int)
+  {
+    int mean;
+    int totalRelativeDistance;
+    int meanAbsoluteDeviation;
+    for(uint j = 0; j < data.length; j++)
+    {
+      mean += data[j];
+    }
+    mean /= n;
+    for(uint k = 0; k < data.length; k++)
+    {
+      int distanceFromMean = data[k] - mean;
+      if(distanceFromMean < 0)
+      {
+        distanceFromMean *= -1;
+      }
+      totalRelativeDistance += distanceFromMean;
+    }
+    meanAbsoluteDeviation = totalRelativeDistance/n;
+    return meanAbsoluteDeviation;
+    }
 }

@@ -1,4 +1,4 @@
-import "lib/random.sol";
+import "lib/math.sol";
 import "userMaster.sol";
 import "concept.sol";
 import "assessment.sol";
@@ -14,7 +14,7 @@ contract ConceptMaster
   mapping (address => bool) public conceptExists; //Maps concept addresses to a bool to confirm their existance
   address userMasterAddress; //The address of the userMaster contract
   bool locked = false; //Keeps track of whether or not the function to set the userMasterAddress variable is locked yet or not
-  address randomAddress; //The address of the random contract
+  address mathAddress; //The address of the math contract
   address public mewAddress;
 
   /*
@@ -44,7 +44,7 @@ contract ConceptMaster
 
   /*
   @type: constructor function
-  @purpose: To initialize the conceptMaster contract and have it make the random contract
+  @purpose: To initialize the conceptMaster contract and have it make the math contract
   @returns: nothing
   */
   function ConceptMaster()
@@ -57,12 +57,12 @@ contract ConceptMaster
   @param: address userMaster = the address of the userMaster contract
   @returns: nothing
   */
-  function init(address userMaster, address random, address mew)
+  function init(address userMaster, address math, address mew)
   {
     if(locked == false) //Checks if the function has already been called
     {
       userMasterAddress = userMaster; //Sets the userMasterAddress to the value of userMaster
-      randomAddress = random;
+      mathAddress = math;
       mewAddress = mew;
       Concept(mewAddress).setMew(mewAddress);
       locked = true; //Makes it so this function cannot be called again
@@ -78,7 +78,7 @@ contract ConceptMaster
   */
   function makeConcept(address[] parentList)
   {
-    Concept newConcept = new Concept(parentList, userMasterAddress, address(this), randomAddress); //Makes a new concept with the provided data
+    Concept newConcept = new Concept(parentList, userMasterAddress, address(this), mathAddress); //Makes a new concept with the provided data
     newConcept.setMew(mewAddress);
     address newConceptAddress = address(newConcept); //initializes an address variable and sets it equal to the address of the newly created concept
     conceptExists[newConceptAddress] = true; //Maps the concept address to true to show that it exists
