@@ -11,16 +11,16 @@ To define an assessment we use a hierarchical structure from most general to mos
 
 Deployment
 ========
-These are all the contracts required for the network to run. The only ones that must be deployed are `userMaster` and `conceptMaster` while the others are managed and created by those two.
+These are all the contracts required for the network to run. The only ones that must be deployed are `userRegistry` and `conceptRegistry` while the others are managed and created by those two.
 
-The steps for deployment are a bit tricky. First `conceptMaster` must be deployed, followed by `userMaster`, which takes the `conceptMaster` address as a parameter. Next, `setUserMasterAddress` must be called from `conceptMaster` with the `userMaster` address.
+The steps for deployment are a bit tricky. First `conceptRegistry` must be deployed, followed by `userRegistry`, which takes the `conceptRegistry` address as a parameter. Next, `setUserRegistryAddress` must be called from `conceptRegistry` with the `userRegistry` address.
 
-Next, the initial concept and user must be created. First one must create the "mew" concept in `conceptMaster`. This is the base that all other concepts will be a child of, and every user must earn. It essentially acts as a spam preventer, and as a token faucet for users. Once this is done the first User must be created from `userMaster`.
+Next, the initial concept and user must be created. First one must create the "mew" concept in `conceptRegistry`. This is the base that all other concepts will be a child of, and every user must earn. It essentially acts as a spam preventer, and as a token faucet for users. Once this is done the first User must be created from `userRegistry`.
 
 
 Contract Structure
 ==============
-The system is based upon two data store and management contracts, `conceptMaster` and `userMaster`. Concepts manage the creation and storage of `assessments`. Users are defined by User Contracts, which are created and added to `userMaster`.
+The system is based upon two data store and management contracts, `conceptRegistry` and `userRegistry`. Concepts manage the creation and storage of `assessments`. Users are defined by User Contracts, which are created and added to `userRegistry`.
 
 Contributing
 =========

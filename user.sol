@@ -1,7 +1,7 @@
-import "userMaster.sol";
+import "userRegistry.sol";
 import "concept.sol";
 import "assessment.sol";
-import "conceptMaster.sol";
+import "conceptRegistry.sol";
 
 /*
 @type: contract
@@ -11,8 +11,8 @@ import "conceptMaster.sol";
 contract User
 {
   address user; //The address of the user's wallet
-  address master; //The address of the userMaster that spawned this user
-  address conceptMaster; //The address of the conceptMaster
+  address master; //The address of the userRegistry that spawned this user
+  address conceptRegistry; //The address of the conceptRegistry
   string public userData; //An IPFS hash containing the user's data
   mapping (address => bool) public conceptPassed;
   mapping (address => Approval) transactApproved;
@@ -39,7 +39,7 @@ contract User
 
   modifier onlyConcept()
   {
-    if(ConceptMaster(conceptMaster).conceptExists(msg.sender) == false)
+    if(ConceptRegistry(conceptRegistry).conceptExists(msg.sender) == false)
     {
       throw;
     }
@@ -70,11 +70,11 @@ contract User
   @param: address masterAddress = the address of the user master that spawned this user
   @returns: nothing
   */
-  function User(address userAddress, address masterAddress, address conceptMasterAddress)
+  function User(address userAddress, address masterAddress, address conceptRegistryAddress)
   {
     user = userAddress; //Sets the user variable
     master = masterAddress; //Sets the master variable
-    conceptMaster = conceptMasterAddress; //Sets the conceptMaster variable
+    conceptRegistry = conceptRegistryAddress; //Sets the conceptRegistry variable
   }
 
   /*
@@ -85,7 +85,7 @@ contract User
   */
   function setAvailability(bool available) onlyUser()
   {
-    UserMaster(master).mapAvailability(available); //Sets the user's availability to the value of the parameter
+    UserRegistry(master).mapAvailability(available); //Sets the user's availability to the value of the parameter
   }
 
   /*
@@ -161,7 +161,7 @@ contract User
 
   function transferTokens(address user, uint amount) onlyUser() returns(bool)
   {
-    return UserMaster(master).transfer(user,amount);
+    return UserRegistry(master).transfer(user,amount);
   }
 
   function extTransferTokens(address user, uint amount) returns(bool)
@@ -177,7 +177,7 @@ contract User
     else
     {
       transactApproved[msg.sender].value -= amount;
-      return UserMaster(master).transfer(user,amount);
+      return UserRegistry(master).transfer(user,amount);
     }
   }
 

@@ -1,19 +1,19 @@
 import "lib/math.sol";
-import "userMaster.sol";
+import "userRegistry.sol";
 import "concept.sol";
 import "assessment.sol";
 import "user.sol";
 
 /*
 @type: contract
-@name: ConceptMaster
+@name: ConceptRegistry
 @purpose: To create concepts and store some concept data
 */
-contract ConceptMaster
+contract ConceptRegistry
 {
   mapping (address => bool) public conceptExists; //Maps concept addresses to a bool to confirm their existance
-  address userMasterAddress; //The address of the userMaster contract
-  bool locked = false; //Keeps track of whether or not the function to set the userMasterAddress variable is locked yet or not
+  address userRegistryAddress; //The address of the userRegistry contract
+  bool locked = false; //Keeps track of whether or not the function to set the userRegistryAddress variable is locked yet or not
   address mathAddress; //The address of the math contract
   address public mewAddress;
 
@@ -44,24 +44,24 @@ contract ConceptMaster
 
   /*
   @type: constructor function
-  @purpose: To initialize the conceptMaster contract and have it make the math contract
+  @purpose: To initialize the conceptRegistry contract and have it make the math contract
   @returns: nothing
   */
-  function ConceptMaster()
+  function ConceptRegistry()
   {
   }
 
   /*
   @type: function
-  @purpose: To set the userMasterAddress
-  @param: address userMaster = the address of the userMaster contract
+  @purpose: To set the userRegistryAddress
+  @param: address userRegistry = the address of the userRegistry contract
   @returns: nothing
   */
-  function init(address userMaster, address math, address mew)
+  function init(address userRegistry, address math, address mew)
   {
     if(locked == false) //Checks if the function has already been called
     {
-      userMasterAddress = userMaster; //Sets the userMasterAddress to the value of userMaster
+      userRegistryAddress = userRegistry; //Sets the userRegistryAddress to the value of userRegistry
       mathAddress = math;
       mewAddress = mew;
       Concept(mewAddress).setMew(mewAddress);
@@ -78,7 +78,7 @@ contract ConceptMaster
   */
   function makeConcept(address[] parentList)
   {
-    Concept newConcept = new Concept(parentList, userMasterAddress, address(this), mathAddress); //Makes a new concept with the provided data
+    Concept newConcept = new Concept(parentList, userRegistryAddress, address(this), mathAddress); //Makes a new concept with the provided data
     newConcept.setMew(mewAddress);
     address newConceptAddress = address(newConcept); //initializes an address variable and sets it equal to the address of the newly created concept
     conceptExists[newConceptAddress] = true; //Maps the concept address to true to show that it exists

@@ -1,8 +1,8 @@
 import "lib/math.sol";
-import "userMaster.sol";
+import "userRegistry.sol";
 import "assessment.sol";
 import "user.sol";
-import "conceptMaster.sol";
+import "conceptRegistry.sol";
 
 /*
 @type: contract
@@ -13,8 +13,8 @@ contract Concept
 {
   address[] public parentConcepts; //The concepts that this concept is child to (ie: Calculus is child to Math)
   address[] public childConcepts; //The concepts that this concept is parent to (ie: Math is parent to Calculus)
-  address userMaster; //The address of the userMaster contract
-  address conceptMaster; //The address of the conceptMaster contract
+  address userRegistry; //The address of the userRegistry contract
+  address conceptRegistry; //The address of the conceptRegistry contract
   address math; //The address of the math contract
   string public name; //The name of the concept
   int public maxScore = 0; //The highest score acheived for this concept
@@ -28,12 +28,12 @@ contract Concept
 
   /*
   @type: modifier
-  @name: onlyUserMaster
-  @purpose: to only allow the UserMaster contract to call a function to which this modifier is applied
+  @name: onlyUserRegistry
+  @purpose: to only allow the UserRegistry contract to call a function to which this modifier is applied
   */
-  modifier onlyUserMaster()
+  modifier onlyUserRegistry()
   {
-    if(msg.sender != userMaster) //checks if msg.sender has the same address as userMaster
+    if(msg.sender != userRegistry) //checks if msg.sender has the same address as userRegistry
     {
       throw; //throws the function call if not
     }
@@ -42,12 +42,12 @@ contract Concept
 
   /*
   @type: modifier
-  @name: onlyConceptMaster
-  @purpose: to only allow the ConceptMaster contract to call a function to which this modifier is applied
+  @name: onlyConceptRegistry
+  @purpose: to only allow the ConceptRegistry contract to call a function to which this modifier is applied
   */
-  modifier onlyConceptMaster()
+  modifier onlyConceptRegistry()
   {
-    if(msg.sender != conceptMaster) //checks if msg.sender has the same address as conceptMaster
+    if(msg.sender != conceptRegistry) //checks if msg.sender has the same address as conceptRegistry
     {
       throw; //throws the function call if not
     }
@@ -83,17 +83,17 @@ contract Concept
   @purpose: To initialize the Concept contract
   @param: string conceptName = the name of the conceptName
   @param: address[] parents = the addresses of the concept's parents
-  @param: address userMasterAddress = the address of the UserMaster contract
-  @param: address conceptMasterAddress = the address of the ConceptMaster that spawned this user
+  @param: address userRegistryAddress = the address of the UserRegistry contract
+  @param: address conceptRegistryAddress = the address of the ConceptRegistry that spawned this user
   @param: address mathAddress = the address of the ransom contract
   @returns: nothing
   */
-  function Concept(address[] parents, address userMasterAddress, address conceptMasterAddress, address mathAddress)
+  function Concept(address[] parents, address userRegistryAddress, address conceptRegistryAddress, address mathAddress)
   {
     parentConcepts = parents; //sets the value of parentConcepts to that of parents
-    userMaster = userMasterAddress; //sets the value of userMaster to that of userMasterAddress
+    userRegistry = userRegistryAddress; //sets the value of userRegistry to that of userRegistryAddress
     math = mathAddress; //sets the value of math to that of mathAddress
-    conceptMaster = conceptMasterAddress; //sets the vale of conceptMaster to that of conceptMasterAddress
+    conceptRegistry = conceptRegistryAddress; //sets the vale of conceptRegistry to that of conceptRegistryAddress
   }
 
   /*
@@ -132,7 +132,7 @@ contract Concept
   @param: address firstUser = the address of the first user to own the concept
   @returns: nothing
   */
-  function addUser(address user) onlyUserMaster()
+  function addUser(address user) onlyUserRegistry()
   {
     if(address(this) == mew)
     {
@@ -140,7 +140,7 @@ contract Concept
     }
   }
 
-  function setMew(address mewAddress) onlyConceptMaster()
+  function setMew(address mewAddress) onlyConceptRegistry()
   {
     mew = mewAddress;
     if(parentConcepts.length == 0)
@@ -155,7 +155,7 @@ contract Concept
   @param: address parentAddress = the address of the new parent concept
   @returns: nothing
   */
-  function addParent(address parentAddress) onlyConceptMaster()
+  function addParent(address parentAddress) onlyConceptRegistry()
   {
     parentConcepts.push(parentAddress);
   }
@@ -166,7 +166,7 @@ contract Concept
   @param: address childAddress = the address of the new child concept
   @returns: nothing
   */
-  function addChild(address childAddress) onlyConceptMaster()
+  function addChild(address childAddress) onlyConceptRegistry()
   {
     childConcepts.push(childAddress);
   }
@@ -180,11 +180,11 @@ contract Concept
   */
   function makeAssessment(uint cost, uint size) returns(bool)
   {
-    if(size >= 5 && UserMaster(userMaster).getBalance(msg.sender) >= cost*size) //Checks if the assessment has a size of at least 5
+    if(size >= 5 && UserRegistry(userRegistry).getBalance(msg.sender) >= cost*size) //Checks if the assessment has a size of at least 5
     {
-      Assessment newAssessment = new Assessment(msg.sender, userMaster, conceptMaster, math, size, cost); //Makes a new assessment with the given parameters
+      Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, math, size, cost); //Makes a new assessment with the given parameters
       assessmentExists[address(newAssessment)] = true; //Sets the assessment's existance to true
-      setBalance(msg.sender, UserMaster(userMaster).getBalance(msg.sender) - cost*size);
+      setBalance(msg.sender, UserRegistry(userRegistry).getBalance(msg.sender) - cost*size);
       User(msg.sender).notification(address(this), 19); //You have been charged for your assessment
       return true;
     }
@@ -230,7 +230,7 @@ contract Concept
         owners.push(assessee); //Makes the assessee an owner of this concept
         User(assessee).setConceptPassed(true);
       }
-      UserMaster(userMaster).mapHistory(assessee,assessment); //Maps the assessee to the assessment in the user master as part of the assessee's history
+      UserRegistry(userRegistry).mapHistory(assessee,assessment); //Maps the assessee to the assessment in the user master as part of the assessee's history
       assessmentHistory[assessee].push(assessment); //Adds the assessment to the assessment history array
       currentScores[assessee] = score; //Maps the assessee to their score
       assessmentSizes[assessee] = Assessment(assessment).size(); //Maps the assessee to the assessment size
@@ -256,7 +256,7 @@ contract Concept
   {
     if(assessmentExists[msg.sender] = true) //Checks if msg.sender is an existing assessment
     {
-      UserMaster(userMaster).mapBalance(user, amount); //Changes the user's token balance
+      UserRegistry(userRegistry).mapBalance(user, amount); //Changes the user's token balance
     }
   }
 

@@ -1,8 +1,8 @@
 import "lib/math.sol";
-import "userMaster.sol";
+import "userRegistry.sol";
 import "concept.sol";
 import "user.sol";
-import "conceptMaster.sol";
+import "conceptRegistry.sol";
 
 contract Assessment
 {
@@ -11,8 +11,8 @@ contract Assessment
   mapping (address => uint) assessorState;
   address[] assessorPool; //The addresses of the user's that the assessors are randomly selected from
   address concept;
-  address userMaster;
-  address conceptMaster;
+  address userRegistry;
+  address conceptRegistry;
   address math;
   uint public startTime;
   uint public size;
@@ -83,12 +83,12 @@ contract Assessment
     _;
   }
 
-  function Assessment(address assesseeAddress, address userMasterAddress, address conceptMasterAddress, address mathAddress, uint assessmentSize, uint assessmentCost)
+  function Assessment(address assesseeAddress, address userRegistryAddress, address conceptRegistryAddress, address mathAddress, uint assessmentSize, uint assessmentCost)
   {
     assessee = assesseeAddress;
     concept = msg.sender;
-    userMaster = userMasterAddress;
-    conceptMaster = conceptMasterAddress;
+    userRegistry = userRegistryAddress;
+    conceptRegistry = conceptRegistryAddress;
     math = mathAddress;
     startTime = block.timestamp;
     size = assessmentSize;
@@ -100,14 +100,14 @@ contract Assessment
 
   function cancelAssessment() onlyConceptAssessment()
   {
-    Concept(concept).setBalance(assessee, UserMaster(userMaster).getBalance(assessee) + cost*size);
+    Concept(concept).setBalance(assessee, UserRegistry(userRegistry).getBalance(assessee) + cost*size);
     User(assessee).notification(concept, 3); //Assessment Cancled and you have been refunded
     for(uint i = 0; i < assessors.length; i++)
     {
-      Concept(concept).setBalance(assessors[i], UserMaster(userMaster).getBalance(assessors[i]) + cost);
+      Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).getBalance(assessors[i]) + cost);
       User(assessors[i]).notification(concept, 3); //Assessment Cancled and you have been refunded
     }
-    suicide(conceptMaster);
+    suicide(conceptRegistry);
   }
 
   /*
@@ -121,13 +121,13 @@ contract Assessment
   */
   function setAssessorPool(address conceptAddress, uint seed) onlyConceptAssessment()
   {
-    if(Concept(ConceptMaster(conceptMaster).mewAddress()).getOwnerLength() < poolSizeRemaining) //Checks if the requested pool size is greater than the number of users in the system
+    if(Concept(ConceptRegistry(conceptRegistry).mewAddress()).getOwnerLength() < poolSizeRemaining) //Checks if the requested pool size is greater than the number of users in the system
     {
-      for(uint i = 0; i < Concept(ConceptMaster(conceptMaster).mewAddress()).getOwnerLength(); i++) //If so, all users in the system are added to the pool
+      for(uint i = 0; i < Concept(ConceptRegistry(conceptRegistry).mewAddress()).getOwnerLength(); i++) //If so, all users in the system are added to the pool
       {
-        assessorPool.push(Concept(ConceptMaster(conceptMaster).mewAddress()).owners(i));
-        User(Concept(ConceptMaster(conceptMaster).mewAddress()).owners(i)).notification(concept, 1); //Called As A Potential Assessor
-        assessorState[Concept(ConceptMaster(conceptMaster).mewAddress()).owners(i)] = 1;
+        assessorPool.push(Concept(ConceptRegistry(conceptRegistry).mewAddress()).owners(i));
+        User(Concept(ConceptRegistry(conceptRegistry).mewAddress()).owners(i)).notification(concept, 1); //Called As A Potential Assessor
+        assessorState[Concept(ConceptRegistry(conceptRegistry).mewAddress()).owners(i)] = 1;
       }
       poolSizeRemaining = 0;
     }
@@ -137,7 +137,7 @@ contract Assessment
       if(numberSet < Concept(conceptAddress).getOwnerLength()/10) //Checks if the number of assessors provided by this concept is less than 10% of the owners of the concept
       {
         address randomUser = Concept(conceptAddress).owners(Math(math).getRandom(seed + j, Concept(conceptAddress).getOwnerLength()-1)); //gets a random owner of the concept
-        if(UserMaster(userMaster).getAvailability(randomUser) == true && (uint(Concept(conceptAddress).currentScores(randomUser))*Concept(conceptAddress).assessmentSizes(randomUser)) > (now%(uint(Concept(conceptAddress).maxScore())*Concept(conceptAddress).maxSize()))) //Checks if the randomly drawn is available and then puts it through a random check that it has a higher chance of passing if it has had a higher score and a larger assessment
+        if(UserRegistry(userRegistry).getAvailability(randomUser) == true && (uint(Concept(conceptAddress).currentScores(randomUser))*Concept(conceptAddress).assessmentSizes(randomUser)) > (now%(uint(Concept(conceptAddress).maxScore())*Concept(conceptAddress).maxSize()))) //Checks if the randomly drawn is available and then puts it through a random check that it has a higher chance of passing if it has had a higher score and a larger assessment
         {
           assessorPool.push(randomUser); //adds the randomly selected user to the assessor pool
           User(randomUser).notification(concept, 1); //Called As A Potential Assessor
@@ -166,12 +166,12 @@ contract Assessment
 
   function confirmAssessor()
   {
-    if(block.number - startTime <= 15 && assessorState[msg.sender] == 1 && assessors.length < size && UserMaster(userMaster).getBalance(msg.sender) >= cost)
+    if(block.number - startTime <= 15 && assessorState[msg.sender] == 1 && assessors.length < size && UserRegistry(userRegistry).getBalance(msg.sender) >= cost)
     {
       assessors.push(msg.sender);
       assessorState[msg.sender] = 2;
       stake[msg.sender] = cost;
-      Concept(concept).setBalance(msg.sender,UserMaster(userMaster).getBalance(msg.sender) - cost);
+      Concept(concept).setBalance(msg.sender,UserRegistry(userRegistry).getBalance(msg.sender) - cost);
       User(msg.sender).notification(concept, 2); //Confirmed for assessing, stake has been taken
     }
     if(assessors.length == size)
@@ -255,7 +255,7 @@ contract Assessment
         }
         else
         {
-          Concept(concept).setBalance(msg.sender,UserMaster(userMaster).getBalance(msg.sender) + stake[assessor]);
+          Concept(concept).setBalance(msg.sender,UserRegistry(userRegistry).getBalance(msg.sender) + stake[assessor]);
           stake[assessor] = 0;
           assessorState[assessor] = 4;
         }
@@ -341,12 +341,12 @@ contract Assessment
       uint payoutValue = 1; //Figure out new payout algorithm
       if(inRewardCluster[score] == true)
       {
-        Concept(concept).setBalance(assessors[i], UserMaster(userMaster).getBalance(assessors[i]) + payoutValue);
+        Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).getBalance(assessors[i]) + payoutValue);
         User(assessors[i]).notification(concept, 15); //You Have Received Payment For Your Assessment
       }
       if(inRewardCluster[score] == false)
       {
-        Concept(concept).setBalance(assessors[i], UserMaster(userMaster).getBalance(assessors[i]) - payoutValue);
+        Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).getBalance(assessors[i]) - payoutValue);
         User(assessors[i]).notification(concept, 16); //You Have Received A Fine For Your Assessment
       }
     }
