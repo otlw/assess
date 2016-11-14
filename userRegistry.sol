@@ -1,16 +1,16 @@
 import "concept.sol";
 import "assessment.sol";
 import "user.sol";
-import "conceptMaster.sol";
+import "conceptRegistry.sol";
 
 /*
 @type: contract
-@name: UserMaster
+@name: UserRegistry
 @purpose: To store data about users for easy and secure access
 */
-contract UserMaster
+contract UserRegistry
 {
-  address public conceptMasterAddress; //The address of the conceptMaster contract
+  address public conceptRegistryAddress; //The address of the conceptRegistry contract
   mapping (address => uint)  balance; //Maps the addresses of users to their token balances
   mapping (address => address[])  history; //Maps the addresses of users to an array of addresses that contain the addresses of their assessments
   mapping (address => bool)  availability; //Maps the addresses of users to their availability status for whether or not they can currently assess someone
@@ -25,7 +25,7 @@ contract UserMaster
   */
   modifier onlyConcept()
   {
-    if(ConceptMaster(conceptMasterAddress).conceptExists(msg.sender) == false) //checks if the address calling the function is not a concept
+    if(ConceptRegistry(conceptRegistryAddress).conceptExists(msg.sender) == false) //checks if the address calling the function is not a concept
     {
       throw; //throws out the fucntion call
     }
@@ -52,9 +52,9 @@ contract UserMaster
   @param: address creator = the address of the creator contract
   @returns: nothing
   */
-  function UserMaster(address conceptMaster)
+  function UserRegistry(address conceptRegistry)
   {
-    conceptMasterAddress = conceptMaster; //Sets the address of the conceptMaster contract
+    conceptRegistryAddress = conceptRegistry; //Sets the address of the conceptRegistry contract
   }
 
   /*
@@ -66,8 +66,8 @@ contract UserMaster
   */
   function addUser(address userAddress)
   {
-    User newUser = new User(userAddress, address(this), conceptMasterAddress); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
-    Concept(ConceptMaster(conceptMasterAddress).mewAddress()).addUser(address(newUser));
+    User newUser = new User(userAddress, address(this), conceptRegistryAddress); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
+    Concept(ConceptRegistry(conceptRegistryAddress).mewAddress()).addUser(address(newUser));
     UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
   }
 
@@ -75,8 +75,8 @@ contract UserMaster
   {
     if(firstUserMade == false)
     {
-      User newUser = new User(userAddress, address(this), conceptMasterAddress); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
-      Concept(ConceptMaster(conceptMasterAddress).mewAddress()).addUser(address(newUser));
+      User newUser = new User(userAddress, address(this), conceptRegistryAddress); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
+      Concept(ConceptRegistry(conceptRegistryAddress).mewAddress()).addUser(address(newUser));
       UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
       balance[address(newUser)] = 1000;
     }
