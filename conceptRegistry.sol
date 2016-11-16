@@ -1,4 +1,3 @@
-import "lib/math.sol";
 import "userRegistry.sol";
 import "concept.sol";
 import "assessment.sol";
@@ -14,7 +13,6 @@ contract ConceptRegistry
   mapping (address => bool) public conceptExists; //Maps concept addresses to a bool to confirm their existance
   address userRegistryAddress; //The address of the userRegistry contract
   bool locked = false; //Keeps track of whether or not the function to set the userRegistryAddress variable is locked yet or not
-  address mathAddress; //The address of the math contract
   address public mewAddress;
 
   /*
@@ -44,7 +42,7 @@ contract ConceptRegistry
 
   /*
   @type: constructor function
-  @purpose: To initialize the conceptRegistry contract and have it make the math contract
+  @purpose: To initialize the conceptRegistry contract
   @returns: nothing
   */
   function ConceptRegistry()
@@ -57,12 +55,11 @@ contract ConceptRegistry
   @param: address userRegistry = the address of the userRegistry contract
   @returns: nothing
   */
-  function init(address userRegistry, address math, address mew)
+  function init(address userRegistry, address mew)
   {
     if(locked == false) //Checks if the function has already been called
     {
       userRegistryAddress = userRegistry; //Sets the userRegistryAddress to the value of userRegistry
-      mathAddress = math;
       mewAddress = mew;
       Concept(mewAddress).setMew(mewAddress);
       locked = true; //Makes it so this function cannot be called again
@@ -78,7 +75,7 @@ contract ConceptRegistry
   */
   function makeConcept(address[] parentList)
   {
-    Concept newConcept = new Concept(parentList, userRegistryAddress, address(this), mathAddress); //Makes a new concept with the provided data
+    Concept newConcept = new Concept(parentList, userRegistryAddress, address(this)); //Makes a new concept with the provided data
     newConcept.setMew(mewAddress);
     address newConceptAddress = address(newConcept); //initializes an address variable and sets it equal to the address of the newly created concept
     conceptExists[newConceptAddress] = true; //Maps the concept address to true to show that it exists

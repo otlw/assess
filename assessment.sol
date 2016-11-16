@@ -8,12 +8,13 @@ contract Assessment
 {
   address assessee; //The address of the user being assessed
   address[] assessors;
+  address[] finalAssessors; //The assessors who actually give an assessment
   mapping (address => uint) assessorState;
   address[] assessorPool; //The addresses of the user's that the assessors are randomly selected from
   address concept;
   address userRegistry;
   address conceptRegistry;
-  address math;
+  address math = 0x90B66E80448eb60938FAed4A738dE0D5b630B2Fd;
   uint public startTime;
   uint public size;
   uint cost;
@@ -83,13 +84,12 @@ contract Assessment
     _;
   }
 
-  function Assessment(address assesseeAddress, address userRegistryAddress, address conceptRegistryAddress, address mathAddress, uint assessmentSize, uint assessmentCost)
+  function Assessment(address assesseeAddress, address userRegistryAddress, address conceptRegistryAddress, uint assessmentSize, uint assessmentCost)
   {
     assessee = assesseeAddress;
     concept = msg.sender;
     userRegistry = userRegistryAddress;
     conceptRegistry = conceptRegistryAddress;
-    math = mathAddress;
     startTime = block.timestamp;
     size = assessmentSize;
     cost = assessmentCost;
@@ -288,7 +288,6 @@ contract Assessment
   function calculateResult() onlyThis()
   {
     mapping(uint => int[]) clusters;
-    address[] finalAssessors;
     for(uint j = 0; j < size; j++)
     {
       if(assessorState[assessors[i]] == 5)

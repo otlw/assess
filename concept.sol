@@ -1,4 +1,3 @@
-import "lib/math.sol";
 import "userRegistry.sol";
 import "assessment.sol";
 import "user.sol";
@@ -15,7 +14,6 @@ contract Concept
   address[] public childConcepts; //The concepts that this concept is parent to (ie: Math is parent to Calculus)
   address userRegistry; //The address of the userRegistry contract
   address conceptRegistry; //The address of the conceptRegistry contract
-  address math; //The address of the math contract
   string public name; //The name of the concept
   int public maxScore = 0; //The highest score acheived for this concept
   uint public maxSize = 5; //The largest assessment taken for this concept
@@ -85,14 +83,12 @@ contract Concept
   @param: address[] parents = the addresses of the concept's parents
   @param: address userRegistryAddress = the address of the UserRegistry contract
   @param: address conceptRegistryAddress = the address of the ConceptRegistry that spawned this user
-  @param: address mathAddress = the address of the ransom contract
   @returns: nothing
   */
-  function Concept(address[] parents, address userRegistryAddress, address conceptRegistryAddress, address mathAddress)
+  function Concept(address[] parents, address userRegistryAddress, address conceptRegistryAddress)
   {
     parentConcepts = parents; //sets the value of parentConcepts to that of parents
     userRegistry = userRegistryAddress; //sets the value of userRegistry to that of userRegistryAddress
-    math = mathAddress; //sets the value of math to that of mathAddress
     conceptRegistry = conceptRegistryAddress; //sets the vale of conceptRegistry to that of conceptRegistryAddress
   }
 
@@ -182,7 +178,7 @@ contract Concept
   {
     if(size >= 5 && UserRegistry(userRegistry).getBalance(msg.sender) >= cost*size) //Checks if the assessment has a size of at least 5
     {
-      Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, math, size, cost); //Makes a new assessment with the given parameters
+      Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost); //Makes a new assessment with the given parameters
       assessmentExists[address(newAssessment)] = true; //Sets the assessment's existance to true
       setBalance(msg.sender, UserRegistry(userRegistry).getBalance(msg.sender) - cost*size);
       User(msg.sender).notification(address(this), 19); //You have been charged for your assessment
