@@ -61,7 +61,6 @@ contract ConceptRegistry
     {
       userRegistryAddress = userRegistry; //Sets the userRegistryAddress to the value of userRegistry
       mewAddress = mew;
-      Concept(mewAddress).setMew(mewAddress);
       locked = true; //Makes it so this function cannot be called again
     }
   }
@@ -76,7 +75,6 @@ contract ConceptRegistry
   function makeConcept(address[] parentList)
   {
     Concept newConcept = new Concept(parentList, userRegistryAddress, address(this)); //Makes a new concept with the provided data
-    newConcept.setMew(mewAddress);
     address newConceptAddress = address(newConcept); //initializes an address variable and sets it equal to the address of the newly created concept
     conceptExists[newConceptAddress] = true; //Maps the concept address to true to show that it exists
     if(parentList.length == 0)
