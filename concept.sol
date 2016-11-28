@@ -14,7 +14,6 @@ contract Concept
   address[] public childConcepts; //The concepts that this concept is parent to (ie: Math is parent to Calculus)
   address userRegistryAddress; //The address of the userRegistry contract
   address conceptRegistryAddress; //The address of the conceptRegistry contract
-  string public name; //The name of the concept
   int public maxScore = 0; //The highest score acheived for this concept
   uint public maxSize = 5; //The largest assessment taken for this concept
   address[] public owners; //Those who have earned the concept
