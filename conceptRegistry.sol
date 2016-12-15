@@ -1,7 +1,5 @@
-import "userRegistry.sol";
 import "concept.sol";
 import "assessment.sol";
-import "user.sol";
 
 /*
 @type: contract

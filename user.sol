@@ -11,15 +11,18 @@ import "conceptRegistry.sol";
 contract User
 {
   address user; //The address of the user's wallet
-  address master; //The address of the userRegistry that spawned this user
+  address userRegistry; //The address of the userRegistry that spawned this user
   address conceptRegistry; //The address of the conceptRegistry
   string public userData; //An IPFS hash containing the user's data
+  bool public availability;
+  address[] public history;
   mapping (address => bool) public conceptPassed;
   mapping (address => Approval) transactApproved;
   mapping (address => Approval) assessApproved;
   struct Approval
   {
     bool approved;
+
     uint value; //fix stakes pls
   }
 
@@ -67,13 +70,13 @@ contract User
   @type: constructor function
   @purpose: To initialize the user contract
   @param: address userAddress = the address of the user's wallet
-  @param: address masterAddress = the address of the user master that spawned this user
+  @param: address userRegistryAddress = the address of the userRegistry that spawned this user
   @returns: nothing
   */
-  function User(address userAddress, address masterAddress, address conceptRegistryAddress)
+  function User(address userAddress, address userRegistryAddress, address conceptRegistryAddress)
   {
     user = userAddress; //Sets the user variable
-    master = masterAddress; //Sets the master variable
+    userRegistry = userRegistryAddress; //Sets the userRegistry variable
     conceptRegistry = conceptRegistryAddress; //Sets the conceptRegistry variable
   }
 
@@ -85,7 +88,12 @@ contract User
   */
   function setAvailability(bool available) onlyUser()
   {
-    UserRegistry(master).mapAvailability(available); //Sets the user's availability to the value of the parameter
+    availability = available;
+  }
+
+  function mapHistory(address assessment) onlyConcept()
+  {
+    history.push(assessment); //adds the address of the concept to the end of the array that is mapped to the user
   }
 
   /*
@@ -161,7 +169,7 @@ contract User
 
   function transferTokens(address user, uint amount) onlyUser() returns(bool)
   {
-    return UserRegistry(master).transfer(user,amount);
+    return UserRegistry(userRegistry).transfer(user,amount);
   }
 
   function extTransferTokens(address user, uint amount) returns(bool)
@@ -177,18 +185,13 @@ contract User
     else
     {
       transactApproved[msg.sender].value -= amount;
-      return UserRegistry(master).transfer(user,amount);
+      return UserRegistry(userRegistry).transfer(user,amount);
     }
   }
 
   function setConceptPassed(bool passed) onlyConcept()
   {
     conceptPassed[msg.sender] = passed;
-  }
-
-  function makeAssessment(address concept, uint time, uint size) onlyConcept() returns(bool)
-  {
-    return Concept(concept).makeAssessment(time,size);
   }
 
   function extMakeAssessment(address concept, uint time, uint size) returns(bool)
@@ -206,21 +209,5 @@ contract User
       assessApproved[msg.sender].value -= time*size;
       return Concept(concept).makeAssessment(time,size);
     }
-  }
-
-  function startAssessment(address concept, address assessment) onlyConcept()
-  {
-    Concept(concept).startAssessment(assessment);
-  }
-
-  /*
-  @type: function
-  @purpose: to remove this contract
-  @param: address receiver = the address of the wallet that will receive of the ether
-  @returns: nothing
-  */
-  function remove(address reciever) onlyUser()
-  {
-    suicide(reciever);
   }
 }

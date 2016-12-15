@@ -1,5 +1,4 @@
 import "concept.sol";
-import "assessment.sol";
 import "user.sol";
 import "conceptRegistry.sol";
 
@@ -12,8 +11,6 @@ contract UserRegistry
 {
   address public conceptRegistryAddress; //The address of the conceptRegistry contract
   mapping (address => uint)  balance; //Maps the addresses of users to their token balances
-  mapping (address => address[])  history; //Maps the addresses of users to an array of addresses that contain the addresses of their assessments
-  mapping (address => bool)  availability; //Maps the addresses of users to their availability status for whether or not they can currently assess someone
   mapping (address => address)  users; //Maps the addresses of the users to their account
   bool firstUserMade = false; //Keeps track of whether or not the first user has been made yet
   event UserCreation(address _userAddress); //address of the created user contract
@@ -84,30 +81,6 @@ contract UserRegistry
 
   /*
   @type: function
-  @purpose: To map the address of a user to the address of the concept that the user has just passed
-  @param: address user = the address of the user
-  @param: address assessment = the address of the assessment completed
-  @returns: nothing
-  */
-  function mapHistory(address user, address assessment) onlyConcept()
-  {
-    history[user].push(assessment); //adds the address of the concept to the end of the array that is mapped to the user
-  }
-
-  /*
-  @type: function
-  @purpose: To map the user's availability to assess to the user's address
-  @param: address user = the address of the user
-  @param: bool available = the availa status of the user to assess
-  @returns: nothing
-  */
-  function mapAvailability(bool available)
-  {
-    availability[msg.sender] = available; //sets the availability of the user specified in the parameter to the availability specified in the parameter
-  }
-
-  /*
-  @type: function
   @purpose: To set a new token balance for a user
   @param: address user = the address of the user whose token balance is to be mapped
   @param: uint balance = the new token balance for the user
@@ -127,39 +100,6 @@ contract UserRegistry
   function getBalance(address user) constant returns(uint)
   {
     return balance[user];
-  }
-
-  /*
-  @type: function
-  @purpose: To get the addresses of the assessments that the user has completed
-  @param: address user = the address of the user
-  @returns: The addresses of the assessments that the user has completed in the form of an array of addresses
-  */
-  function getHistory(address user) constant returns(address[])
-  {
-    return history[user];
-  }
-
-  /*
-  @type: function
-  @purpose: To get the number of assessments completed by a user
-  @param: address user = the address of the user
-  @returns: The number of assessments that a user has completed in the form of a uint
-  */
-  function getNumberOfHistory(address user) constant returns(uint)
-  {
-    return history[user].length;
-  }
-
-  /*
-  @type: function
-  @purpose: To get the availability of a user to assess
-  @param: address user = the address of the user
-  @returns: The availability of a user to assess in the form of a bool
-  */
-  function getAvailability(address user) constant returns(bool)
-  {
-    return availability[user];
   }
 
   function transfer(address user, uint amount) returns(bool)
