@@ -23,9 +23,9 @@ contract Assessment
   mapping(address => bytes32) commits;
   mapping(address => uint) stake;
   uint done = 0;
-  mapping(address => int) scores;
+  mapping(address => int8) scores;
   mapping(int => bool) inRewardCluster;
-  int finalScore;
+  int8 finalScore;
   event DataSet(address _dataSetter, uint _index);
 
   /*
