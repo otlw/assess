@@ -198,8 +198,7 @@ contract Concept
 
   /*
   @type: function
-  @purpose: To finish the assessment processc
-  @param: bool pass = whether or not the assessee passed the assessment
+  @purpose: To finish the assessment process
   @param: int score = the assessee's score
   @param: address assessee = the address of the assessee
   @param: address assessment = the address of the assessment
@@ -212,17 +211,36 @@ contract Concept
       if(score > 0)
       {
         owners.push(assessee); //Makes the assessee an owner of this concept
-        weights[assessee] += Assessment(assessment).size()*uint(score);
+        uint weight = Assessment(assessment).size()*uint(score);
+        addOwner(assessee, weight);
         User(assessee).setConceptPassed(true);
       }
       User(assessee).mapHistory(assessment); //Maps the assessee to the assessment in the user master as part of the assessee's history
       currentScores[assessee] = score; //Maps the assessee to their score
       assessmentSizes[assessee] = Assessment(assessment).size(); //Maps the assessee to the assessment size
-      if(weights[assessee] > maxWeight)
-      {
-        maxWeight = weights[assessee];
-      }
       CompletedAssessment(assessee, score, assessment); //Makes an event with this assessment's data
+    }
+  }
+
+  /*
+  @type: function
+  @purpose: To add an owner to a concept and recursively add an owner to parent concept, halving the added weight with each generation and chinging the macWeight for a concept if neccisairy
+  @param: bool pass = whether or not the assessee passed the assessment
+  @param: address assessee = the address of the assessee
+  @param: uint weight = the weight for the owner
+  @returns: nothing
+  */
+  function addOwner(address assessee, uint weight)
+  {
+    owners.push(assessee); //adds the owner to the array
+    weights[assessee] += weight; //adds the weight to the current value in mapping
+    if(weight > maxWeight) //checks if the weight is greater than the currant maxWeight
+    {
+      maxWeight = weight; //if so changes the maxWeight value
+    }
+    for(uint i = 0, i < parentConcepts.length, i++)
+    {
+      Concept(parentConcepts[i]).addOwner(assessee, weight/2); //recursively adds owner to all parent concepts but with half the weight
     }
   }
 
