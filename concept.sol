@@ -13,13 +13,13 @@ contract Concept
   address[] public childConcepts; //The concepts that this concept is parent to (ie: Math is parent to Calculus)
   address userRegistryAddress; //The address of the userRegistry contract
   address conceptRegistryAddress; //The address of the conceptRegistry contract
-  int public maxScore = 0; //The highest score acheived for this concept
-  uint public maxSize = 5; //The largest assessment taken for this concept
+  uint public maxWeight; //The current highest weight for this assessment
   address[] public owners; //Those who have earned the concept
   address mew;
   mapping (address => int) public currentScores; //The most recent score of a user
   mapping (address => uint) public assessmentSizes; //The most recent size of an assessment taken by a user
-  mapping(address => bool) public assessmentExists; //All existing assessments
+  mapping (address => bool) public assessmentExists; //All existing assessments
+  mapping (address => uint) public weights; //The weighting used by the assessor selection algorhitm for each owner
 
   /*
   @type: modifier
@@ -212,18 +212,15 @@ contract Concept
       if(score > 0)
       {
         owners.push(assessee); //Makes the assessee an owner of this concept
+        weights[assessee] += Assessment(assessment).size()*uint(score);
         User(assessee).setConceptPassed(true);
       }
       User(assessee).mapHistory(assessment); //Maps the assessee to the assessment in the user master as part of the assessee's history
       currentScores[assessee] = score; //Maps the assessee to their score
       assessmentSizes[assessee] = Assessment(assessment).size(); //Maps the assessee to the assessment size
-      if(score > maxScore)
+      if(weights[assessee] > maxWeight)
       {
-        maxScore = score; //If this assessment's score is higher that the current highest score than the maxScore variable is updated with this score
-      }
-      if(Assessment(assessment).size() > maxSize)
-      {
-        maxSize = Assessment(assessment).size(); //If this assessment's size is larger that the current largest assessment size than the maxSize variable is updated with this size
+        maxWeight = weights[assessee];
       }
       CompletedAssessment(assessee, score, assessment); //Makes an event with this assessment's data
     }

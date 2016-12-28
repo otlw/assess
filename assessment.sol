@@ -137,7 +137,7 @@ contract Assessment
       if(numberSet < Concept(conceptAddress).getOwnerLength()/10) //Checks if the number of assessors provided by this concept is less than 10% of the owners of the concept
       {
         address randomUser = Concept(conceptAddress).owners(Math(math).getRandom(seed + j, Concept(conceptAddress).getOwnerLength()-1)); //gets a random owner of the concept
-        if(User(randomUser).availability() == true && (uint(Concept(conceptAddress).currentScores(randomUser))*Concept(conceptAddress).assessmentSizes(randomUser)) > (now%(uint(Concept(conceptAddress).maxScore())*Concept(conceptAddress).maxSize()))) //Checks if the randomly drawn is available and then puts it through a random check that it has a higher chance of passing if it has had a higher score and a larger assessment
+        if(User(randomUser).availability() == true && Concept(conceptAddress).weights(randomUser) > now%(Concept(conceptAddress).maxWeight()) //Checks if the randomly drawn is available and then puts it through a random check that it has a higher chance of passing if it has had a higher score and a larger assessment
         {
           assessorPool.push(randomUser); //adds the randomly selected user to the assessor pool
           User(randomUser).notification(concept, 1); //Called As A Potential Assessor
