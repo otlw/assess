@@ -30,20 +30,6 @@ contract Assessment
 
   /*
   @type: modifier
-  @name: onlyConcept
-  @purpose: to only allow the Concept contract that spawned this assessment to call a function to which this modifier is applied
-  */
-  modifier onlyConcept()
-  {
-    if(msg.sender != concept) //checks if msg.sender is the concept that spawned this assessment
-    {
-      throw; //throws the function call if not
-    }
-    _;
-  }
-
-  /*
-  @type: modifier
   @name: onlyThis
   @purpose: to only allow the this contract to call a function to which this modifier is applied
   */
