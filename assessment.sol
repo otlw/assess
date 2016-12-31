@@ -1,4 +1,4 @@
-import "lib/math.sol";
+import "math.sol";
 import "userRegistry.sol";
 import "concept.sol";
 import "user.sol";
@@ -117,36 +117,11 @@ contract Assessment
       }
       poolSizeRemaining = 0;
     }
-    for(uint j = 0; j < Concept(conceptAddress).getOwnerLength() && poolSizeRemaining > 0; j++) //Iterates through all the owners of the concept corresponding to concept address while the remaining amount of user's desired in the pool is greater than 0
+    assessors = Concept(concept).getAssessors(poolSizeRemaining, seed);
+    for(uint j=0; j<poolSizeRemaining; j++)
     {
-      uint numberSet = 0; //initializes a variable to keep track of how many assessors this concept has added to the pool
-      if(numberSet < Concept(conceptAddress).getOwnerLength()/10) //Checks if the number of assessors provided by this concept is less than 10% of the owners of the concept
-      {
-        address randomUser = Concept(conceptAddress).owners(Math(math).getRandom(seed + j, Concept(conceptAddress).getOwnerLength()-1)); //gets a random owner of the concept
-        if(User(randomUser).availability() == true && Concept(conceptAddress).weights(randomUser) > now%(Concept(conceptAddress).maxWeight()) //Checks if the randomly drawn is available and then puts it through a random check that it has a higher chance of passing if it has had a higher score and a larger assessment
-        {
-          assessorPool.push(randomUser); //adds the randomly selected user to the assessor pool
-          User(randomUser).notification(concept, 1); //Called As A Potential Assessor
-          assessorState[randomUser] = 1;
-          poolSizeRemaining--; //reduces desired amount of users to be added to the assessor pool by 1
-          numberSet++; //increases numberSet by 1
-        }
-      }
-      else
-      {
-        break; //exits this for loop if 10% or more of the concept owners are in the assessment pool
-      }
-    }
-    for(uint l = 0; l < Concept(conceptAddress).getParentsLength() || l < Concept(conceptAddress).getChildrenLength(); l++) //Recursively calls this function in such a way that the parent and child concepts' owners will be used to potentially populate the assessment pool
-    {
-      if(l < Concept(conceptAddress).getParentsLength()) //Makes sure there are still parent concepts left to call
-      {
-        setAssessorPool(Concept(conceptAddress).parentConcepts(l), Math(math).getRandom(seed + l, Concept(conceptAddress).getOwnerLength()-1));
-      }
-      if(l < Concept(conceptAddress).getChildrenLength()) //Makes sure there are still child concepts left to call
-      {
-        setAssessorPool(Concept(conceptAddress).childConcepts(l), Math(math).getRandom(seed + l, Concept(conceptAddress).getOwnerLength()-1));
-      }
+      User(assessors[i]).notification(concept, 1); //Called As A Potential Assessor
+      assessorState[assessors[i]] = 1;
     }
   }
 
