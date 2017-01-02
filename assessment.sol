@@ -23,9 +23,9 @@ contract Assessment
   mapping(address => bytes32) commits;
   mapping(address => uint) stake;
   uint done = 0;
-  mapping(address => int8) scores;
+  mapping(address => int8) scores; //could save gas by making this an int8
   mapping(int => bool) inRewardCluster;
-  int8 finalScore;
+  int finalScore;
   event DataSet(address _dataSetter, uint _index);
 
   /*
@@ -70,6 +70,15 @@ contract Assessment
     _;
   }
 
+  modifier onlyConcept()
+  {
+    if(msg.sender != concept)
+    {
+      throw;
+    }
+    _;
+  }
+
   function Assessment(address assesseeAddress, address userRegistryAddress, address conceptRegistryAddress, uint assessmentSize, uint assessmentCost)
   {
     assessee = assesseeAddress;
@@ -96,6 +105,13 @@ contract Assessment
     suicide(conceptRegistry);
   }
 
+  function addAssessorToPool(address assessor) onlyConcept()
+  {
+    User(assessor).notification(concept, 1); //Called As A Potential Assessor
+    assessorState[assessor] = 1;
+  }
+
+
   /*
   @type: function
   @purpose: To recursively set the pool to draw assessors from in the assessment
@@ -115,14 +131,11 @@ contract Assessment
         User(Concept(ConceptRegistry(conceptRegistry).mewAddress()).owners(i)).notification(concept, 1); //Called As A Potential Assessor
         assessorState[Concept(ConceptRegistry(conceptRegistry).mewAddress()).owners(i)] = 1;
       }
-      poolSizeRemaining = 0;
     }
-    assessors = Concept(concept).getAssessors(poolSizeRemaining, seed);
-    for(uint j=0; j<poolSizeRemaining; j++)
+    else
     {
-      User(assessors[i]).notification(concept, 1); //Called As A Potential Assessor
-      assessorState[assessors[i]] = 1;
-    }
+    Concept(concept).getAssessors(poolSizeRemaining, seed, address(this));
+  }
   }
 
   function confirmAssessor()
@@ -201,7 +214,7 @@ contract Assessment
     }
   }
 
-  function reveal(int score, bytes16 salt, address assessor)
+  function reveal(int8 score, bytes16 salt, address assessor)
   {
     if(block.number - startTime <= 10)
     {
