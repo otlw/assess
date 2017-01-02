@@ -4,6 +4,7 @@ import "userRegistry.sol";
 import "assessment.sol";
 import "user.sol";
 import "math.sol";
+import "conceptRegistry.sol";
 
 /*
 @type: contract
@@ -49,6 +50,15 @@ contract Concept
     if(msg.sender != conceptRegistryAddress) //checks if msg.sender has the same address as conceptRegistry
     {
       throw; //throws the function call if not
+    }
+    _;
+  }
+
+  modifier onlyAssessmentConcept()
+  {
+    if(assessmentExists[msg.sender] !=true && ConceptRegistry(conceptRegistryAddress).conceptExists(msg.sender) != true)
+    {
+      throw;
     }
     _;
   }
@@ -159,7 +169,7 @@ contract Concept
     childConcepts.push(childAddress);
   }
 
-  function getAssessors(uint num, uint seed, address assessment) //TODO: This needs to be only able to be called by other concepts or assessments
+  function getAssessors(uint num, uint seed, address assessment) onlyAssessmentConcept
   {
     if(num > owners.length)
     {
