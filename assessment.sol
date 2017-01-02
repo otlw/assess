@@ -20,7 +20,6 @@ contract Assessment
   uint public startTime;
   uint public size;
   uint cost;
-  uint poolSizeRemaining;
   mapping(address => string[]) public data; //IFFS hashes of data that can be passed between the assessors and the assessee for the assessment to occur
   mapping(address => bytes32) commits;
   mapping(address => uint) stake;
@@ -81,16 +80,15 @@ contract Assessment
     _;
   }
 
-  function Assessment(address assesseeAddress, address userRegistryAddress, address conceptRegistryAddress, uint assessmentSize, uint assessmentCost)
+  function Assessment(address _assessee, address _userRegistry, address _conceptRegistry, uint _size, uint _cost)
   {
-    assessee = assesseeAddress;
+    assessee = _assessee;
     concept = msg.sender;
-    userRegistry = userRegistryAddress;
-    conceptRegistry = conceptRegistryAddress;
+    userRegistry = _userRegistry;
+    conceptRegistry = _conceptRegistry;
     startTime = block.timestamp;
-    size = assessmentSize;
-    cost = assessmentCost;
-    poolSizeRemaining = size*20;
+    size = _size;
+    cost = _cost;
     User(assessee).notification(concept, 0); //Assessment made
   }
 
@@ -117,15 +115,12 @@ contract Assessment
   /*
   @type: function
   @purpose: To recursively set the pool to draw assessors from in the assessment
-  @param: address conceptAddress = the concept that assessors are currently being drawn from
-  @param: address assessment = the address of the assessment that assessors are being drawn for
   @param: uint seed = the seed number for random number generation
-  @param: uint size = the desired size of the assessment
   @returns: nothing
   */
-  function setAssessorPool(address conceptAddress, uint seed) onlyConceptAssessment()
+  function setAssessorPool(uint seed) onlyConceptAssessment()
   {
-    if(Concept(ConceptRegistry(conceptRegistry).mewAddress()).getOwnerLength() < poolSizeRemaining) //Checks if the requested pool size is greater than the number of users in the system
+    if(Concept(ConceptRegistry(conceptRegistry).mewAddress()).getOwnerLength() < size*20) //Checks if the requested pool size is greater than the number of users in the system
     {
       for(uint i = 0; i < Concept(ConceptRegistry(conceptRegistry).mewAddress()).getOwnerLength(); i++) //If so, all users in the system are added to the pool
       {
@@ -136,7 +131,7 @@ contract Assessment
     }
     else
     {
-    Concept(concept).getAssessors(poolSizeRemaining, seed, address(this));
+    Concept(concept).getAssessors(size*20, seed, address(this));
   }
   }
 
@@ -169,9 +164,9 @@ contract Assessment
     User(assessee).notification(concept, 4); //Assessment Has Started
   }
 
-  function setData(string newData) onlyAssessorAssessee()
+  function setData(string _data) onlyAssessorAssessee()
   {
-    data[msg.sender].push(newData);
+    data[msg.sender].push(_data);
     DataSet(msg.sender, data[msg.sender].length - 1);
   }
 

@@ -11,8 +11,8 @@ import "assessment.sol";
 contract ConceptRegistry
 {
   mapping (address => bool) public conceptExists; //Maps concept addresses to a bool to confirm their existance
-  address userRegistryAddress; //The address of the userRegistry contract
-  bool locked = false; //Keeps track of whether or not the function to set the userRegistryAddress variable is locked yet or not
+  address userRegistry; //The address of the userRegistry contract
+  bool locked = false; //Keeps track of whether or not the function to set the userRegistry variable is locked yet or not
   address public mewAddress;
 
   /*
@@ -38,7 +38,7 @@ contract ConceptRegistry
   @stores: address _conceptAddress
   @stores: address[] _parents
   */
-  event ConceptCreation (address _conceptAddress); //the address of the concept that was created
+  event ConceptCreation (address _concept); //the address of the concept that was created
 
   /*
   @type: constructor function
@@ -51,15 +51,15 @@ contract ConceptRegistry
 
   /*
   @type: function
-  @purpose: To set the userRegistryAddress
+  @purpose: To set the userRegistry address
   @param: address userRegistry = the address of the userRegistry contract
   @returns: nothing
   */
-  function init(address userRegistry, address mew)
+  function init(address _userRegistry, address mew)
   {
     if(locked == false) //Checks if the function has already been called
     {
-      userRegistryAddress = userRegistry; //Sets the userRegistryAddress to the value of userRegistry
+      userRegistry = _userRegistry; //Sets the userRegistry address
       mewAddress = mew;
       locked = true; //Makes it so this function cannot be called again
     }
@@ -74,7 +74,7 @@ contract ConceptRegistry
   */
   function makeConcept(address[] parentList)
   {
-    Concept newConcept = new Concept(parentList, userRegistryAddress, address(this)); //Makes a new concept with the provided data
+    Concept newConcept = new Concept(parentList, userRegistry, address(this)); //Makes a new concept with the provided data
     address newConceptAddress = address(newConcept); //initializes an address variable and sets it equal to the address of the newly created concept
     conceptExists[newConceptAddress] = true; //Maps the concept address to true to show that it exists
     if(parentList.length == 0)

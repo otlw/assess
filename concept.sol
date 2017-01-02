@@ -13,10 +13,10 @@ import "conceptRegistry.sol";
 */
 contract Concept
 {
-  address[] public parentConcepts; //The concepts that this concept is child to (ie: Calculus is child to Math)
-  address[] public childConcepts; //The concepts that this concept is parent to (ie: Math is parent to Calculus)
-  address userRegistryAddress; //The address of the userRegistry contract
-  address conceptRegistryAddress; //The address of the conceptRegistry contract
+  address[] public parents; //The concepts that this concept is child to (ie: Calculus is child to Math)
+  address[] public children; //The concepts that this concept is parent to (ie: Math is parent to Calculus)
+  address userRegistry; //The address of the userRegistry contract
+  address conceptRegistry; //The address of the conceptRegistry contract
   uint public maxWeight; //The current highest weight for this assessment
   address[] public owners; //Those who have earned the concept
   address math = 0x90B66E80448eb60938FAed4A738dE0D5b630B2Fd;
@@ -33,7 +33,7 @@ contract Concept
   */
   modifier onlyUserRegistry()
   {
-    if(msg.sender != userRegistryAddress) //checks if msg.sender has the same address as userRegistry
+    if(msg.sender != userRegistry) //checks if msg.sender has the same address as userRegistry
     {
       throw; //throws the function call if not
     }
@@ -47,7 +47,7 @@ contract Concept
   */
   modifier onlyConceptRegistry()
   {
-    if(msg.sender != conceptRegistryAddress) //checks if msg.sender has the same address as conceptRegistry
+    if(msg.sender != conceptRegistry) //checks if msg.sender has the same address as conceptRegistry
     {
       throw; //throws the function call if not
     }
@@ -56,7 +56,7 @@ contract Concept
 
   modifier onlyAssessmentConcept()
   {
-    if(assessmentExists[msg.sender] !=true && ConceptRegistry(conceptRegistryAddress).conceptExists(msg.sender) != true)
+    if(assessmentExists[msg.sender] !=true && ConceptRegistry(conceptRegistry).conceptExists(msg.sender) != true)
     {
       throw;
     }
@@ -93,14 +93,14 @@ contract Concept
   @param: string conceptName = the name of the conceptName
   @param: address[] parents = the addresses of the concept's parents
   @param: address userRegistryAddress = the address of the UserRegistry contract
-  @param: address conceptRegistryAddress = the address of the ConceptRegistry that spawned this user
+  @param: address conceptRegistry = the address of the ConceptRegistry that spawned this user
   @returns: nothing
   */
-  function Concept(address[] parents, address _userRegistryAddress, address _conceptRegistryAddress)
+  function Concept(address[] _parents, address _userRegistry, address _conceptRegistry)
   {
-    parentConcepts = parents; //sets the value of parentConcepts to that of parents
-    userRegistryAddress = _userRegistryAddress; //sets the value of userRegistry to that of userRegistryAddress
-    conceptRegistryAddress = _conceptRegistryAddress; //sets the vale of conceptRegistry to that of conceptRegistryAddress
+    parents = _parents; //sets the  parents array
+    userRegistry = _userRegistry; //sets the userRegistry address
+    conceptRegistry = _conceptRegistry; //sets the conceptRegistry address
   }
 
   /*
@@ -120,7 +120,7 @@ contract Concept
   */
   function getParentsLength() constant returns(uint)
   {
-    return parentConcepts.length;
+    return parents.length;
   }
 
   /*
@@ -130,7 +130,7 @@ contract Concept
   */
   function getChildrenLength() constant returns(uint)
   {
-    return childConcepts.length;
+    return children.length;
   }
 
   /*
@@ -153,9 +153,9 @@ contract Concept
   @param: address parentAddress = the address of the new parent concept
   @returns: nothing
   */
-  function addParent(address parentAddress) onlyConceptRegistry()
+  function addParent(address _parent) onlyConceptRegistry()
   {
-    parentConcepts.push(parentAddress);
+    parents.push(_parent);
   }
 
   /*
@@ -164,18 +164,18 @@ contract Concept
   @param: address childAddress = the address of the new child concept
   @returns: nothing
   */
-  function addChild(address childAddress) onlyConceptRegistry()
+  function addChild(address _child) onlyConceptRegistry()
   {
-    childConcepts.push(childAddress);
+    children.push(_child);
   }
 
   function getAssessors(uint num, uint seed, address assessment) onlyAssessmentConcept
   {
     if(num > owners.length)
     {
-      for(uint i=0; i<parentConcepts.length; i++)
+      for(uint i=0; i<parents.length; i++)
       {
-        Concept(parentConcepts[i]).getAssessors(num/parentConcepts.length, seed, assessment);
+        Concept(parents[i]).getAssessors(num/parents.length, seed, assessment);
       }
     }
     else
@@ -183,7 +183,6 @@ contract Concept
       uint j = 0;
       while(j < num)
       {
-
         address randomUser = owners[Math(math).getRandom(seed + j, owners.length-1)]; //gets a random owner of the concept
         if(User(randomUser).availability() == true && weights[randomUser] > now%(maxWeight)) //Checks if the randomly drawn is available and then puts it through a random check that it has a higher chance of passing if it has had a higher score and a larger assessment
         {
@@ -203,11 +202,11 @@ contract Concept
   */
   function makeAssessment(uint cost, uint size) returns(bool)
   {
-    if(size >= 5 && UserRegistry(userRegistryAddress).getBalance(msg.sender) >= cost*size) //Checks if the assessment has a size of at least 5
+    if(size >= 5 && UserRegistry(userRegistry).getBalance(msg.sender) >= cost*size) //Checks if the assessment has a size of at least 5
     {
-      Assessment newAssessment = new Assessment(msg.sender, userRegistryAddress, conceptRegistryAddress, size, cost); //Makes a new assessment with the given parameters
+      Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost); //Makes a new assessment with the given parameters
       assessmentExists[address(newAssessment)] = true; //Sets the assessment's existance to true
-      setBalance(msg.sender, UserRegistry(userRegistryAddress).getBalance(msg.sender) - cost*size);
+      setBalance(msg.sender, UserRegistry(userRegistry).getBalance(msg.sender) - cost*size);
       User(msg.sender).notification(address(this), 19); //You have been charged for your assessment
       return true;
     }
@@ -227,7 +226,7 @@ contract Concept
   {
     if(block.number - Assessment(assessment).startTime() <= 10) //Checks if this function is being called 4 to 6 blocks after the block in which the assessment was created
     {
-      Assessment(assessment).setAssessorPool(address(this), block.number); //Calls thge function to set the assessor pool
+      Assessment(assessment).setAssessorPool(block.number); //Calls thge function to set the assessor pool
     }
     else
     {
@@ -277,9 +276,9 @@ contract Concept
     {
       maxWeight = weight; //if so changes the maxWeight value
     }
-    for(uint i = 0; i < parentConcepts.length; i++)
+    for(uint i = 0; i < parents.length; i++)
     {
-      Concept(parentConcepts[i]).addOwner(assessee, weight/2); //recursively adds owner to all parent concepts but with half the weight
+      Concept(parents[i]).addOwner(assessee, weight/2); //recursively adds owner to all parent concepts but with half the weight
     }
   }
 
@@ -293,7 +292,7 @@ contract Concept
   {
     if(assessmentExists[msg.sender] = true) //Checks if msg.sender is an existing assessment
     {
-      UserRegistry(userRegistryAddress).mapBalance(user, amount); //Changes the user's token balance
+      UserRegistry(userRegistry).mapBalance(user, amount); //Changes the user's token balance
     }
   }
 

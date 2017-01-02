@@ -75,11 +75,11 @@ contract User
   @param: address userRegistryAddress = the address of the userRegistry that spawned this user
   @returns: nothing
   */
-  function User(address userAddress, address userRegistryAddress, address conceptRegistryAddress)
+  function User(address _user, address _userRegistry, address _conceptRegistry)
   {
-    user = userAddress; //Sets the user variable
-    userRegistry = userRegistryAddress; //Sets the userRegistry variable
-    conceptRegistry = conceptRegistryAddress; //Sets the conceptRegistry variable
+    user = _user; //Sets the user variable
+    userRegistry = _userRegistry; //Sets the userRegistry variable
+    conceptRegistry = _conceptRegistry; //Sets the conceptRegistry variable
   }
 
   /*
@@ -88,9 +88,9 @@ contract User
   @param: bool available = the availability of the user
   @returns: nothing
   */
-  function setAvailability(bool available) onlyUser()
+  function setAvailability(bool _availability) onlyUser()
   {
-    availability = available;
+    availability = _availability;
   }
 
   function mapHistory(address assessment) onlyConcept()
