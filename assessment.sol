@@ -107,8 +107,11 @@ contract Assessment
 
   function addAssessorToPool(address assessor) onlyConcept()
   {
-    User(assessor).notification(concept, 1); //Called As A Potential Assessor
-    assessorState[assessor] = 1;
+    if(assessorState[assessor] == 0)
+    {
+      User(assessor).notification(concept, 1); //Called As A Potential Assessor
+      assessorState[assessor] = 1;
+    }
   }
 
 
