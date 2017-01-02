@@ -157,35 +157,29 @@ contract Concept
     childConcepts.push(childAddress);
   }
 
-  function getAssessors(uint num, uint seed)
+  function getAssessors(uint num, uint seed, address assessment) //TODO: This needs to be only able to be called by other concepts or assessments
   {
-    address[] memory assessors = new address[] (num);
     if(num > owners.length)
     {
       for(uint i=0; i<parentConcepts.length; i++)
       {
-        address[] memory parentAssessors = new address[] (num/parentConcepts.length);
-        parentAssessors = Concept(parentConcepts[i]).getAssessors(num/parentConcepts.length, seed);
-        for( uint h=0; h < parentAssessors.length; h++)
-        {
-          assessors.push(parentAssessors[i]);
-        }
+        Concept(parentConcepts[i]).getAssessors(num/parentConcepts.length, seed, assessment);
       }
     }
     else
     {
-      while(assessors.length < num)
+      uint j = 0;
+      while(j < num)
       {
-        uint j = 0;
+
         address randomUser = owners[Math(math).getRandom(seed + j, owners.length-1)]; //gets a random owner of the concept
         if(User(randomUser).availability() == true && weights[randomUser] > now%(maxWeight)) //Checks if the randomly drawn is available and then puts it through a random check that it has a higher chance of passing if it has had a higher score and a larger assessment
         {
-          assessors.push(randomUser);
+          Assessment(assessment).addAssessorToPool(randomUser);
         }
         j++;
       }
     }
-    return assessors;
   }
 
   /*
