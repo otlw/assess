@@ -180,13 +180,15 @@ contract Concept
     }
     else
     {
-      uint j = 0;
-      while(j < num)
+      uint h = 0;
+      while(h < num)
       {
+        uint j = 0;
         address randomUser = owners[Math(math).getRandom(seed + j, owners.length-1)]; //gets a random owner of the concept
         if(User(randomUser).availability() == true && weights[randomUser] > now%(maxWeight)) //Checks if the randomly drawn is available and then puts it through a random check that it has a higher chance of passing if it has had a higher score and a larger assessment
         {
           Assessment(assessment).addAssessorToPool(randomUser);
+          h++;
         }
         j++;
       }
