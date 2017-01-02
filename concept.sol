@@ -171,26 +171,25 @@ contract Concept
 
   function getAssessors(uint num, uint seed, address assessment) onlyAssessmentConcept
   {
-    if(num > owners.length)
+    uint j = 0;
+    for(uint i = 0; i < owners.length; i++)
     {
-      for(uint i=0; i<parents.length; i++)
+      address randomUser = owners[Math(math).getRandom(seed + i, owners.length-1)]; //gets a random owner of the concept
+      if(User(randomUser).availability() == true && weights[randomUser] > now%maxWeight) //Checks if the randomly drawn is available and then puts it through a random check that it has a higher chance of passing if it has had a higher score and a larger assessment
       {
-        Concept(parents[i]).getAssessors(num/parents.length, seed, assessment);
+        Assessment(assessment).addAssessorToPool(randomUser);
+        j++;
+      }
+      if(j > owners.length/10)
+      {
+        break;
       }
     }
-    else
+    if(num > j)
     {
-      uint h = 0;
-      while(h < num)
+      for(uint k = 0; k < parents.length; k++)
       {
-        uint j = 0;
-        address randomUser = owners[Math(math).getRandom(seed + j, owners.length-1)]; //gets a random owner of the concept
-        if(User(randomUser).availability() == true && weights[randomUser] > now%(maxWeight)) //Checks if the randomly drawn is available and then puts it through a random check that it has a higher chance of passing if it has had a higher score and a larger assessment
-        {
-          Assessment(assessment).addAssessorToPool(randomUser);
-          h++;
-        }
-        j++;
+        Concept(parents[k]).getAssessors((num - j)/parents.length + 1, seed + now%k, assessment);
       }
     }
   }
