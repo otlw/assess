@@ -1,3 +1,5 @@
+pragma solidity ^0.4.0;
+
 import "userRegistry.sol";
 import "concept.sol";
 import "assessment.sol";
@@ -138,7 +140,7 @@ contract User
   @param: uint score = the score that the user decided on
   @returns: nothing
   */
-  function reveal(address assessment, int score, bytes16 salt, address assessor) onlyUser()
+  function reveal(address assessment, int8 score, bytes16 salt, address assessor) onlyUser()
   {
     Assessment(assessment).reveal(score,salt,assessor); //Sends to score to the assessment
   }

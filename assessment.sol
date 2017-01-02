@@ -1,3 +1,5 @@
+pragma solidity ^0.4.0;
+
 import "math.sol";
 import "userRegistry.sol";
 import "concept.sol";
