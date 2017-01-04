@@ -175,23 +175,14 @@ contract Assessment
 
   function commit(bytes32 hash)
   {
-    if(assessorState[msg.sender] == 2)
-    {
-      commits[msg.sender] = hash;
-      assessorState[msg.sender] == 3;
-      done++;
-      if(done <= size/2)
-      {
-        startTime = block.number;
-      }
-    }
     if(done > size/2)
     {
       for(uint i = 0; i < assessors.length; i++)
       {
         if(assessorState[assessors[i]] == 2)
         {
-          //burn da stakes
+          r = 38; //Inverse burn rate
+          stake[assessors[i]] = cost*2**(-(now-startTime)/r) - 1;
         }
         if(stake[assessors[i]] == 0)
         {
@@ -211,6 +202,16 @@ contract Assessment
       }
       startTime = block.number;
       done = 0;
+    }
+    if(assessorState[msg.sender] == 2)
+    {
+      commits[msg.sender] = hash;
+      assessorState[msg.sender] == 3;
+      done++;
+      if(done <= size/2)
+      {
+        startTime = block.number;
+      }
     }
   }
 
