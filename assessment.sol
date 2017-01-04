@@ -181,7 +181,7 @@ contract Assessment
       {
         if(assessorState[assessors[i]] == 2)
         {
-          r = 38; //Inverse burn rate
+          uint r = 38; //Inverse burn rate
           stake[assessors[i]] = cost*2**(-(now-startTime)/r) - 1;
         }
         if(stake[assessors[i]] == 0)
@@ -312,15 +312,18 @@ contract Assessment
       {
         scoreDistance *= -1;
       }
-      uint payoutValue = 1; //Figure out new payout algorithm
+      uint payoutValue; //Figure out new payout algorithm
       if(inRewardCluster[score] == true)
       {
+        uint q = 1; //Inflation rate factor, WE NEED TO FIGURE THIS OUT AT SOME POINT
+        payoutValue = q*cost*((100 - uint(scoreDistance))/100);
         Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).getBalance(assessors[i]) + payoutValue);
         User(assessors[i]).notification(concept, 15); //You Have Received Payment For Your Assessment
       }
       if(inRewardCluster[score] == false)
       {
-        Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).getBalance(assessors[i]) - payoutValue);
+        payoutValue = stake[assessors[i]]*((200 - uint(scoreDistance))/200);
+        Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).getBalance(assessors[i]) + payoutValue);
         User(assessors[i]).notification(concept, 16); //You Have Received A Fine For Your Assessment
       }
     }
