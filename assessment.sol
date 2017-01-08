@@ -105,12 +105,17 @@ contract Assessment
     suicide(conceptRegistry);
   }
 
-  function addAssessorToPool(address assessor) onlyConcept()
+  function addAssessorToPool(address assessor) onlyConcept() returns(bool)
   {
     if(assessorState[assessor] == 0)
     {
       User(assessor).notification(concept, 1); //Called As A Potential Assessor
       assessorState[assessor] = 1;
+      return true;
+    }
+    else
+    {
+      return false;
     }
   }
 

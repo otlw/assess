@@ -56,7 +56,7 @@ contract Concept
 
   modifier onlyAssessmentConcept()
   {
-    if(assessmentExists[msg.sender] !=true && ConceptRegistry(conceptRegistry).conceptExists(msg.sender) != true)
+    if(assessmentExists[msg.sender] != true && ConceptRegistry(conceptRegistry).conceptExists(msg.sender) != true)
     {
       throw;
     }
@@ -169,7 +169,7 @@ contract Concept
     children.push(_child);
   }
 
-  function getAssessors(uint num, uint seed, address assessment) onlyAssessmentConcept
+  function getAssessors(uint num, uint seed, address assessment) onlyAssessmentConcept()
   {
     uint j = 0;
     for(uint i = 0; i < owners.length; i++)
@@ -177,8 +177,10 @@ contract Concept
       address randomUser = owners[Math(math).getRandom(seed + i, owners.length-1)]; //gets a random owner of the concept
       if(User(randomUser).availability() == true && weights[randomUser] > now%maxWeight) //Checks if the randomly drawn is available and then puts it through a random check that it has a higher chance of passing if it has had a higher score and a larger assessment
       {
-        Assessment(assessment).addAssessorToPool(randomUser);
-        j++;
+        if(Assessment(assessment).addAssessorToPool(randomUser))
+        {
+          j++;
+        }
       }
       if(j > owners.length/10)
       {
