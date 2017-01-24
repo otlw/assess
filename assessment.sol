@@ -127,15 +127,16 @@ contract Assessment
     {
       for(uint i = 0; i < Concept(ConceptRegistry(conceptRegistry).mewAddress()).getOwnerLength(); i++) //If so, all users in the system are added to the pool
       {
-        assessorPool.push(Concept(ConceptRegistry(conceptRegistry).mewAddress()).owners(i));
-        User(Concept(ConceptRegistry(conceptRegistry).mewAddress()).owners(i)).notification(concept, 1); //Called As A Potential Assessor
-        assessorState[Concept(ConceptRegistry(conceptRegistry).mewAddress()).owners(i)] = 1;
+        address assessor = Concept(ConceptRegistry(conceptRegistry).mewAddress()).owners(i);
+        assessorPool.push(assessor);
+        User(assessor).notification(concept, 1); //Called As A Potential Assessor
+        assessorState[assessor] = 1;
       }
     }
     else
     {
-    Concept(concept).getAssessors(size*20, seed, address(this));
-  }
+      Concept(concept).getAssessors(size*20, seed, address(this));
+    }
   }
 
   function confirmAssessor()
@@ -311,7 +312,7 @@ contract Assessment
       {
         scoreDistance *= -1;
       }
-      uint payoutValue = 1; //Figure out new payout algorithm
+      uint payoutValue = 1; // TODO Figure out new payout algorithm
       if(inRewardCluster[score] == true)
       {
         Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).getBalance(assessors[i]) + payoutValue);
