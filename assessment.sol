@@ -11,7 +11,16 @@ contract Assessment
   address assessee; //The address of the user being assessed
   address[] assessors;
   address[] finalAssessors; //The assessors who actually give an assessment
-  mapping (address => uint) assessorState;
+  mapping (address => State) assessorState;
+  enum State
+  {
+    Called,
+    Confirmed,
+    Committed,
+    Submitted,
+    Done,
+    Burned
+  }
   address[] assessorPool; //The addresses of the user's that the assessors are randomly selected from
   address concept;
   address userRegistry;
@@ -50,7 +59,7 @@ contract Assessment
   */
   modifier onlyAssessorAssessee()
   {
-    if(msg.sender != assessee && assessorState[msg.sender] == 0) //Checks if msg.sender has the same address as either the assessee or an assessor
+    if(msg.sender != assessee && uint(assessorState[msg.sender]) == 0) //Checks if msg.sender has the same address as either the assessee or an assessor
     {
       throw; //Throws the function call if not
     }
@@ -107,10 +116,10 @@ contract Assessment
 
   function addAssessorToPool(address assessor) onlyConcept() returns(bool)
   {
-    if(assessorState[assessor] == 0)
+    if(uint(assessorState[assessor]) == 0)
     {
       User(assessor).notification(concept, 1); //Called As A Potential Assessor
-      assessorState[assessor] = 1;
+      assessorState[assessor] = State.Called;
       return true;
     }
     else
@@ -135,7 +144,7 @@ contract Assessment
         address assessor = Concept(ConceptRegistry(conceptRegistry).mewAddress()).owners(i);
         assessorPool.push(assessor);
         User(assessor).notification(concept, 1); //Called As A Potential Assessor
-        assessorState[assessor] = 1;
+        assessorState[assessor] = State.Called;
       }
     }
     else
@@ -146,10 +155,10 @@ contract Assessment
 
   function confirmAssessor()
   {
-    if(block.number - startTime <= 15 && assessorState[msg.sender] == 1 && assessors.length < size && UserRegistry(userRegistry).getBalance(msg.sender) >= cost)
+    if(block.number - startTime <= 15 && assessorState[msg.sender] == State.Called && assessors.length < size && UserRegistry(userRegistry).getBalance(msg.sender) >= cost)
     {
       assessors.push(msg.sender);
-      assessorState[msg.sender] = 2;
+      assessorState[msg.sender] = State.Confirmed;
       stake[msg.sender] = cost;
       Concept(concept).setBalance(msg.sender,UserRegistry(userRegistry).getBalance(msg.sender) - cost);
       User(msg.sender).notification(concept, 2); //Confirmed for assessing, stake has been taken
@@ -185,14 +194,14 @@ contract Assessment
     {
       for(uint i = 0; i < assessors.length; i++)
       {
-        if(assessorState[assessors[i]] == 2)
+        if(assessorState[assessors[i]] == State.Confirmed)
         {
           uint r = 38; //Inverse burn rate
           stake[assessors[i]] = cost*2**(-(now-startTime)/r) - 1;
         }
         if(stake[assessors[i]] == 0)
         {
-          assessorState[assessors[i]] = 4;
+          assessorState[assessors[i]] = State.Burned;
           done++;
         }
       }
@@ -201,7 +210,7 @@ contract Assessment
     {
       for(uint j = 0; j < assessors.length; j++)
       {
-        if(assessorState[assessors[j]] == 3)
+        if(assessorState[assessors[j]] == State.Committed)
         {
           User(assessors[j]).notification(concept, 5); //Send in Score
         }
@@ -209,10 +218,10 @@ contract Assessment
       startTime = block.number;
       done = 0;
     }
-    if(assessorState[msg.sender] == 2)
+    if(assessorState[msg.sender] == State.Confirmed)
     {
       commits[msg.sender] = hash;
-      assessorState[msg.sender] == 3;
+      assessorState[msg.sender] == State.Committed;
       done++;
       if(done <= size/2)
       {
@@ -231,20 +240,20 @@ contract Assessment
         if(msg.sender == assessor)
         {
           scores[msg.sender] = score;
-          assessorState[assessor] = 5;
+          assessorState[assessor] = State.Done;
           done++;
         }
         else
         {
           Concept(concept).setBalance(msg.sender,UserRegistry(userRegistry).getBalance(msg.sender) + stake[assessor]);
           stake[assessor] = 0;
-          assessorState[assessor] = 4;
+          assessorState[assessor] = State.Burned;
         }
       }
       else if(msg.sender == assessor)
       {
         stake[assessor] = 0;
-        assessorState[assessor] = 4;
+        assessorState[assessor] = State.Burned;
         done++;
       }
     }
@@ -252,10 +261,10 @@ contract Assessment
     {
       for(uint i = 0; i < assessors.length; i++)
       {
-        if(assessorState[assessors[i]] == 3)
+        if(assessorState[assessors[i]] == State.Committed)
         {
           stake[assessors[i]] = 0;
-          assessorState[assessors[i]] = 4;
+          assessorState[assessors[i]] = State.Burned;
           done++;
         }
       }
@@ -271,7 +280,7 @@ contract Assessment
     mapping(uint => int[]) clusters;
     for(uint j = 0; j < size; j++)
     {
-      if(assessorState[assessors[i]] == 5)
+      if(assessorState[assessors[i]] == State.Done)
       {
         finalAssessors.push(assessors[i]);
       }
