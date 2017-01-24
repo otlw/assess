@@ -12,7 +12,7 @@ import "conceptRegistry.sol";
 contract UserRegistry
 {
   address public conceptRegistry; //The address of the conceptRegistry contract
-  mapping (address => uint) balance; //Maps the addresses of users to their token balances
+  mapping (address => uint) public balances; //Maps the addresses of users to their token balances
   mapping (address => address) users; //Maps the addresses of the users to their account
   bool firstUserMade = false; //Keeps track of whether or not the first user has been made yet
   event UserCreation(address _userAddress); //address of the created user contract
@@ -77,7 +77,7 @@ contract UserRegistry
       User newUser = new User(userAddress, address(this), conceptRegistry); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
       Concept(ConceptRegistry(conceptRegistry).mewAddress()).addUser(address(newUser));
       UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
-      balance[address(newUser)] = 1000;
+      balances[address(newUser)] = 1000;
     }
   }
 
@@ -90,26 +90,15 @@ contract UserRegistry
   */
   function setBalance(address user, uint newBalance) onlyConcept()
   {
-    balance[user] = newBalance; //sets the token balance of the user
-  }
-
-  /*
-  @type: function
-  @purpose: To get the user's token balance
-  @param: address user = the address of the user
-  @returns: The token balance in the form of a uint
-  */
-  function getBalance(address user) constant returns(uint)
-  {
-    return balance[user];
+    balances[user] = newBalance; //sets the token balance of the user
   }
 
   function transfer(address user, uint amount) returns(bool)
   {
-    if(balance[msg.sender] > amount)
+    if(balances[msg.sender] > amount)
     {
-      balance[msg.sender] -= amount;
-      balance[user] += amount;
+      balances[msg.sender] -= amount;
+      balances[user] += amount;
       return true;
     }
     else

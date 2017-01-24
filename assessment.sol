@@ -104,11 +104,11 @@ contract Assessment
 
   function cancelAssessment() onlyConceptAssessment()
   {
-    Concept(concept).setBalance(assessee, UserRegistry(userRegistry).getBalance(assessee) + cost*size);
+    Concept(concept).setBalance(assessee, UserRegistry(userRegistry).balances(assessee) + cost*size);
     User(assessee).notification(concept, 3); //Assessment Cancled and you have been refunded
     for(uint i = 0; i < assessors.length; i++)
     {
-      Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).getBalance(assessors[i]) + cost);
+      Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).balances(assessors[i]) + cost);
       User(assessors[i]).notification(concept, 3); //Assessment Cancled and you have been refunded
     }
     suicide(conceptRegistry);
@@ -155,12 +155,12 @@ contract Assessment
 
   function confirmAssessor()
   {
-    if(block.number - startTime <= 15 && assessorState[msg.sender] == State.Called && assessors.length < size && UserRegistry(userRegistry).getBalance(msg.sender) >= cost)
+    if(block.number - startTime <= 15 && assessorState[msg.sender] == State.Called && assessors.length < size && UserRegistry(userRegistry).balances(msg.sender) >= cost)
     {
       assessors.push(msg.sender);
       assessorState[msg.sender] = State.Confirmed;
       stake[msg.sender] = cost;
-      Concept(concept).setBalance(msg.sender,UserRegistry(userRegistry).getBalance(msg.sender) - cost);
+      Concept(concept).setBalance(msg.sender,UserRegistry(userRegistry).balances(msg.sender) - cost);
       User(msg.sender).notification(concept, 2); //Confirmed for assessing, stake has been taken
     }
     if(assessors.length == size)
@@ -245,7 +245,7 @@ contract Assessment
         }
         else
         {
-          Concept(concept).setBalance(msg.sender,UserRegistry(userRegistry).getBalance(msg.sender) + stake[assessor]);
+          Concept(concept).setBalance(msg.sender,UserRegistry(userRegistry).balances(msg.sender) + stake[assessor]);
           stake[assessor] = 0;
           assessorState[assessor] = State.Burned;
         }
@@ -332,13 +332,13 @@ contract Assessment
       {
         uint q = 1; //Inflation rate factor, WE NEED TO FIGURE THIS OUT AT SOME POINT
         payoutValue = q*cost*((100 - uint(scoreDistance))/100);
-        Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).getBalance(assessors[i]) + payoutValue);
+        Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).balances(assessors[i]) + payoutValue);
         User(assessors[i]).notification(concept, 15); //You Have Received Payment For Your Assessment
       }
       if(inRewardCluster[score] == false)
       {
         payoutValue = stake[assessors[i]]*((200 - uint(scoreDistance))/200);
-        Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).getBalance(assessors[i]) + payoutValue);
+        Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).balances(assessors[i]) + payoutValue);
         User(assessors[i]).notification(concept, 16); //You Have Received A Fine For Your Assessment
       }
     }

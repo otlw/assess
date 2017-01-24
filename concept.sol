@@ -205,11 +205,11 @@ contract Concept
   */
   function makeAssessment(uint cost, uint size) returns(bool)
   {
-    if(size >= 5 && UserRegistry(userRegistry).getBalance(msg.sender) >= cost*size) //Checks if the assessment has a size of at least 5
+    if(size >= 5 && UserRegistry(userRegistry).balances(msg.sender) >= cost*size) //Checks if the assessment has a size of at least 5
     {
       Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost); //Makes a new assessment with the given parameters
       assessmentExists[address(newAssessment)] = true; //Sets the assessment's existance to true
-      setBalance(msg.sender, UserRegistry(userRegistry).getBalance(msg.sender) - cost*size);
+      setBalance(msg.sender, UserRegistry(userRegistry).balances(msg.sender) - cost*size);
       User(msg.sender).notification(address(this), 19); //You have been charged for your assessment
       return true;
     }
@@ -293,7 +293,7 @@ contract Concept
   */
   function setBalance(address user, uint amount)
   {
-    if(assessmentExists[msg.sender] == true) //Checks if msg.sender is an existing assessment
+    if(assessmentExists[msg.sender] || msg.sender == address(this)) //Checks if msg.sender is an existing assessment
     {
       UserRegistry(userRegistry).setBalance(user, amount); //Changes the user's token balance
     }
