@@ -12,7 +12,7 @@ contract ConceptRegistry
 {
   mapping (address => bool) public conceptExists; //Maps concept addresses to a bool to confirm their existance
   address userRegistry; //The address of the userRegistry contract
-  bool locked = false; //Keeps track of whether or not the function to set the userRegistry variable is locked yet or not
+  bool initialized = false; //Keeps track of whether or not the function to set the userRegistry variable is locked yet or not
   address public mewAddress;
 
   /*
@@ -57,11 +57,11 @@ contract ConceptRegistry
   */
   function init(address _userRegistry, address mew)
   {
-    if(locked == false) //Checks if the function has already been called
+    if(initialized == false) //Checks if the function has already been called
     {
       userRegistry = _userRegistry; //Sets the userRegistry address
       mewAddress = mew;
-      locked = true; //Makes it so this function cannot be called again
+      initialized = true; //Makes it so this function cannot be called again
     }
   }
 
