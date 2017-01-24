@@ -105,12 +105,17 @@ contract Assessment
     suicide(conceptRegistry);
   }
 
-  function addAssessorToPool(address assessor) onlyConcept()
+  function addAssessorToPool(address assessor) onlyConcept() returns(bool)
   {
     if(assessorState[assessor] == 0)
     {
       User(assessor).notification(concept, 1); //Called As A Potential Assessor
       assessorState[assessor] = 1;
+      return true;
+    }
+    else
+    {
+      return false;
     }
   }
 
@@ -176,23 +181,14 @@ contract Assessment
 
   function commit(bytes32 hash)
   {
-    if(assessorState[msg.sender] == 2)
-    {
-      commits[msg.sender] = hash;
-      assessorState[msg.sender] == 3;
-      done++;
-      if(done <= size/2)
-      {
-        startTime = block.number;
-      }
-    }
     if(done > size/2)
     {
       for(uint i = 0; i < assessors.length; i++)
       {
         if(assessorState[assessors[i]] == 2)
         {
-          //burn da stakes
+          uint r = 38; //Inverse burn rate
+          stake[assessors[i]] = cost*2**(-(now-startTime)/r) - 1;
         }
         if(stake[assessors[i]] == 0)
         {
@@ -212,6 +208,16 @@ contract Assessment
       }
       startTime = block.number;
       done = 0;
+    }
+    if(assessorState[msg.sender] == 2)
+    {
+      commits[msg.sender] = hash;
+      assessorState[msg.sender] == 3;
+      done++;
+      if(done <= size/2)
+      {
+        startTime = block.number;
+      }
     }
   }
 
@@ -315,12 +321,15 @@ contract Assessment
       uint payoutValue = 1; // TODO Figure out new payout algorithm
       if(inRewardCluster[score] == true)
       {
+        uint q = 1; //Inflation rate factor, WE NEED TO FIGURE THIS OUT AT SOME POINT
+        payoutValue = q*cost*((100 - uint(scoreDistance))/100);
         Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).getBalance(assessors[i]) + payoutValue);
         User(assessors[i]).notification(concept, 15); //You Have Received Payment For Your Assessment
       }
       if(inRewardCluster[score] == false)
       {
-        Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).getBalance(assessors[i]) - payoutValue);
+        payoutValue = stake[assessors[i]]*((200 - uint(scoreDistance))/200);
+        Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).getBalance(assessors[i]) + payoutValue);
         User(assessors[i]).notification(concept, 16); //You Have Received A Fine For Your Assessment
       }
     }
