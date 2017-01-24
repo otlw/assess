@@ -195,20 +195,20 @@ contract User
     conceptPassed[msg.sender] = passed;
   }
 
-  function extMakeAssessment(address concept, uint time, uint size) returns(bool)
+  function extMakeAssessment(address concept, uint cost, uint size) returns(bool)
   {
     if(assessApproved[msg.sender].approved == false)
     {
       return false;
     }
-    else if(assessApproved[msg.sender].value > time*size)
+    else if(assessApproved[msg.sender].value > cost*size)
     {
       return false;
     }
     else
     {
-      assessApproved[msg.sender].value -= time*size;
-      return Concept(concept).makeAssessment(time,size);
+      assessApproved[msg.sender].value -= cost*size;
+      return Concept(concept).makeAssessment(cost, size);
     }
   }
 }
