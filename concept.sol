@@ -171,7 +171,7 @@ contract Concept
 
   function getAssessors(uint num, uint seed, address assessment) isAssessmentOrConcept()
   {
-    uint j = 0;
+    uint numberOfAssessorsCalled = 0;
     for(uint i = 0; i < owners.length; i++)
     {
       address randomUser = owners[Math(math).getRandom(seed + i, owners.length-1)]; //gets a random owner of the concept
@@ -179,19 +179,19 @@ contract Concept
       {
         if(Assessment(assessment).addAssessorToPool(randomUser))
         {
-          j++;
+          numberOfAssessorsCalled++;
         }
       }
-      if(j > owners.length/10)
+      if(numberOfAssessorsCalled > owners.length/10)
       {
         break;
       }
     }
-    if(num > j)
+    if(num > numberOfAssessorsCalled)
     {
       for(uint k = 0; k < parents.length; k++)
       {
-        Concept(parents[k]).getAssessors((num - j)/parents.length + 1, seed + now % k, assessment);
+        Concept(parents[k]).getAssessors((num - numberOfAssessorsCalled)/parents.length + 1, seed + now % k, assessment);
       }
     }
   }
