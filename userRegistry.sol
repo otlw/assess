@@ -88,7 +88,7 @@ contract UserRegistry
   @param: uint balance = the new token balance for the user
   @returns: nothing
   */
-  function mapBalance(address user, uint newBalance) onlyConcept()
+  function setBalance(address user, uint newBalance) onlyConcept()
   {
     balance[user] = newBalance; //sets the token balance of the user
   }

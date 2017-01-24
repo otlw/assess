@@ -295,7 +295,7 @@ contract Concept
   {
     if(assessmentExists[msg.sender] == true) //Checks if msg.sender is an existing assessment
     {
-      UserRegistry(userRegistry).mapBalance(user, amount); //Changes the user's token balance
+      UserRegistry(userRegistry).setBalance(user, amount); //Changes the user's token balance
     }
   }
 
