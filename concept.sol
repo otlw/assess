@@ -54,9 +54,9 @@ contract Concept
     _;
   }
 
-  modifier onlyAssessmentConcept()
+  modifier isAssessmentOrConcept()
   {
-    if(assessmentExists[msg.sender] !=true && ConceptRegistry(conceptRegistry).conceptExists(msg.sender) != true)
+    if(!(assessmentExists[msg.sender] || ConceptRegistry(conceptRegistry).conceptExists(msg.sender)))
     {
       throw;
     }
@@ -169,13 +169,13 @@ contract Concept
     children.push(_child);
   }
 
-  function getAssessors(uint num, uint seed, address assessment) onlyAssessmentConcept
+  function getAssessors(uint num, uint seed, address assessment) isAssessmentOrConcept
   {
     uint j = 0;
     for(uint i = 0; i < owners.length; i++)
     {
       address randomUser = owners[Math(math).getRandom(seed + i, owners.length-1)]; //gets a random owner of the concept
-      if(User(randomUser).availability() == true && weights[randomUser] > now%maxWeight) //Checks if the randomly drawn is available and then puts it through a random check that it has a higher chance of passing if it has had a higher score and a larger assessment
+      if(User(randomUser).availability() && weights[randomUser] > now % maxWeight) //Checks if the randomly drawn is available and then puts it through a random check that it has a higher chance of passing if it has had a higher score and a larger assessment
       {
         Assessment(assessment).addAssessorToPool(randomUser);
         j++;
@@ -189,7 +189,7 @@ contract Concept
     {
       for(uint k = 0; k < parents.length; k++)
       {
-        Concept(parents[k]).getAssessors((num - j)/parents.length + 1, seed + now%k, assessment);
+        Concept(parents[k]).getAssessors((num - j)/parents.length + 1, seed + now % k, assessment);
       }
     }
   }
@@ -227,7 +227,7 @@ contract Concept
   {
     if(block.number - Assessment(assessment).startTime() <= 10) //Checks if this function is being called 4 to 6 blocks after the block in which the assessment was created
     {
-      Assessment(assessment).setAssessorPool(block.number); //Calls thge function to set the assessor pool
+      Assessment(assessment).setAssessorPool(block.number); //Calls the function to set the assessor pool
     }
     else
     {
@@ -291,7 +291,7 @@ contract Concept
   */
   function setBalance(address user, uint amount)
   {
-    if(assessmentExists[msg.sender] = true) //Checks if msg.sender is an existing assessment
+    if(assessmentExists[msg.sender] == true) //Checks if msg.sender is an existing assessment
     {
       UserRegistry(userRegistry).mapBalance(user, amount); //Changes the user's token balance
     }

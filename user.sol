@@ -24,7 +24,6 @@ contract User
   struct Approval
   {
     bool approved;
-
     uint value; //fix stakes pls
   }
 
@@ -198,7 +197,7 @@ contract User
 
   function extMakeAssessment(address concept, uint time, uint size) returns(bool)
   {
-    if(assessApproved[msg.sender].approved = false)
+    if(assessApproved[msg.sender].approved == false)
     {
       return false;
     }

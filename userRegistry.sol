@@ -12,8 +12,8 @@ import "conceptRegistry.sol";
 contract UserRegistry
 {
   address public conceptRegistry; //The address of the conceptRegistry contract
-  mapping (address => uint)  balance; //Maps the addresses of users to their token balances
-  mapping (address => address)  users; //Maps the addresses of the users to their account
+  mapping (address => uint) balance; //Maps the addresses of users to their token balances
+  mapping (address => address) users; //Maps the addresses of the users to their account
   bool firstUserMade = false; //Keeps track of whether or not the first user has been made yet
   event UserCreation(address _userAddress); //address of the created user contract
 
