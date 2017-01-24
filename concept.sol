@@ -227,7 +227,8 @@ contract Concept
   */
   function startAssessment(address assessment)
   {
-    if(block.number - Assessment(assessment).startTime() <= 10) //Checks if this function is being called 4 to 6 blocks after the block in which the assessment was created
+    if((block.number - Assessment(assessment).startTime()) <= 10 && 
+       (block.number - Assessment(assessment).startTime()) >= 1) //Checks if this function is being called 4 to 6 blocks after the block in which the assessment was created
     {
       Assessment(assessment).setAssessorPool(block.number); //Calls the function to set the assessor pool
     }
