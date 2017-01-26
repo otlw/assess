@@ -22,7 +22,6 @@ contract Concept
   address math = 0x90B66E80448eb60938FAed4A738dE0D5b630B2Fd;
   address mew;
   mapping (address => int) public currentScores; //The most recent score of a user
-  mapping (address => uint) public assessmentSizes; //The most recent size of an assessment taken by a user
   mapping (address => bool) public assessmentExists; //All existing assessments
   mapping (address => uint) public weights; //The weighting used by the assessor selection algorhitm for each owner
 
@@ -227,7 +226,7 @@ contract Concept
   */
   function startAssessment(address assessment)
   {
-    if((block.number - Assessment(assessment).startTime()) <= 10 && 
+    if((block.number - Assessment(assessment).startTime()) <= 10 &&
        (block.number - Assessment(assessment).startTime()) >= 1) //Checks if this function is being called 4 to 6 blocks after the block in which the assessment was created
     {
       Assessment(assessment).setAssessorPool(block.number); //Calls the function to set the assessor pool
@@ -259,7 +258,6 @@ contract Concept
       }
       User(assessee).mapHistory(assessment); //Maps the assessee to the assessment in the user master as part of the assessee's history
       currentScores[assessee] = score; //Maps the assessee to their score
-      assessmentSizes[assessee] = Assessment(assessment).size(); //Maps the assessee to the assessment size
       CompletedAssessment(assessee, score, assessment); //Makes an event with this assessment's data
     }
   }
