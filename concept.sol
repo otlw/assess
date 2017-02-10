@@ -181,10 +181,12 @@ contract Concept
           numberOfAssessorsCalled++; //If the assesor was succesfully added, then the number of assessors called increases by one
         }
       }
+      /* PROBABLY NOT NEEDED
       if(numberOfAssessorsCalled > owners.length/10)
       {
         break; //If more than 10% of the owners of this concept have been called, then no more assessors are called from it
       }
+      */
     }
     if(num > numberOfAssessorsCalled)
     {
