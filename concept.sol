@@ -168,29 +168,29 @@ contract Concept
     children.push(_child);
   }
 
-  function getAssessors(uint num, uint seed, address assessment) isAssessmentOrConcept()
+  function getAssessors(uint num, uint seed, address assessment) isAssessmentOrConcept() //Obtains potential assessors for an assessment
   {
-    uint numberOfAssessorsCalled = 0;
-    for(uint i = 0; i < owners.length; i++)
+    uint numberOfAssessorsCalled = 0; //Initializes a variable to keep track off the number of assessors who have been called
+    for(uint i = 0; i < owners.length; i++) //Loops through all the owners of this concept
     {
       address randomUser = owners[Math(math).getRandom(seed + i, owners.length-1)]; //gets a random owner of the concept
       if(User(randomUser).availability() && weights[randomUser] > now % maxWeight) //Checks if the randomly drawn is available and then puts it through a random check that it has a higher chance of passing if it has had a higher score and a larger assessment
       {
-        if(Assessment(assessment).addAssessorToPool(randomUser))
+        if(Assessment(assessment).addAssessorToPool(randomUser)) //Attempts to add the random owner as an assessor in the assessment
         {
-          numberOfAssessorsCalled++;
+          numberOfAssessorsCalled++; //If the assesor was succesfully added, then the number of assessors called increases by one
         }
       }
       if(numberOfAssessorsCalled > owners.length/10)
       {
-        break;
+        break; //If more than 10% of the owners of this concept have been called, then no more assessors are called from it
       }
     }
     if(num > numberOfAssessorsCalled)
     {
       for(uint k = 0; k < parents.length; k++)
       {
-        Concept(parents[k]).getAssessors((num - numberOfAssessorsCalled)/parents.length + 1, seed + now % k, assessment);
+        Concept(parents[k]).getAssessors((num - numberOfAssessorsCalled)/parents.length + 1, seed + now % k, assessment); //Requests the parent concepts of this concept to provide the remaining assessors
       }
     }
   }
@@ -202,7 +202,7 @@ contract Concept
   @param: uint size = the size of the assessment
   @returns: nothing
   */
-  function makeAssessment(uint cost, uint size) returns(bool)
+  function makeAssessment(uint cost, uint size) returns(bool) //NOTE: The startAssessment function should automatically be called by the front end a random number of blocks between 1 and 10 after calling this function
   {
     if(size >= 5 && UserRegistry(userRegistry).balances(msg.sender) >= cost*size) //Checks if the assessment has a size of at least 5
     {
@@ -224,7 +224,7 @@ contract Concept
   @param: address assessment = the address of the assessment
   @returns: nothing
   */
-  function startAssessment(address assessment)
+  function startAssessment(address assessment) //NOTE: The front end should automatically call this function a random number of blocks between 1 and 10 after the makeAssessment function
   {
     if((block.number - Assessment(assessment).startTime()) <= 10 &&
        (block.number - Assessment(assessment).startTime()) >= 1) //Checks if this function is being called 4 to 6 blocks after the block in which the assessment was created
