@@ -250,6 +250,7 @@ contract Assessment
           Concept(concept).setBalance(msg.sender,UserRegistry(userRegistry).balances(msg.sender) + stake[assessor]); //The user that called this function gets the assessor's stake
           stake[assessor] = 0;
           assessorState[assessor] = State.Burned; //The assessor's state is set to Burned
+          done++; //done increases by 1 to help progress to the next assessment stage
         }
       }
       else if(msg.sender == assessor) //If the stake was wrong and was provided by the assessor in the parameter
