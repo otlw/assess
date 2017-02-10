@@ -17,7 +17,6 @@ contract Assessment
     Called, //Been called as a potential assessor
     Confirmed, //Confirmed as assessing
     Committed, //Committed a score
-    Submitted,
     Done, //Completed the assessment processs
     Burned //Entire stake has been burned
   }
