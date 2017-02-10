@@ -204,7 +204,7 @@ contract Concept
   @param: uint size = the size of the assessment
   @returns: nothing
   */
-  function makeAssessment(uint cost, uint size) returns(bool) //NOTE: The startAssessment function should automatically be called by the front end a random number of blocks between 1 and 10 after calling this function
+  function makeAssessment(uint cost, uint size) returns(bool)
   {
     if(size >= 5 && UserRegistry(userRegistry).balances(msg.sender) >= cost*size) //Checks if the assessment has a size of at least 5
     {
@@ -212,30 +212,12 @@ contract Concept
       assessmentExists[address(newAssessment)] = true; //Sets the assessment's existance to true
       setBalance(msg.sender, UserRegistry(userRegistry).balances(msg.sender) - cost*size);
       User(msg.sender).notification(address(this), 19); //You have been charged for your assessment
+      newAssessment.setAssessorPool(block.number); //Calls the function to set the assessor pool
       return true;
     }
     else
     {
       return false;
-    }
-  }
-
-  /*
-  @type: function
-  @purpose: To start the assessment process
-  @param: address assessment = the address of the assessment
-  @returns: nothing
-  */
-  function startAssessment(address assessment) //NOTE: The front end should automatically call this function a random number of blocks between 1 and 10 after the makeAssessment function
-  {
-    if((block.number - Assessment(assessment).startTime()) <= 10 &&
-       (block.number - Assessment(assessment).startTime()) >= 1) //Checks if this function is being called 4 to 6 blocks after the block in which the assessment was created
-    {
-      Assessment(assessment).setAssessorPool(block.number); //Calls the function to set the assessor pool
-    }
-    else
-    {
-      Assessment(assessment).cancelAssessment(); //If this function is called too early or too late the assessment is cancelled
     }
   }
 
