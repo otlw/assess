@@ -1,7 +1,6 @@
 pragma solidity ^0.4.0;
 
-import "concept.sol";
-import "assessment.sol";
+import "./Concept.sol";
 
 /*
 @type: contract

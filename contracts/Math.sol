@@ -6,7 +6,7 @@ pragma solidity ^0.4.0;
 @purpose: To provide a library of math functions
 */
 
-contract Math
+library Math
 {
   /*
   @type: function

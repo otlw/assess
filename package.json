@@ -1,0 +1,19 @@
+{
+  "name": "truffle-fathom",
+  "version": "1.0.0",
+  "description": "a decentralized learning network",
+  "main": "./app/app.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "compile" "truffle compile"
+    "test": "truffle test"
+  },
+  "author": "Jared Pereira",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "truffle-contract": "^1.1.10"
+  }
+}

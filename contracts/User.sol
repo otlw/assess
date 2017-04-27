@@ -1,9 +1,9 @@
 pragma solidity ^0.4.0;
 
-import "userRegistry.sol";
-import "concept.sol";
-import "assessment.sol";
-import "conceptRegistry.sol";
+import "./abstract/AbstractUserRegistry.sol";
+import "./Concept.sol";
+import "./Assessment.sol";
+import "./ConceptRegistry.sol";
 
 /*
 @type: contract
@@ -170,7 +170,7 @@ contract User
 
   function transferTokens(address user, uint amount) onlyUser() returns(bool)
   {
-    return UserRegistry(userRegistry).transfer(user,amount);
+    return AbstractUserRegistry(userRegistry).transfer(user,amount);
   }
 
   function extTransferTokens(address user, uint amount) returns(bool)
@@ -186,7 +186,7 @@ contract User
     else
     {
       transactApproved[msg.sender].value -= amount;
-      return UserRegistry(userRegistry).transfer(user,amount);
+      return AbstractUserRegistry(userRegistry).transfer(user,amount);
     }
   }
 

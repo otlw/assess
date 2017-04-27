@@ -1,10 +1,9 @@
 pragma solidity ^0.4.0;
 
-import "userRegistry.sol";
-import "assessment.sol";
-import "user.sol";
-import "math.sol";
-import "conceptRegistry.sol";
+import "./abstract/AbstractUserRegistry.sol";
+import "./abstract/AbstractUser.sol";
+import "./Assessment.sol";
+import "./Math.sol";
 
 /*
 @type: contract
@@ -19,7 +18,6 @@ contract Concept
   address conceptRegistry; //The address of the conceptRegistry contract
   uint public maxWeight; //The current highest weight for this assessment
   address[] public owners; //Those who have earned the concept
-  address math = 0x90B66E80448eb60938FAed4A738dE0D5b630B2Fd;
   address mew;
   mapping (address => int) public currentScores; //The most recent score of a user
   mapping (address => bool) public assessmentExists; //All existing assessments
@@ -49,15 +47,6 @@ contract Concept
     if(msg.sender != conceptRegistry) //checks if msg.sender has the same address as conceptRegistry
     {
       throw; //throws the function call if not
-    }
-    _;
-  }
-
-  modifier isAssessmentOrConcept()
-  {
-    if(!(assessmentExists[msg.sender] || ConceptRegistry(conceptRegistry).conceptExists(msg.sender)))
-    {
-      throw;
     }
     _;
   }
@@ -167,36 +156,17 @@ contract Concept
   {
     children.push(_child);
   }
-
-  function getAssessors(uint num, uint seed, address assessment) isAssessmentOrConcept() //Obtains potential assessors for an assessment
+  
+  function getRandomMember(uint seed) returns(address)
   {
-    uint numberOfAssessorsCalled = 0; //Initializes a variable to keep track off the number of assessors who have been called
-    for(uint i = 0; i < owners.length; i++) //Loops through all the owners of this concept
-    {
-      address randomUser = owners[Math(math).getRandom(seed + i, owners.length-1)]; //gets a random owner of the concept
-      if(User(randomUser).availability() && weights[randomUser] > now % maxWeight) //Checks if the randomly drawn is available and then puts it through a random check that it has a higher chance of passing if it has had a higher score and a larger assessment
-      {
-        if(Assessment(assessment).addAssessorToPool(randomUser)) //Attempts to add the random owner as an assessor in the assessment
-        {
-          numberOfAssessorsCalled++; //If the assesor was succesfully added, then the number of assessors called increases by one
-        }
-      }
-      /* PROBABLY NOT NEEDED
-      if(numberOfAssessorsCalled > owners.length/10)
-      {
-        break; //If more than 10% of the owners of this concept have been called, then no more assessors are called from it
-      }
-      */
-    }
-    if(num > numberOfAssessorsCalled)
-    {
-      for(uint k = 0; k < parents.length; k++)
-      {
-        Concept(parents[k]).getAssessors((num - numberOfAssessorsCalled)/parents.length + 1, seed + now % k, assessment); //Requests the parent concepts of this concept to provide the remaining assessors
-      }
-    }
+    address randomUser = owners[Math.getRandom(seed, owners.length-1)];
+    if(AbstractUser(randomUser).availability() && weights[randomUser] > now % maxWeight)
+     {
+        return randomUser;
+     }
+    return address(0x0);
   }
-
+  
   /*
   @type: function
   @purpose: To make a new assessment
@@ -206,13 +176,13 @@ contract Concept
   */
   function makeAssessment(uint cost, uint size) returns(bool)
   {
-    if(size >= 5 && UserRegistry(userRegistry).balances(msg.sender) >= cost*size) //Checks if the assessment has a size of at least 5
+    if(size >= 5 && AbstractUserRegistry(userRegistry).balances(msg.sender) >= cost*size) //Checks if the assessment has a size of at least 5
     {
       Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost); //Makes a new assessment with the given parameters
       assessmentExists[address(newAssessment)] = true; //Sets the assessment's existance to true
-      setBalance(msg.sender, UserRegistry(userRegistry).balances(msg.sender) - cost*size);
-      User(msg.sender).notification(address(this), 19); //You have been charged for your assessment
-      newAssessment.setAssessorPool(block.number); //Calls the function to set the assessor pool
+      setBalance(msg.sender, AbstractUserRegistry(userRegistry).balances(msg.sender) - cost*size);
+      AbstractUser(msg.sender).notification(address(this), 19); //You have been charged for your assessment
+      newAssessment.setAssessorPool(block.number, address(this), size*20); //Calls the function to set the assessor pool
       return true;
     }
     else
@@ -238,9 +208,9 @@ contract Concept
         owners.push(assessee); //Makes the assessee an owner of this concept
         uint weight = Assessment(assessment).size()*uint(score);
         addOwner(assessee, weight);
-        User(assessee).setConceptPassed(true);
+        AbstractUser(assessee).setConceptPassed(true);
       }
-      User(assessee).mapHistory(assessment); //Maps the assessee to the assessment in the user master as part of the assessee's history
+      AbstractUser(assessee).mapHistory(assessment); //Maps the assessee to the assessment in the user master as part of the assessee's history
       currentScores[assessee] = score; //Maps the assessee to their score
       CompletedAssessment(assessee, score, assessment); //Makes an event with this assessment's data
     }
@@ -278,7 +248,7 @@ contract Concept
   {
     if(assessmentExists[msg.sender] || msg.sender == address(this)) //Checks if msg.sender is an existing assessment
     {
-      UserRegistry(userRegistry).setBalance(user, amount); //Changes the user's token balance
+      AbstractUserRegistry(userRegistry).setBalance(user, amount); //Changes the user's token balance
     }
   }
 
