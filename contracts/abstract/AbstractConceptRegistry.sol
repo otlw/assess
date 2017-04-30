@@ -6,12 +6,14 @@ pragma solidity ^0.4.0;
 */
 contract AbstractConceptRegistry
 {
-  
   function init(address _userRegistry, address mew)
   {
   }
-  
+
   function makeConcept(address[] parentList)
+  {
+  }
+  function mew() returns(address)
   {
   }
 }
