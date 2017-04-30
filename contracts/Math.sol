@@ -6,8 +6,7 @@ pragma solidity ^0.4.0;
 @purpose: To provide a library of math functions
 */
 
-library Math
-{
+library Math {
   /*
   @type: function
   @name: getRandom
@@ -16,8 +15,7 @@ library Math
   @param: uint max = the max for the range of random numbers that can be made
   @returns: The random number
   */
-  function getRandom(uint seed, uint max) constant returns(uint) //Based on the original function written by github user alexvandesande
-  {
+  function getRandom(uint seed, uint max) constant returns(uint) { //Based on the function by alexvandesande
     return(uint(sha3(block.blockhash(block.number-1), seed))%(max+1)); //Hashes the seed number with the last blockhash to generate a random number and shifts it into the desired range by using a modulus
   }
 
@@ -30,31 +28,26 @@ library Math
   @param: uint min = the min for the range of random numbers that can be made
   @returns: The random number
   */
-  function getRandom(uint seed, uint min, uint max) constant returns(uint) //Based on the original function written by github user alexvandesande
-  {
+  function getRandom(uint seed, uint min, uint max) constant returns(uint) {
     return(uint(sha3(block.blockhash(block.number-1), seed))%(max-min+1) + min); //Hashes the seed number with the last blockhash to generate a random number and shifts it into the desired range by using a modulus and addition
   }
 
-  function calculateMAD(int[] data, int n) constant returns(int)
-  {
+  function calculateMAD(int[] data, int n) constant returns(int) {
     int mean;
     int totalRelativeDistance;
     int meanAbsoluteDeviation;
-    for(uint j = 0; j < data.length; j++)
-    {
+    for(uint j = 0; j < data.length; j++) {
       mean += data[j];
     }
     mean /= n;
-    for(uint k = 0; k < data.length; k++)
-    {
+    for(uint k = 0; k < data.length; k++) {
       int distanceFromMean = data[k] - mean;
-      if(distanceFromMean < 0)
-      {
+      if(distanceFromMean < 0) {
         distanceFromMean *= -1;
       }
       totalRelativeDistance += distanceFromMean;
     }
     meanAbsoluteDeviation = totalRelativeDistance/n;
     return meanAbsoluteDeviation;
-    }
+  }
 }

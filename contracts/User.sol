@@ -10,8 +10,7 @@ import "./ConceptRegistry.sol";
 @name: User
 @purpose: To act as a representation for a user in the system
 */
-contract User
-{
+contract User {
   address user; //The address of the user's wallet
   address userRegistry; //The address of the userRegistry that spawned this user
   address conceptRegistry; //The address of the conceptRegistry
@@ -21,8 +20,7 @@ contract User
   mapping (address => bool) public conceptPassed;
   mapping (address => Approval) transactApproved;
   mapping (address => Approval) assessApproved;
-  struct Approval
-  {
+  struct Approval {
     bool approved;
     uint value; //fix stakes pls
   }
@@ -32,8 +30,7 @@ contract User
   @name: onlyUser
   @purpose: to only allow the user's wallet contract to call a function to which this modifier is applied
   */
-  modifier onlyUser()
-  {
+  modifier onlyUser() {
     if(msg.sender != user) //checks if msg.sender has the same address as the user's wallet
     {
       throw; //throws the function call if not
@@ -41,8 +38,7 @@ contract User
     _;
   }
 
-  modifier onlyConcept()
-  {
+  modifier onlyConcept() {
     if(ConceptRegistry(conceptRegistry).conceptExists(msg.sender) == false)
     {
       throw;
@@ -74,8 +70,7 @@ contract User
   @param: address userRegistryAddress = the address of the userRegistry that spawned this user
   @returns: nothing
   */
-  function User(address _user, address _userRegistry, address _conceptRegistry)
-  {
+  function User(address _user, address _userRegistry, address _conceptRegistry) {
     user = _user; //Sets the user variable
     userRegistry = _userRegistry; //Sets the userRegistry variable
     conceptRegistry = _conceptRegistry; //Sets the conceptRegistry variable
@@ -87,13 +82,11 @@ contract User
   @param: bool available = the availability of the user
   @returns: nothing
   */
-  function setAvailability(bool _availability) onlyUser()
-  {
+  function setAvailability(bool _availability) onlyUser() {
     availability = _availability;
   }
 
-  function mapHistory(address assessment) onlyConcept()
-  {
+  function mapHistory(address assessment) onlyConcept() {
     history.push(assessment); //adds the address of the concept to the end of the array that is mapped to the user
   }
 
@@ -104,8 +97,7 @@ contract User
   @param: uint confirm = The user's confirmation code
   @returns: nothing
   */
-  function confirmAssessment(address assessment) onlyUser()
-  {
+  function confirmAssessment(address assessment) onlyUser() {
     Assessment(assessment).confirmAssessor(); //Sends the user's confromation to the assessmnet
   }
 
@@ -116,8 +108,7 @@ contract User
   @param: string data = the IPFS hash
   @returns: nothing
   */
-  function setAssessmentData(address assessment, string data) onlyUser()
-  {
+  function setAssessmentData(address assessment, string data) onlyUser() {
     Assessment(assessment).setData(data); //Gives the assessment the IPFS hash
   }
 
@@ -127,8 +118,7 @@ contract User
   @param: address assessment =  The assessment that the user has been called to assess
   @returns: nothing
   */
-  function commit(address assessment, bytes32 hash) onlyUser()
-  {
+  function commit(address assessment, bytes32 hash) onlyUser() {
     Assessment(assessment).commit(hash); //Sets the user as done assessing in the assessment
   }
 
@@ -139,8 +129,7 @@ contract User
   @param: uint score = the score that the user decided on
   @returns: nothing
   */
-  function reveal(address assessment, int8 score, bytes16 salt, address assessor) onlyUser()
-  {
+  function reveal(address assessment, int8 score, bytes16 salt, address assessor) onlyUser() {
     Assessment(assessment).reveal(score,salt,assessor); //Sends to score to the assessment
   }
 
@@ -152,8 +141,7 @@ contract User
   @param: uint code = the address of the concept involved in this notification
   @returns: nothing
   */
-  function notification(address concept, uint code)
-  {
+  function notification(address concept, uint code) {
     Notification(msg.sender, address(this), concept, code);
   }
 
@@ -163,50 +151,39 @@ contract User
   @param: string hash = IPFS hash containing the user information
   @returns: nothing
   */
-  function setUserData(string hash) onlyUser()
-  {
+  function setUserData(string hash) onlyUser() {
     userData = hash; //Sets userData to the hash value
   }
 
-  function transferTokens(address user, uint amount) onlyUser() returns(bool)
-  {
+  function transferTokens(address user, uint amount) onlyUser() returns(bool) {
     return AbstractUserRegistry(userRegistry).transfer(user,amount);
   }
 
-  function extTransferTokens(address user, uint amount) returns(bool)
-  {
-    if(transactApproved[msg.sender].approved = false)
-    {
+  function extTransferTokens(address user, uint amount) returns(bool) {
+    if(transactApproved[msg.sender].approved = false) {
       return false;
     }
-    else if(transactApproved[msg.sender].value > amount)
-    {
+    else if(transactApproved[msg.sender].value > amount) {
       return false;
     }
-    else
-    {
+    else {
       transactApproved[msg.sender].value -= amount;
       return AbstractUserRegistry(userRegistry).transfer(user,amount);
     }
   }
 
-  function setConceptPassed(bool passed) onlyConcept()
-  {
+  function setConceptPassed(bool passed) onlyConcept() {
     conceptPassed[msg.sender] = passed;
   }
 
-  function extMakeAssessment(address concept, uint cost, uint size) returns(bool)
-  {
-    if(assessApproved[msg.sender].approved == false)
-    {
+  function extMakeAssessment(address concept, uint cost, uint size) returns(bool) {
+    if(assessApproved[msg.sender].approved == false) {
       return false;
     }
-    else if(assessApproved[msg.sender].value > cost*size)
-    {
+    else if(assessApproved[msg.sender].value > cost*size) {
       return false;
     }
-    else
-    {
+    else {
       assessApproved[msg.sender].value -= cost*size;
       return Concept(concept).makeAssessment(cost, size);
     }
