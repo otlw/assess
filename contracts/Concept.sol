@@ -22,11 +22,6 @@ contract Concept {
   mapping (address => bool) public assessmentExists; //All existing assessments
   mapping (address => uint) public weights; //The weighting used by the assessor selection algorhitm for each owner
 
-  /*
-  @type: modifier
-  @name: onlyUserRegistry
-  @purpose: to only allow the UserRegistry contract to call a function to which this modifier is applied
-  */
   modifier onlyUserRegistry() {
     if(msg.sender != userRegistry) //checks if msg.sender has the same address as userRegistry
     {
@@ -35,11 +30,6 @@ contract Concept {
     _;
   }
 
-  /*
-  @type: modifier
-  @name: onlyConceptRegistry
-  @purpose: to only allow the ConceptRegistry contract to call a function to which this modifier is applied
-  */
   modifier onlyConceptRegistry() {
     if(msg.sender != conceptRegistry) //checks if msg.sender has the same address as conceptRegistry
     {
@@ -48,11 +38,6 @@ contract Concept {
     _;
   }
 
-  /*
-  @type: modifier
-  @name: onlyThis
-  @purpose: to only allow the this contract to call a function to which this modifier is applied
-  */
   modifier onlyThis() {
     if(msg.sender != address(this)) {//Checks if msg.sender is this contract
       throw; //Throws out the function call if it isn't
@@ -69,79 +54,43 @@ contract Concept {
     address _assessee, //The address of the user who took the assessment
     int _score, //The score of the assessee
     address _assessment
-  ); //The address of the assessment
+  );
 
-  /*
-  @type: constructor function
-  @purpose: To initialize the Concept contract
-  @param: string conceptName = the name of the conceptName
-  @param: address[] parents = the addresses of the concept's parents
-  @param: address userRegistryAddress = the address of the UserRegistry contract
-  @param: address conceptRegistry = the address of the ConceptRegistry that spawned this user
-  @returns: nothing
-  */
   function Concept(address[] _parents, address _userRegistry, address _conceptRegistry) {
-    parents = _parents; //sets the  parents array
-    userRegistry = _userRegistry; //sets the userRegistry address
-    conceptRegistry = _conceptRegistry; //sets the conceptRegistry address
+    parents = _parents;
+    userRegistry = _userRegistry;
+    conceptRegistry = _conceptRegistry;
   }
 
-  /*
-  @type: function
-  @purpose: To get the number of owners of this concept
-  @returns: The number of users that own this concept in the form of an uint
-  */
   function getOwnerLength() constant returns(uint) {
     return owners.length;
   }
 
-  /*
-  @type: function
-  @purpose: To get the number of parents for this concept
-  @returns: The number of parents for this concept in the form of an uint
-  */
   function getParentsLength() constant returns(uint) {
     return parents.length;
   }
 
-  /*
-  @type: function
-  @purpose: To get the number of children of this concept
-  @returns: The number of children of this concept in the form of an uint
-  */
   function getChildrenLength() constant returns(uint) {
     return children.length;
   }
 
   /*
   @type: function
-  @purpose: To set the first user for this concept
+  @purpose: To add a user to the contract the first user for this concept
   @param: address firstUser = the address of the first user to own the concept
   @returns: nothing
   */
   function addUser(address user) onlyUserRegistry() {
     if(AbstractConceptRegistry(conceptRegistry).mew() == address(this))
     {
-      owners.push(user); //If there aren't then firstUser is made to be an owner of this concept
+      owners.push(user);
     }
   }
 
-  /*
-  @type: function
-  @purpose: To add a parent to the concept
-  @param: address parentAddress = the address of the new parent concept
-  @returns: nothing
-  */
   function addParent(address _parent) onlyConceptRegistry() {
     parents.push(_parent);
   }
 
-  /*
-  @type: function
-  @purpose: To add a child to the concept
-  @param: address childAddress = the address of the new child concept
-  @returns: nothing
-  */
   function addChild(address _child) onlyConceptRegistry() {
     children.push(_child);
   }
@@ -228,12 +177,6 @@ contract Concept {
     }
   }
 
-  /*
-  @type: function
-  @purpose: to remove this contract
-  @param: address receiver = the address of the wallet that will receive of the ether
-  @returns: nothing
-  */
   function remove(address reciever) onlyThis() {
     suicide(reciever);
   }

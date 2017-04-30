@@ -13,11 +13,6 @@ contract ConceptRegistry {
   bool initialized = false; //Keeps track of whether or not the function to set the userRegistry variable is locked yet or not
   address public mewAddress;
 
-  /*
-  @type: modifier
-  @name: onlyThis
-  @purpose: to only allow the this contract to call a function to which this modifier is applied
-  */
   modifier onlyThis() {
     if(msg.sender != address(this)) { //Checks if msg.sender is this contract
       throw; //Throws out the function call if it isn't
@@ -26,13 +21,8 @@ contract ConceptRegistry {
   }
 
   /*
-  @type: event
-  @name: ConceptCreation
   @occasion: When a concept is created
   @purpose: To help build a data store of concepts
-  @stores: string _conceptName
-  @stores: address _conceptAddress
-  @stores: address[] _parents
   */
   event ConceptCreation (address _concept); //the address of the concept that was created
 
@@ -51,11 +41,8 @@ contract ConceptRegistry {
   }
 
   /*
-  @type: function
   @purpose: To make a concept
-  @param: string name = the name of the concept to be made
   @param: address[] parentList = an array of addresses containing the addresses of the concepts parents
-  @returns: nothing
   */
   function makeConcept(address[] parentList) {
     Concept newConcept = new Concept(parentList, userRegistry, address(this)); //Makes a new concept with the provided data

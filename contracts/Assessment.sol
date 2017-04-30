@@ -53,20 +53,16 @@ contract Assessment {
   @purpose: to only allow the assessors and assessee to call a function to which this modifier is applied
   */
   modifier onlyAssessorAssessee() {
-    if(msg.sender != assessee && uint(assessorState[msg.sender]) == 0) {//Checks if msg.sender has the same address as either the assessee or an assessor
-      throw; //Throws the function call if not
+    if(msg.sender != assessee && uint(assessorState[msg.sender]) == 0) {
+      throw;
     }
     _;
   }
 
-  /*
-  @type: modifier
-  @name: onlyConceptAssessment
-  @purpose: to only allow the this contract or the Concept contract that spawned it to call a function to which this modifier is applied
-  */
+  // only allow the this contract or the Concept contract that spawned it
   modifier onlyConceptAssessment() {
-    if(msg.sender != address(this) && msg.sender != concept) {//Checks if msg.sender has the same address as this contract or the Concept that spawned it
-      throw; //Throws the function call if not
+    if(msg.sender != address(this) && msg.sender != concept) {
+      throw;
     }
     _;
   }
@@ -113,10 +109,8 @@ contract Assessment {
 
 
   /*
-  @type: function
   @purpose: To recursively set the pool to draw assessors from in the assessment
   @param: uint seed = the seed number for random number generation
-  @returns: nothing
   */
   function setAssessorPool(uint seed, address _concept, uint num) onlyConceptAssessment() {
     uint numCalled = 0;
@@ -161,11 +155,9 @@ contract Assessment {
   function setData(string _data) onlyAssessorAssessee() { //Allows the assessors and the assessee to publically add data for the purposes of the assessment
     data[msg.sender].push(_data); //Adds the data to an array corresponding to the user that uploaded it
     DataSet(msg.sender, data[msg.sender].length - 1); //Spawns an event that contains the address of the user who just uploaded data and the index number of this piece of data in their corresponding array
-    //NOTE: The front end should aggregrate these events and use them to build a data browser of sorts in the assessment area
   }
 
   function commit(bytes32 hash) { //Assessors should call this to commit a sha3 hash of their final score and a bytes16
-  //The front end should automatically hash the assessors submitted score with a random bytes16 and submit it to this function
     if(done > size/2) {//If more than half the assessors have committed their score hash
       for(uint i = 0; i < assessors.length; i++) {//Loops through all the assessors
         if(assessorState[assessors[i]] == State.Confirmed) {//Checks if the assessor has not committed  a score yet

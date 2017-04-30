@@ -16,11 +16,6 @@ contract UserRegistry {
   bool firstUserMade = false; //Keeps track of whether or not the first user has been made yet
   event UserCreation(address _userAddress); //address of the created user contract
 
-  /*
-  @type: modifier
-  @name: onlyConcept
-  @purpose: to only allow the Concept contract to call a function to which this modifier is applied
-  */
   modifier onlyConcept() {
     if(ConceptRegistry(conceptRegistry).conceptExists(msg.sender) == false) //checks if the address calling the function is not a concept
     {
@@ -29,27 +24,17 @@ contract UserRegistry {
     _;
   }
 
-  /*
-  @type: modifier
-  @name: onlyThis
-  @purpose: to only allow the this contract to call a function to which this modifier is applied
-  */
   modifier onlyThis() {
-    if(msg.sender != address(this)) //Checks if msg.sender is this contract
+    if(msg.sender != address(this)) 
     {
-      throw; //Throws out the function call if it isn't
+      throw; 
     }
     _;
   }
 
-  /*
-  @type: constructor function
-  @purpose: To initialize the userMaster contract
-  @param: address creator = the address of the creator contract
-  @returns: nothing
-  */
+  //Constructor
   function UserRegistry(address _conceptRegistry) {
-    conceptRegistry = _conceptRegistry; //Sets the address of the conceptRegistry contract
+    conceptRegistry = _conceptRegistry;
   }
 
   /*
@@ -96,12 +81,6 @@ contract UserRegistry {
     }
   }
 
-  /*
-  @type: function
-  @purpose: to remove this contract
-  @param: address receiver = the address of the wallet that will receive of the ether
-  @returns: nothing
-  */
   function remove(address reciever) onlyThis() {
     suicide(reciever);
   }

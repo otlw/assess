@@ -8,8 +8,6 @@ pragma solidity ^0.4.0;
 
 library Math {
   /*
-  @type: function
-  @name: getRandom
   @purpose: To generate a weak random number between 0 and the specified maximum
   @param: uint seed = seed number for the generation of a random number
   @param: uint max = the max for the range of random numbers that can be made
@@ -20,8 +18,6 @@ library Math {
   }
 
   /*
-  @type: function
-  @name: getRandom
   @purpose: To generate a weak random number between a specified minimum and the specified maximum
   @param: uint seed = seed number for the generation of a random number
   @param: uint max = the max for the range of random numbers that can be made
