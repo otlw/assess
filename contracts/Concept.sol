@@ -2,6 +2,7 @@ pragma solidity ^0.4.0;
 
 import "./abstract/AbstractUserRegistry.sol";
 import "./abstract/AbstractUser.sol";
+import "./abstract/AbstractConceptRegistry.sol";
 import "./Assessment.sol";
 import "./Math.sol";
 
@@ -18,7 +19,6 @@ contract Concept
   address conceptRegistry; //The address of the conceptRegistry contract
   uint public maxWeight; //The current highest weight for this assessment
   address[] public owners; //Those who have earned the concept
-  address mew;
   mapping (address => int) public currentScores; //The most recent score of a user
   mapping (address => bool) public assessmentExists; //All existing assessments
   mapping (address => uint) public weights; //The weighting used by the assessor selection algorhitm for each owner
@@ -129,7 +129,7 @@ contract Concept
   */
   function addUser(address user) onlyUserRegistry()
   {
-    if(mew == address(0x0))
+    if(AbstractConceptRegistry(conceptRegistry).mew() == address(this))
     {
       owners.push(user); //If there aren't then firstUser is made to be an owner of this concept
     }
