@@ -81,7 +81,7 @@ contract Concept {
   @returns: nothing
   */
   function addUser(address user) onlyUserRegistry() {
-    if(AbstractConceptRegistry(conceptRegistry).mew() == address(this))
+    if(AbstractConceptRegistry(conceptRegistry).mewAddress() == address(this))
     {
       owners.push(user);
     }

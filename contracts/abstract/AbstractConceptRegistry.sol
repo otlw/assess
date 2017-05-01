@@ -13,7 +13,7 @@ contract AbstractConceptRegistry
   function makeConcept(address[] parentList)
   {
   }
-  function mew() returns(address)
+  function mewAddress() returns(address)
   {
   }
 }
