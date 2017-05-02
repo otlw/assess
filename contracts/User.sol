@@ -62,56 +62,12 @@ contract User {
     availability = _availability;
   }
 
-  function mapHistory(address assessment) onlyConcept() {
-    history.push(assessment); 
-  }
-
-  function confirmAssessment(address assessment) onlyUser() {
-    Assessment(assessment).confirmAssessor(); 
-  }
-
-  /*
-  @type: function
-  @purpose: To send and IPFS hash to the assessment
-  @param: address assessment =  The assessment that the user has been called to assess
-  @param: string data = the IPFS hash
-  @returns: nothing
-  */
-  function setAssessmentData(address assessment, string data) onlyUser() {
-    Assessment(assessment).setData(data);
-  }
-
-  /*
-  @type: function
-  @purpose: To notify the assessment that the user is done assessing
-  @param: address assessment =  The assessment that the user has been called to assess
-  @returns: nothing
-  */
-  function commit(address assessment, bytes32 hash) onlyUser() {
-    Assessment(assessment).commit(hash); //Sets the user as done assessing in the assessment
-  }
-
-  /*
-  @type: function
-  @purpose: To send the score that the user has decided on to the assessment
-  @param: address assessment =  The assessment that the user has been called to assess
-  @param: uint score = the score that the user decided on
-  @returns: nothing
-  */
-  function reveal(address assessment, int8 score, bytes16 salt, address assessor) onlyUser() {
-    Assessment(assessment).reveal(score,salt,assessor); //Sends to score to the assessment
-  }
-
   function notification(address concept, uint code) {
     Notification(msg.sender, address(this), concept, code);
   }
 
   function setUserData(string hash) onlyUser() {
     userData = hash; //Sets userData to the hash value
-  }
-
-  function transferTokens(address user, uint amount) onlyUser() returns(bool) {
-    return AbstractUserRegistry(userRegistry).transfer(user,amount);
   }
 
   function extTransferTokens(address user, uint amount) returns(bool) {
@@ -127,7 +83,16 @@ contract User {
     }
   }
 
-  function setConceptPassed(bool passed) onlyConcept() {
+  function execute(address destination, uint value, bytes data) onlyUser() returns(bool) {
+    if(destination.call.value(value)(data)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  function setConceptPassed(bool passed) onlyConcept(){
     conceptPassed[msg.sender] = passed;
   }
 
