@@ -59,7 +59,7 @@ contract Concept {
   function Concept(address[] _parents, address _userRegistry, address _conceptRegistry) {
     parents = _parents;
     userRegistry = _userRegistry;
-    conceptRegistry = _conceptRegistry;
+    conceptRegistry = AbstractUserRegistry(userRegistry).conceptRegistry();
   }
 
   function getOwnerLength() constant returns(uint) {

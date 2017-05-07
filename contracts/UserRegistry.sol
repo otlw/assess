@@ -45,7 +45,7 @@ contract UserRegistry {
   @returns: nothing
   */
   function addUser(address userAddress) {
-    User newUser = new User(userAddress, address(this), conceptRegistry); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
+    User newUser = new User(userAddress, address(this)); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
     Concept(ConceptRegistry(conceptRegistry).mewAddress()).addUser(address(newUser));
     users[userAddress] = newUser;
     UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
@@ -53,7 +53,7 @@ contract UserRegistry {
 
   function firstUser(address userAddress) {
     if(firstUserMade == false) {
-      User newUser = new User(userAddress, address(this), conceptRegistry); //Makes a new user that represents the address from userAddress
+      User newUser = new User(userAddress, address(this)); //Makes a new user that represents the address from userAddress
       Concept(ConceptRegistry(conceptRegistry).mewAddress()).addUser(address(newUser));
       users[userAddress] = newUser;
       balances[newUser] = 1000;

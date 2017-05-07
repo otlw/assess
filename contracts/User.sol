@@ -52,10 +52,10 @@ contract User {
     5 = Send in Score
     */
 
-  function User(address _user, address _userRegistry, address _conceptRegistry) {
+  function User(address _user, address _userRegistry) {
     user = _user;
     userRegistry = _userRegistry;
-    conceptRegistry = _conceptRegistry;
+    conceptRegistry = AbstractUserRegistry(userRegistry).conceptRegistry();
   }
 
   function setAvailability(bool _availability) onlyUser() {

@@ -8,6 +8,10 @@ contract AbstractUserRegistry
   {
   }
 
+  function conceptRegistry() returns(address)
+  {
+  }
+
   function addUser(address userAddress)
   {
   }
@@ -17,7 +21,7 @@ contract AbstractUserRegistry
   }
 
 
-  function setBalance(address user, uint newBalance) 
+  function setBalance(address user, uint newBalance)
   {
   }
 
