@@ -11,6 +11,7 @@ contract Assessment {
   address[] assessors;
   address[] finalAssessors; //The assessors who actually give an assessment
   mapping (address => State) assessorState;
+  mapping(uint => int[]) clusters; //Initializes mapping to store clusters of scores
   enum State {//The state of the assessors
     Called, //Been called as a potential assessor
     Confirmed, //Confirmed as assessing
@@ -230,7 +231,6 @@ contract Assessment {
   }
 
   function calculateResult() onlyThis() {
-    mapping(uint => int[]) clusters; //Initializes mapping to store clusters of scores
     for(uint j = 0; j < size; j++) { //Loops through the assessors
       if(assessorState[assessors[i]] == State.Done) {
         finalAssessors.push(assessors[i]); //Adds all the assessors that completed the assessment process to an array
