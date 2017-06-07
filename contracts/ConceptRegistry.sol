@@ -25,11 +25,14 @@ contract ConceptRegistry {
   @param: address userRegistry = the address of the userRegistry contract
   @returns: nothing
   */
-  function init(address _userRegistry, address mew) {
+  function init(address _userRegistry, address mew) returns(bool){
     if(initialized == false) { //Checks if the function has already been called
       userRegistry = _userRegistry; //Sets the userRegistry address
       mewAddress = mew;
       initialized = true; //Makes it so this function cannot be called again
+    }
+    else {
+      return(false);
     }
   }
 
