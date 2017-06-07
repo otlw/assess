@@ -13,13 +13,6 @@ contract ConceptRegistry {
   bool initialized = false; //Keeps track of whether or not the function to set the userRegistry variable is locked yet or not
   address public mewAddress;
 
-  modifier onlyThis() {
-    if(msg.sender != address(this)) { //Checks if msg.sender is this contract
-      throw; //Throws out the function call if it isn't
-    }
-    _;
-  }
-
   /*
   @occasion: When a concept is created
   @purpose: To help build a data store of concepts
