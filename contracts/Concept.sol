@@ -111,10 +111,9 @@ contract Concept {
   @returns: nothing
   */
   function makeAssessment(uint cost, uint size) returns(bool) {
-    if(size >= 5 && UserRegistry(userRegistry).balances(msg.sender) >= cost*size) { //Checks if the assessment has a size of at least 5
+    if(size >= 5 && subtractBalance(msg.sender, cost*size)) { //Checks if the assessment has a size of at least 5
       Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost); //Makes a new assessment with the given parameters
       assessmentExists[address(newAssessment)] = true; //Sets the assessment's existance to true
-      setBalance(msg.sender, UserRegistry(userRegistry).balances(msg.sender) - cost*size);
       User(msg.sender).notification(address(this), 19); //You have been charged for your assessment
       newAssessment.setAssessorPool(block.number, address(this), size*20); //Calls the function to set the assessor pool
       return true;
@@ -164,15 +163,15 @@ contract Concept {
     }
   }
 
-  /*
-  @type: function
-  @purpose: To pay/charge a user for an assessment
-  @param: address user = the user to pay/charge
-  @param: int amount = the user's new token balance
-  */
-  function setBalance(address user, uint amount) {
+  function subtractBalance(address _from, uint _amount) returns(bool) {
     if(assessmentExists[msg.sender] || msg.sender == address(this)) { //Checks if msg.sender is an existing assessment
-      UserRegistry(userRegistry).setBalance(user, amount); //Changes the user's token balance
+      return UserRegistry(userRegistry).subtractBalance(_from, _amount);
+    }
+  }
+
+  function addBalance(address _to, uint _amount)  returns(bool) {
+    if(assessmentExists[msg.sender]) { //Checks if msg.sender is an existing assessment
+      return UserRegistry(userRegistry).addBalance(_to, _amount); //Changes the user's token balance
     }
   }
 
