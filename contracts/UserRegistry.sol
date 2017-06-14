@@ -61,21 +61,29 @@ contract UserRegistry {
     }
   }
 
-  /*
-  @type: function
-  @purpose: To set a new token balance for a user
-  @param: address user = the address of the user whose token balance is to be mapped
-  @param: uint balance = the new token balance for the user
-  @returns: nothing
-  */
-  function setBalance(address user, uint newBalance) onlyConcept() {
-    balances[user] = newBalance; //sets the token balance of the user
+  function addBalance(address _to, uint _amount) returns(bool) {
+    if(balances[_to] + _amount > balances[_to]){
+      balances[_to] += _amount;
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
-  function transfer(address user, uint amount) returns(bool) {
-    if(balances[msg.sender] > amount) {
-      balances[msg.sender] -= amount;
-      balances[user] += amount;
+  function subtractBalance(address _from, uint _amount) returns(bool) {
+    if(balances[_from] > _amount){
+      balances[_from] -= _amount;
+      return true;
+    }
+    return false;
+  }
+
+  function transfer(address _to, uint _amount) returns(bool) {
+    if(balances[msg.sender] > _amount &&
+       balances[_to] + _amount > balances[_to]) {
+      balances[msg.sender] -= _amount;
+      balances[_to] += _amount;
       return true;
     }
     else {

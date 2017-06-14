@@ -88,10 +88,10 @@ contract Assessment {
 
 
   function cancelAssessment() onlyConceptAssessment() {
-    Concept(concept).setBalance(assessee, UserRegistry(userRegistry).balances(assessee) + cost*size);
+    Concept(concept).addBalance(assessee, cost*size);
     User(assessee).notification(concept, 3); //Assessment Cancled and you have been refunded
     for(uint i = 0; i < assessors.length; i++) {
-      Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).balances(assessors[i]) + cost);
+      Concept(concept).addBalance(assessors[i], cost);
       User(assessors[i]).notification(concept, 3); //Assessment Cancled and you have been refunded
     }
     suicide(conceptRegistry);
@@ -131,11 +131,10 @@ contract Assessment {
   }
 
   function confirmAssessor() {
-    if(block.number - startTime <= 15 && assessorState[msg.sender] == State.Called && assessors.length < size && UserRegistry(userRegistry).balances(msg.sender) >= cost) { //Check if the time to confirm has not passed, that the assessor was actually called, assessors are still needed, and that the assessor has enough of a balance to pay the stake
+    if(block.number - startTime <= 15 && assessorState[msg.sender] == State.Called && assessors.length < size && Concept(concept).subtractBalance(msg.sender, cost)) { //Check if the time to confirm has not passed, that the assessor was actually called, assessors are still needed, and that the assessor has enough of a balance to pay the stake
       assessors.push(msg.sender); //Adds the user that called this function to the array of confirmed assessors
       assessorState[msg.sender] = State.Confirmed; //Sets the assessor's state to confirmed
       stake[msg.sender] = cost; //Sets the current stake value of the assessor to the cost of the assessment
-      Concept(concept).setBalance(msg.sender,UserRegistry(userRegistry).balances(msg.sender) - cost); //Takes the stake from the assessor
       User(msg.sender).notification(concept, 2); //Confirmed for assessing, stake has been taken
     }
     if(assessors.length == size) { //If enough assessors have been called
@@ -204,7 +203,7 @@ contract Assessment {
           done++; //done increases by 1 to help progress to the next assessment stage
         }
         else { //If it was correct and submitted by a user other than the assessor in the parameter
-          Concept(concept).setBalance(msg.sender,UserRegistry(userRegistry).balances(msg.sender) + stake[assessor]); //The user that called this function gets the assessor's stake
+          Concept(concept).addBalance(msg.sender, stake[assessor]); //The user that called this function gets the assessor's stake
           stake[assessor] = 0;
           assessorState[assessor] = State.Burned; //The assessor's state is set to Burned
           done++; //done increases by 1 to help progress to the next assessment stage
@@ -274,12 +273,12 @@ contract Assessment {
       if(inRewardCluster[score] == true) { //If the assessor's score was in the largest cluster
         uint q = 1; //Inflation rate factor, WE NEED TO FIGURE THIS OUT AT SOME POINT
         payoutValue = q*cost*((100 - uint(scoreDistance))/100); //The assessor's payout will be some constant times a propotion of their original stake determined by how close to the final score they were
-        Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).balances(assessors[i]) + payoutValue); //Pays the user
+        Concept(concept).addBalance(assessors[i], payoutValue); //Pays the user
         User(assessors[i]).notification(concept, 15); //You Have Received Payment For Your Assessment
       }
       if(inRewardCluster[score] == false) { //If the assessor's score wasn't in the largest cluster
         payoutValue = stake[assessors[i]]*((200 - uint(scoreDistance))/200); //The assessor's payout will be a propotion of their remaining stake determined by their distance from the final score
-        Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).balances(assessors[i]) + payoutValue); //Pays the user
+        Concept(concept).addBalance(assessors[i], payoutValue); //Pays the user
         User(assessors[i]).notification(concept, 16); //You Have Received Some of Your Stake Back For Your Assessment
       }
     Concept(concept).finishAssessment(finalScore, assessee, address(this)); //Sends assessment info to the concept so that it can update its records
