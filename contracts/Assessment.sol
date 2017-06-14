@@ -1,10 +1,10 @@
 pragma solidity ^0.4.0;
 
 import "./Math.sol";
-import "./abstract/AbstractConcept.sol";
-import "./abstract/AbstractConceptRegistry.sol";
-import "./abstract/AbstractUser.sol";
-import "./abstract/AbstractUserRegistry.sol";
+import "./Concept.sol";
+import "./ConceptRegistry.sol";
+import "./User.sol";
+import "./UserRegistry.sol";
 
 contract Assessment {
   address assessee; //The address of the user being assessed
@@ -83,23 +83,23 @@ contract Assessment {
     startTime = block.timestamp;
     size = _size;
     cost = _cost;
-    AbstractUser(assessee).notification(concept, 0); //Assessment made
+    User(assessee).notification(concept, 0); //Assessment made
   }
 
 
   function cancelAssessment() onlyConceptAssessment() {
-    AbstractConcept(concept).setBalance(assessee, AbstractUserRegistry(userRegistry).balances(assessee) + cost*size);
-    AbstractUser(assessee).notification(concept, 3); //Assessment Cancled and you have been refunded
+    Concept(concept).setBalance(assessee, UserRegistry(userRegistry).balances(assessee) + cost*size);
+    User(assessee).notification(concept, 3); //Assessment Cancled and you have been refunded
     for(uint i = 0; i < assessors.length; i++) {
-      AbstractConcept(concept).setBalance(assessors[i], AbstractUserRegistry(userRegistry).balances(assessors[i]) + cost);
-      AbstractUser(assessors[i]).notification(concept, 3); //Assessment Cancled and you have been refunded
+      Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).balances(assessors[i]) + cost);
+      User(assessors[i]).notification(concept, 3); //Assessment Cancled and you have been refunded
     }
     suicide(conceptRegistry);
   }
 
   function addAssessorToPool(address assessor) onlyConcept() returns(bool) {
     if(uint(assessorState[assessor]) == 0) {//Checks if the called assessor hasn't already been called
-      AbstractUser(assessor).notification(concept, 1); //Called As A Potential Assessor
+      User(assessor).notification(concept, 1); //Called As A Potential Assessor
       assessorState[assessor] = State.Called; //Sets the state of the assessor as called
       return true;
     }
@@ -117,26 +117,26 @@ contract Assessment {
     uint numCalled = 0;
     for(uint k=0; k < num; k++) {
       if(assessorPool.length == size*20){ return; }
-      address randomUser = AbstractConcept(_concept).getRandomMember(seed + k);
+      address randomUser = Concept(_concept).getRandomMember(seed + k);
       if(addAssessorToPool(randomUser)){
         numCalled++;
       }
     }
     uint remaining = num - numCalled;
     if(remaining > 0) {
-      for(uint i = 0; i < AbstractConcept(_concept).getParentsLength(); i++) {
-          setAssessorPool(seed + assessorPool.length, AbstractConcept(_concept).parents(i), remaining/AbstractConcept(_concept).getParentsLength() + 1);
+      for(uint i = 0; i < Concept(_concept).getParentsLength(); i++) {
+          setAssessorPool(seed + assessorPool.length, Concept(_concept).parents(i), remaining/Concept(_concept).getParentsLength() + 1);
       }
     }
   }
 
   function confirmAssessor() {
-    if(block.number - startTime <= 15 && assessorState[msg.sender] == State.Called && assessors.length < size && AbstractUserRegistry(userRegistry).balances(msg.sender) >= cost) { //Check if the time to confirm has not passed, that the assessor was actually called, assessors are still needed, and that the assessor has enough of a balance to pay the stake
+    if(block.number - startTime <= 15 && assessorState[msg.sender] == State.Called && assessors.length < size && UserRegistry(userRegistry).balances(msg.sender) >= cost) { //Check if the time to confirm has not passed, that the assessor was actually called, assessors are still needed, and that the assessor has enough of a balance to pay the stake
       assessors.push(msg.sender); //Adds the user that called this function to the array of confirmed assessors
       assessorState[msg.sender] = State.Confirmed; //Sets the assessor's state to confirmed
       stake[msg.sender] = cost; //Sets the current stake value of the assessor to the cost of the assessment
-      AbstractConcept(concept).setBalance(msg.sender,AbstractUserRegistry(userRegistry).balances(msg.sender) - cost); //Takes the stake from the assessor
-      AbstractUser(msg.sender).notification(concept, 2); //Confirmed for assessing, stake has been taken
+      Concept(concept).setBalance(msg.sender,UserRegistry(userRegistry).balances(msg.sender) - cost); //Takes the stake from the assessor
+      User(msg.sender).notification(concept, 2); //Confirmed for assessing, stake has been taken
     }
     if(assessors.length == size) { //If enough assessors have been called
       notifyStart(); //Assessors and the assessee are notified that the assessmentn has begun
@@ -148,9 +148,9 @@ contract Assessment {
 
   function notifyStart() onlyThis() { //Sends a notification to the assessors and the assessee informing them that the assessment has begun
     for(uint i = 0; i < assessors.length; i++) {
-      AbstractUser(assessors[i]).notification(concept, 4); //Assessment Has Started
+      User(assessors[i]).notification(concept, 4); //Assessment Has Started
     }
-    AbstractUser(assessee).notification(concept, 4); //Assessment Has Started
+    User(assessee).notification(concept, 4); //Assessment Has Started
   }
 
   function setData(string _data) onlyAssessorAssessee() { //Allows the assessors and the assessee to publically add data for the purposes of the assessment
@@ -174,7 +174,7 @@ contract Assessment {
     if(done == size) {//If all the assessors have either committed or had their entire stake burned
       for(uint j = 0; j < assessors.length; j++) { //Loops through all assessors
         if(assessorState[assessors[j]] == State.Committed) { //Sends a notification to all the assessors that have committed to reveal their score
-          AbstractUser(assessors[j]).notification(concept, 5); //Send in Score
+          User(assessors[j]).notification(concept, 5); //Send in Score
           //NOTE: The front end should receive this notification and then automatically call the reveal function
         }
       }
@@ -204,7 +204,7 @@ contract Assessment {
           done++; //done increases by 1 to help progress to the next assessment stage
         }
         else { //If it was correct and submitted by a user other than the assessor in the parameter
-          AbstractConcept(concept).setBalance(msg.sender,AbstractUserRegistry(userRegistry).balances(msg.sender) + stake[assessor]); //The user that called this function gets the assessor's stake
+          Concept(concept).setBalance(msg.sender,UserRegistry(userRegistry).balances(msg.sender) + stake[assessor]); //The user that called this function gets the assessor's stake
           stake[assessor] = 0;
           assessorState[assessor] = State.Burned; //The assessor's state is set to Burned
           done++; //done increases by 1 to help progress to the next assessment stage
@@ -260,10 +260,10 @@ contract Assessment {
     }
     averageScore /= int(clusters[largestClusterIndex].length); //Calculates the average score from the largest cluster
     finalScore = averageScore; //Sets the final score to the average score
-    payout(clusters[largestClusterIndex].length); //Initializes the payout sequence
+    payout(); //Initializes the payout sequence
   }
 
-  function payout(uint largestSize) onlyThis() {
+  function payout() onlyThis() {
     for(uint i = 0; i < size; i++) //Loops through all the confirmed assessors {
       int score = scores[assessors[i]]; //Gets the score of an assessor
       int scoreDistance = ((score - finalScore)*100)/finalScore; //Calculates the percent difference between the final score the assessors score
@@ -274,14 +274,14 @@ contract Assessment {
       if(inRewardCluster[score] == true) { //If the assessor's score was in the largest cluster
         uint q = 1; //Inflation rate factor, WE NEED TO FIGURE THIS OUT AT SOME POINT
         payoutValue = q*cost*((100 - uint(scoreDistance))/100); //The assessor's payout will be some constant times a propotion of their original stake determined by how close to the final score they were
-        AbstractConcept(concept).setBalance(assessors[i], AbstractUserRegistry(userRegistry).balances(assessors[i]) + payoutValue); //Pays the user
-        AbstractUser(assessors[i]).notification(concept, 15); //You Have Received Payment For Your Assessment
+        Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).balances(assessors[i]) + payoutValue); //Pays the user
+        User(assessors[i]).notification(concept, 15); //You Have Received Payment For Your Assessment
       }
       if(inRewardCluster[score] == false) { //If the assessor's score wasn't in the largest cluster
         payoutValue = stake[assessors[i]]*((200 - uint(scoreDistance))/200); //The assessor's payout will be a propotion of their remaining stake determined by their distance from the final score
-        AbstractConcept(concept).setBalance(assessors[i], AbstractUserRegistry(userRegistry).balances(assessors[i]) + payoutValue); //Pays the user
-        AbstractUser(assessors[i]).notification(concept, 16); //You Have Received Some of Your Stake Back For Your Assessment
+        Concept(concept).setBalance(assessors[i], UserRegistry(userRegistry).balances(assessors[i]) + payoutValue); //Pays the user
+        User(assessors[i]).notification(concept, 16); //You Have Received Some of Your Stake Back For Your Assessment
       }
-    AbstractConcept(concept).finishAssessment(finalScore, assessee, address(this)); //Sends assessment info to the concept so that it can update its records
+    Concept(concept).finishAssessment(finalScore, assessee, address(this)); //Sends assessment info to the concept so that it can update its records
   }
 }
