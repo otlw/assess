@@ -1,6 +1,6 @@
 pragma solidity ^0.4.0;
 
-import "./abstract/AbstractUserRegistry.sol";
+import "./UserRegistry.sol";
 import "./Concept.sol";
 import "./Assessment.sol";
 import "./ConceptRegistry.sol";
@@ -16,7 +16,6 @@ contract User {
   address conceptRegistry; //The address of the conceptRegistry
   string public userData; //An IPFS hash containing the user's data
   bool public availability;
-  address[] public history;
   mapping (address => bool) public conceptPassed;
   mapping (address => Approval) transactApproved;
   mapping (address => Approval) assessApproved;
@@ -27,7 +26,7 @@ contract User {
 
   modifier onlyUser() {
     if(msg.sender != user) {
-      throw; 
+      throw;
     }
     _;
   }
@@ -55,7 +54,7 @@ contract User {
   function User(address _user, address _userRegistry) {
     user = _user;
     userRegistry = _userRegistry;
-    conceptRegistry = AbstractUserRegistry(userRegistry).conceptRegistry();
+    conceptRegistry = UserRegistry(userRegistry).conceptRegistry();
   }
 
   function setAvailability(bool _availability) onlyUser() {
@@ -79,7 +78,7 @@ contract User {
     }
     else {
       transactApproved[msg.sender].value -= amount;
-      return AbstractUserRegistry(userRegistry).transfer(user,amount);
+      return UserRegistry(userRegistry).transfer(user,amount);
     }
   }
 

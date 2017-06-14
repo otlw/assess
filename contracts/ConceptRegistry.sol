@@ -41,7 +41,7 @@ contract ConceptRegistry {
   @param: address[] parentList = an array of addresses containing the addresses of the concepts parents
   */
   function makeConcept(address[] parentList) {
-    Concept newConcept = new Concept(parentList, userRegistry, address(this)); //Makes a new concept with the provided data
+    Concept newConcept = new Concept(parentList, userRegistry); //Makes a new concept with the provided data
     address newConceptAddress = address(newConcept); //initializes an address variable and sets it equal to the address of the newly created concept
     conceptExists[newConceptAddress] = true; //Maps the concept address to true to show that it exists
     if(parentList.length == 0) {

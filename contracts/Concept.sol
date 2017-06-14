@@ -1,8 +1,8 @@
 pragma solidity ^0.4.0;
 
-import "./abstract/AbstractUserRegistry.sol";
-import "./abstract/AbstractUser.sol";
-import "./abstract/AbstractConceptRegistry.sol";
+import "./UserRegistry.sol";
+import "./User.sol";
+import "./ConceptRegistry.sol";
 import "./Assessment.sol";
 import "./Math.sol";
 
@@ -56,10 +56,10 @@ contract Concept {
     address _assessment
   );
 
-  function Concept(address[] _parents, address _userRegistry, address _conceptRegistry) {
+  function Concept(address[] _parents, address _userRegistry) {
     parents = _parents;
     userRegistry = _userRegistry;
-    conceptRegistry = AbstractUserRegistry(userRegistry).conceptRegistry();
+    conceptRegistry = UserRegistry(userRegistry).conceptRegistry();
   }
 
   function getOwnerLength() constant returns(uint) {
@@ -81,7 +81,7 @@ contract Concept {
   @returns: nothing
   */
   function addUser(address user) onlyUserRegistry() {
-    if(AbstractConceptRegistry(conceptRegistry).mewAddress() == address(this))
+    if(ConceptRegistry(conceptRegistry).mewAddress() == address(this))
     {
       owners.push(user);
     }
@@ -97,7 +97,7 @@ contract Concept {
 
   function getRandomMember(uint seed) returns(address) {
     address randomUser = owners[Math.getRandom(seed, owners.length-1)];
-    if(AbstractUser(randomUser).availability() && weights[randomUser] > now % maxWeight) {
+    if(User(randomUser).availability() && weights[randomUser] > now % maxWeight) {
         return randomUser;
      }
     return address(0x0);
@@ -111,11 +111,11 @@ contract Concept {
   @returns: nothing
   */
   function makeAssessment(uint cost, uint size) returns(bool) {
-    if(size >= 5 && AbstractUserRegistry(userRegistry).balances(msg.sender) >= cost*size) { //Checks if the assessment has a size of at least 5
+    if(size >= 5 && UserRegistry(userRegistry).balances(msg.sender) >= cost*size) { //Checks if the assessment has a size of at least 5
       Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost); //Makes a new assessment with the given parameters
       assessmentExists[address(newAssessment)] = true; //Sets the assessment's existance to true
-      setBalance(msg.sender, AbstractUserRegistry(userRegistry).balances(msg.sender) - cost*size);
-      AbstractUser(msg.sender).notification(address(this), 19); //You have been charged for your assessment
+      setBalance(msg.sender, UserRegistry(userRegistry).balances(msg.sender) - cost*size);
+      User(msg.sender).notification(address(this), 19); //You have been charged for your assessment
       newAssessment.setAssessorPool(block.number, address(this), size*20); //Calls the function to set the assessor pool
       return true;
     }
@@ -138,9 +138,8 @@ contract Concept {
         owners.push(assessee); //Makes the assessee an owner of this concept
         uint weight = Assessment(assessment).size()*uint(score);
         addOwner(assessee, weight);
-        AbstractUser(assessee).setConceptPassed(true);
+        User(assessee).setConceptPassed(true);
       }
-      AbstractUser(assessee).mapHistory(assessment); //Maps the assessee to the assessment in the user master as part of the assessee's history
       currentScores[assessee] = score; //Maps the assessee to their score
       CompletedAssessment(assessee, score, assessment); //Makes an event with this assessment's data
     }
@@ -173,7 +172,7 @@ contract Concept {
   */
   function setBalance(address user, uint amount) {
     if(assessmentExists[msg.sender] || msg.sender == address(this)) { //Checks if msg.sender is an existing assessment
-      AbstractUserRegistry(userRegistry).setBalance(user, amount); //Changes the user's token balance
+      UserRegistry(userRegistry).setBalance(user, amount); //Changes the user's token balance
     }
   }
 
