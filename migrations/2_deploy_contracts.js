@@ -12,7 +12,7 @@ module.exports = function(deployer) {
   }).then(function(){
     return deployer.deploy(UserRegistry, ConceptRegistry.address)
   }).then(function(){
-    return deployer.deploy(Concept, [], UserRegistry.address, ConceptRegistry.address)
+    return deployer.deploy(Concept, [], UserRegistry.address)
   }).then(function(){
     return ConceptRegistry.deployed()
   }).then(function(instance){
