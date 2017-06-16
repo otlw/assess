@@ -54,7 +54,7 @@ contract UserRegistry {
   function firstUser(address userAddress) {
     if(firstUserMade == false) {
       User newUser = new User(userAddress, address(this)); //Makes a new user that represents the address from userAddress
-      Concept(ConceptRegistry(conceptRegistry).mewAddress()).addUser(address(newUser));
+      Concept(ConceptRegistry(conceptRegistry).mewAddress()).addUser(address(newUser)); //? why is mewadress a call?
       users[userAddress] = newUser;
       balances[newUser] = 1000;
       UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user

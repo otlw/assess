@@ -13,12 +13,12 @@ import "./Math.sol";
 */
 contract Concept {
   address[] public parents; //The concepts that this concept is child to (ie: Calculus is child to Math)
-  address[] public children; //The concepts that this concept is parent to (ie: Math is parent to Calculus)
+  address[] public children; //The concepts that this concept is parent to (ie: Math is parent to Calculus) //?when is this needed?
   address userRegistry; //The address of the userRegistry contract
   address conceptRegistry; //The address of the conceptRegistry contract
   uint public maxWeight; //The current highest weight for this assessment
   address[] public owners; //Those who have earned the concept
-  mapping (address => int) public currentScores; //The most recent score of a user
+  mapping (address => int) public currentScores; //The most recent score of a user //?why is this needed?
   mapping (address => bool) public assessmentExists; //All existing assessments
   mapping (address => uint) public weights; //The weighting used by the assessor selection algorhitm for each owner
 
@@ -55,9 +55,8 @@ contract Concept {
     int _score, //The score of the assessee
     address _assessment
   );
-
   function Concept(address[] _parents, address _userRegistry) {
-    parents = _parents;
+    parents = _parents; //do we check if these exist? new concepts are children of mew? is it possible to insert a concept between two existing ones-> no?
     userRegistry = _userRegistry;
     conceptRegistry = UserRegistry(userRegistry).conceptRegistry();
   }

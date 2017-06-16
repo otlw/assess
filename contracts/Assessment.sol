@@ -39,7 +39,7 @@ contract Assessment {
   /*
   @type: modifier
   @name: onlyThis
-  @purpose: to only allow the this contract to call a function to which this modifier is applied
+  @purpose: to only allow this contract to call a function to which this modifier is applied
   */
   modifier onlyThis() {
     if(msg.sender != address(this)){//Checks if msg.sender is this contract
@@ -60,7 +60,7 @@ contract Assessment {
     _;
   }
 
-  // only allow the this contract or the Concept contract that spawned it
+  // only allow this contract or the Concept contract that spawned it
   modifier onlyConceptAssessment() {
     if(msg.sender != address(this) && msg.sender != concept) {
       throw;
@@ -209,7 +209,7 @@ contract Assessment {
           done++; //done increases by 1 to help progress to the next assessment stage
         }
       }
-      else if(msg.sender == assessor) { //If the stake was wrong and was provided by the assessor in the parameter
+      else if(msg.sender == assessor) { //If the salt was wrong and was provided by the assessor in the parameter
         stake[assessor] = 0; //The assessor's stake is completely burned
         assessorState[assessor] = State.Burned; //The assessor's state is set to Burned
         done++; //done increases by 1 to help progress to the next assessment stage
