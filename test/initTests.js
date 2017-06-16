@@ -58,6 +58,7 @@ contract('Initialization', function(accounts) {
         });
     })
     describe("UserRegistry", function(){
+        var otherUser;
         it("should create firstUser", function(){
             return UserRegistry.deployed().then(function(instance){
                 UserRegistryInstance = instance
@@ -65,7 +66,7 @@ contract('Initialization', function(accounts) {
             }).catch(function(e){
                 assert("there was an error!")
             })
-        })
+                });
         describe("firstUser", function(){
             it("should have a balance of 1000", function(){
                 return UserRegistryInstance.users.call(accounts[0]).then(function(address){
@@ -73,7 +74,49 @@ contract('Initialization', function(accounts) {
                 }).then(function(balance) {
                     assert.equal(balance.toNumber(), 1000, "the balance of the first user isn't 1000")
                 })
-            })
+            });
+            it("should own the mew-concept", function(){
+                return UserRegistryInstance.users.call(accounts[0]).then(function(address){
+                    firstUserAddress=address;
+                    firstUser = User.at(firstUserAddress)
+                    return mewConcept.owners.call(0)
+                }).then(function(firstOwnerOfMew) {
+                    assert.equal(firstOwnerOfMew, firstUserAddress, "the mewConcept does not know it is owned by a user")
+                    //also check whether the owner can prove he owns the mew-concept
+                    return firstUser.conceptPassed.call(mewAddress)
+                }).then(function(firstUserOwnsMew) {
+                    assert.equal(firstUserOwnsMew, true, "firstUser does not know she owns mew")
+                })
+            });
         })
-   })
+        it("should add another user", function(){
+            return UserRegistry.deployed().then(function(instance){
+                UserRegistryInstance = instance
+                return UserRegistryInstance.addUser(accounts[1], {from:accounts[1]})
+            }).then(function(result){
+                userAddress = result.logs[0].args["_userAddress"]
+                otherUser = User.at(userAddress)
+                return UserRegistryInstance.users.call(accounts[1])
+            }).then(function(userContractByRegistry){
+                assert.equal(userContractByRegistry, userAddress, "the address of otherUser's wallet is not correctly stored") 
+            }) 
+        });
+        describe("the other user", function(){
+            it("should have a balance of 0", function(){
+                return UserRegistryInstance.users.call(accounts[1]).then(function(address){
+                    return UserRegistryInstance.balances.call(address);
+                }).then(function(balance) {
+                    assert.equal(balance.toNumber(), 0, "the balance of otherUser user isn't 0")
+                })
+            });
+            it("should also own the mew-concept", function(){
+                return mewConcept.owners.call(1).then(function(secondOwnerOfMew){
+                    assert.equal(secondOwnerOfMew, otherUser.address, "mew does not know it is owned by otherUser")
+                    return otherUser.conceptPassed.call(mewAddress)
+                }).then(function(mewOwnage){
+                    assert.equal(mewOwnage, true, "otherUser does not know she owns the mew-Concept")
+                })
+            });
+        })
+    })
 })
