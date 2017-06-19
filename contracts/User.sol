@@ -81,7 +81,13 @@ contract User {
       return UserRegistry(userRegistry).transfer(user,amount);
     }
   }
-
+  /*
+    function to invoce another contract using this User.sol as a proxy
+@param destination: the contract, whose function is to be called
+@param value, the amount of gas allowed to be spent
+@param data to be sent along with the call
+example usage: 
+   */
   function execute(address destination, uint value, bytes data) onlyUser() returns(bool) {
     if(destination.call.value(value)(data)) {
       return true;
@@ -90,6 +96,27 @@ contract User {
       return false;
     }
   }
+
+  event Transfer(uint _amount);
+  event Failed(uint _t);
+  
+  function proxyTransfer(address _to, uint _amount) returns(bool){
+    
+    bool tmp = userRegistry.call(bytes4(keccak256("transfer(address,uint256)")), _to, _amount);
+    if (tmp)
+      Transfer(_amount);
+    else
+      Failed(1);
+      /**/
+    /*
+    bool tmp2 = userRegistry.call("transfer", _amount);
+    if (tmp2)
+      Transfer(_amount);
+    else
+      Failed(2);
+    */
+}
+    
 
   function setConceptPassed(bool passed) onlyConcept(){
     conceptPassed[msg.sender] = passed;
