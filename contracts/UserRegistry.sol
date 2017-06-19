@@ -72,7 +72,7 @@ contract UserRegistry {
   }
 
   function subtractBalance(address _from, uint _amount) onlyConcept() returns(bool) {
-    if(balances[_from] > _amount){
+    if(balances[_from] >= _amount){
       balances[_from] -= _amount;
       return true;
     }
