@@ -61,7 +61,7 @@ contract UserRegistry {
     }
   }
 
-  function addBalance(address _to, uint _amount) returns(bool) {
+  function addBalance(address _to, uint _amount) onlyConcept() returns(bool) {
     if(balances[_to] + _amount > balances[_to]){
       balances[_to] += _amount;
       return true;
@@ -71,8 +71,8 @@ contract UserRegistry {
     }
   }
 
-  function subtractBalance(address _from, uint _amount) returns(bool) {
-    if(balances[_from] > _amount){
+  function subtractBalance(address _from, uint _amount) onlyConcept() returns(bool) {
+    if(balances[_from] >= _amount){
       balances[_from] -= _amount;
       return true;
     }
