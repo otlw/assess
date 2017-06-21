@@ -55,6 +55,13 @@ contract Concept {
     int _score, //The score of the assessee
     address _assessment
   );
+
+  //events for debgging
+  event Feedback(string what, address sender);
+  event intFeedback(uint code, address sender);
+  event booFeedback(string what, bool b);
+
+  
   function Concept(address[] _parents, address _userRegistry) {
     parents = _parents; //do we check if these exist? new concepts are children of mew? is it possible to insert a concept between two existing ones-> no?
     userRegistry = _userRegistry;
@@ -115,9 +122,11 @@ contract Concept {
       assessmentExists[address(newAssessment)] = true; //Sets the assessment's existance to true
       User(msg.sender).notification(address(this), 19); //You have been charged for your assessment
       newAssessment.setAssessorPool(block.number, address(this), size*20); //Calls the function to set the assessor pool
+      Feedback("makeAssessCaller", msg.sender);
       return true;
     }
     else {
+      Feedback("makeAssessCaller", msg.sender);
       return false;
     }
   }
@@ -166,6 +175,10 @@ contract Concept {
     if(assessmentExists[msg.sender] || msg.sender == address(this)) { //Checks if msg.sender is an existing assessment
       return UserRegistry(userRegistry).subtractBalance(_from, _amount);
     }
+    else
+      Feedback("substrBalCaller", msg.sender);
+    Feedback("address(this) in Concept.substractBalan", address(this));
+    booFeedback("1st comp", msg.sender == address(this));
   }
 
   function addBalance(address _to, uint _amount)  returns(bool) {

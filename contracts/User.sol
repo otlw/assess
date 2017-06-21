@@ -97,27 +97,6 @@ example usage:
     }
   }
 
-  event Transfer(uint _amount);
-  event Failed(uint _t);
-  
-  function proxyTransfer(address _to, uint _amount) returns(bool){
-    
-    bool tmp = userRegistry.call(bytes4(keccak256("transfer(address,uint256)")), _to, _amount);
-    if (tmp)
-      Transfer(_amount);
-    else
-      Failed(1);
-      /**/
-    /*
-    bool tmp2 = userRegistry.call("transfer", _amount);
-    if (tmp2)
-      Transfer(_amount);
-    else
-      Failed(2);
-    */
-}
-    
-
   function setConceptPassed(bool passed) onlyConcept(){
     conceptPassed[msg.sender] = passed;
   }
