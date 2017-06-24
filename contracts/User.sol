@@ -17,11 +17,13 @@ contract User {
   string public userData; //An IPFS hash containing the user's data
   bool public availability;
   mapping (address => bool) public conceptPassed;
+
+  // Mappings to approve addresses to transact or create assessments
   mapping (address => Approval) transactApproved;
   mapping (address => Approval) assessApproved;
   struct Approval {
     bool approved;
-    uint value; //fix stakes pls
+    uint value;
   }
 
   modifier onlyUser() {
@@ -44,6 +46,7 @@ contract User {
     address _concept, //The address of the concept involved in this notification
     uint _code); //The notification code, see below for code guide:
     /*
+    0 = You've started an assessment
     1 = Called As A Potential Assessor
     2 = Confirmed for assessing, stake has been taken
     3 = Assessment Cancled and you have been refunded
@@ -69,6 +72,7 @@ contract User {
     userData = hash; //Sets userData to the hash value
   }
 
+  //@purpose: allows external contracts to transfer tokens from this account
   function extTransferTokens(address user, uint amount) returns(bool) {
     if(transactApproved[msg.sender].approved = false) {
       return false;
@@ -82,6 +86,7 @@ contract User {
     }
   }
 
+  //@purpose: execute arbitrary transactions
   function execute(address destination, uint value, bytes data) onlyUser() returns(bool) {
     if(destination.call.value(value)(data)) {
       return true;
@@ -95,6 +100,7 @@ contract User {
     conceptPassed[msg.sender] = passed;
   }
 
+  //@purpose: allows external contracts to initate assessments for this user
   function extMakeAssessment(address concept, uint cost, uint size) returns(bool) {
     if(assessApproved[msg.sender].approved == false) {
       return false;

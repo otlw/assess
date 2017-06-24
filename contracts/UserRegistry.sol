@@ -7,32 +7,31 @@ import "./ConceptRegistry.sol";
 /*
 @type: contract
 @name: UserRegistry
-@purpose: To store data about users for easy and secure access
+@purpose: To store data about users for easy, secure access and manage token balances
 */
 contract UserRegistry {
-  address public conceptRegistry; //The address of the conceptRegistry contract
-  mapping (address => uint) public balances; //Maps the addresses of users to their token balances
-  mapping (address => address) public users; //Maps the addresses of the users to their account
-  bool firstUserMade = false; //Keeps track of whether or not the first user has been made yet
+  address public conceptRegistry;
+  mapping (address => uint) public balances;
+  mapping (address => address) public users;
+  bool firstUserMade = false;
   event UserCreation(address _userAddress); //address of the created user contract
 
   modifier onlyConcept() {
-    if(ConceptRegistry(conceptRegistry).conceptExists(msg.sender) == false) //checks if the address calling the function is not a concept
+    if(ConceptRegistry(conceptRegistry).conceptExists(msg.sender) == false)
     {
-      throw; //throws out the fucntion call
+      throw;
     }
     _;
   }
 
   modifier onlyThis() {
-    if(msg.sender != address(this)) 
+    if(msg.sender != address(this))
     {
-      throw; 
+      throw;
     }
     _;
   }
 
-  //Constructor
   function UserRegistry(address _conceptRegistry) {
     conceptRegistry = _conceptRegistry;
   }
@@ -41,27 +40,28 @@ contract UserRegistry {
   @type: function
   @purpose: To create a user contract
   @param: address userAddress = the address of the user's wallet
-  @param: address masterAddress = the address of the master contract that stores this user's address
   @returns: nothing
   */
   function addUser(address userAddress) {
-    User newUser = new User(userAddress, address(this)); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
+    User newUser = new User(userAddress, address(this));
     Concept(ConceptRegistry(conceptRegistry).mewAddress()).addUser(address(newUser));
     users[userAddress] = newUser;
-    UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
+    UserCreation(address(newUser)); // event
   }
 
   function firstUser(address userAddress) {
     if(firstUserMade == false) {
-      User newUser = new User(userAddress, address(this)); //Makes a new user that represents the address from userAddress
+      User newUser = new User(userAddress, address(this));
       Concept(ConceptRegistry(conceptRegistry).mewAddress()).addUser(address(newUser));
       users[userAddress] = newUser;
       balances[newUser] = 1000;
-      UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
+      UserCreation(address(newUser)); // event
     }
   }
 
-  function addBalance(address _to, uint _amount) onlyConcept() returns(bool) {
+
+  //@purpose: To preform payouts in Asessments
+  function addBalance(address _to, uint _amount) returns(bool) {
     if(balances[_to] + _amount > balances[_to]){
       balances[_to] += _amount;
       return true;
@@ -71,8 +71,9 @@ contract UserRegistry {
     }
   }
 
-  function subtractBalance(address _from, uint _amount) onlyConcept() returns(bool) {
-    if(balances[_from] >= _amount){
+  //@purpose: To preform payments and staking for assessments
+  function subtractBalance(address _from, uint _amount) returns(bool) {
+    if(balances[_from] > _amount){
       balances[_from] -= _amount;
       return true;
     }
