@@ -5,7 +5,7 @@ var Concept = artifacts.require("Concept");
 var UserRegistryInstance;
 
 //to create input for the proxycalls
-var abi = require("ethjs-abi");
+//var abi = require("ethjs-abi");
 //const UserRegistryABI = [{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"addBalance","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"userAddress","type":"address"}],"name":"firstUser","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"balances","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"reciever","type":"address"}],"name":"remove","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"userAddress","type":"address"}],"name":"addUser","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"conceptRegistry","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"users","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_amount","type":"uint256"}],"name":"subtractBalance","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"inputs":[{"name":"_conceptRegistry","type":"address"}],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_userAddress","type":"address"}],"name":"UserCreation","type":"event"}]
 
 //const AssessmentABI
@@ -31,8 +31,6 @@ contract('Initialization', function(accounts) {
             return ConceptRegistry.deployed().then(function(instance) {
                 return instance.makeConcept([])
             }).then(function(result){
-                //safe created concept for follow-up tests
-                //console.log(result) //display transaction results on command line
                 createdConceptAddress = result.logs[0].args["_concept"]
                 otherConcept = Concept.at(createdConceptAddress) //create abstraction for the created Concept
                 //check if the mewConcept has a child
@@ -54,7 +52,6 @@ contract('Initialization', function(accounts) {
                 //check that the parent is linked to the child-concept
                 return otherConcept.children.call(0)
             }).then(function(childAddress){
-                //console.log(childAddress);
                 assert.equal(childAddress, childConceptAddress, "Parent concept does not know its child")
                 //check that the child-concept is linked to the parent
                 return childConcept.parents.call(0)
@@ -69,37 +66,61 @@ contract('Initialization', function(accounts) {
                 UserRegistryInstance = instance
                 return instance.firstUser(accounts[0], {from: accounts[0]})
             }).catch(function(e){
-                assert("there was an error!")
+                console.log(e)
+                assert.fail("there was an error")
             })
         })
-        it("should own the mew-concept", function(){
-            return mewConcept.weights.call(accounts[0]).then(function(weight){
-                assert.equal(weight.toNumber(), 100)
+        describe("Initial User", function(){
+            it("should own the mew-concept", function(){
+                return mewConcept.weights.call(accounts[0]).then(function(weight){
+                    assert.equal(weight.toNumber(), 100)
+                })
             })
-        })
-        it("should have a balance of 1000", function(){
-            return UserRegistryInstance.balances.call(accounts[0]).then(function(balance) {
-                assert.equal(balance.toNumber(), 1000)
+            it("should have a balance of 1000", function(){
+                return UserRegistryInstance.balances.call(accounts[0]).then(function(balance) {
+                    assert.equal(balance.toNumber(), 1000)
+                })
             })
         })
     })
 
-    describe("tokenTransfers", function(){
-        it("should transfer token between users", function(){
+    describe("token transfers", function() {
+        it("Should modify balances correctly", function(){
+            var account1InitialBalance;
+            var account2InitialBalance;
+            var amount = 200;
             return UserRegistry.deployed().then(function(instance){
                 UserRegistryInstance = instance
-                //get address of User-contracts
-                console.log("test")
-                return UserRegistryInstance.transfer(accounts[1], 200, {from: accounts[0]}).then(function(){
-                    UserRegistryInstance.balances.call(accounts[0]).then(function(balance) {
-                        assert.equal(balance.toNumber(), 800)
-                    })
-                }).then(function(){
-                    UserRegistryInstance.balances.call(accounts[1]).then(function(balance){
-                        assert.equal(balance.toNumber(), 200)
-                    })
-                })
+                return UserRegistryInstance.balances.call(accounts[0])
+            }).then(function(balance){
+                account1InitialBalance = balance
+                return UserRegistryInstance.balances.call(accounts[1])
+            }).then(function(balance) {
+                account2InitialBalance = balance
+                return UserRegistryInstance.transfer(accounts[1], amount, {from: accounts[0]})
+            }).then(function() {
+                return UserRegistryInstance.balances.call(accounts[0])
+            }).then(function(balance) {
+                assert.equal(account1InitialBalance - balance.toNumber(), amount, "User1 didn't lose tokens")
+                return UserRegistryInstance.balances.call(accounts[1])
+            }).then(function(balance) {
+                assert.equal(balance.toNumber() - account2InitialBalance, amount, "User2 didn't gain tokens")
             })
-        });
+            // it("should transfer token between users", function(){
+            //     return UserRegistry.deployed().then(function(instance){
+            //         UserRegistryInstance = instance
+            //         //get address of User-contracts
+            //         return UserRegistryInstance.transfer(accounts[1], 200, {from: accounts[0]}).then(function(){
+            //             UserRegistryInstance.balances.call(accounts[0]).then(function(balance) {
+            //                 assert.equal(balance.toNumber(), 800, "User didn't lose tokens")
+            //             })
+            //         }).then(function(){
+            //             UserRegistryInstance.balances.call(accounts[1]).then(function(balance){
+            //                 assert.equal(balance.toNumber(), 200)
+            //             })
+            //         })
+            //     })
+            // });
+        })
     })
 })
