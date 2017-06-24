@@ -113,7 +113,7 @@ contract Concept {
     if(size >= 5 && subtractBalance(msg.sender, cost*size)) { //Checks if the assessment has a size of at least 5
       Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost); //Makes a new assessment with the given parameters
       assessmentExists[address(newAssessment)] = true; //Sets the assessment's existance to true
-      User(msg.sender).notification(address(this), 19); //You have been charged for your assessment
+      //User(msg.sender).notification(address(this), 19); //You have been charged for your assessment
       newAssessment.setAssessorPool(block.number, address(this), size*20); //Calls the function to set the assessor pool
       return true;
     }
@@ -136,7 +136,6 @@ contract Concept {
         owners.push(assessee); //Makes the assessee an owner of this concept
         uint weight = Assessment(assessment).size()*uint(score);
         addOwner(assessee, weight);
-        User(assessee).setConceptPassed(true);
       }
       currentScores[assessee] = score; //Maps the assessee to their score
       CompletedAssessment(assessee, score, assessment); //Makes an event with this assessment's data
