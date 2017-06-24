@@ -44,6 +44,13 @@ contract Concept {
     _;
   }
 
+  modifier onlyConcept(){
+      if(!ConceptRegistry(conceptRegistry).conceptExists(msg.sender)) {
+          throw;
+      }
+      _;
+  }
+
   /*
   @type: event
   @name: CompletedAssessment
@@ -150,7 +157,7 @@ contract Concept {
   @param: uint weight = the weight for the owner
   @returns: nothing
   */
-  function addOwner(address assessee, uint weight) onlyThis() {
+  function addOwner(address assessee, uint weight) onlyConcept() {
     owners.push(assessee); //adds the owner to the array
     weights[assessee] += weight; //adds the weight to the current value in mapping
     if(weight > maxWeight) {//checks if the weight is greater than the currant maxWeight
