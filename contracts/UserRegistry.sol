@@ -1,7 +1,6 @@
 pragma solidity ^0.4.0;
 
 import "./Concept.sol";
-import "./User.sol";
 import "./ConceptRegistry.sol";
 
 /*
@@ -12,7 +11,7 @@ import "./ConceptRegistry.sol";
 contract UserRegistry {
   address public conceptRegistry; //The address of the conceptRegistry contract
   mapping (address => uint) public balances; //Maps the addresses of users to their token balances
-  mapping (address => address) public users; //Maps the addresses of the users to their account
+  mapping (address => bool) public availability;
   bool firstUserMade = false; //Keeps track of whether or not the first user has been made yet
   event UserCreation(address _userAddress); //address of the created user contract
 
@@ -25,9 +24,9 @@ contract UserRegistry {
   }
 
   modifier onlyThis() {
-    if(msg.sender != address(this)) 
+    if(msg.sender != address(this))
     {
-      throw; 
+      throw;
     }
     _;
   }
@@ -44,20 +43,20 @@ contract UserRegistry {
   @param: address masterAddress = the address of the master contract that stores this user's address
   @returns: nothing
   */
-  function addUser(address userAddress) {
-    User newUser = new User(userAddress, address(this)); //Makes a new user that represents the address from userAddress and uses the master from masterAddress as its datastore
-    Concept(ConceptRegistry(conceptRegistry).mewAddress()).addUser(address(newUser));
-    users[userAddress] = newUser;
-    UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
+  function addUser() {
+    Concept(ConceptRegistry(conceptRegistry).mewAddress()).addUser(msg.sender);
+    UserCreation(msg.sender); //Makes a new UserCreation event with the address of the newly created user
+  }
+
+  function toggleAvailability() {
+    availability[msg.sender] = !availability[msg.sender];
   }
 
   function firstUser(address userAddress) {
     if(firstUserMade == false) {
-      User newUser = new User(userAddress, address(this)); //Makes a new user that represents the address from userAddress
-      Concept(ConceptRegistry(conceptRegistry).mewAddress()).addUser(address(newUser));
-      users[userAddress] = newUser;
-      balances[newUser] = 1000;
-      UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
+      Concept(ConceptRegistry(conceptRegistry).mewAddress()).addUser(userAddress);
+      balances[userAddress] = 1000;
+      UserCreation(userAddress); //Makes a new UserCreation event with the address of the newly created user
     }
   }
 

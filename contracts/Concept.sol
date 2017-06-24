@@ -1,7 +1,6 @@
 pragma solidity ^0.4.0;
 
 import "./UserRegistry.sol";
-import "./User.sol";
 import "./ConceptRegistry.sol";
 import "./Assessment.sol";
 import "./Math.sol";
@@ -97,7 +96,7 @@ contract Concept {
 
   function getRandomMember(uint seed) returns(address) {
     address randomUser = owners[Math.getRandom(seed, owners.length-1)];
-    if(User(randomUser).availability() && weights[randomUser] > now % maxWeight) {
+    if(UserRegistry(userRegistry).availability(randomUser) && weights[randomUser] > now % maxWeight) {
         return randomUser;
      }
     return address(0x0);

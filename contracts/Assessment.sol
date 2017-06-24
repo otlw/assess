@@ -3,7 +3,6 @@ pragma solidity ^0.4.0;
 import "./Math.sol";
 import "./Concept.sol";
 import "./ConceptRegistry.sol";
-import "./User.sol";
 import "./UserRegistry.sol";
 
 contract Assessment {
