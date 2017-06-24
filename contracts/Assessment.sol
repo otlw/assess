@@ -36,23 +36,13 @@ contract Assessment {
   int finalScore;
   event DataSet(address _dataSetter, uint _index);
 
-  /*
-  @type: modifier
-  @name: onlyThis
-  @purpose: to only allow the this contract to call a function to which this modifier is applied
-  */
   modifier onlyThis() {
-    if(msg.sender != address(this)){//Checks if msg.sender is this contract
-      throw; //Throws out the function call if it isn't
+    if(msg.sender != address(this)){
+      throw;
     }
     _;
   }
 
-  /*
-  @type: modifier
-  @name: onlyAssessorAssessee
-  @purpose: to only allow the assessors and assessee to call a function to which this modifier is applied
-  */
   modifier onlyAssessorAssessee() {
     if(msg.sender != assessee && uint(assessorState[msg.sender]) == 0) {
       throw;
@@ -60,7 +50,6 @@ contract Assessment {
     _;
   }
 
-  // only allow the this contract or the Concept contract that spawned it
   modifier onlyConceptAssessment() {
     if(msg.sender != address(this) && msg.sender != concept) {
       throw;
@@ -97,6 +86,7 @@ contract Assessment {
     suicide(conceptRegistry);
   }
 
+  //@purpose: adds a user to the pool eligible to accept an assessment
   function addAssessorToPool(address assessor) onlyConcept() returns(bool) {
     if(uint(assessorState[assessor]) == 0) {//Checks if the called assessor hasn't already been called
       User(assessor).notification(concept, 1); //Called As A Potential Assessor
@@ -104,7 +94,7 @@ contract Assessment {
       return true;
     }
     else {
-      return false; //Returns false if the assessor has already been called
+      return false;
     }
   }
 
@@ -112,6 +102,8 @@ contract Assessment {
   /*
   @purpose: To recursively set the pool to draw assessors from in the assessment
   @param: uint seed = the seed number for random number generation
+  @param: address _concept = the concept being called from
+  @param: uint num = the number of assessors to be called
   */
   function setAssessorPool(uint seed, address _concept, uint num) onlyConceptAssessment() {
     uint numCalled = 0;
@@ -125,16 +117,18 @@ contract Assessment {
     uint remaining = num - numCalled;
     if(remaining > 0) {
       for(uint i = 0; i < Concept(_concept).getParentsLength(); i++) {
-          setAssessorPool(seed + assessorPool.length, Concept(_concept).parents(i), remaining/Concept(_concept).getParentsLength() + 1);
+        setAssessorPool(seed + assessorPool.length, Concept(_concept).parents(i), remaining/Concept(_concept).getParentsLength() + 1); //Calls the remaining users from the parent concepts proportional to their size
       }
     }
   }
 
+  //@purpose: called by an assessor to confirm and stake
   function confirmAssessor() {
-    if(block.number - startTime <= 15 && assessorState[msg.sender] == State.Called && assessors.length < size && Concept(concept).subtractBalance(msg.sender, cost)) { //Check if the time to confirm has not passed, that the assessor was actually called, assessors are still needed, and that the assessor has enough of a balance to pay the stake
-      assessors.push(msg.sender); //Adds the user that called this function to the array of confirmed assessors
-      assessorState[msg.sender] = State.Confirmed; //Sets the assessor's state to confirmed
-      stake[msg.sender] = cost; //Sets the current stake value of the assessor to the cost of the assessment
+    // Checks if: within timeframe, this address was called, assessors needed, stake paid
+    if(block.number - startTime <= 15 && assessorState[msg.sender] == State.Called && assessors.length < size && Concept(concept).subtractBalance(msg.sender, cost)) {
+      assessors.push(msg.sender);
+      assessorState[msg.sender] = State.Confirmed;
+      stake[msg.sender] = cost;
       User(msg.sender).notification(concept, 2); //Confirmed for assessing, stake has been taken
     }
     if(assessors.length == size) { //If enough assessors have been called
@@ -152,27 +146,29 @@ contract Assessment {
     User(assessee).notification(concept, 4); //Assessment Has Started
   }
 
-  function setData(string _data) onlyAssessorAssessee() { //Allows the assessors and the assessee to publically add data for the purposes of the assessment
+  function setData(string _data) onlyAssessorAssessee() {
     data[msg.sender].push(_data); //Adds the data to an array corresponding to the user that uploaded it
-    DataSet(msg.sender, data[msg.sender].length - 1); //Spawns an event that contains the address of the user who just uploaded data and the index number of this piece of data in their corresponding array
+    DataSet(msg.sender, data[msg.sender].length - 1); // fire event
   }
 
-  function commit(bytes32 hash) { //Assessors should call this to commit a sha3 hash of their final score and a bytes16
+  //@purpose: called by an assessor to commit a hash of their score
+  function commit(bytes32 hash) {
     if(done > size/2) {//If more than half the assessors have committed their score hash
-      for(uint i = 0; i < assessors.length; i++) {//Loops through all the assessors
-        if(assessorState[assessors[i]] == State.Confirmed) {//Checks if the assessor has not committed  a score yet
+      for(uint i = 0; i < assessors.length; i++) {
+        if(assessorState[assessors[i]] == State.Confirmed) { //if the assessor has not committed  a score
           uint r = 38; //Inverse burn rate
-          stake[assessors[i]] = cost*2**(-(now-startTime)/r) - 1; //Sets their stake to a lower value based off of how long its been since the first half of the assessors committed
+          stake[assessors[i]] = cost*2**(-(now-startTime)/r) - 1; //burns stake as a function of how much time has passed since half of the assessors commited
         }
-        if(stake[assessors[i]] == 0) {//If an assessor's stake is entirely burned
-          assessorState[assessors[i]] = State.Burned; //Sets the assessor's state to Burned
+        if(stake[assessors[i]] == 0) { //If an assessor's stake is entirely burned
+          assessorState[assessors[i]] = State.Burned;
           done++; //Increases done by 1 to help progress to the next assessment stage
         }
       }
     }
-    if(done == size) {//If all the assessors have either committed or had their entire stake burned
+
+    if(done == size) { //If all the assessors have either committed or had their entire stake burned
       for(uint j = 0; j < assessors.length; j++) { //Loops through all assessors
-        if(assessorState[assessors[j]] == State.Committed) { //Sends a notification to all the assessors that have committed to reveal their score
+        if(assessorState[assessors[j]] == State.Committed) {
           User(assessors[j]).notification(concept, 5); //Send in Score
           //NOTE: The front end should receive this notification and then automatically call the reveal function
         }
@@ -180,7 +176,8 @@ contract Assessment {
       startTime = block.number; //Resets the startTime
       done = 0; //Resets the done counter
     }
-    if(assessorState[msg.sender] == State.Confirmed) //If the user calling this function is confirmed as an assessor
+
+    if(assessorState[msg.sender] == State.Confirmed) //If the caller is confirmed as an assessor
     {
       commits[msg.sender] = hash; //Maps the score hash to the assessor
       assessorState[msg.sender] == State.Committed; //Sets the assessor's state to Committed
@@ -193,19 +190,20 @@ contract Assessment {
     }
   }
 
-  function reveal(int8 score, bytes16 salt, address assessor) { //Assessors reveal the components of their hash (which are checked), assessors can reveal other assessors hash components to report them for cheating
+  //@purpose: called by assessors to reveal their own commits or others
+  function reveal(int8 score, bytes16 salt, address assessor) {
     if(block.number - startTime <= 10) { //If less than 10 blocks have passed since the socre commiting stage ended
-      bytes32 hash = sha3(score,salt); 
-      if(commits[assessor] == hash) { 
+      bytes32 hash = sha3(score,salt);
+      if(commits[assessor] == hash) {
         if(msg.sender == assessor) {
-          scores[msg.sender] = score; //That score is mapped to the assessor
-          assessorState[assessor] = State.Done; 
+          scores[msg.sender] = score;
+          assessorState[assessor] = State.Done;
           done++; //done increases by 1 to help progress to the next assessment stage
         }
-        else { //If it was correct and submitted by a user other than the assessor in the parameter
-          Concept(concept).addBalance(msg.sender, stake[assessor]); //The user that called this function gets the assessor's stake
+        else { //If it was submitted by another user than the given assessor
+          Concept(concept).addBalance(msg.sender, stake[assessor]); // give the stake to the caller
           stake[assessor] = 0;
-          assessorState[assessor] = State.Burned; //The assessor's state is set to Burned
+          assessorState[assessor] = State.Burned;
           done++; //done increases by 1 to help progress to the next assessment stage
         }
       }
@@ -219,7 +217,7 @@ contract Assessment {
       for(uint i = 0; i < assessors.length; i++) { //Loops through all the assessors
         if(assessorState[assessors[i]] == State.Committed) { //If the assessor has not revealed their score
           stake[assessors[i]] = 0; //The assessor's stake is completely burned
-          assessorState[assessors[i]] = State.Burned; //The assessor's state is set to Burned
+          assessorState[assessors[i]] = State.Burned;
           done++; //done increases by 1 to help progress to the next assessment stage
         }
       }
@@ -236,12 +234,12 @@ contract Assessment {
       }
     }
     int[] memory score = new int[] (finalAssessors.length); //Initializes an array to store scores that is the same length as the number of finalAssessors
-    uint largestClusterIndex = 0; //Initializes a uint to store the index of the largest cluster in the clusters mapping
-    int averageScore; //Initializes an int to store the average score
+    uint largestClusterIndex = 0; //store the index of the largest cluster
+    int averageScore;
     for(uint i = 0; i < finalAssessors.length; i++) {
       score[i] = scores[finalAssessors[i]]; //Puts all the scores in the score array
     }
-    int meanAbsoluteDeviation = Math.calculateMAD(score,int(finalAssessors.length)); //Caclulates the MAD of the scores
+    int meanAbsoluteDeviation = Math.calculateMAD(score,int(finalAssessors.length));
     for(uint l = 0; l < score.length; l++) { //Find the largest cluster of scores
       for(uint m = 0; m < score.length; m++)
       {

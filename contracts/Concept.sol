@@ -6,50 +6,41 @@ import "./ConceptRegistry.sol";
 import "./Assessment.sol";
 import "./Math.sol";
 
-/*
-@type: contract
-@name: Concept
-@purpose: To store concept data and create and store information about assessments of this concept
-*/
+//@purpose: To store concept data and create and manage assessments and members
 contract Concept {
   address[] public parents; //The concepts that this concept is child to (ie: Calculus is child to Math)
   address[] public children; //The concepts that this concept is parent to (ie: Math is parent to Calculus)
-  address userRegistry; //The address of the userRegistry contract
-  address conceptRegistry; //The address of the conceptRegistry contract
+  address userRegistry;
+  address conceptRegistry;
   uint public maxWeight; //The current highest weight for this assessment
   address[] public owners; //Those who have earned the concept
   mapping (address => int) public currentScores; //The most recent score of a user
-  mapping (address => bool) public assessmentExists; //All existing assessments
-  mapping (address => uint) public weights; //The weighting used by the assessor selection algorhitm for each owner
+  mapping (address => bool) public assessmentExists; //mapping valid assessments to a bool for permissioning
+  mapping (address => uint) public weights; //The weight of a given user calculated by their score and number of assessors.
 
   modifier onlyUserRegistry() {
-    if(msg.sender != userRegistry) //checks if msg.sender has the same address as userRegistry
+    if(msg.sender != userRegistry)
     {
-      throw; //throws the function call if not
+      throw;
     }
     _;
   }
 
   modifier onlyConceptRegistry() {
-    if(msg.sender != conceptRegistry) //checks if msg.sender has the same address as conceptRegistry
-    {
-      throw; //throws the function call if not
+    if(msg.sender != conceptRegistry) {
+      throw;
     }
     _;
   }
 
   modifier onlyThis() {
-    if(msg.sender != address(this)) {//Checks if msg.sender is this contract
-      throw; //Throws out the function call if it isn't
+    if(msg.sender != address(this)) {
+      throw;
     }
     _;
   }
 
-  /*
-  @type: event
-  @name: CompletedAssessment
-  @purpose: To build a database of completed assessments
-  */
+  //@purpose: To build a database of completed assessments
   event CompletedAssessment (
     address _assessee, //The address of the user who took the assessment
     int _score, //The score of the assessee
@@ -75,15 +66,12 @@ contract Concept {
   }
 
   /*
-  @type: function
-  @purpose: To add a user to the contract the first user for this concept
-  @param: address firstUser = the address of the first user to own the concept
-  @returns: nothing
+  @purpose: To add the firstUser to Mew
   */
-  function addUser(address user) onlyUserRegistry() {
+  function addUser(address firstUser) onlyUserRegistry() {
     if(ConceptRegistry(conceptRegistry).mewAddress() == address(this))
     {
-      owners.push(user);
+      owners.push(firstUser);
     }
   }
 
@@ -95,6 +83,7 @@ contract Concept {
     children.push(_child);
   }
 
+  //@purpose: returns a random member of the Concept. Users with high weights are more likely to be called
   function getRandomMember(uint seed) returns(address) {
     address randomUser = owners[Math.getRandom(seed, owners.length-1)];
     if(User(randomUser).availability() && weights[randomUser] > now % maxWeight) {
@@ -104,17 +93,15 @@ contract Concept {
   }
 
   /*
-  @type: function
   @purpose: To make a new assessment
-  @param: uint time = the time that assessors will have to assess in this assessment
-  @param: uint size = the size of the assessment
-  @returns: nothing
+  @param: uint cost = the cost per assessor
+  @param: uint size = the number of assessors
   */
   function makeAssessment(uint cost, uint size) returns(bool) {
-    if(size >= 5 && subtractBalance(msg.sender, cost*size)) { //Checks if the assessment has a size of at least 5
-      Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost); //Makes a new assessment with the given parameters
+    if(size >= 5 && subtractBalance(msg.sender, cost*size)) { //Checks if the assessment has a size of at least 5 and tries to subtract the neccesary tokens from the user
+      Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost);
       assessmentExists[address(newAssessment)] = true; //Sets the assessment's existance to true
-      User(msg.sender).notification(address(this), 19); //You have been charged for your assessment
+      User(msg.sender).notification(address(this), 0); //You have been charged for your assessment
       newAssessment.setAssessorPool(block.number, address(this), size*20); //Calls the function to set the assessor pool
       return true;
     }
@@ -124,7 +111,6 @@ contract Concept {
   }
 
   /*
-  @type: function
   @purpose: To finish the assessment process
   @param: int score = the assessee's score
   @param: address assessee = the address of the assessee
@@ -132,7 +118,7 @@ contract Concept {
   @returns: nothing
   */
   function finishAssessment(int score, address assessee, address assessment) {
-    if(msg.sender == assessment) { //Checks to make sure this function is being callled by the assessment
+    if(msg.sender == assessment) {
       if(score > 0) {
         owners.push(assessee); //Makes the assessee an owner of this concept
         uint weight = Assessment(assessment).size()*uint(score);
@@ -145,7 +131,6 @@ contract Concept {
   }
 
   /*
-  @type: function
   @purpose: To add an owner to a concept and recursively add an owner to parent concept, halving the added weight with each generation and chinging the macWeight for a concept if neccisairy
   @param: bool pass = whether or not the assessee passed the assessment
   @param: address assessee = the address of the assessee
@@ -164,14 +149,14 @@ contract Concept {
   }
 
   function subtractBalance(address _from, uint _amount) returns(bool) {
-    if(assessmentExists[msg.sender] || msg.sender == address(this)) { //Checks if msg.sender is an existing assessment
+    if(assessmentExists[msg.sender] || msg.sender == address(this)) { //Checks if msg.sender is an existing assessment or the concept
       return UserRegistry(userRegistry).subtractBalance(_from, _amount);
     }
   }
 
   function addBalance(address _to, uint _amount)  returns(bool) {
     if(assessmentExists[msg.sender]) { //Checks if msg.sender is an existing assessment
-      return UserRegistry(userRegistry).addBalance(_to, _amount); //Changes the user's token balance
+      return UserRegistry(userRegistry).addBalance(_to, _amount);
     }
   }
 

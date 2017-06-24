@@ -2,34 +2,22 @@ pragma solidity ^0.4.0;
 
 import "./Concept.sol";
 
-/*
-@type: contract
-@name: ConceptRegistry
-@purpose: To create concepts and store some concept data
-*/
+
+//@purpose: To create and store the concept ontology
 contract ConceptRegistry {
-  mapping (address => bool) public conceptExists; //Maps concept addresses to a bool to confirm their existance
+  mapping (address => bool) public conceptExists; //Maps concepts to a bool
   address userRegistry; //The address of the userRegistry contract
-  bool initialized = false; //Keeps track of whether or not the function to set the userRegistry variable is locked yet or not
-  address public mewAddress;
+  bool initialized = false; // for locking the init function
+  address public mewAddress; // a manually created contract with no parents
 
-  /*
-  @occasion: When a concept is created
-  @purpose: To help build a data store of concepts
-  */
-  event ConceptCreation (address _concept); //the address of the concept that was created
+  event ConceptCreation (address _concept);
 
-  /*
-  @type: function
-  @purpose: To set the userRegistry address
-  @param: address userRegistry = the address of the userRegistry contract
-  @returns: nothing
-  */
+  //@purpose: give this contract the address of a UserRegistry and mew Concept
   function init(address _userRegistry, address mew) returns(bool){
     if(initialized == false) { //Checks if the function has already been called
-      userRegistry = _userRegistry; //Sets the userRegistry address
+      userRegistry = _userRegistry;
       mewAddress = mew;
-      initialized = true; //Makes it so this function cannot be called again
+      initialized = true; //locks this function
     }
     else {
       return(false);
@@ -41,15 +29,16 @@ contract ConceptRegistry {
   @param: address[] parentList = an array of addresses containing the addresses of the concepts parents
   */
   function makeConcept(address[] parentList) {
-    Concept newConcept = new Concept(parentList, userRegistry); //Makes a new concept with the provided data
-    address newConceptAddress = address(newConcept); //initializes an address variable and sets it equal to the address of the newly created concept
-    conceptExists[newConceptAddress] = true; //Maps the concept address to true to show that it exists
-    if(parentList.length == 0) {
+    Concept newConcept = new Concept(parentList, userRegistry);
+    address newConceptAddress = address(newConcept);
+    conceptExists[newConceptAddress] = true;
+
+    if(parentList.length == 0) { // if no parents specified make it a child of the Mew concept
       Concept(mewAddress).addChild(newConceptAddress);
     }
-    for(uint j=0; j < parentList.length; j++) { //Iterates of the parents array in memory
-      Concept(parentList[j]).addChild(newConceptAddress); //Adds the newly created concept to each of the parents as a child
+    for(uint j=0; j < parentList.length; j++) { // Iterates parents to add this concept as a child
+      Concept(parentList[j]).addChild(newConceptAddress);
     }
-    ConceptCreation(newConceptAddress); //Makes ConceptCreation event with provided data
+    ConceptCreation(newConceptAddress);
   }
 }
