@@ -29,6 +29,7 @@ contract ConceptRegistry {
     if(initialized == false) { //Checks if the function has already been called
       userRegistry = _userRegistry; //Sets the userRegistry address
       mewAddress = mew;
+      conceptExists[mewAddress] = true;
       initialized = true; //Makes it so this function cannot be called again
     }
     else {
