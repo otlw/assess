@@ -82,11 +82,10 @@ contract User {
     }
   }
   /*
-    function to invoce another contract using this User.sol as a proxy
+    function to invoke another contract's function
 @param destination: the contract, whose function is to be called
-@param value, the amount of gas allowed to be spent
+@param value, the amount of Ether sent with the call
 @param data to be sent along with the call
-example usage: 
    */
   function execute(address destination, uint value, bytes data) onlyUser() returns(bool) {
     if(destination.call.value(value)(data)) {

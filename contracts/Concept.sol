@@ -13,12 +13,12 @@ import "./Math.sol";
 */
 contract Concept {
   address[] public parents; //The concepts that this concept is child to (ie: Calculus is child to Math)
-  address[] public children; //The concepts that this concept is parent to (ie: Math is parent to Calculus) //?when is this needed?
+  address[] public children; //The concepts that this concept is parent to (ie: Math is parent to Calculus)
   address userRegistry; //The address of the userRegistry contract
   address conceptRegistry; //The address of the conceptRegistry contract
   uint public maxWeight; //The current highest weight for this assessment
   address[] public owners; //Those who have earned the concept
-  mapping (address => int) public currentScores; //The most recent score of a user //?why is this needed?
+  mapping (address => int) public currentScores; //The most recent score of a user
   mapping (address => bool) public assessmentExists; //All existing assessments
   mapping (address => uint) public weights; //The weighting used by the assessor selection algorhitm for each owner
 
@@ -55,15 +55,9 @@ contract Concept {
     int _score, //The score of the assessee
     address _assessment
   );
-
-  //events for debgging
-  event Feedback(string what, address sender);
-  event intFeedback(uint code, address sender);
-  event booFeedback(string what, bool b);
-
   
   function Concept(address[] _parents, address _userRegistry) {
-    parents = _parents; //do we check if these exist? new concepts are children of mew? is it possible to insert a concept between two existing ones-> no?
+    parents = _parents;
     userRegistry = _userRegistry;
     conceptRegistry = UserRegistry(userRegistry).conceptRegistry();
   }
@@ -122,13 +116,10 @@ contract Concept {
       assessmentExists[address(newAssessment)] = true; //Sets the assessment's existance to true
       User(msg.sender).notification(address(this), 19); //You have been charged for your assessment
       newAssessment.setAssessorPool(block.number, address(this), size*20); //Calls the function to set the assessor pool
-      Feedback("makeAssessCaller", msg.sender);
       return true;
     }
-    else {
-      Feedback("makeAssessCaller", msg.sender);
+    else
       return false;
-    }
   }
 
   /*
@@ -175,10 +166,6 @@ contract Concept {
     if(assessmentExists[msg.sender] || msg.sender == address(this)) { //Checks if msg.sender is an existing assessment
       return UserRegistry(userRegistry).subtractBalance(_from, _amount);
     }
-    else
-      Feedback("substrBalCaller", msg.sender);
-    Feedback("address(this) in Concept.substractBalan", address(this));
-    booFeedback("1st comp", msg.sender == address(this));
   }
 
   function addBalance(address _to, uint _amount)  returns(bool) {

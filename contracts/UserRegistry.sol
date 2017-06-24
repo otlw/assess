@@ -11,8 +11,8 @@ import "./ConceptRegistry.sol";
 */
 contract UserRegistry {
   address public conceptRegistry; //The address of the conceptRegistry contract
-  mapping (address => uint) public balances; //Maps the addresses of users( to their token balances
-  mapping (address => address) public users; //Maps the addresses of the users (wallets) to their accounts (User-contracts)
+  mapping (address => uint) public balances; //Maps the addresses of users to their token balances
+  mapping (address => address) public users; //Maps the addresses of the users to their accounts
   bool firstUserMade = false; //Keeps track of whether or not the first user has been made yet
   event UserCreation(address _userAddress); //address of the created user contract
 
@@ -54,7 +54,7 @@ contract UserRegistry {
   function firstUser(address userAddress) {
     if(firstUserMade == false) {
       User newUser = new User(userAddress, address(this)); //Makes a new user that represents the address from userAddress
-      Concept(ConceptRegistry(conceptRegistry).mewAddress()).addUser(address(newUser)); //? why is mewadress a call?
+      Concept(ConceptRegistry(conceptRegistry).mewAddress()).addUser(address(newUser));
       users[userAddress] = newUser;
       balances[newUser] = 1000;
       UserCreation(address(newUser)); //Makes a new UserCreation event with the address of the newly created user
