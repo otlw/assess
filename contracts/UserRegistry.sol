@@ -61,6 +61,10 @@ contract UserRegistry {
     availability[msg.sender] = !availability[msg.sender];
   }
 
+  function notification(address user, uint topic) {
+    Notification(user, msg.sender, topic);
+  }
+
   function firstUser(address userAddress) {
     if(firstUserMade == false) {
       Concept(ConceptRegistry(conceptRegistry).mewAddress()).addUser(userAddress);
