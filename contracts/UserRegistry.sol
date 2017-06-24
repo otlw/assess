@@ -22,6 +22,7 @@ contract UserRegistry {
       3 = Assessment Cancled and you have been refunded
       4 = Assessment Has Started
       5 = Send in Score
+      6 = Payout
     */
 
   modifier onlyConcept() {
