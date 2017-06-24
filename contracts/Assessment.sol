@@ -82,23 +82,23 @@ contract Assessment {
     startTime = block.timestamp;
     size = _size;
     cost = _cost;
-    //User(assessee).notification(concept, 0); //Assessment made
+    UserRegistry(userRegistry).notification(assessee, 0); //Assessment made
   }
 
 
   function cancelAssessment() onlyConceptAssessment() {
     Concept(concept).addBalance(assessee, cost*size);
-    //User(assessee).notification(concept, 3); //Assessment Cancled and you have been refunded
+    UserRegistry(userRegistry).notification(assessee, 3); //Assessment Cancled and you have been refunded
     for(uint i = 0; i < assessors.length; i++) {
       Concept(concept).addBalance(assessors[i], cost);
-      //User(assessors[i]).notification(concept, 3); //Assessment Cancled and you have been refunded
+      UserRegistry(userRegistry).notification(assessors[i], 3); //Assessment Cancled and you have been refunded
     }
     suicide(conceptRegistry);
   }
 
   function addAssessorToPool(address assessor) onlyConcept() returns(bool) {
     if(uint(assessorState[assessor]) == 0) {//Checks if the called assessor hasn't already been called
-      //User(assessor).notification(concept, 1); //Called As A Potential Assessor
+      UserRegistry(userRegistry).notification(assessor, 1); //Called As A Potential Assessor
       assessorState[assessor] = State.Called; //Sets the state of the assessor as called
       return true;
     }
@@ -134,7 +134,7 @@ contract Assessment {
       assessors.push(msg.sender); //Adds the user that called this function to the array of confirmed assessors
       assessorState[msg.sender] = State.Confirmed; //Sets the assessor's state to confirmed
       stake[msg.sender] = cost; //Sets the current stake value of the assessor to the cost of the assessment
-      //User(msg.sender).notification(concept, 2); //Confirmed for assessing, stake has been taken
+      UserRegistry(userRegistry).notification(msg.sender, 2); //Confirmed for assessing, stake has been taken
     }
     if(assessors.length == size) { //If enough assessors have been called
       notifyStart(); //Assessors and the assessee are notified that the assessmentn has begun
@@ -146,9 +146,9 @@ contract Assessment {
 
   function notifyStart() onlyThis() { //Sends a notification to the assessors and the assessee informing them that the assessment has begun
     for(uint i = 0; i < assessors.length; i++) {
-      //User(assessors[i]).notification(concept, 4); //Assessment Has Started
+      UserRegistry(userRegistry).notification(assessors[i], 4); //Assessment Has Started
     }
-    //User(assessee).notification(concept, 4); //Assessment Has Started
+    UserRegistry(userRegistry).notification(assessee, 4); //Assessment Has Started
   }
 
   function setData(string _data) onlyAssessorAssessee() { //Allows the assessors and the assessee to publically add data for the purposes of the assessment
@@ -172,7 +172,7 @@ contract Assessment {
     if(done == size) {//If all the assessors have either committed or had their entire stake burned
       for(uint j = 0; j < assessors.length; j++) { //Loops through all assessors
         if(assessorState[assessors[j]] == State.Committed) { //Sends a notification to all the assessors that have committed to reveal their score
-          //User(assessors[j]).notification(concept, 5); //Send in Score
+          UserRegistry(userRegistry).notification(assessors[j], 5); //Send in Score
           //NOTE: The front end should receive this notification and then automatically call the reveal function
         }
       }
@@ -262,7 +262,7 @@ contract Assessment {
   }
 
   function payout() onlyThis() {
-    for(uint i = 0; i < size; i++) //Loops through all the confirmed assessors {
+    for(uint i = 0; i < size; i++) { //Loops through all the confirmed assessors
       int score = scores[assessors[i]]; //Gets the score of an assessor
       int scoreDistance = ((score - finalScore)*100)/finalScore; //Calculates the percent difference between the final score the assessors score
       if(scoreDistance < 0) { //Makes negative scoreDistances positive
@@ -273,13 +273,13 @@ contract Assessment {
         uint q = 1; //Inflation rate factor, WE NEED TO FIGURE THIS OUT AT SOME POINT
         payoutValue = q*cost*((100 - uint(scoreDistance))/100); //The assessor's payout will be some constant times a propotion of their original stake determined by how close to the final score they were
         Concept(concept).addBalance(assessors[i], payoutValue); //Pays the user
-        //User(assessors[i]).notification(concept, 15); //You Have Received Payment For Your Assessment
       }
       if(inRewardCluster[score] == false) { //If the assessor's score wasn't in the largest cluster
         payoutValue = stake[assessors[i]]*((200 - uint(scoreDistance))/200); //The assessor's payout will be a propotion of their remaining stake determined by their distance from the final score
         Concept(concept).addBalance(assessors[i], payoutValue); //Pays the user
-        //User(assessors[i]).notification(concept, 16); //You Have Received Some of Your Stake Back For Your Assessment
       }
     Concept(concept).finishAssessment(finalScore, assessee, address(this)); //Sends assessment info to the concept so that it can update its records
+    UserRegistry(userRegistry).notification(assessors[i], 6); //You Have Received Payment For Your Assessment
+    }
   }
 }
