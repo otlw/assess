@@ -46,18 +46,6 @@ contract UserRegistry {
     conceptRegistry = _conceptRegistry;
   }
 
-  /*
-  @type: function
-  @purpose: To create a user contract
-  @param: address userAddress = the address of the user's wallet
-  @param: address masterAddress = the address of the master contract that stores this user's address
-  @returns: nothing
-  */
-  function addUser() {
-    Concept(ConceptRegistry(conceptRegistry).mewAddress()).addUser(msg.sender);
-    UserCreation(msg.sender); //Makes a new UserCreation event with the address of the newly created user
-  }
-
   function toggleAvailability() {
     availability[msg.sender] = !availability[msg.sender];
   }
