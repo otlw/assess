@@ -14,6 +14,15 @@ contract UserRegistry {
   mapping (address => bool) public availability;
   bool firstUserMade = false; //Keeps track of whether or not the first user has been made yet
   event UserCreation(address _userAddress); //address of the created user contract
+  event Notification(address user, address sender, uint topic);
+    /*
+      0 = You've started an assessment
+      1 = Called As A Potential Assessor
+      2 = Confirmed for assessing, stake has been taken
+      3 = Assessment Cancled and you have been refunded
+      4 = Assessment Has Started
+      5 = Send in Score
+    */
 
   modifier onlyConcept() {
     if(ConceptRegistry(conceptRegistry).conceptExists(msg.sender) == false) //checks if the address calling the function is not a concept
