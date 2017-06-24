@@ -79,10 +79,10 @@ contract Concept {
   @param: address firstUser = the address of the first user to own the concept
   @returns: nothing
   */
-  function addUser(address user) onlyUserRegistry() {
+  function addFirstUser(address user) onlyUserRegistry() {
     if(ConceptRegistry(conceptRegistry).mewAddress() == address(this))
     {
-      owners.push(user);
+      addOwner(user, 100);
     }
   }
 

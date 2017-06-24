@@ -56,7 +56,7 @@ contract UserRegistry {
 
   function firstUser(address userAddress) {
     if(firstUserMade == false) {
-      Concept(ConceptRegistry(conceptRegistry).mewAddress()).addUser(userAddress);
+      Concept(ConceptRegistry(conceptRegistry).mewAddress()).addFirstUser(userAddress);
       balances[userAddress] = 1000;
       UserCreation(userAddress); //Makes a new UserCreation event with the address of the newly created user
     }
