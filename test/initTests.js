@@ -64,87 +64,42 @@ contract('Initialization', function(accounts) {
         });
     })
     describe("UserRegistry", function(){
-        var otherUser;
-        it("should create firstUser", function(){
+        it("should initiate first account", function(){
             return UserRegistry.deployed().then(function(instance){
                 UserRegistryInstance = instance
-                return instance.firstUser(accounts[0])
+                return instance.firstUser(accounts[0], {from: accounts[0]})
             }).catch(function(e){
                 assert("there was an error!")
             })
-                });
-        it("should add another user", function(){
-            return UserRegistry.deployed().then(function(instance){
-                UserRegistryInstance = instance
-                return UserRegistryInstance.addUser(accounts[1], {from:accounts[1]})
-            }).then(function(result){
-                userAddress = result.logs[0].args["_userAddress"]
-                otherUser = User.at(userAddress)
-                return UserRegistryInstance.users.call(accounts[1])
-            }).then(function(userContractByRegistry){
-                assert.equal(userContractByRegistry, userAddress, "the address of otherUser's wallet is not correctly stored")
-            }).then(function() {
-                return UserRegistryInstance.balances.call(userAddress)
-            }).then(function(otherUserBalance) {
-                assert.equal(otherUserBalance, 0, "the new user does not have a balance of 0")
+        })
+        it("should own the mew-concept", function(){
+            return mewConcept.weights.call(accounts[0]).then(function(weight){
+                assert.equal(weight.toNumber(), 100)
             })
-        });
+        })
+        it("should have a balance of 1000", function(){
+            return UserRegistryInstance.balances.call(accounts[0]).then(function(balance) {
+                assert.equal(balance.toNumber(), 1000)
+            })
+        })
+    })
+
+    describe("tokenTransfers", function(){
         it("should transfer token between users", function(){
             return UserRegistry.deployed().then(function(instance){
                 UserRegistryInstance = instance
                 //get address of User-contracts
-                return UserRegistryInstance.users.call(accounts[0]).then(function(address){
-                    address0 = address
-                    User0 = User.at(address0)
-                    return UserRegistryInstance.users.call(accounts[1]).then(function(address){
-                        address1 = address
-                        User1 = User.at(address1)
-                        //create args for call via proxy
-                        const inputBytecode = abi.encodeMethod(UserRegistry.abi[7], [address1, 200]);
-                        return User0.execute(UserRegistryInstance.address, 0, inputBytecode)
-                    }).then(function(){
-                        return UserRegistryInstance.balances.call(address1)
-                    }).then(function(balance1){
-                        assert.equal(balance1.toNumber(), 200, "otherUser did not receive tokens")
-                        return UserRegistryInstance.balances.call(address0)
-                    }).then(function(balance0){
-                        assert.equal(balance0.toNumber(), 800, "firstUser did not send tokens")
+                console.log("test")
+                return UserRegistryInstance.transfer(accounts[1], 200, {from: accounts[0]}).then(function(){
+                    UserRegistryInstance.balances.call(accounts[0]).then(function(balance) {
+                        assert.equal(balance.toNumber(), 800)
+                    })
+                }).then(function(){
+                    UserRegistryInstance.balances.call(accounts[1]).then(function(balance){
+                        assert.equal(balance.toNumber(), 200)
                     })
                 })
             })
-        });
-        describe("firstUser", function(){
-            it("should have a balance of 800 (1000-200)", function(){
-                return UserRegistryInstance.users.call(accounts[0]).then(function(address){
-                    return UserRegistryInstance.balances.call(address);
-                }).then(function(balance) {
-                    assert.equal(balance.toNumber(), 800, "the balance of the first user isn't 800")
-                })
-            });
-            it("should own the mew-concept", function(){
-                return UserRegistryInstance.users.call(accounts[0]).then(function(address){
-                    firstUserAddress=address;
-                    //firstUser = User.at(firstUserAddress)
-                    return mewConcept.owners.call(0)
-                }).then(function(firstOwnerOfMew) {
-                    assert.equal(firstOwnerOfMew, firstUserAddress, "the mewConcept does not know it is owned by a user")
-                })
-            });
-        })
-        describe("the other user", function(){
-            it("should also own the mew-concept", function(){
-                return mewConcept.owners.call(1).then(function(secondOwnerOfMew){
-                    assert.equal(secondOwnerOfMew, otherUser.address, "mew does not know it is owned by otherUser")
-                })
-            });
-            //this will be executed after the transfer test, so the balance will be 200 instead of 0
-            it("should have a balance of 0+200", function(){
-                return UserRegistryInstance.users.call(accounts[1]).then(function(address){
-                    return UserRegistryInstance.balances.call(address);
-                }).then(function(balance) {
-                    assert.equal(balance.toNumber(), 200, "the balance of otherUser user isn't 200")
-                })
-            });
         });
     })
 })
