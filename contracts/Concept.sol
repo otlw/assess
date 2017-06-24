@@ -89,7 +89,7 @@ contract Concept {
   function addFirstUser(address user) onlyUserRegistry() {
     if(ConceptRegistry(conceptRegistry).mewAddress() == address(this))
     {
-      addOwner(user, 100);
+      this.addOwner(user, 100);
     }
   }
 
@@ -142,7 +142,7 @@ contract Concept {
       if(score > 0) {
         owners.push(assessee); //Makes the assessee an owner of this concept
         uint weight = Assessment(assessment).size()*uint(score);
-        addOwner(assessee, weight);
+        this.addOwner(assessee, weight);
       }
       currentScores[assessee] = score; //Maps the assessee to their score
       CompletedAssessment(assessee, score, assessment); //Makes an event with this assessment's data
