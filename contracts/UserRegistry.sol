@@ -1,7 +1,6 @@
 pragma solidity ^0.4.0;
 
 import "./Concept.sol";
-import "./User.sol";
 import "./ConceptRegistry.sol";
 
 /*
@@ -10,11 +9,22 @@ import "./ConceptRegistry.sol";
 @purpose: To store data about users for easy, secure access and manage token balances
 */
 contract UserRegistry {
-  address public conceptRegistry;
-  mapping (address => uint) public balances;
-  mapping (address => address) public users;
-  bool firstUserMade = false;
+  address public conceptRegistry; //Tnce
+  mapping (address => uint) public balances; //Maps the addresses of users to their token balances
+  mapping (address => bool) public availability;
+  mapping (address => mapping (address => uint)) public extTransferAmount;
+  bool firstUserMade = false; //Keeps track of whether or not the first user has been made yet
   event UserCreation(address _userAddress); //address of the created user contract
+  event Notification(address user, address sender, uint topic);
+    /*
+      0 = You've started an assessment
+      1 = Called As A Potential Assessor
+      2 = Confirmed for assessing, stake has been taken
+      3 = Assessment Cancled and you have been refunded
+      4 = Assessment Has Started
+      5 = Send in Score
+      6 = Payout
+    */
 
   modifier onlyConcept() {
     if(ConceptRegistry(conceptRegistry).conceptExists(msg.sender) == false)
@@ -36,26 +46,19 @@ contract UserRegistry {
     conceptRegistry = _conceptRegistry;
   }
 
-  /*
-  @type: function
-  @purpose: To create a user contract
-  @param: address userAddress = the address of the user's wallet
-  @returns: nothing
-  */
-  function addUser(address userAddress) {
-    User newUser = new User(userAddress, address(this));
-    Concept(ConceptRegistry(conceptRegistry).mewAddress()).addUser(address(newUser));
-    users[userAddress] = newUser;
-    UserCreation(address(newUser)); // event
+  function toggleAvailability() {
+    availability[msg.sender] = !availability[msg.sender];
+  }
+
+  function notification(address user, uint topic) {
+    Notification(user, msg.sender, topic);
   }
 
   function firstUser(address userAddress) {
     if(firstUserMade == false) {
-      User newUser = new User(userAddress, address(this));
-      Concept(ConceptRegistry(conceptRegistry).mewAddress()).addUser(address(newUser));
-      users[userAddress] = newUser;
-      balances[newUser] = 1000;
-      UserCreation(address(newUser)); // event
+      Concept(ConceptRegistry(conceptRegistry).mewAddress()).addFirstUser(userAddress);
+      balances[userAddress] = 1000;
+      UserCreation(userAddress); //Makes a new UserCreation event with the address of the newly created user
     }
   }
 
@@ -89,6 +92,20 @@ contract UserRegistry {
     }
     else {
       return false;
+    }
+  }
+
+  function extTransfer (address _from, address _to, uint _amount) returns(bool) {
+    if(extTransferAmount[_from][msg.sender] > _amount &&
+       balances[_from] > _amount &&
+       balances[_to] > balances[_to] + _amount) {
+        balances[_from] -= _amount;
+        balances[_to] += _amount;
+        extTransferAmount[_from][msg.sender] -= _amount;
+        return true;
+    }
+    else {
+        return false;
     }
   }
 

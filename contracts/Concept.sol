@@ -1,7 +1,6 @@
 pragma solidity ^0.4.0;
 
 import "./UserRegistry.sol";
-import "./User.sol";
 import "./ConceptRegistry.sol";
 import "./Assessment.sol";
 import "./Math.sol";
@@ -15,8 +14,9 @@ contract Concept {
   uint public maxWeight; //The current highest weight for this assessment
   address[] public owners; //Those who have earned the concept
   mapping (address => int) public currentScores; //The most recent score of a user
-  mapping (address => bool) public assessmentExists; //mapping valid assessments to a bool for permissioning
-  mapping (address => uint) public weights; //The weight of a given user calculated by their score and number of assessors.
+  mapping (address => bool) public assessmentExists; //All existing assessments
+  mapping (address => uint) public weights; //The weighting used by the assessor selection algorhitm for each owner
+  mapping (address => mapping (address => uint)) public extMakeAssessmentAmount;
 
   modifier onlyUserRegistry() {
     if(msg.sender != userRegistry)
@@ -40,7 +40,18 @@ contract Concept {
     _;
   }
 
-  //@purpose: To build a database of completed assessments
+  modifier onlyConcept(){
+      if(!ConceptRegistry(conceptRegistry).conceptExists(msg.sender)) {
+          throw;
+      }
+      _;
+  }
+
+  /*
+  @type: event
+  @name: CompletedAssessment
+  @purpose: To build a database of completed assessments
+  */
   event CompletedAssessment (
     address _assessee, //The address of the user who took the assessment
     int _score, //The score of the assessee
@@ -68,10 +79,10 @@ contract Concept {
   /*
   @purpose: To add the firstUser to Mew
   */
-  function addUser(address firstUser) onlyUserRegistry() {
+  function addFirstUser(address user) onlyUserRegistry() {
     if(ConceptRegistry(conceptRegistry).mewAddress() == address(this))
     {
-      owners.push(firstUser);
+      this.addOwner(user, 100);
     }
   }
 
@@ -86,7 +97,7 @@ contract Concept {
   //@purpose: returns a random member of the Concept. Users with high weights are more likely to be called
   function getRandomMember(uint seed) returns(address) {
     address randomUser = owners[Math.getRandom(seed, owners.length-1)];
-    if(User(randomUser).availability() && weights[randomUser] > now % maxWeight) {
+    if(UserRegistry(userRegistry).availability(randomUser) && weights[randomUser] > now % maxWeight) {
         return randomUser;
      }
     return address(0x0);
@@ -101,12 +112,26 @@ contract Concept {
     if(size >= 5 && subtractBalance(msg.sender, cost*size)) { //Checks if the assessment has a size of at least 5 and tries to subtract the neccesary tokens from the user
       Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost);
       assessmentExists[address(newAssessment)] = true; //Sets the assessment's existance to true
-      User(msg.sender).notification(address(this), 0); //You have been charged for your assessment
+      UserRegistry(userRegistry).notification(address(this), 0); //You have been charged for your assessment
       newAssessment.setAssessorPool(block.number, address(this), size*20); //Calls the function to set the assessor pool
       return true;
     }
     else {
       return false;
+    }
+  }
+
+  function extMakeAssessment(address _assessee, uint _cost, uint _size) returns(bool) {
+    if(extMakeAssessmentAmount[_assessee][msg.sender] >= _cost * _size &&
+       _size >= 5 &&
+       subtractBalance(_assessee, _cost*_size)) {
+        Assessment newAssessment = new Assessment(_assessee, userRegistry, conceptRegistry, _size, _cost);
+        assessmentExists[address(newAssessment)] = true;
+        newAssessment.setAssessorPool(block.number, address(this), _size*20);
+        extMakeAssessmentAmount[_assessee][msg.sender] -= _cost*_size;
+    }
+    else {
+        return false;
     }
   }
 
@@ -122,8 +147,7 @@ contract Concept {
       if(score > 0) {
         owners.push(assessee); //Makes the assessee an owner of this concept
         uint weight = Assessment(assessment).size()*uint(score);
-        addOwner(assessee, weight);
-        User(assessee).setConceptPassed(true);
+        this.addOwner(assessee, weight);
       }
       currentScores[assessee] = score; //Maps the assessee to their score
       CompletedAssessment(assessee, score, assessment); //Makes an event with this assessment's data
@@ -137,7 +161,7 @@ contract Concept {
   @param: uint weight = the weight for the owner
   @returns: nothing
   */
-  function addOwner(address assessee, uint weight) onlyThis() {
+  function addOwner(address assessee, uint weight) onlyConcept() {
     owners.push(assessee); //adds the owner to the array
     weights[assessee] += weight; //adds the weight to the current value in mapping
     if(weight > maxWeight) {//checks if the weight is greater than the currant maxWeight
