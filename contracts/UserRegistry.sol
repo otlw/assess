@@ -12,6 +12,7 @@ contract UserRegistry {
   address public conceptRegistry; //The address of the conceptRegistry contract
   mapping (address => uint) public balances; //Maps the addresses of users to their token balances
   mapping (address => bool) public availability;
+  mapping (address => mapping (address => uint)) public extTransferAmount;
   bool firstUserMade = false; //Keeps track of whether or not the first user has been made yet
   event UserCreation(address _userAddress); //address of the created user contract
   event Notification(address user, address sender, uint topic);
@@ -89,6 +90,20 @@ contract UserRegistry {
     }
     else {
       return false;
+    }
+  }
+
+  function extTransfer (address _from, address _to, uint _amount) returns(bool) {
+    if(extTransferAmount[_from][msg.sender] > _amount &&
+       balances[_from] > _amount &&
+       balances[_to] > balances[_to] + _amount) {
+        balances[_from] -= _amount;
+        balances[_to] += _amount;
+        extTransferAmount[_from][msg.sender] -= _amount;
+        return true;
+    }
+    else {
+        return false;
     }
   }
 
