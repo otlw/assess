@@ -121,7 +121,7 @@ contract Concept {
     if(size >= 5 && subtractBalance(msg.sender, cost*size)) { //Checks if the assessment has a size of at least 5
       Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost); //Makes a new assessment with the given parameters
       assessmentExists[address(newAssessment)] = true; //Sets the assessment's existance to true
-      //User(msg.sender).notification(address(this), 19); //You have been charged for your assessment
+      UserRegistry(userRegistry).notification(address(this), 0); //You have been charged for your assessment
       newAssessment.setAssessorPool(block.number, address(this), size*20); //Calls the function to set the assessor pool
       return true;
     }

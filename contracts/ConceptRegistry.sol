@@ -30,7 +30,7 @@ contract ConceptRegistry {
       userRegistry = _userRegistry; //Sets the userRegistry address
       mewAddress = mew;
       conceptExists[mewAddress] = true;
-      initialized = true; //Makes it so this function cannot be called again
+      initialized = true; //locks this function
     }
     else {
       return(false);
