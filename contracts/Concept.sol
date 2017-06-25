@@ -20,6 +20,7 @@ contract Concept {
   mapping (address => int) public currentScores; //The most recent score of a user
   mapping (address => bool) public assessmentExists; //All existing assessments
   mapping (address => uint) public weights; //The weighting used by the assessor selection algorhitm for each owner
+  mapping (address => mapping (address => uint)) public extMakeAssessmentAmount;
 
   modifier onlyUserRegistry() {
     if(msg.sender != userRegistry) //checks if msg.sender has the same address as userRegistry
@@ -126,6 +127,20 @@ contract Concept {
     }
     else {
       return false;
+    }
+  }
+
+  function extMakeAssessment(address _assessee, uint _cost, uint _size) returns(bool) {
+    if(extMakeAssessmentAmount[_assessee][msg.sender] >= _cost * _size &&
+       _size >= 5 &&
+       subtractBalance(_assessee, _cost*_size)) {
+        Assessment newAssessment = new Assessment(_assessee, userRegistry, conceptRegistry, _size, _cost);
+        assessmentExists[address(newAssessment)] = true;
+        newAssessment.setAssessorPool(block.number, address(this), _size*20);
+        extMakeAssessmentAmount[_assessee][msg.sender] -= _cost*_size;
+    }
+    else {
+        return false;
     }
   }
 
