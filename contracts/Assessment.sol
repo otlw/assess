@@ -100,6 +100,7 @@ contract Assessment {
 
   /*
   @purpose: To recursively set the pool to draw assessors from in the assessment
+  stops when the pool of potential assessors is 20 times the size of the assessment2
   @param: uint seed = the seed number for random number generation
   @param: address _concept = the concept being called from
   @param: uint num = the number of assessors to be called
@@ -107,7 +108,7 @@ contract Assessment {
   function setAssessorPool(uint seed, address _concept, uint num) onlyConceptAssessment() {
     uint numCalled = 0;
     for(uint k=0; k < num; k++) {
-      if(assessorPool.length == size*20){ return; }
+      if(assessorPool.length == size*20){ return; } //
       address randomUser = Concept(_concept).getRandomMember(seed + k);
       if(addAssessorToPool(randomUser)){
         numCalled++;
@@ -119,6 +120,17 @@ contract Assessment {
         setAssessorPool(seed + assessorPool.length, Concept(_concept).parents(i), remaining/Concept(_concept).getParentsLength() + 1); //Calls the remaining users from the parent concepts proportional to their size
       }
     }
+  }
+
+  /*
+    @purpose: To set the pool of assessors when there are so few users in the system that
+    assembling them at random is not meaningful. This will use all members of mew instead
+  */
+  function setAssessorPoolFromMew() onlyConcept() {
+    Concept mew = Concept(ConceptRegistry(conceptRegistry).mewAddress()); //TODO: can this be more elegant and/or in one line?
+      for(uint i=0; i<mew.getMemberLength(); i++){
+        addAssessorToPool(mew.members(i));
+      }
   }
 
   //@purpose: called by an assessor to confirm and stake
@@ -143,7 +155,6 @@ contract Assessment {
     }
     UserRegistry(userRegistry).notification(assessee, 4); //Assessment Has Started
   }
-
   function setData(string _data) onlyAssessorAssessee() {
     data[msg.sender].push(_data); //Adds the data to an array corresponding to the user that uploaded it
     DataSet(msg.sender, data[msg.sender].length - 1); // fire event

@@ -63,19 +63,17 @@ contract("ConceptRegistry", function() {
         }).then(function(parentAddressFromChild){
             assert.equal(parentAddressFromChild, parentAddress, "Child concept does not know its parent")
         })
-    });
-    it("should throw if parent doesn't exist", function(){
-        return ConceptRegistry.deployed().then(function(instance) {
-            return instance.makeConcept(["0x123"])
-        }).then(function (result) {
-            assert(false, "transaction should fail")
-        }).catch(function(e){
-            if(e.toString().indexOf('invalid opcode') > 0) {
-                assert(true)
-            }
-            else {
-                assert(false, e.toString())
-            }
+       describe("Initial User", function(){
+            it("should be a member of the mew-concept", function(){
+                return mewConcept.weights.call(accounts[0]).then(function(weight){
+                    assert.equal(weight.toNumber(), 100)
+                })
+            })
+            it("should have a balance of 1000", function(){
+                return UserRegistryInstance.balances.call(accounts[0]).then(function(balance) {
+                    assert.equal(balance.toNumber(), 1000)
+                })
+            });
         })
     })
 })
