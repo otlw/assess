@@ -12,7 +12,7 @@ contract UserRegistry {
   address public conceptRegistry; //Tnce
   mapping (address => uint) public balances; //Maps the addresses of users to their token balances
   mapping (address => bool) public availability;
-  mapping (address => mapping (address => uint)) public extTransferAmount;
+  mapping (address => mapping (address => uint)) public allowed;
   bool firstUserMade = false; //Keeps track of whether or not the first user has been made yet
   event UserCreation(address _userAddress); //address of the created user contract
   event Notification(address user, address sender, uint topic);
@@ -95,13 +95,18 @@ contract UserRegistry {
     }
   }
 
-  function extTransfer (address _from, address _to, uint _amount) returns(bool) {
-    if(extTransferAmount[_from][msg.sender] > _amount &&
+  function approve(address _spender, uint _amount) returns(bool) {
+      allowed[msg.sender][_spender] = _amount;
+      return true;
+  }
+
+  function transferFrom(address _from, address _to, uint _amount) returns(bool) {
+    if(allowed[_from][msg.sender] > _amount &&
        balances[_from] > _amount &&
        balances[_to] > balances[_to] + _amount) {
         balances[_from] -= _amount;
         balances[_to] += _amount;
-        extTransferAmount[_from][msg.sender] -= _amount;
+        allowed[_from][msg.sender] -= _amount;
         return true;
     }
     else {
