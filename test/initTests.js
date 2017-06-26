@@ -64,6 +64,20 @@ contract("ConceptRegistry", function() {
             assert.equal(parentAddressFromChild, parentAddress, "Child concept does not know its parent")
         })
     });
+    it("should throw if parent doesn't exist", function(){
+        return ConceptRegistry.deployed().then(function(instance) {
+            return instance.makeConcept(["0x123"])
+        }).then(function (result) {
+            assert(false, "transaction should fail")
+        }).catch(function(e){
+            if(e.toString().indexOf('invalid opcode') > 0) {
+                assert(true)
+            }
+            else {
+                assert(false, e.toString())
+            }
+        })
+    })
 })
 
 contract("Initial User", function(accounts){
