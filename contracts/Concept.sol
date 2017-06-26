@@ -133,6 +133,7 @@ contract Concept {
         assessmentExists[address(newAssessment)] = true;
         newAssessment.setAssessorPool(block.number, address(this), _size*20);
         approval[_assessee][msg.sender] -= _cost*_size;
+        return true;
     }
     else {
         return false;
