@@ -100,6 +100,7 @@ contract Assessment {
 
   /*
   @purpose: To recursively set the pool to draw assessors from in the assessment
+  stops when the pool of potential assessors is 20 times the size of the assessment2
   @param: uint seed = the seed number for random number generation
   @param: address _concept = the concept being called from
   @param: uint num = the number of assessors to be called
