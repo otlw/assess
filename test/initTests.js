@@ -12,7 +12,6 @@ var UserRegistryInstance;
 
 contract("ConceptRegistry", function() {
     var mewAddress;
-    var mewConcept;
     var createdConceptAddress;
     it("should know the mew address", function(){
         ConceptRegistry.deployed().then(function(instance) {
@@ -25,7 +24,7 @@ contract("ConceptRegistry", function() {
         })
     })
     it("should set mew as the parent when not specified", function() {
-        ConceptRegistry.deployed().then(function(instance) {
+        return ConceptRegistry.deployed().then(function(instance) {
             return instance.makeConcept([])
         }).then(function(result){
             createdConceptAddress = result.logs[0].args["_concept"]
@@ -38,15 +37,15 @@ contract("ConceptRegistry", function() {
             return Concept.at(createdConceptAddress)
         }).then(function(conceptInstance){
             return conceptInstance.parents.call(0)
-        }).then(function(address){
-            console.log(address)
-            assert.equal(address.toString(), mewAddress)
+        }).then(function(parentAddress){
+            assert.equal(parentAddress, mewAddress)
         })
     });
     it("should set the parents if specified", function() {
-        ConceptRegistry.deployed().then(function(instance) {
+        var childConceptAddress
+
+        return ConceptRegistry.deployed().then(function(instance) {
             //create a 2nd concept to be a child of mew
-            console.log(createdConceptAddress)
             parentAddress = createdConceptAddress
             return instance.makeConcept([parentAddress])
         }).then(function(result){ //catch transaction result
@@ -54,7 +53,9 @@ contract("ConceptRegistry", function() {
             childConceptAddress = result.logs[0].args["_concept"]
             childConcept = Concept.at(childConceptAddress); //create abstraction for the created Concept
             //check that the parent is linked to the child-concept
-            return createdConceptAddress.children.call(0)
+            return Concept.at(createdConceptAddress)
+        }).then(function(createdConceptInstance) {
+            return createdConceptInstance.children.call(0)
         }).then(function(childAddress){
             assert.equal(childAddress, childConceptAddress, "Parent concept does not know its child")
             //check that the child-concept is linked to the parent
@@ -65,16 +66,16 @@ contract("ConceptRegistry", function() {
     });
 })
 
-contract("Initial User", function(){
+contract("Initial User", function(accounts){
     it("should own the mew-concept", function(){
-        Concept.deployed().then(function(instance) {
+        return Concept.deployed().then(function(instance) {
             return instance.weights.call(accounts[0])
         }).then(function(weight) {
             assert.equal(weight.toNumber(), 100)
         })
     })
     it("should have a balance of 1000", function(){
-        UserRegistry.deployed().then(function(instance) {
+        return UserRegistry.deployed().then(function(instance) {
             return instance.balances.call(accounts[0])
         }).then(function(balance) {
             assert.equal(balance.toNumber(), 1000)
@@ -82,12 +83,12 @@ contract("Initial User", function(){
     });
 })
 
-contract("token transfers", function() {
+contract("token transfers", function(accounts) {
     it("Should modify balances correctly", function(){
         var account1InitialBalance;
         var account2InitialBalance;
         var amount = 200;
-        UserRegistry.deployed().then(function(instance){
+        return UserRegistry.deployed().then(function(instance){
             UserRegistryInstance = instance
             return UserRegistryInstance.balances.call(accounts[0])
         }).then(function(balance){
