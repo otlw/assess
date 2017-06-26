@@ -16,7 +16,7 @@ contract Concept {
   mapping (address => int) public currentScores; //The most recent score of a user
   mapping (address => bool) public assessmentExists; //All existing assessments
  mapping (address => uint) public weights; //The weighting used by the assessor selection algorhitm for each member
-  mapping (address => mapping (address => uint)) public extMakeAssessmentAmount;
+ mapping (address => mapping (address => uint)) public approval;
   modifier onlyUserRegistry() {
     if(msg.sender != userRegistry)
     {
@@ -101,22 +101,23 @@ contract Concept {
      }
     return address(0x0);
   }
-
+  event fb(uint code);
   /*
   @purpose: To make a new assessment
   @param: uint cost = the cost per assessor
   @param: uint size = the number of assessors
   */
   function makeAssessment(uint cost, uint size) returns(bool) {
-    if(size >= 5 && subtractBalance(msg.sender, cost*size)) { //Checks if the assessment has a size of at least 5 and tries to subtract the neccesary tokens from the user
+    if(size >= 5 && this.subtractBalance(msg.sender, cost*size)) { //Checks if the assessment has a size of at least 5 and tries to subtract the neccesary tokens from the user
       Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost);
       assessmentExists[address(newAssessment)] = true; //Sets the assessment's existance to true
-      UserRegistry(userRegistry).notification(address(this), 0); //You have been charged for your assessment
       // check if their are enough users in the system to assemble the pool at random
-      if (Concept(ConceptRegistry(conceptRegistry).mewAddress()).getMemberLength()<size*20)
+      if (Concept(ConceptRegistry(conceptRegistry).mewAddress()).getMemberLength()<size*20){
         newAssessment.setAssessorPoolFromMew(); // simply use all members of mew (Bootstrap phase)
-      else
+      }
+      else{
         newAssessment.setAssessorPool(block.number, address(this), size*20); //assemble the assessorPool by relevance 
+      }
       return true;
     }
     else {
@@ -127,11 +128,11 @@ contract Concept {
     approval[msg.sender][_from] = _amount;
     return true;
   }
-
+  event fsender(string where, address sender);
   function makeAssessmentFrom(address _assessee, uint _cost, uint _size) returns(bool) {
     if(approval[_assessee][msg.sender] >= _cost * _size &&
        _size >= 5 &&
-       subtractBalance(_assessee, _cost*_size)) {
+       this.subtractBalance(_assessee, _cost*_size)) {
         Assessment newAssessment = new Assessment(_assessee, userRegistry, conceptRegistry, _size, _cost);
         assessmentExists[address(newAssessment)] = true;
         newAssessment.setAssessorPool(block.number, address(this), _size*20);

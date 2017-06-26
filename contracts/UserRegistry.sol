@@ -59,6 +59,7 @@ contract UserRegistry {
       Concept(ConceptRegistry(conceptRegistry).mewAddress()).addFirstUser(userAddress);
       balances[userAddress] = 1000;
       UserCreation(userAddress); //Makes a new UserCreation event with the address of the newly created user
+      firstUserMade = true;
     }
   }
 

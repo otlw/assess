@@ -18,7 +18,7 @@ contract Assessment {
     Done, //Completed the assessment processs
     Burned //Entire stake has been burned
   }
-  address[] assessorPool; //The addresses of the user's that the assessors are randomly selected from
+  uint assessorPoolLength; //how many users are potential assessors
   address concept;
   address userRegistry;
   address conceptRegistry;
@@ -71,7 +71,7 @@ contract Assessment {
     startTime = block.timestamp;
     size = _size;
     cost = _cost;
-    UserRegistry(userRegistry).notification(assessee, 0); //Assessment made
+    UserRegistry(userRegistry).notification(assessee, 0); // assesse has started an assessment
   }
 
 
@@ -87,7 +87,7 @@ contract Assessment {
 
   //@purpose: adds a user to the pool eligible to accept an assessment
   function addAssessorToPool(address assessor) onlyConcept() returns(bool) {
-    if(uint(assessorState[assessor]) == 0) {//Checks if the called assessor hasn't already been called
+    if(uint(assessorState[assessor]) == 0) {//Checks if the called assessor hasn't already been called //TODO can we use State.called here?
       UserRegistry(userRegistry).notification(assessor, 1); //Called As A Potential Assessor
       assessorState[assessor] = State.Called; //Sets the state of the assessor as called
       return true;
@@ -108,7 +108,7 @@ contract Assessment {
   function setAssessorPool(uint seed, address _concept, uint num) onlyConceptAssessment() {
     uint numCalled = 0;
     for(uint k=0; k < num; k++) {
-      if(assessorPool.length == size*20){ return; } //
+      if(assessorPoolLength == size*20){ return; } //
       address randomUser = Concept(_concept).getRandomMember(seed + k);
       if(addAssessorToPool(randomUser)){
         numCalled++;
@@ -117,7 +117,7 @@ contract Assessment {
     uint remaining = num - numCalled;
     if(remaining > 0) {
       for(uint i = 0; i < Concept(_concept).getParentsLength(); i++) {
-        setAssessorPool(seed + assessorPool.length, Concept(_concept).parents(i), remaining/Concept(_concept).getParentsLength() + 1); //Calls the remaining users from the parent concepts proportional to their size
+        setAssessorPool(seed + assessorPoolLength, Concept(_concept).parents(i), remaining/Concept(_concept).getParentsLength() + 1); //Calls the remaining users from the parent concepts proportional to their size
       }
     }
   }
@@ -141,8 +141,8 @@ contract Assessment {
       stake[msg.sender] = cost; //Sets the current stake value of the assessor to the cost of the assessment
       UserRegistry(userRegistry).notification(msg.sender, 2); //Confirmed for assessing, stake has been taken
     }
-    if(assessors.length == size) { //If enough assessors have been called
-      notifyStart(); //Assessors and the assessee are notified that the assessmentn has begun
+  if(assessors.length == size) { //If enough assessors have been called
+    notifyStart(); //Assessors and the assessee are notified that the assessmentn has begun
     }
     else if(block.number - startTime > 15 && assessors.length < size){
       cancelAssessment(); //Cancels the assessment if not enough assessors confirm within 15 blocks
