@@ -1,19 +1,20 @@
 {
   "name": "truffle-fathom",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "a decentralized learning network",
-  "main": "./app/app.js",
+  "repository": "https://gitlab.com/fathom/assess",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "compile" "truffle compile"
-    "test": "truffle test"
+    "compile": "truffle compile",
+    "test": " testrpc > /dev/null 2>&1 & truffle test"
   },
   "author": "Jared Pereira",
   "license": "ISC",
-  "devDependencies": {},
-  "dependencies": {
-    "truffle-contract": "^1.1.10"
-  }
+  "devDependencies": {
+    "ethereumjs-testrpc": "^3.0.5",
+    "truffle": "^3.2.93"
+  },
+  "dependencies": {}
 }

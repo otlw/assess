@@ -1,0 +1,8 @@
+image: library/node
+
+before_script:
+  - npm install
+
+runTests:
+  script:
+    - npm test

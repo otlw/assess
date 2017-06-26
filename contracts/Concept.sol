@@ -15,8 +15,9 @@ contract Concept {
   address[] public members; //Those who have earned the concept
   mapping (address => int) public currentScores; //The most recent score of a user
   mapping (address => bool) public assessmentExists; //All existing assessments
-  mapping (address => uint) public weights; //The weighting used by the assessor selection algorhitm for each member
-  mapping (address => mapping (address => uint)) public extMakeAssessmentAmount;
+  mapping (address => uint) public weights; //The weighting used by the assessor selection algorhitm for each owner
+  mapping (address => mapping (address => uint)) public approval;
+
   modifier onlyUserRegistry() {
     if(msg.sender != userRegistry)
     {
@@ -119,15 +120,20 @@ contract Concept {
       return false;
     }
   }
+  function approve(address _from, uint _amount) returns(bool) {
+    approval[msg.sender][_from] = _amount;
+    return true;
+  }
 
-  function extMakeAssessment(address _assessee, uint _cost, uint _size) returns(bool) {
-    if(extMakeAssessmentAmount[_assessee][msg.sender] >= _cost * _size &&
+  function makeAssessmentFrom(address _assessee, uint _cost, uint _size) returns(bool) {
+    if(approval[_assessee][msg.sender] >= _cost * _size &&
        _size >= 5 &&
        subtractBalance(_assessee, _cost*_size)) {
         Assessment newAssessment = new Assessment(_assessee, userRegistry, conceptRegistry, _size, _cost);
         assessmentExists[address(newAssessment)] = true;
         newAssessment.setAssessorPool(block.number, address(this), _size*20);
-        extMakeAssessmentAmount[_assessee][msg.sender] -= _cost*_size;
+        approval[_assessee][msg.sender] -= _cost*_size;
+        return true;
     }
     else {
         return false;
