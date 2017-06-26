@@ -36,6 +36,7 @@ contract ConceptRegistry {
 
     if(parentList.length == 0) { // if no parents specified make it a child of the Mew concept
       Concept(mewAddress).addChild(newConceptAddress);
+      newConcept.addParent(mewAddress);
     }
     for(uint j=0; j < parentList.length; j++) { // Iterates parents to add this concept as a child
       Concept(parentList[j]).addChild(newConceptAddress);
