@@ -39,6 +39,9 @@ contract ConceptRegistry {
       newConcept.addParent(mewAddress);
     }
     for(uint j=0; j < parentList.length; j++) { // Iterates parents to add this concept as a child
+      if(!conceptExists[parentList[j]]){
+        throw;
+      }
       Concept(parentList[j]).addChild(newConceptAddress);
     }
     ConceptCreation(newConceptAddress);
