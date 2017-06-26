@@ -71,7 +71,7 @@ contract('Initialization', function(accounts) {
             })
         })
         describe("Initial User", function(){
-            it("should own the mew-concept", function(){
+            it("should be a member of the mew-concept", function(){
                 return mewConcept.weights.call(accounts[0]).then(function(weight){
                     assert.equal(weight.toNumber(), 100)
                 })
