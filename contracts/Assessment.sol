@@ -18,7 +18,7 @@ contract Assessment {
     Done, //Completed the assessment processs
     Burned //Entire stake has been burned
   }
-  uint assessorPoolLength; //how many users are potential assessors
+  uint public assessorPoolLength; //how many users are potential assessors (also changed to public)
   address concept;
   address userRegistry;
   address conceptRegistry;
@@ -72,6 +72,7 @@ contract Assessment {
     size = _size;
     cost = _cost;
     UserRegistry(userRegistry).notification(assessee, 0); // assesse has started an assessment
+    assessorPoolLength = 0;
   }
 
 
@@ -90,6 +91,7 @@ contract Assessment {
     if(uint(assessorState[assessor]) == 0) {//Checks if the called assessor hasn't already been called //TODO can we use State.called here?
       UserRegistry(userRegistry).notification(assessor, 1); //Called As A Potential Assessor
       assessorState[assessor] = State.Called; //Sets the state of the assessor as called
+      assessorPoolLength++;
       return true;
     }
     else {
@@ -107,16 +109,16 @@ contract Assessment {
   */
   function setAssessorPool(uint seed, address _concept, uint num) onlyConceptAssessment() {
     uint numCalled = 0;
-    for(uint k=0; k < num; k++) {
-      if(assessorPoolLength == size*20){ return; } //
+    for (uint k=0; k < num; k++) {
+      if (assessorPoolLength == size*20) { return; } //
       address randomUser = Concept(_concept).getRandomMember(seed + k);
-      if(addAssessorToPool(randomUser)){
+      if (addAssessorToPool(randomUser)) {
         numCalled++;
       }
     }
     uint remaining = num - numCalled;
-    if(remaining > 0) {
-      for(uint i = 0; i < Concept(_concept).getParentsLength(); i++) {
+    if (remaining > 0) {
+      for (uint i = 0; i < Concept(_concept).getParentsLength(); i++) {
         setAssessorPool(seed + assessorPoolLength, Concept(_concept).parents(i), remaining/Concept(_concept).getParentsLength() + 1); //Calls the remaining users from the parent concepts proportional to their size
       }
     }
@@ -128,25 +130,29 @@ contract Assessment {
   */
   function setAssessorPoolFromMew() onlyConcept() {
     Concept mew = Concept(ConceptRegistry(conceptRegistry).mewAddress()); //TODO: can this be more elegant and/or in one line?
-      for(uint i=0; i<mew.getMemberLength(); i++){
+      for (uint i=0; i<mew.getMemberLength(); i++) {
         addAssessorToPool(mew.members(i));
       }
+      size = mew.getMemberLength(); 
   }
 
   //@purpose: called by an assessor to confirm and stake
   function confirmAssessor() {
-    if(block.number - startTime <= 15 && assessorState[msg.sender] == State.Called && assessors.length < size && Concept(concept).subtractBalance(msg.sender, cost)) { //Check if the time to confirm has not passed, that the assessor was actually called, assessors are still needed, and that the assessor has enough of a balance to pay the stake
+    //Check if the time to confirm has not passed, that the assessor was actually called, assessors are still needed, and that the assessor has enough of a balance to pay the stake
+    if (block.number - startTime <= 15 &&
+        assessorState[msg.sender] == State.Called &&
+        assessors.length < size && Concept(concept).subtractBalance(msg.sender, cost)
+        ){
       assessors.push(msg.sender); //Adds the user that called this function to the array of confirmed assessors
       assessorState[msg.sender] = State.Confirmed; //Sets the assessor's state to confirmed
       stake[msg.sender] = cost; //Sets the current stake value of the assessor to the cost of the assessment
       UserRegistry(userRegistry).notification(msg.sender, 2); //Confirmed for assessing, stake has been taken
     }
-  if(assessors.length == size) { //If enough assessors have been called
-    notifyStart(); //Assessors and the assessee are notified that the assessmentn has begun
-    }
-    else if(block.number - startTime > 15 && assessors.length < size){
+  if (assessors.length == size) { //If enough assessors have been called
+    this.notifyStart(); //Assessors and the assessee are notified that the assessmentn has begun
+  } else if (block.number - startTime > 15 && assessors.length < size){
       cancelAssessment(); //Cancels the assessment if not enough assessors confirm within 15 blocks
-    }
+  }
   }
 
   function notifyStart() onlyThis() { //Sends a notification to the assessors and the assessee informing them that the assessment has begun
