@@ -101,48 +101,85 @@ contract('Assessment', function(accounts) {
             })
         })
     })
-    describe("Assessors that confirm", function(){
-        it("should be charged and notified if they have been called", function() {
-            return userReg.balances.call(accounts[assessee]).then(function(balance){
+    describe("When assessors confirm", function(){
+        let logsFromConfirm;
+        it("they should be charged and notified if they have been called", function() {
+            return userReg.balances.call(accounts[assessor]).then(function(balance){
                 balanceBefore = balance.toNumber()
             }).then(function(){
-                // console.log(assessmentContract.address)
-                // console.log(assessmentAddress)
                 return assessmentContract.confirmAssessor( {from: accounts[assessor]} )
             }).then(function(result){
-                console.log(result)
-                logsFromConfirm = result
-                return userReg.balances.call(accounts[assessee])
+                receiptFromConfirm = result.receipt
+                tmp = getNotificationArgsFromReceipt(receiptFromConfirm, 2)
+                confirmedAssessor = tmp[0].user
+                assert.equal(confirmedAssessor, accounts[assessor], "assessor did not get notified")
+                return userReg.balances.call(accounts[assessor])
             }).then(function(balance){
                 balanceAfter = balance.toNumber()
-                assert.equal(balanceBefore-cost, balanceAfter, "assessor did not get charged")
-            }).then(function(){
-                assert.equal(0,1,"")
+                assert.equal(balanceAfter, balanceBefore-cost, "assessor did not get charged")
             })
         })
-        it("should be rejected if they have not been called", function(){
-            
+        it("they should be rejected if they have not been called", function(){
+            return userReg.balances.call(accounts[2]).then(function(balance){
+                balanceBefore = balance.toNumber()
+            }).then(function(){
+                return assessmentContract.confirmAssessor( {from: accounts[2]} )
+            }).then(function(result){
+                return userReg.balances.call(accounts[2])
+            }).then(function(balance){
+                balanceAfter = balance.toNumber()
+                assert.equal(balanceBefore, balanceAfter, "an uncalled assessor could place a stake")
+            })
+        })
+        it("they and the assesse are notified if the assessment starts ", function() {
+            tmp = getNotificationArgsFromReceipt(receiptFromConfirm, 4)
+            assert.equal(tmp[0].user, accounts[assessor], "assessor did not get notified")
+            assert.equal(tmp[1].user, accounts[assessee], "assessee did not get notified")
         })
     })
-                //return assessment.confirmAssessors({from: accounts[0]})
-            //}).then(function(){
-                
+    describe("The assessment magic", function(){
+        let salt0 = web3.sha3("123");
+        it("should reject commits from unconfirmed assessors", function(){
+            return assessmentContract.commit(salt0, {from: accounts[3]}).then(function() { //nofb1-3
+                return assessmentContract.commit(web3.sha3("random"), {from: accounts[4]})
+            }).then(function(result){
+                notificationEvents = getNotificationArgsFromReceipt(result.receipt, -1)
+                assert.equal(notificationEvents.length, 0, "irrelevant users triggered a notification event")
+            })
+        })
+        it("should accept commits from confirmed assessors", function() {
+            return assessmentContract.commit(salt0, {from: accounts[assessor]}).then(function() {
+                return assessmentContract.commit(web3.sha3("random"), {from: accounts[4]})
+            }).then(function(result) {
+                tmp = getNotificationArgsFromReceipt(result.receipt, 5, false)
+                assessorsNotifiedToReveal = tmp[0].user
+                assert.equal(assessorsNotifiedToReveal, accounts[assessor], "a confirmed assessor could not commit")
+            })
+        })
+       // it("should ")
+    })
 })
 
-function getNotificationArgsFromReceipt(receipt, _topic){
-    //basically that's how it it used now
-   /* 
-    return assessedConcept.makeAssessment(cost,size, {from: accounts[assessee]})
-}).then(function(result) {
-    //console.log(result.receipt.logs[0].data)
-    const output = abi.decodeEvent(UserRegistry.abi[15], result.receipt.logs[0].data)
-    //console.log(output)
-    assessmentAddress = output.sender
-    */
-    //returns [ [user, sender, topic] for all logs in receipt with topic == _topic ]
+/*
+function to filter out all notification events in a receipt of a transaction by their topic.
+ If _topic is -1, all events will be returned.
+ Attention: hard coded: abi index and signature of Notification-Event
+*/
+function getNotificationArgsFromReceipt(_receipt, _topic, log = false){
+    var events = [];
+    for (i=0; i < _receipt.logs.length; i++) {
+        if (_receipt.logs[i].topics[0] == "0xe41f8f86e0c2a4bb86f57d2698c1704cd23b5f42a84336cdb49377cdca96d876"){
+            let event = abi.decodeEvent(UserRegistry.abi[15], _receipt.logs[i].data)
+            if (_topic == -1){
+                events.push({user: event.user, sender: event.sender, topic: event.topic.toNumber()})
+            } else if (event.topic.toNumber() == _topic) {
+                events.push({user: event.user, sender: event.sender, topic: event.topic.toNumber()})
+            }
+        }
+    }
+    if (log) { console.log(events) }
+    return events
 }
-
-
 
 //usersNotifiedToBeAssessors = []
 //return assessment.assessorPoolLength.call().then(function(numAssessors){

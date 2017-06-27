@@ -26,7 +26,7 @@ contract Assessment {
   uint public startTime;
   uint public size;
   uint cost;
-  mapping(address => string[]) public data; //IFFS hashes of data that can be passed between the assessors and the assessee for the assessment to occur
+  mapping(address => string[]) public data; //IPFS hashes of data that can be passed between the assessors and the assessee for the assessment to occur
   mapping(address => bytes32) commits;
   mapping(address => uint) stake;
   uint done = 0;
@@ -68,7 +68,7 @@ contract Assessment {
     concept = msg.sender;
     userRegistry = _userRegistry;
     conceptRegistry = _conceptRegistry;
-    startTime = block.timestamp;
+    startTime = block.number;
     size = _size;
     cost = _cost;
     UserRegistry(userRegistry).notification(assessee, 0); // assesse has started an assessment
@@ -139,10 +139,13 @@ contract Assessment {
   //@purpose: called by an assessor to confirm and stake
   function confirmAssessor() {
     //Check if the time to confirm has not passed, that the assessor was actually called, assessors are still needed, and that the assessor has enough of a balance to pay the stake
-    if (block.number - startTime <= 15 &&
-        assessorState[msg.sender] == State.Called &&
-        assessors.length < size && Concept(concept).subtractBalance(msg.sender, cost)
-        ){
+    if 
+      ( block.number - startTime <= 15 && 
+         assessorState[msg.sender] == State.Called && 
+        assessors.length < size &&
+        Concept(concept).subtractBalance(msg.sender, cost) 
+         ) 
+      {
       assessors.push(msg.sender); //Adds the user that called this function to the array of confirmed assessors
       assessorState[msg.sender] = State.Confirmed; //Sets the assessor's state to confirmed
       stake[msg.sender] = cost; //Sets the current stake value of the assessor to the cost of the assessment
@@ -166,9 +169,10 @@ contract Assessment {
     DataSet(msg.sender, data[msg.sender].length - 1); // fire event
   }
 
-  //@purpose: called by an assessor to commit a hash of their score
+  //@purpose: called by an assessor to commit a hash of their score //TODO explain in more detail what's happening
   function commit(bytes32 hash) {
-    if(done > size/2) {//If more than half the assessors have committed their score hash
+    //If more than half the assessors have committed their score hash:
+    if(done > size/2) {
       for(uint i = 0; i < assessors.length; i++) {
         if(assessorState[assessors[i]] == State.Confirmed) { //if the assessor has not committed  a score
           uint r = 38; //Inverse burn rate
@@ -180,22 +184,22 @@ contract Assessment {
         }
       }
     }
-
-    if(done == size) { //If all the assessors have either committed or had their entire stake burned
-      for(uint j = 0; j < assessors.length; j++) { //Loops through all assessors
-        if(assessorState[assessors[j]] == State.Committed) { //Sends a notification to all the assessors that have committed to reveal their score
-          UserRegistry(userRegistry).notification(assessors[j], 5); //Send in Score
+    //If all the assessors have either committed or had their entire stake burned
+    if(done == size) { 
+      for(uint j = 0; j < assessors.length; j++) { 
+        if(assessorState[assessors[j]] == State.Committed) { //all assessessors who committed
+          UserRegistry(userRegistry).notification(assessors[j], 5); //are notified to reveal their score
           //NOTE: The front end should receive this notification and then automatically call the reveal function
         }
       }
       startTime = block.number; //Resets the startTime
       done = 0; //Resets the done counter
     }
-
-    if(assessorState[msg.sender] == State.Confirmed) //If the caller is confirmed as an assessor
+    //If the caller is confirmed as an assessor
+    if(assessorState[msg.sender] == State.Confirmed) 
     {
       commits[msg.sender] = hash; //Maps the score hash to the assessor
-      assessorState[msg.sender] == State.Committed; //Sets the assessor's state to Committed
+      assessorState[msg.sender] = State.Committed; //Sets the assessor's state to Committed
       done++; //Increases done by 1 to help progress to the next assessment stage.
 
       if(done <= size/2) //If less than or half the assessors have committed

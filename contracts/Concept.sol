@@ -185,6 +185,7 @@ contract Concept {
     if(assessmentExists[msg.sender] || msg.sender == address(this)) { //Checks if msg.sender is an existing assessment or the concept
       return UserRegistry(userRegistry).subtractBalance(_from, _amount);
     }
+    return false;
   }
 
   function addBalance(address _to, uint _amount)  returns(bool) {
