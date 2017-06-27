@@ -35,13 +35,6 @@ contract Assessment {
   int finalScore;
   event DataSet(address _dataSetter, uint _index);
 
-  modifier onlyThis() {
-    if(msg.sender != address(this)){
-      throw;
-    }
-    _;
-  }
-
   modifier onlyAssessorAssessee() {
     if(msg.sender != assessee && uint(assessorState[msg.sender]) == 0) {
       throw;
@@ -248,7 +241,7 @@ contract Assessment {
     }
   }
 
-  function calculateResult() onlyThis() {
+  function calculateResult() private {
     for(uint j = 0; j < size; j++) { //Loops through the assessors
       if(assessorState[assessors[i]] == State.Done) {
         finalAssessors.push(assessors[i]); //Adds all the assessors that completed the assessment process to an array
@@ -281,7 +274,7 @@ contract Assessment {
     payout(); //Initializes the payout sequence
   }
 
-  function payout() onlyThis() {
+  function payout() private {
     for(uint i = 0; i < size; i++) { //Loops through all the confirmed assessors
       int score = scores[assessors[i]]; //Gets the score of an assessor
       int scoreDistance = ((score - finalScore)*100)/finalScore; //Calculates the percent difference between the final score the assessors score
