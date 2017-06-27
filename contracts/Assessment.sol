@@ -154,20 +154,9 @@ contract Assessment {
       stake[msg.sender] = cost; //Sets the current stake value of the assessor to the cost of the assessment
       UserRegistry(userRegistry).notification(msg.sender, 2); //Confirmed for assessing, stake has been taken
     }
-  if (assessors.length == size) { //If enough assessors have been called
+    if (assessors.length == size) { //If enough assessors have been called
       notifyAssessors(uint(State.Confirmed), 4);
       UserRegistry(userRegistry).notification(assessee, 4);
-  } else if (block.number - startTime > 15 && assessors.length < size){
-      cancelAssessment(); //Cancels the assessment if not enough assessors confirm within 15 blocks
-  }
-  }
-
-  function notifyAssessors(uint _state, uint _topic) private {
-      for(uint i=0; i < assessors.length; i++) {
-          if(uint(assessorState[assessors[i]]) == _state) {
-              UserRegistry(userRegistry).notification(assessors[i], _topic);
-          }
-      }
       assessmentStage = State.Confirmed;
     }
   }
