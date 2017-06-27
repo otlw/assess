@@ -209,11 +209,6 @@ contract Assessment {
           done++; //done increases by 1 to help progress to the next assessment stage
         }
       }
-      else if(msg.sender == assessor) { //If the stake was wrong and was provided by the assessor in the parameter
-        stake[assessor] = 0; //The assessor's stake is completely burned
-        assessorState[assessor] = State.Burned; //The assessor's state is set to Burned
-        done++; //done increases by 1 to help progress to the next assessment stage
-      
     }
     else { //If more than 10 blocks have passed
       for(uint i = 0; i < assessors.length; i++) { //Loops through all the assessors
