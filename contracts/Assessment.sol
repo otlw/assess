@@ -11,6 +11,7 @@ contract Assessment {
   address[] finalAssessors; //The assessors who actually give an assessment
   mapping (address => State) assessorState;
   mapping(uint => int[]) clusters; //Initializes mapping to store clusters of scores
+  State assessmentStage;
   enum State {//The state of the assessors
     Called, //Been called as a potential assessor
     Confirmed, //Confirmed as assessing
@@ -115,6 +116,7 @@ contract Assessment {
         setAssessorPool(seed + assessorPoolLength, Concept(_concept).parents(i), remaining/Concept(_concept).getParentsLength() + 1); //Calls the remaining users from the parent concepts proportional to their size
       }
     }
+    assessmentStage = State.Called;
   }
 
   /*
@@ -127,6 +129,7 @@ contract Assessment {
         addAssessorToPool(mew.members(i));
       }
       size = mew.getMemberLength(); 
+      assessmentStage = State.Called;
   }
 
   //@purpose: called by an assessor to confirm and stake
@@ -158,6 +161,8 @@ contract Assessment {
               UserRegistry(userRegistry).notification(assessors[i], _topic);
           }
       }
+      assessmentStage = State.Confirmed;
+    }
   }
 
   function setData(string _data) onlyAssessorAssessee() {
@@ -176,6 +181,7 @@ contract Assessment {
       notifyAssessors(uint(State.Committed), 5);
       startTime = block.number; //Resets the startTime
       done = 0; //Resets the done counter
+      assessmentStage = State.Committed;
     }
     //If the caller is confirmed as an assessor
     if(assessorState[msg.sender] == State.Confirmed)
@@ -237,6 +243,7 @@ contract Assessment {
       }
     }
     if(done == size) { //If all the assessors have revealed their scored or burned their stakes
+      assessmentStage = State.Done;
       calculateResult(); //The final result is calculated
     }
   }
