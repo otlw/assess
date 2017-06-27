@@ -193,18 +193,6 @@ contract Assessment {
     }
   }
 
-  function burnStakes() internal {
-      for(uint i = 0; i < assessors.length; i++) {
-          if(assessorState[assessors[i]] == State.Confirmed) { //if the assessor has not committed  a score
-              uint r = 38; //Inverse burn rate
-              stake[assessors[i]] = cost*2**(-(now-startTime)/r) - 1; //burns stake as a function of how much time has passed since half of the assessors commited
-          }
-          if(stake[assessors[i]] == 0) { //If an assessor's stake is entirely burned
-              assessorState[assessors[i]] = State.Burned;
-              done++; //Increases done by 1 to help progress to the next assessment stage
-          }
-      }
-  }
 
   //@purpose: called by assessors to reveal their own commits or others
   function reveal(int8 score, bytes16 salt, address assessor) onlyInStage(State.Committed) {
@@ -244,7 +232,27 @@ contract Assessment {
     }
   }
 
-  function calculateResult() private {
+  function burnStakes() internal {
+      for(uint i = 0; i < assessors.length; i++) {
+          if(assessorState[assessors[i]] == State.Confirmed) { //if the assessor has not committed  a score
+              uint r = 38; //Inverse burn rate
+              stake[assessors[i]] = cost*2**(-(now-startTime)/r) - 1; //burns stake as a function of how much time has passed since half of the assessors commited
+          }
+          if(stake[assessors[i]] == 0) { //If an assessor's stake is entirely burned
+              assessorState[assessors[i]] = State.Burned;
+              done++; //Increases done by 1 to help progress to the next assessment stage
+          }
+      }
+  }
+
+   function notifyAssessors(uint _state, uint _topic) private {
+      for(uint i=0; i < assessors.length; i++) {
+          if(uint(assessorState[assessors[i]]) == _state) {
+              UserRegistry(userRegistry).notification(assessors[i], _topic);
+          }
+      }
+  }
+
    function calculateResult() onlyInStage(State.Done) private {
     for(uint j = 0; j < size; j++) { //Loops through the assessors
       if(assessorState[assessors[i]] == State.Done) {
