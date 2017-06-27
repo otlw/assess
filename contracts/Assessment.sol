@@ -13,12 +13,14 @@ contract Assessment {
   mapping(uint => int[]) clusters; //Initializes mapping to store clusters of scores
   State assessmentStage;
   enum State {//The state of the assessors
+    None,
     Called, //Been called as a potential assessor
     Confirmed, //Confirmed as assessing
     Committed, //Committed a score
     Done, //Completed the assessment processs
     Burned //Entire stake has been burned
   }
+
   uint public assessorPoolLength; //how many users are potential assessors (also changed to public)
   address concept;
   address userRegistry;
@@ -90,7 +92,7 @@ contract Assessment {
 
   //@purpose: adds a user to the pool eligible to accept an assessment
   function addAssessorToPool(address assessor) onlyConcept() returns(bool) {
-    if(uint(assessorState[assessor]) == 0) {//Checks if the called assessor hasn't already been called //TODO can we use State.called here?
+    if(assessorState[assessor] == State.None) {
       UserRegistry(userRegistry).notification(assessor, 1); //Called As A Potential Assessor
       assessorState[assessor] = State.Called; //Sets the state of the assessor as called
       assessorPoolLength++;
