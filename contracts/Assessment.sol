@@ -139,12 +139,12 @@ contract Assessment {
   //@purpose: called by an assessor to confirm and stake
   function confirmAssessor() {
     //Check if the time to confirm has not passed, that the assessor was actually called, assessors are still needed, and that the assessor has enough of a balance to pay the stake
-    if 
-      ( block.number - startTime <= 15 && 
-         assessorState[msg.sender] == State.Called && 
+    if
+      ( block.number - startTime <= 15 &&
+         assessorState[msg.sender] == State.Called &&
         assessors.length < size &&
-        Concept(concept).subtractBalance(msg.sender, cost) 
-         ) 
+        Concept(concept).subtractBalance(msg.sender, cost)
+         )
       {
       assessors.push(msg.sender); //Adds the user that called this function to the array of confirmed assessors
       assessorState[msg.sender] = State.Confirmed; //Sets the assessor's state to confirmed
@@ -166,6 +166,7 @@ contract Assessment {
           }
       }
   }
+
   function setData(string _data) onlyAssessorAssessee() {
     data[msg.sender].push(_data); //Adds the data to an array corresponding to the user that uploaded it
     DataSet(msg.sender, data[msg.sender].length - 1); // fire event
@@ -175,16 +176,7 @@ contract Assessment {
   function commit(bytes32 hash) {
     //If more than half the assessors have committed their score hash:
     if(done > size/2) {
-      for(uint i = 0; i < assessors.length; i++) {
-        if(assessorState[assessors[i]] == State.Confirmed) { //if the assessor has not committed  a score
-          uint r = 38; //Inverse burn rate
-          stake[assessors[i]] = cost*2**(-(now-startTime)/r) - 1; //burns stake as a function of how much time has passed since half of the assessors commited
-        }
-        if(stake[assessors[i]] == 0) { //If an assessor's stake is entirely burned
-          assessorState[assessors[i]] = State.Burned;
-          done++; //Increases done by 1 to help progress to the next assessment stage
-        }
-      }
+        burnStakes();
     }
     //If all the assessors have either committed or had their entire stake burned
     if(done == size) {
@@ -193,7 +185,7 @@ contract Assessment {
       done = 0; //Resets the done counter
     }
     //If the caller is confirmed as an assessor
-    if(assessorState[msg.sender] == State.Confirmed) 
+    if(assessorState[msg.sender] == State.Confirmed)
     {
       commits[msg.sender] = hash; //Maps the score hash to the assessor
       assessorState[msg.sender] = State.Committed; //Sets the assessor's state to Committed
@@ -204,6 +196,19 @@ contract Assessment {
         startTime = block.number; //Sets the startTime to the current block
       }
     }
+  }
+
+  function burnStakes() internal {
+      for(uint i = 0; i < assessors.length; i++) {
+          if(assessorState[assessors[i]] == State.Confirmed) { //if the assessor has not committed  a score
+              uint r = 38; //Inverse burn rate
+              stake[assessors[i]] = cost*2**(-(now-startTime)/r) - 1; //burns stake as a function of how much time has passed since half of the assessors commited
+          }
+          if(stake[assessors[i]] == 0) { //If an assessor's stake is entirely burned
+              assessorState[assessors[i]] = State.Burned;
+              done++; //Increases done by 1 to help progress to the next assessment stage
+          }
+      }
   }
 
   //@purpose: called by assessors to reveal their own commits or others
@@ -227,7 +232,7 @@ contract Assessment {
         stake[assessor] = 0; //The assessor's stake is completely burned
         assessorState[assessor] = State.Burned; //The assessor's state is set to Burned
         done++; //done increases by 1 to help progress to the next assessment stage
-      }
+      
     }
     else { //If more than 10 blocks have passed
       for(uint i = 0; i < assessors.length; i++) { //Loops through all the assessors
