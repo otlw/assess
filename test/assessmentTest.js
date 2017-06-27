@@ -103,6 +103,18 @@ contract('Assessment', function(accounts) {
     })
     describe("When assessors confirm", function(){
         let logsFromConfirm;
+        it("they should be rejected if they have not been called", function(){
+            return userReg.balances.call(accounts[2]).then(function(balance){
+                balanceBefore = balance.toNumber()
+            }).then(function(){
+                return assessmentContract.confirmAssessor( {from: accounts[2]} )
+            }).then(function(result){
+                return userReg.balances.call(accounts[2])
+            }).then(function(balance){
+                balanceAfter = balance.toNumber()
+                assert.equal(balanceBefore, balanceAfter, "an uncalled assessor could place a stake")
+            })
+        })
         it("they should be charged and notified if they have been called", function() {
             return userReg.balances.call(accounts[assessor]).then(function(balance){
                 balanceBefore = balance.toNumber()
@@ -119,18 +131,7 @@ contract('Assessment', function(accounts) {
                 assert.equal(balanceAfter, balanceBefore-cost, "assessor did not get charged")
             })
         })
-        it("they should be rejected if they have not been called", function(){
-            return userReg.balances.call(accounts[2]).then(function(balance){
-                balanceBefore = balance.toNumber()
-            }).then(function(){
-                return assessmentContract.confirmAssessor( {from: accounts[2]} )
-            }).then(function(result){
-                return userReg.balances.call(accounts[2])
-            }).then(function(balance){
-                balanceAfter = balance.toNumber()
-                assert.equal(balanceBefore, balanceAfter, "an uncalled assessor could place a stake")
-            })
-        })
+
         it("they and the assesse are notified if the assessment starts ", function() {
             tmp = getNotificationArgsFromReceipt(receiptFromConfirm, 4)
             assert.equal(tmp[0].user, accounts[assessor], "assessor did not get notified")
