@@ -152,17 +152,19 @@ contract Assessment {
       UserRegistry(userRegistry).notification(msg.sender, 2); //Confirmed for assessing, stake has been taken
     }
   if (assessors.length == size) { //If enough assessors have been called
-    this.notifyStart(); //Assessors and the assessee are notified that the assessmentn has begun
+      notifyAssessors(uint(State.Confirmed), 4);
+      UserRegistry(userRegistry).notification(assessee, 4);
   } else if (block.number - startTime > 15 && assessors.length < size){
       cancelAssessment(); //Cancels the assessment if not enough assessors confirm within 15 blocks
   }
   }
 
-  function notifyStart() onlyThis() { //Sends a notification to the assessors and the assessee informing them that the assessment has begun
-    for(uint i = 0; i < assessors.length; i++) {
-      UserRegistry(userRegistry).notification(assessors[i], 4); //Assessment Has Started
-    }
-    UserRegistry(userRegistry).notification(assessee, 4); //Assessment Has Started
+  function notifyAssessors(uint _state, uint _topic) private {
+      for(uint i=0; i < assessors.length; i++) {
+          if(uint(assessorState[assessors[i]]) == _state) {
+              UserRegistry(userRegistry).notification(assessors[i], _topic);
+          }
+      }
   }
   function setData(string _data) onlyAssessorAssessee() {
     data[msg.sender].push(_data); //Adds the data to an array corresponding to the user that uploaded it
@@ -185,13 +187,8 @@ contract Assessment {
       }
     }
     //If all the assessors have either committed or had their entire stake burned
-    if(done == size) { 
-      for(uint j = 0; j < assessors.length; j++) { 
-        if(assessorState[assessors[j]] == State.Committed) { //all assessessors who committed
-          UserRegistry(userRegistry).notification(assessors[j], 5); //are notified to reveal their score
-          //NOTE: The front end should receive this notification and then automatically call the reveal function
-        }
-      }
+    if(done == size) {
+      notifyAssessors(uint(State.Committed), 5);
       startTime = block.number; //Resets the startTime
       done = 0; //Resets the done counter
     }
