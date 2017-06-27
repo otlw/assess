@@ -57,6 +57,13 @@ contract Assessment {
     _;
   }
 
+  modifier onlyInStage(State _stage) {
+      if(assessmentStage != _stage){
+          throw;
+      }
+      _;
+  }
+
   function Assessment(address _assessee, address _userRegistry, address _conceptRegistry, uint _size, uint _cost) {
     assessee = _assessee;
     concept = msg.sender;
@@ -70,7 +77,8 @@ contract Assessment {
   }
 
 
-  function cancelAssessment() onlyConceptAssessment() {
+  function cancelAssessment() onlyInStage(State.Called) {
+    if(msg.sender != assessee) throw;
     Concept(concept).addBalance(assessee, cost*size);
     UserRegistry(userRegistry).notification(assessee, 3); //Assessment Cancled and you have been refunded
     for(uint i = 0; i < assessors.length; i++) {
@@ -133,14 +141,12 @@ contract Assessment {
   }
 
   //@purpose: called by an assessor to confirm and stake
-  function confirmAssessor() {
+  function confirmAssessor() onlyInStage(State.Called){
     //Check if the time to confirm has not passed, that the assessor was actually called, assessors are still needed, and that the assessor has enough of a balance to pay the stake
-    if
-      ( block.number - startTime <= 15 &&
-         assessorState[msg.sender] == State.Called &&
+    if (assessorState[msg.sender] == State.Called &&
         assessors.length < size &&
         Concept(concept).subtractBalance(msg.sender, cost)
-         )
+       )
       {
       assessors.push(msg.sender); //Adds the user that called this function to the array of confirmed assessors
       assessorState[msg.sender] = State.Confirmed; //Sets the assessor's state to confirmed
@@ -171,7 +177,7 @@ contract Assessment {
   }
 
   //@purpose: called by an assessor to commit a hash of their score //TODO explain in more detail what's happening
-  function commit(bytes32 hash) {
+  function commit(bytes32 hash) onlyInStage(State.Confirmed){
     //If more than half the assessors have committed their score hash:
     if(done > size/2) {
         burnStakes();
@@ -211,7 +217,7 @@ contract Assessment {
   }
 
   //@purpose: called by assessors to reveal their own commits or others
-  function reveal(int8 score, bytes16 salt, address assessor) {
+  function reveal(int8 score, bytes16 salt, address assessor) onlyInStage(State.Committed) {
     if(block.number - startTime <= 10) { //If less than 10 blocks have passed since the socre commiting stage ended
       bytes32 hash = sha3(score,salt);
       if(commits[assessor] == hash) {
@@ -249,6 +255,7 @@ contract Assessment {
   }
 
   function calculateResult() private {
+   function calculateResult() onlyInStage(State.Done) private {
     for(uint j = 0; j < size; j++) { //Loops through the assessors
       if(assessorState[assessors[i]] == State.Done) {
         finalAssessors.push(assessors[i]); //Adds all the assessors that completed the assessment process to an array
@@ -281,7 +288,7 @@ contract Assessment {
     payout(); //Initializes the payout sequence
   }
 
-  function payout() private {
+  function payout() onlyInStage(State.Done) private {
     for(uint i = 0; i < size; i++) { //Loops through all the confirmed assessors
       int score = scores[assessors[i]]; //Gets the score of an assessor
       int scoreDistance = ((score - finalScore)*100)/finalScore; //Calculates the percent difference between the final score the assessors score
