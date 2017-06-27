@@ -186,13 +186,11 @@ contract Assessment {
       assessorState[msg.sender] = State.Committed; //Sets the assessor's state to Committed
       done++; //Increases done by 1 to help progress to the next assessment stage.
 
-      if(done <= size/2) //If less than or half the assessors have committed
-      {
-        startTime = block.number; //Sets the startTime to the current block
+      if(done <= size/2) {
+        startTime = block.number;
       }
     }
   }
-
 
   //@purpose: called by assessors to reveal their own commits or others
   function reveal(int8 score, bytes16 salt, address assessor) onlyInStage(State.Committed) {
