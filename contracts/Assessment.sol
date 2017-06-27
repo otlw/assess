@@ -25,7 +25,6 @@ contract Assessment {
   address concept;
   address userRegistry;
   address conceptRegistry;
-  address math = 0x90B66E80448eb60938FAed4A738dE0D5b630B2Fd;
   uint public startTime;
   uint public size;
   uint cost;
