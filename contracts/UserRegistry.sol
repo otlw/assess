@@ -14,7 +14,6 @@ contract UserRegistry {
   mapping (address => bool) public availability;
   mapping (address => mapping (address => uint)) public allowed;
   bool firstUserMade = false; //Keeps track of whether or not the first user has been made yet
-  event UserCreation(address _userAddress); //address of the created user contract
   event Notification(address user, address sender, uint topic);
     /*
       0 = You've started an assessment
@@ -58,7 +57,6 @@ contract UserRegistry {
     if(firstUserMade == false) {
       Concept(ConceptRegistry(conceptRegistry).mewAddress()).addFirstUser(userAddress);
       balances[userAddress] = 1000;
-      UserCreation(userAddress); //Makes a new UserCreation event with the address of the newly created user
     }
   }
 
