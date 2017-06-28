@@ -57,6 +57,7 @@ contract UserRegistry {
     if(firstUserMade == false) {
       Concept(ConceptRegistry(conceptRegistry).mewAddress()).addFirstUser(userAddress);
       balances[userAddress] = 1000;
+      firstUserMade = true;
     }
   }
 
