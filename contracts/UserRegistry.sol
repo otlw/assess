@@ -9,11 +9,11 @@ import "./ConceptRegistry.sol";
 @purpose: To store data about users for easy, secure access and manage token balances
 */
 contract UserRegistry {
-  address public conceptRegistry; //Tnce
-  mapping (address => uint) public balances; //Maps the addresses of users to their token balances
+  address public conceptRegistry;
+  mapping (address => uint) public balances;
   mapping (address => bool) public availability;
   mapping (address => mapping (address => uint)) public allowed;
-  bool firstUserMade = false; //Keeps track of whether or not the first user has been made yet
+  bool firstUserMade = false;
   event Notification(address user, address sender, uint topic);
     /*
       0 = You've started an assessment
@@ -62,7 +62,7 @@ contract UserRegistry {
   }
 
 
-  //@purpose: To preform payouts in Asessments
+  //@purpose: To perform payouts in Asessments
   function addBalance(address _to, uint _amount) returns(bool) {
     if(balances[_to] + _amount > balances[_to]){
       balances[_to] += _amount;
@@ -73,7 +73,7 @@ contract UserRegistry {
     }
   }
 
-  //@purpose: To preform payments and staking for assessments
+  //@purpose: To perform payments and staking for assessments
   function subtractBalance(address _from, uint _amount) returns(bool) {
     if(balances[_from] > _amount){
       balances[_from] -= _amount;
@@ -94,11 +94,13 @@ contract UserRegistry {
     }
   }
 
+  //@purpose: approve an address to transfer tokens on a users behalf
   function approve(address _spender, uint _amount) returns(bool) {
       allowed[msg.sender][_spender] = _amount;
       return true;
   }
 
+  //@purpose: transfer tokens from an account
   function transferFrom(address _from, address _to, uint _amount) returns(bool) {
     if(allowed[_from][msg.sender] > _amount &&
        balances[_from] > _amount &&
