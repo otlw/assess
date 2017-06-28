@@ -33,13 +33,6 @@ contract Concept {
     _;
   }
 
-  modifier onlyThis() {
-    if(msg.sender != address(this)) {
-      throw;
-    }
-    _;
-  }
-
   modifier onlyConcept(){
       if(!ConceptRegistry(conceptRegistry).conceptExists(msg.sender)) {
           throw;
@@ -192,9 +185,5 @@ contract Concept {
     if(assessmentExists[msg.sender]) {
       return UserRegistry(userRegistry).addBalance(_to, _amount);
     }
-  }
-
-  function remove(address reciever) onlyThis() {
-    suicide(reciever);
   }
 }
