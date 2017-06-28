@@ -17,5 +17,7 @@
     "ethjs-abi": "^0.2.0",
     "truffle": "^3.2.93"
   },
-  "dependencies": {}
+  "dependencies": {
+    "ethereumjs-abi": "^0.6.4"
+  }
 }

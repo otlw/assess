@@ -169,7 +169,7 @@ contract Assessment {
   }
 
   //@purpose: called by an assessor to commit a hash of their score //TODO explain in more detail what's happening
-  function commit(bytes32 hash) onlyInStage(State.Confirmed){
+  function commit(bytes32 _hash) onlyInStage(State.Confirmed){
     if(done > size/2) {
         burnStakes();
     }
@@ -183,18 +183,20 @@ contract Assessment {
 
     if(assessorState[msg.sender] == State.Confirmed)
     {
-      commits[msg.sender] = hash;
-      assessorState[msg.sender] = State.Committed;
-      done++; //Increases done by 1 to help progress to the next assessment stage.
+        commits[msg.sender] = _hash;
+        assessorState[msg.sender] = State.Committed;
+        done++; //Increases done by 1 to help progress to the next assessment stage.
 
-      if(done <= size/2) {
-        startTime = block.number;
+        if(done <= size/2) {
+            startTime = block.number;
       }
     }
   }
-
+  event fsender(address er);
+  event fb(uint code);
+  event hsh(bytes32 h);
   //@purpose: called by assessors to reveal their own commits or others
-  function reveal(int8 score, bytes16 salt, address assessor) onlyInStage(State.Committed) {
+  function reveal(int8 score, bytes32 salt, address assessor) onlyInStage(State.Committed) {
       if(block.number - startTime > 1000) {
           for(uint i = 0; i < assessors.length; i++) {
               if(assessorState[assessors[i]] == State.Committed) { //If the assessor has not revealed their score
@@ -206,7 +208,13 @@ contract Assessment {
       }
 
       bytes32 hash = sha3(score,salt);
+      //bytes32 hash = sha3(score);//,salt);
+      fb(0);
+      hsh(hash);
+      fsender(assessor);
+      hsh(commits[assessor]);
       if(commits[assessor] == hash) {
+          fb(1);
           if(msg.sender == assessor) {
               scores[msg.sender] = score;
               assessorState[assessor] = State.Done;
@@ -221,6 +229,7 @@ contract Assessment {
       }
 
       if(done == size) { //If all the assessors have revealed their scored or burned their stakes
+          fb(2);
           assessmentStage = State.Done;
           calculateResult(); //The final result is calculated
       }

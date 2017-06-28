@@ -5,7 +5,10 @@ var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
 var UserRegistryInstance;
 
-var abi = require('ethjs-abi');
+var abi = require('ethjs-abi'); //used to encode/decode function args to bytecode
+var ethereumjsABI = require('ethereumjs-abi');  //used to create the sha3()-equivalent of solidity's sha3() (tight packing etc)
+//TODO see whether we can use only ethereumjs-abi
+//TODO add ethereumjs-abi to package-json, remove ethjs-abi if possible
 
 contract('Assessment', function(accounts) {
     function decodeNotificationFromLog(log){ //TODO where to put this?
@@ -27,6 +30,8 @@ contract('Assessment', function(accounts) {
     let otherUsersInitialBalance = 50;
     let user0InitialBalance;
     let nOthers=5; //should not be more than testrpc accounts -1
+    let salts = ["salt0"];
+    let scores = [1];
     describe('Other users', function() {
         it('should receive tokens from the first user', function() {
             return UserRegistry.deployed().then(function(instance){
@@ -47,8 +52,7 @@ contract('Assessment', function(accounts) {
             })
         })
     })
-
-   describe('A new concept', function(){
+    describe('A new concept', function(){
         it('should be registered', function() {
             return ConceptRegistry.deployed().then(function(instance) {
                 conceptReg = instance
@@ -138,7 +142,6 @@ contract('Assessment', function(accounts) {
         })
     })
     describe("The assessment magic", function(){
-        let salt0 = web3.sha3("123");
         let receiptFromLastCommit;
         let doneBefore;
         let doneAfter;
@@ -151,10 +154,12 @@ contract('Assessment', function(accounts) {
             }).then(function(done){
                 doneAfter = done.toNumber()
                 assert.equal(doneBefore, doneAfter, "an unconfirmed assessor could commit a score")
+                assert.equal(doneBefore, 0, "done was not zero")
             })
         })
         it("should accept commits from confirmed assessors", function() {
-            return assessmentContract.commit(salt0, {from: accounts[assessor]}).then(function() {
+            var hash0 = soliditySha3(scores[assessor], salts[assessor])
+            return assessmentContract.commit(hash0, {from: accounts[assessor]}).then(function() {
                 return assessmentContract.done.call()
             }).then(function(done){
                 doneAfter = done.toNumber()
@@ -175,6 +180,20 @@ contract('Assessment', function(accounts) {
         it("should notify all assessors to reveal their scores", function() {
             tmp = getNotificationArgsFromReceipt(receiptFromLastCommit, 5)
             assert.equal(tmp[0].user, accounts[assessor], "assessor did not get notified")
+        })
+    })
+    //TODO: once there are more assessors, make someone else commit an assessors score
+    describe("Once all assessors have committed a score", function(){ 
+        it("they can reveal it by sending in their hash", function(){
+            return assessmentContract.done.call().then(function(done){
+                doneBefore = done.toNumber()
+                return assessmentContract.reveal(scores[assessor], salts[assessor], accounts[assessor], {from: accounts[assessor]})
+            }).then(function(){
+                return assessmentContract.done.call()
+            }).then(function(done){
+                doneAfter = done.toNumber()
+                assert.equal(doneAfter, doneBefore+1, "a commited assessor could not reveal his score")
+            })
         })
     })
 })
@@ -198,6 +217,16 @@ function getNotificationArgsFromReceipt(_receipt, _topic, log = false){
     }
     if (log) { console.log(events) }
     return events
+}
+
+/*
+ function to create the sha3-hash equivalent to solidity 
+*/
+function soliditySha3(_score, _salt){
+    return ethereumjsABI.soliditySHA3(
+        ["int8", "bytes32"],
+        [_score, _salt]
+    ).toString('hex')
 }
 
 //usersNotifiedToBeAssessors = []
