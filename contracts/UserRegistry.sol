@@ -25,22 +25,6 @@ contract UserRegistry {
       6 = Payout
     */
 
-  modifier onlyConcept() {
-    if(ConceptRegistry(conceptRegistry).conceptExists(msg.sender) == false)
-    {
-      throw;
-    }
-    _;
-  }
-
-  modifier onlyThis() {
-    if(msg.sender != address(this))
-    {
-      throw;
-    }
-    _;
-  }
-
   function UserRegistry(address _conceptRegistry) {
     conceptRegistry = _conceptRegistry;
   }
@@ -113,9 +97,5 @@ contract UserRegistry {
     else {
         return false;
     }
-  }
-
-  function remove(address reciever) onlyThis() {
-    suicide(reciever);
   }
 }
