@@ -102,7 +102,7 @@ contract('Assessment', function(accounts) {
         })
     })
     describe("When assessors confirm", function(){
-        let logsFromConfirm;
+        let receiptFromConfirm;
         it("they should be rejected if they have not been called", function(){
             return userReg.balances.call(accounts[2]).then(function(balance){
                 balanceBefore = balance.toNumber()
@@ -131,8 +131,7 @@ contract('Assessment', function(accounts) {
                 assert.equal(balanceAfter, balanceBefore-cost, "assessor did not get charged")
             })
         })
-
-        it("they and the assesse are notified if the assessment starts ", function() {
+        it("they (and the assesse) should be notified once the assessment starts", function() {
             tmp = getNotificationArgsFromReceipt(receiptFromConfirm, 4)
             assert.equal(tmp[0].user, accounts[assessor], "assessor did not get notified")
             assert.equal(tmp[1].user, accounts[assessee], "assessee did not get notified")
@@ -140,24 +139,43 @@ contract('Assessment', function(accounts) {
     })
     describe("The assessment magic", function(){
         let salt0 = web3.sha3("123");
+        let receiptFromLastCommit;
+        let doneBefore;
+        let doneAfter;
         it("should reject commits from unconfirmed assessors", function(){
-            return assessmentContract.commit(salt0, {from: accounts[3]}).then(function() { //nofb1-3
+            return assessmentContract.done.call().then(function(done){
+                doneBefore = done.toNumber()
                 return assessmentContract.commit(web3.sha3("random"), {from: accounts[4]})
-            }).then(function(result){
-                notificationEvents = getNotificationArgsFromReceipt(result.receipt, -1)
-                assert.equal(notificationEvents.length, 0, "irrelevant users triggered a notification event")
+            }).then(function(){
+                return assessmentContract.done.call()
+            }).then(function(done){
+                doneAfter = done.toNumber()
+                assert.equal(doneBefore, doneAfter, "an unconfirmed assessor could commit a score")
             })
         })
         it("should accept commits from confirmed assessors", function() {
             return assessmentContract.commit(salt0, {from: accounts[assessor]}).then(function() {
-                return assessmentContract.commit(web3.sha3("random"), {from: accounts[4]})
-            }).then(function(result) {
-                tmp = getNotificationArgsFromReceipt(result.receipt, 5, false)
-                assessorsNotifiedToReveal = tmp[0].user
-                assert.equal(assessorsNotifiedToReveal, accounts[assessor], "a confirmed assessor could not commit")
+                return assessmentContract.done.call()
+            }).then(function(done){
+                doneAfter = done.toNumber()
+                assert.equal(doneAfter, 1, "a confirmed assessor could not commit her score")
             })
         })
-       // it("should ")
+        it("should move to commit stage once all assessors have committed", function(){
+            return assessmentContract.commit(web3.sha3("random"), {from: accounts[4]}).then(function(result) {
+                receiptFromLastCommit = result.receipt
+                return assessmentContract.assessmentStage.call()
+            }).then(function(aState){
+                assert.equal(aState.toNumber(), 3, "assessment did not move forward to commit stage" )
+                return assessmentContract.done.call()
+            }).then(function(done){
+                assert.equal(done.toNumber(), 0, "done did not get reset")
+            })
+        })
+        it("should notify all assessors to reveal their scores", function() {
+            tmp = getNotificationArgsFromReceipt(receiptFromLastCommit, 5)
+            assert.equal(tmp[0].user, accounts[assessor], "assessor did not get notified")
+        })
     })
 })
 

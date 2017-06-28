@@ -11,7 +11,7 @@ contract Assessment {
   address[] finalAssessors;
   mapping (address => State) assessorState;
   mapping(uint => int[]) clusters;
-  State assessmentStage;
+  State public assessmentStage;
   enum State {
     None,
     Called,
@@ -31,7 +31,7 @@ contract Assessment {
   mapping(address => string[]) public data;
   mapping(address => bytes32) commits;
   mapping(address => uint) stake;
-  uint done = 0;
+  uint public done; //counter how many assessors have committed/revealed their score 
   mapping(address => int8) scores;
   mapping(int => bool) inRewardCluster;
   int finalScore;
@@ -75,6 +75,7 @@ contract Assessment {
     cost = _cost;
     UserRegistry(userRegistry).notification(assessee, 0); // assesse has started an assessment
     assessorPoolLength = 0;
+    done = 0;
   }
 
 
