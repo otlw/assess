@@ -196,7 +196,7 @@ contract Assessment {
   event fb(uint code);
   event hsh(bytes32 h);
   //@purpose: called by assessors to reveal their own commits or others
-  function reveal(int8 score, bytes32 salt, address assessor) onlyInStage(State.Committed) {
+  function reveal(int8 score, string salt, address assessor) onlyInStage(State.Committed) {
       if(block.number - startTime > 1000) {
           for(uint i = 0; i < assessors.length; i++) {
               if(assessorState[assessors[i]] == State.Committed) { //If the assessor has not revealed their score

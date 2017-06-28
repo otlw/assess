@@ -30,7 +30,7 @@ contract('Assessment', function(accounts) {
     let otherUsersInitialBalance = 50;
     let user0InitialBalance;
     let nOthers=5; //should not be more than testrpc accounts -1
-    let salts = ["salt0"];
+    let salts = ["123"];
     let scores = [1];
     describe('Other users', function() {
         it('should receive tokens from the first user', function() {
@@ -158,7 +158,12 @@ contract('Assessment', function(accounts) {
             })
         })
         it("should accept commits from confirmed assessors", function() {
-            var hash0 = soliditySha3(scores[assessor], salts[assessor])
+            //encodedSalt = ethereumjsABI.rawEncode(["int8","bytes32"], [scores[assessor], salts[assessor]])
+            // console.log(encodedSalt.toString(hex))
+            // encodedScore = ethereumjsABI.rawEncode(["int8"], [scores[assessor]])
+            // var hash0 = hashScoreAndSalt(encodedSalt)
+            var hash0 = hashScoreAndSalt(1, "123")
+            // var hash0 = web3.sha3(encodedSalt)
             return assessmentContract.commit(hash0, {from: accounts[assessor]}).then(function() {
                 return assessmentContract.done.call()
             }).then(function(done){
@@ -222,9 +227,9 @@ function getNotificationArgsFromReceipt(_receipt, _topic, log = false){
 /*
  function to create the sha3-hash equivalent to solidity 
 */
-function soliditySha3(_score, _salt){
+function hashScoreAndSalt(_score, _salt){
     return ethereumjsABI.soliditySHA3(
-        ["int8", "bytes32"],
+        ["int8", "string"],
         [_score, _salt]
     ).toString('hex')
 }
