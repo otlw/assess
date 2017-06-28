@@ -78,8 +78,7 @@ contract Assessment {
   }
 
 
-  function cancelAssessment() onlyInStage(State.Called) {
-    if(msg.sender != assessee) throw;
+  function cancelAssessment() onlyConceptAssessment() {
     Concept(concept).addBalance(assessee, cost*size);
     UserRegistry(userRegistry).notification(assessee, 3); //Assessment Cancled and you have been refunded
     for(uint i = 0; i < assessors.length; i++) {
@@ -143,21 +142,24 @@ contract Assessment {
 
   //@purpose: called by an assessor to confirm and stake
   function confirmAssessor() onlyInStage(State.Called){
-    if (assessorState[msg.sender] == State.Called &&
-        assessors.length < size &&
-        Concept(concept).subtractBalance(msg.sender, cost)
-       )
-      {
-      assessors.push(msg.sender);
-      assessorState[msg.sender] = State.Confirmed;
-      stake[msg.sender] = cost;
-      UserRegistry(userRegistry).notification(msg.sender, 2); //Confirmed for assessing, stake has been taken
-    }
-    if (assessors.length == size) {
-      notifyAssessors(uint(State.Confirmed), 4);
-      UserRegistry(userRegistry).notification(assessee, 4);
-      assessmentStage = State.Confirmed;
-    }
+      if (block.number - startTime > 1000) {
+          cancelAssessment(); 
+          return;
+      }
+      if (assessorState[msg.sender] == State.Called &&
+          assessors.length < size &&
+          Concept(concept).subtractBalance(msg.sender, cost)
+          ) {
+          assessors.push(msg.sender);
+          assessorState[msg.sender] = State.Confirmed;
+          stake[msg.sender] = cost;
+          UserRegistry(userRegistry).notification(msg.sender, 2); //Confirmed for assessing, stake has been taken
+      }
+      if (assessors.length == size) {
+          notifyAssessors(uint(State.Confirmed), 4);
+          UserRegistry(userRegistry).notification(assessee, 4);
+          assessmentStage = State.Confirmed;
+      }
   }
 
   function setData(string _data) onlyAssessorAssessee() {
@@ -192,35 +194,35 @@ contract Assessment {
 
   //@purpose: called by assessors to reveal their own commits or others
   function reveal(int8 score, bytes16 salt, address assessor) onlyInStage(State.Committed) {
-    if(block.number - startTime <= 10) {//TODO fix timings
+      if(block.number - startTime > 1000) {
+          for(uint i = 0; i < assessors.length; i++) {
+              if(assessorState[assessors[i]] == State.Committed) { //If the assessor has not revealed their score
+                  stake[assessors[i]] = 0;
+                  assessorState[assessors[i]] = State.Burned;
+                  done++;
+              }
+          }
+      }
+
       bytes32 hash = sha3(score,salt);
       if(commits[assessor] == hash) {
-        if(msg.sender == assessor) {
-          scores[msg.sender] = score;
-          assessorState[assessor] = State.Done;
-          done++; //done increases by 1 to help progress to the next assessment stage
-        }
-        else {
-          Concept(concept).addBalance(msg.sender, stake[assessor]); // give the stake to the caller
-          stake[assessor] = 0;
-          assessorState[assessor] = State.Burned;
-          done++; //done increases by 1 to help progress to the next assessment stage
-        }
+          if(msg.sender == assessor) {
+              scores[msg.sender] = score;
+              assessorState[assessor] = State.Done;
+              done++; //done increases by 1 to help progress to the next assessment stage
+          }
+          else {
+              Concept(concept).addBalance(msg.sender, stake[assessor]); // give the stake to the caller
+              stake[assessor] = 0;
+              assessorState[assessor] = State.Burned;
+              done++; //done increases by 1 to help progress to the next assessment stage
+          }
       }
-    }
-    else {
-      for(uint i = 0; i < assessors.length; i++) {
-        if(assessorState[assessors[i]] == State.Committed) { //If the assessor has not revealed their score
-          stake[assessors[i]] = 0;
-          assessorState[assessors[i]] = State.Burned;
-          done++;
-        }
+
+      if(done == size) { //If all the assessors have revealed their scored or burned their stakes
+          assessmentStage = State.Done;
+          calculateResult(); //The final result is calculated
       }
-    }
-    if(done == size) { //If all the assessors have revealed their scored or burned their stakes
-      assessmentStage = State.Done;
-      calculateResult(); //The final result is calculated
-    }
   }
 
   function burnStakes() internal {
