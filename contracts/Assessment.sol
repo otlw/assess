@@ -208,11 +208,6 @@ contract Assessment {
       }
 
       bytes32 hash = sha3(score,salt);
-      //bytes32 hash = sha3(score);//,salt);
-      fb(0);
-      hsh(hash);
-      fsender(assessor);
-      hsh(commits[assessor]);
       if(commits[assessor] == hash) {
           fb(1);
           if(msg.sender == assessor) {
@@ -289,7 +284,7 @@ contract Assessment {
     payout();
   }
 
-  function payout() onlyInStage(State.Done) private {
+   function payout() onlyInStage(State.Done) private { //TODO order functions according to styleguide
     for(uint i = 0; i < size; i++) {
       int score = scores[assessors[i]];
       int scoreDistance = ((score - finalScore)*100)/finalScore;

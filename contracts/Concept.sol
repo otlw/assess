@@ -154,7 +154,6 @@ contract Concept {
   function finishAssessment(int score, address assessee, address assessment) {
     if(msg.sender == assessment) {
       if(score > 0) {
-        members.push(assessee); //Makes the assessee an member of this concept
         uint weight = Assessment(assessment).size()*uint(score);
         this.addMember(assessee, weight);
       }

@@ -32,6 +32,7 @@ contract('Assessment', function(accounts) {
     let nOthers=5; //should not be more than testrpc accounts -1
     let salts = ["123"];
     let scores = [1];
+    let receiptFromLastReveal;
     describe('Other users', function() {
         it('should receive tokens from the first user', function() {
             return UserRegistry.deployed().then(function(instance){
@@ -162,8 +163,7 @@ contract('Assessment', function(accounts) {
             // console.log(encodedSalt.toString(hex))
             // encodedScore = ethereumjsABI.rawEncode(["int8"], [scores[assessor]])
             // var hash0 = hashScoreAndSalt(encodedSalt)
-            var hash0 = hashScoreAndSalt(1, "123")
-            // var hash0 = web3.sha3(encodedSalt)
+            var hash0 = "0x" + hashScoreAndSalt(scores[assessor], salts[assessor])
             return assessmentContract.commit(hash0, {from: accounts[assessor]}).then(function() {
                 return assessmentContract.done.call()
             }).then(function(done){
@@ -193,12 +193,35 @@ contract('Assessment', function(accounts) {
             return assessmentContract.done.call().then(function(done){
                 doneBefore = done.toNumber()
                 return assessmentContract.reveal(scores[assessor], salts[assessor], accounts[assessor], {from: accounts[assessor]})
-            }).then(function(){
+            }).then(function(result){
+                receiptFromLastReveal = result.receipt
                 return assessmentContract.done.call()
             }).then(function(done){
                 doneAfter = done.toNumber()
                 assert.equal(doneAfter, doneBefore+1, "a commited assessor could not reveal his score")
             })
+        })
+    })
+    describe("Once all assessors have revealed their score", function(){
+        it("the assessment progresses to the next stage", function() {
+            return assessmentContract.assessmentStage.call().then(function(stage){
+                assert.equal(stage.toNumber(), 4, "assessment did not move to stage done.")
+            })
+        })
+        it("the score of the assessee is calculated", function() {
+            console.log(receiptFromLastReveal.logs)
+            tmp = getAssessmentCompletedArgsFromReceipt(receiptFromLastReveal)
+        })
+        it("the assessors are payed out and notified)", function(){ //TODO according to their degree of consensus
+            return userReg.balances.call(accounts[assessor]).then(function(balance){
+                balanceAfter = balance.toNumber()
+                assert.isAbove(balanceAfter, user0InitialBalance-nOthers*otherUsersInitialBalance, "assessor did not get paid" )
+                tmp = getNotificationArgsFromReceipt(receiptFromLastReveal, 6)
+                assert.equal(tmp[0].user, accounts[assessor], "assessor did not get notified about payout/assessment end")
+            })
+        })
+        it("the assesse is added as member to the assessed Concept and its parents", function(){
+            
         })
     })
 })
@@ -223,6 +246,19 @@ function getNotificationArgsFromReceipt(_receipt, _topic, log = false){
     if (log) { console.log(events) }
     return events
 }
+function getAssessmentCompletedArgsFromReceipt(_receipt){
+    var event;
+    for (i=0; i < _receipt.logs.length; i++) {
+        // if (_receipt.logs[i].topics[0] == "0x0e74800cc768b5728f4ac26f468640b253fed6db95f462f7b717f52e219a2003"){
+        // if (_receipt.logs[i].topics[0] == "0xe0eb4bbbcfecc1daf7fd168866cc9ff1e58a045af1f5fd221d0f605673a2c9c2"){
+            let event = abi.decodeEvent(Concept.abi[21], _receipt.logs[i].data)
+            console.log(event)
+            // event = {user: event.user, sender: event.sender, topic: event.topic.toNumber()}
+        // }
+    }
+    return event
+}
+
 
 /*
  function to create the sha3-hash equivalent to solidity 
