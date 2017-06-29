@@ -101,11 +101,9 @@ contract Concept {
   @param: uint size = the number of assessors
   */
   function makeAssessment(uint cost, uint size) returns(bool) {
-    if(size >= 5 && subtractBalance(msg.sender, cost*size)) {
+    if(size >= 5 && this.subtractBalance(msg.sender, cost*size)) {
       Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost);
       assessmentExists[address(newAssessment)] = true;
-      UserRegistry(userRegistry).notification(address(this), 0); //You have been charged for your assessment
-      
       if (Concept(ConceptRegistry(conceptRegistry).mewAddress()).getMemberLength()<size*20){
         newAssessment.setAssessorPoolFromMew(); // simply use all members of mew (Bootstrap phase)
       }
