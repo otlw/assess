@@ -38,10 +38,10 @@ contract UserRegistry {
     Notification(user, msg.sender, topic);
   }
 
-  function firstUser(address userAddress) {
+  function firstUser(address userAddress, uint _initialBalance) {
     if(firstUserMade == false) {
       Concept(ConceptRegistry(conceptRegistry).mewAddress()).addFirstUser(userAddress);
-      balances[userAddress] = 1000;
+      balances[userAddress] = _initialBalance;
       firstUserMade = true;
     }
   }
