@@ -61,7 +61,7 @@ contract('Assessment', function(accounts) {
                 return ConceptInstance.makeAssessment(cost,size, {from: assessee})
             }).then(function(result) {
                 makeAssessmentLogs = result.receipt.logs
-                const output = abi.decodeEvent(UserRegistry.abi[15], makeAssessmentLogs[0].data)
+                const output = abi.decodeEvent(UserRegistry.abi[13], makeAssessmentLogs[0].data)
                 assessmentAddress = output.sender
                 return ConceptInstance.assessmentExists.call(assessmentAddress)
             }).then(function(exists){
