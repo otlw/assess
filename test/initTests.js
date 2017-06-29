@@ -4,6 +4,12 @@ var User = artifacts.require("User");
 var Concept = artifacts.require("Concept");
 var UserRegistryInstance;
 
+//to create input for the proxycalls
+//var abi = require("ethjs-abi");
+//const UserRegistryABI = [{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"addBalance","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"userAddress","type":"address"}],"name":"firstUser","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"balances","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"reciever","type":"address"}],"name":"remove","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"userAddress","type":"address"}],"name":"addUser","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"conceptRegistry","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"users","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_amount","type":"uint256"}],"name":"subtractBalance","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"inputs":[{"name":"_conceptRegistry","type":"address"}],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_userAddress","type":"address"}],"name":"UserCreation","type":"event"}]
+
+//const AssessmentABI
+
 contract("ConceptRegistry", function() {
     var mewAddress;
     var createdConceptAddress;
@@ -57,17 +63,19 @@ contract("ConceptRegistry", function() {
         }).then(function(parentAddressFromChild){
             assert.equal(parentAddressFromChild, parentAddress, "Child concept does not know its parent")
         })
-       describe("Initial User", function(){
-            it("should be a member of the mew-concept", function(){
-                return mewConcept.weights.call(accounts[0]).then(function(weight){
-                    assert.equal(weight.toNumber(), 100)
-                })
-            })
-            it("should have a balance of 1000", function(){
-                return UserRegistryInstance.balances.call(accounts[0]).then(function(balance) {
-                    assert.equal(balance.toNumber(), 1000)
-                })
-            });
+    });
+    it("should throw if parent doesn't exist", function(){
+        return ConceptRegistry.deployed().then(function(instance) {
+            return instance.makeConcept(["0x123"])
+        }).then(function (result) {
+            assert(false, "transaction should fail")
+        }).catch(function(e){
+            if(e.toString().indexOf('invalid opcode') > 0) {
+                assert(true)
+            }
+            else {
+                assert(false, e.toString())
+            }
         })
     })
 })
@@ -84,7 +92,7 @@ contract("Initial User", function(accounts){
         return UserRegistry.deployed().then(function(instance) {
             return instance.balances.call(accounts[0])
         }).then(function(balance) {
-            assert.equal(balance.toNumber(), 1000)
+            assert.equal(balance.toNumber(), 100)
         })
     });
 })
@@ -93,7 +101,7 @@ contract("token transfers", function(accounts) {
     it("Should modify balances correctly", function(){
         var account1InitialBalance;
         var account2InitialBalance;
-        var amount = 200;
+        var amount = 50;
         return UserRegistry.deployed().then(function(instance){
             UserRegistryInstance = instance
             return UserRegistryInstance.balances.call(accounts[0])
