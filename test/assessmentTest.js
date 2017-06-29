@@ -77,10 +77,10 @@ contract('Assessment', function(accounts) {
         })
     })
 
-    describe('The Assessment Stages', function() {
+    describe('In assessment stage', function() {
         let receiptFromLastReveal;
-        describe('The Called Stage', function() {
-            it("should set the assessor in the pool called", function() {
+        describe('Called', function() {
+            it("should call the assessor", function() {
                 return Assessment.at(assessmentAddress).then(function(instance){
                     assessmentContract = instance
                     return assessmentContract.assessorPoolLength.call().then(function(numAssessors){
@@ -117,12 +117,12 @@ contract('Assessment', function(accounts) {
                     return assessmentContract.assessmentStage.call().then(function(stage){
                         assert.equal(stage.toNumber(), 2, "the assessment did not enter called stage")
                     })
-
                 })
+
             })
         })
 
-        describe("The Called Stage", function() {
+        describe("Confirmed", function() {
             let receiptFromLastCommit;
             let doneBefore;
             let doneAfter;
@@ -163,7 +163,7 @@ contract('Assessment', function(accounts) {
             })
         })
 
-        describe("The commtted stage", function() {
+        describe("Committed", function() {
             it("a committed assessor can reveal their score", function() {
                 return assessmentContract.reveal(score, salt, assessor, {from: assessor}).then(function(result){
                     receiptFromLastReveal = result.receipt
@@ -181,7 +181,7 @@ contract('Assessment', function(accounts) {
             })
         })
 
-        describe("The Done stage", function() {
+        describe("Done", function() {
             it("should calculate the assesee's score", function(){
                 return assessmentContract.finalScore.call().then(function(finalScore) {
                     assert.equal(finalScore.toNumber(), finalScore, "score not calculated correctly")
