@@ -95,7 +95,6 @@ contract Concept {
      }
     return address(0x0);
   }
-
   /*
   @purpose: To make a new assessment
   @param: uint cost = the cost per assessor
@@ -106,7 +105,14 @@ contract Concept {
       Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost);
       assessmentExists[address(newAssessment)] = true;
       UserRegistry(userRegistry).notification(address(this), 0); //You have been charged for your assessment
-      newAssessment.setAssessorPool(block.number, address(this), size*20);
+      
+      if (Concept(ConceptRegistry(conceptRegistry).mewAddress()).getMemberLength()<size*20){
+        newAssessment.setAssessorPoolFromMew(); // simply use all members of mew (Bootstrap phase)
+      }
+      else{
+        newAssessment.setAssessorPool(block.number, address(this), size*20); //assemble the assessorPool by relevance 
+      }
+
       return true;
     }
     else {
@@ -128,7 +134,7 @@ contract Concept {
   function makeAssessmentFrom(address _assessee, uint _cost, uint _size) returns(bool) {
     if(approval[_assessee][msg.sender] >= _cost * _size &&
        _size >= 5 &&
-       subtractBalance(_assessee, _cost*_size)) {
+       this.subtractBalance(_assessee, _cost*_size)) {
         Assessment newAssessment = new Assessment(_assessee, userRegistry, conceptRegistry, _size, _cost);
         assessmentExists[address(newAssessment)] = true;
         newAssessment.setAssessorPool(block.number, address(this), _size*20);
@@ -139,7 +145,6 @@ contract Concept {
         return false;
     }
   }
-
   /*
   @purpose: To finish the assessment process
   @param: int score = the assessee's score
@@ -148,13 +153,14 @@ contract Concept {
   @returns: nothing
   */
   function finishAssessment(int score, address assessee, address assessment) {
-    if(msg.sender == assessment) {
+    /* if(msg.sender == assessment) { */
+    if (assessmentExists[msg.sender]) {
       if(score > 0) {
         uint weight = Assessment(assessment).size()*uint(score);
         this.addMember(assessee, weight);
       }
       currentScores[assessee] = score; //Maps the assessee to their score
-      CompletedAssessment(assessee, score, assessment); //Makes an event with this assessment's data
+      UserRegistry(userRegistry).notification(assessee, 7); //Assessment on Concept finished
     }
   }
 
@@ -170,8 +176,10 @@ contract Concept {
     if(weight > maxWeight) {
       maxWeight = weight;
     }
-    for(uint i = 0; i < parents.length; i++) {
-      Concept(parents[i]).addMember(assessee, weight/2);
+    if (weight/2 > 0){
+        for(uint i = 0; i < parents.length; i++) {
+            Concept(parents[i]).addMember(assessee, weight/2); //recursively adds member to all parent concepts but with half the weight
+        }
     }
   }
 
@@ -179,6 +187,7 @@ contract Concept {
     if(assessmentExists[msg.sender] || msg.sender == address(this)) {
       return UserRegistry(userRegistry).subtractBalance(_from, _amount);
     }
+    return false;
   }
 
   function addBalance(address _to, uint _amount)  returns(bool) {

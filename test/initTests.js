@@ -91,7 +91,7 @@ contract("Initial User", function(accounts){
         return UserRegistry.deployed().then(function(instance) {
             return instance.balances.call(accounts[0])
         }).then(function(balance) {
-            assert.equal(balance.toNumber(), 1000)
+            assert.equal(balance.toNumber(), 100)
         })
     });
 })
@@ -100,7 +100,7 @@ contract("token transfers", function(accounts) {
     it("Should modify balances correctly", function(){
         var account1InitialBalance;
         var account2InitialBalance;
-        var amount = 200;
+        var amount = 50;
         return UserRegistry.deployed().then(function(instance){
             UserRegistryInstance = instance
             return UserRegistryInstance.balances.call(accounts[0])
