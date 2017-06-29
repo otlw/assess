@@ -70,12 +70,6 @@ contract('Assessment', function(accounts) {
             })
         })
 
-        it("should notify the assessee", function() {
-            //check whether assessee has been notified
-            const output = abi.decodeEvent(UserRegistry.abi[15], makeAssessmentLogs[0].data)
-            assert.equal(output.user, assessee, "assessee has not been notified")
-        })
-
         it("should charge the assessee", function() {
             return UserRegistryInstance.balances.call(assessee).then(function(balance){
                 assert.equal(balance.toNumber(), assesseeInitialBalance - cost*size, "the assessee did not get charged correctly" )
@@ -95,12 +89,6 @@ contract('Assessment', function(accounts) {
                 })
             })
 
-            it("should notify the assessor", function(){
-                output = abi.decodeEvent(UserRegistry.abi[15], makeAssessmentLogs[1].data)
-                notifiedAssessor = output.user
-                assert.equal(notifiedAssessor, assessor, "the assessor did not get notified")
-            })
-
             describe("When assessors confirm", function(){
                 let receiptFromConfirm;
                 it("they should be rejected if they have not been called", function(){
@@ -116,36 +104,18 @@ contract('Assessment', function(accounts) {
                     })
                 })
 
-                it("they should be notified if they have been called", function() {
-                    return UserRegistryInstance.balances.call(assessor).then(function(balance){
-                        balanceBefore = balance.toNumber()
-                    }).then(function(){
-                        return assessmentContract.confirmAssessor( {from: assessor} )
-                    }).then(function(result){
-                        receiptFromConfirm = result.receipt
-                        tmp = getNotificationArgsFromReceipt(receiptFromConfirm, 2)
-                        confirmedAssessor = tmp[0].user
-                        assert.equal(confirmedAssessor, assessor, "assessor did not get notified")
-                    })
-                })
-
                 it("they should be charged", function(){
-                    return UserRegistryInstance.balances.call(assessor).then(function(balance){
-                        balanceAfter = balance.toNumber()
-                        assert.equal(balanceAfter, balanceBefore-cost, "assessor did not get charged")
+                    return assessmentContract.confirmAssessor( {from: assessor} ).then(function(){
+                        return UserRegistryInstance.balances.call(assessor).then(function(balance){
+                            balanceAfter = balance.toNumber()
+                            assert.equal(balanceAfter, balanceBefore-cost, "assessor did not get charged")
+                        })
                     })
                 })
 
-                describe("once enough assessors have commited", function(){
-                    it("all should be notified", function() {
-                        tmp = getNotificationArgsFromReceipt(receiptFromConfirm, 4)
-                        assert.equal(tmp[0].user, assessor, "assessor did not get notified")
-                        assert.equal(tmp[1].user, assessee, "assessee did not get notified")
-                    })
-                    it("should move to the called stage", function(){
-                        return assessmentContract.assessmentStage.call().then(function(stage){
-                           assert.equal(stage.toNumber(), 2, "the assessment did not enter called stage")
-                        })
+                it("should move to the called stage if enough confirmed", function(){
+                    return assessmentContract.assessmentStage.call().then(function(stage){
+                        assert.equal(stage.toNumber(), 2, "the assessment did not enter called stage")
                     })
 
                 })
@@ -180,21 +150,15 @@ contract('Assessment', function(accounts) {
                 })
             })
 
-            describe("when all assessors have commited", function() {
-                it("should move to committed stage", function(){
-                    return assessmentContract.commit(web3.sha3("random"), {from: accounts[4]}).then(function(result) {
-                        receiptFromLastCommit = result.receipt
-                        return assessmentContract.assessmentStage.call()
-                    }).then(function(aState){
-                        assert.equal(aState.toNumber(), 3, "assessment did not enter commit stage" )
-                        return assessmentContract.done.call()
-                    }).then(function(done){
-                        assert.equal(done.toNumber(), 0, "done did not get reset")
-                    })
-                })
-                it("should notify all assessors to reveal their scores", function() {
-                    tmp = getNotificationArgsFromReceipt(receiptFromLastCommit, 5)
-                    assert.equal(tmp[0].user, assessor, "assessor did not get notified")
+            it("should move to committed stage when all commited", function(){
+                return assessmentContract.commit(web3.sha3("random"), {from: accounts[4]}).then(function(result) {
+                    receiptFromLastCommit = result.receipt
+                    return assessmentContract.assessmentStage.call()
+                }).then(function(aState){
+                    assert.equal(aState.toNumber(), 3, "assessment did not enter commit stage" )
+                    return assessmentContract.done.call()
+                }).then(function(done){
+                    assert.equal(done.toNumber(), 0, "done did not get reset")
                 })
             })
         })
@@ -209,11 +173,10 @@ contract('Assessment', function(accounts) {
                 })
 
             })
-            describe("when all assessors have revealed", function(){
-                it("should move to the done stage", function(){
-                    return assessmentContract.assessmentStage.call().then(function(stage){
-                        assert.equal(stage.toNumber(), 4, "assessment did not enter done stage")
-                    })
+
+            it("should move to the done stage when all assessors have revealed", function(){
+                return assessmentContract.assessmentStage.call().then(function(stage){
+                    assert.equal(stage.toNumber(), 4, "assessment did not enter done stage")
                 })
             })
         })
@@ -227,12 +190,6 @@ contract('Assessment', function(accounts) {
 
             describe("The assessee", function(){
                 let weight;
-
-                it("should notify the assesee", function(){
-                    tmp = getNotificationArgsFromReceipt(receiptFromLastReveal, 7)
-                    assert.equal(tmp[0].user, assessee, "assessee not notified")
-                    assert.equal(tmp[0].sender, ConceptInstance.address, "the notification didn't specify correct concept")
-                })
 
                 it("is added to the concept", function(){
                     return ConceptInstance.weights.call(assessee).then(function(weightInConcept){
@@ -258,11 +215,6 @@ contract('Assessment', function(accounts) {
                     return UserRegistryInstance.balances.call(assessor).then(function(balance){
                         assert.isAbove(balance.toNumber(), assessorInitialBalance, "assessor didn't get paid")
                     })
-                })
-                it("should be notified", function() {
-                    tmp = getNotificationArgsFromReceipt(receiptFromLastReveal, 6)
-                    assert.equal(tmp[0].user, assessor, "assessor did not get notified about payout/assessment end")
-
                 })
             })
         })
