@@ -31,7 +31,7 @@ contract('Assessment', function(accounts) {
     let user0InitialBalance;
     let nOthers=5; //should not be more than testrpc accounts -1
     let salts = ["123"];
-    let scores = [1];
+    let scores = [10];
     let receiptFromLastReveal;
     describe('Other users', function() {
         it('should receive tokens from the first user', function() {
@@ -195,9 +195,13 @@ contract('Assessment', function(accounts) {
                 return assessmentContract.reveal(scores[assessor], salts[assessor], accounts[assessor], {from: accounts[assessor]})
             }).then(function(result){
                 receiptFromLastReveal = result.receipt
+                // console.log(result)
                 return assessmentContract.done.call()
             }).then(function(done){
                 doneAfter = done.toNumber()
+                // console.log(assessmentAddress) 
+                // console.log(assessedConcept.address)
+                // console.log("address")
                 assert.equal(doneAfter, doneBefore+1, "a commited assessor could not reveal his score")
             })
         })
@@ -209,19 +213,35 @@ contract('Assessment', function(accounts) {
             })
         })
         it("the score of the assessee is calculated", function() {
-            console.log(receiptFromLastReveal.logs)
-            tmp = getAssessmentCompletedArgsFromReceipt(receiptFromLastReveal)
+            return assessmentContract.finalScore.call().then(function(score){
+                assert.equal(score.toNumber(), scores[assessor], "score was not calculated correctly")
+            })
+        })
+        it("the assesse is notified that the assessment finished",function(){
+            tmp = getNotificationArgsFromReceipt(receiptFromLastReveal, 7)
+            notifiedUser = tmp[0].user
+            conceptOfFinishedAssessment = tmp[0].sender
+            assert.equal(notifiedUser, accounts[assessee], "the assesse did not get notified about the completed assessment.") 
+            assert.equal(conceptOfFinishedAssessment, assessedConcept.address, "the notification does not specify the concept.")
+        })
+        it("the assesse is added as member to the assessed Concept and its parents", function(){
+            return assessedConcept.weights.call(accounts[assessee]).then(function(weightInConcept){
+                assert.isAbove(weightInConcept.toNumber(), 0, "the assessee did not get added to the concept")
+                return assessedConcept.parents.call(0)
+            }).then(function(parentAddress){
+                parentConcept = Concept.at(parentAddress)
+                return parentConcept.weights.call(accounts[assessee])
+            }).then(function(weightinParent){
+                assert.isAbove(weightinParent.toNumber(), 0, "the assesse did not get added to the parent concept")
+            })
         })
         it("the assessors are payed out and notified)", function(){ //TODO according to their degree of consensus
             return userReg.balances.call(accounts[assessor]).then(function(balance){
                 balanceAfter = balance.toNumber()
-                assert.isAbove(balanceAfter, user0InitialBalance-nOthers*otherUsersInitialBalance, "assessor did not get paid" )
+                assert.isAbove(balanceAfter, user0InitialBalance-nOthers*otherUsersInitialBalance-cost, "assessor did not get paid" )
                 tmp = getNotificationArgsFromReceipt(receiptFromLastReveal, 6)
                 assert.equal(tmp[0].user, accounts[assessor], "assessor did not get notified about payout/assessment end")
             })
-        })
-        it("the assesse is added as member to the assessed Concept and its parents", function(){
-            
         })
     })
 })
@@ -246,19 +266,6 @@ function getNotificationArgsFromReceipt(_receipt, _topic, log = false){
     if (log) { console.log(events) }
     return events
 }
-function getAssessmentCompletedArgsFromReceipt(_receipt){
-    var event;
-    for (i=0; i < _receipt.logs.length; i++) {
-        // if (_receipt.logs[i].topics[0] == "0x0e74800cc768b5728f4ac26f468640b253fed6db95f462f7b717f52e219a2003"){
-        // if (_receipt.logs[i].topics[0] == "0xe0eb4bbbcfecc1daf7fd168866cc9ff1e58a045af1f5fd221d0f605673a2c9c2"){
-            let event = abi.decodeEvent(Concept.abi[21], _receipt.logs[i].data)
-            console.log(event)
-            // event = {user: event.user, sender: event.sender, topic: event.topic.toNumber()}
-        // }
-    }
-    return event
-}
-
 
 /*
  function to create the sha3-hash equivalent to solidity 

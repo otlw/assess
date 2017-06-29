@@ -20,10 +20,11 @@ contract UserRegistry {
       0 = You've started an assessment
       1 = Called As A Potential Assessor
       2 = Confirmed for assessing, stake has been taken
-      3 = Assessment Cancled and you have been refunded
+      3 = Assessment Cancelled and you have been refunded
       4 = Assessment Has Started
-      5 = Send in Score
+      5 = Reveal Score
       6 = Payout
+      7 = Assessment Finished
     */
 
   modifier onlyConcept() {
@@ -63,11 +64,13 @@ contract UserRegistry {
     }
   }
 
-
+  event fb(uint code);
   //@purpose: To preform payouts in Asessments
   function addBalance(address _to, uint _amount) returns(bool) {
+      fb(34);
     if(balances[_to] + _amount > balances[_to]){
       balances[_to] += _amount;
+      fb(35);
       return true;
     }
     else {

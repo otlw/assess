@@ -101,7 +101,6 @@ contract Concept {
      }
     return address(0x0);
   }
-  event fb(uint code);
   /*
   @purpose: To make a new assessment
   @param: uint cost = the cost per assessor
@@ -143,7 +142,7 @@ contract Concept {
         return false;
     }
   }
-
+  event fb(uint code);
   /*
   @purpose: To finish the assessment process
   @param: int score = the assessee's score
@@ -152,13 +151,14 @@ contract Concept {
   @returns: nothing
   */
   function finishAssessment(int score, address assessee, address assessment) {
-    if(msg.sender == assessment) {
+    /* if(msg.sender == assessment) { */
+    if (assessmentExists[msg.sender]) {
       if(score > 0) {
         uint weight = Assessment(assessment).size()*uint(score);
         this.addMember(assessee, weight);
       }
       currentScores[assessee] = score; //Maps the assessee to their score
-      CompletedAssessment(assessee, score, assessment); //Makes an event with this assessment's data
+      UserRegistry(userRegistry).notification(assessee, 7); //Assessment on Concept finished
     }
   }
 
@@ -175,8 +175,10 @@ contract Concept {
     if(weight > maxWeight) {//checks if the weight is greater than the currant maxWeight
       maxWeight = weight; //if so changes the maxWeight value
     }
-    for(uint i = 0; i < parents.length; i++) {
-      Concept(parents[i]).addMember(assessee, weight/2); //recursively adds member to all parent concepts but with half the weight
+    if (weight/2 > 0){
+        for(uint i = 0; i < parents.length; i++) {
+            Concept(parents[i]).addMember(assessee, weight/2); //recursively adds member to all parent concepts but with half the weight
+        }
     }
   }
 
@@ -188,7 +190,9 @@ contract Concept {
   }
 
   function addBalance(address _to, uint _amount)  returns(bool) {
+      fb(31);
     if(assessmentExists[msg.sender]) { //Checks if msg.sender is an existing assessment
+        fb(32);
       return UserRegistry(userRegistry).addBalance(_to, _amount);
     }
   }
