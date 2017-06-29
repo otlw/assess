@@ -137,7 +137,11 @@ contract Assessment {
       for (uint i=0; i<mew.getMemberLength(); i++) {
         addAssessorToPool(mew.members(i));
       }
-      size = mew.getMemberLength();
+      //adjust size if there are less potential assessors available than the requested/minimal assessment-size
+      uint num_mew = mew.getMemberLength();
+      if (num_mew < size){
+          size = num_mew;
+      }
       assessmentStage = State.Called;
   }
 
