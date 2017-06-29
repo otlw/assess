@@ -3,8 +3,7 @@ var UserRegistry = artifacts.require("UserRegistry");
 var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
 
-var abi = require('ethjs-abi'); //used to encode/decode function args to bytecode
-var ethereumjsABI = require('ethereumjs-abi');  //used to create the sha3()-equivalent of solidity's sha3() (tight packing etc)
+utils = require("../js/utils.js")
 
 contract('Assessment', function(accounts) {
     let UserRegistryInstance;
@@ -61,8 +60,8 @@ contract('Assessment', function(accounts) {
                 return ConceptInstance.makeAssessment(cost,size, {from: assessee})
             }).then(function(result) {
                 makeAssessmentLogs = result.receipt.logs
-                const output = abi.decodeEvent(UserRegistry.abi[13], makeAssessmentLogs[0].data)
-                assessmentAddress = output.sender
+                const eventLogs = utils.getNotificationArgsFromReceipt(result.receipt, 1)
+                assessmentAddress = eventLogs[0].sender
                 return ConceptInstance.assessmentExists.call(assessmentAddress)
             }).then(function(exists){
                 assert.isTrue(exists, "the assessment has been created")
@@ -140,7 +139,7 @@ contract('Assessment', function(accounts) {
             })
 
             it("should accept commits from confirmed assessors", function() {
-                var hash0 = "0x" + hashScoreAndSalt(score, salt)
+                var hash0 = utils.hashScoreAndSalt(score, salt)
                 return assessmentContract.commit(hash0, {from: assessor}).then(function() {
                     return assessmentContract.done.call()
                 }).then(function(done){
@@ -168,7 +167,7 @@ contract('Assessment', function(accounts) {
                     receiptFromLastReveal = result.receipt
                     return assessmentContract.done.call()
                 }).then(function(done) {
-                    assert.equal(done, 1, "the assessor couldn't reveal")
+                    assert.equal(done.toNumber(), 1, "the assessor couldn't reveal")
                 })
 
             })
@@ -219,34 +218,3 @@ contract('Assessment', function(accounts) {
         })
     })
 })
-
-/*
-function to filter out all notification events in a receipt of a transaction by their topic.
- If _topic is -1, all events will be returned.
- Attention: hard coded: abi index and signature of Notification-Event
-*/
-function getNotificationArgsFromReceipt(_receipt, _topic, log = false){
-    var events = [];
-    for (i=0; i < _receipt.logs.length; i++) {
-        if (_receipt.logs[i].topics[0] == "0xe41f8f86e0c2a4bb86f57d2698c1704cd23b5f42a84336cdb49377cdca96d876"){
-            let event = abi.decodeEvent(UserRegistry.abi[15], _receipt.logs[i].data)
-            if (_topic == -1){
-                events.push({user: event.user, sender: event.sender, topic: event.topic.toNumber()})
-            } else if (event.topic.toNumber() == _topic) {
-                events.push({user: event.user, sender: event.sender, topic: event.topic.toNumber()})
-            }
-        }
-    }
-    if (log) { console.log(events) }
-    return events
-}
-
-/*
- function to create the sha3-hash equivalent to solidity 
-*/
-function hashScoreAndSalt(_score, _salt){
-    return ethereumjsABI.soliditySHA3(
-        ["int8", "string"],
-        [_score, _salt]
-    ).toString('hex')
-}
