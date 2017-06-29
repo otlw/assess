@@ -5,6 +5,9 @@ var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
 var UserRegistryInstance;
 
+var abi = require('ethjs-abi'); //used to encode/decode function args to bytecode
+var ethereumjsABI = require('ethereumjs-abi');  //used to create the sha3()-equivalent of solidity's sha3() (tight packing etc)
+
 /*
  The migration file xxx.js
     - distributes all tokens equally amongst all accounts
@@ -19,7 +22,7 @@ mewConcept - concept1
 note: accounts[0] is the only member of mew
  */
 
-contract("Assessment", function(accounts) {
+contract("Deployment", function(accounts) {
     let userReg;
     let conceptReg;
     let assessorsOfConcept1 = [5,6,7,8,9];
@@ -31,18 +34,21 @@ contract("Assessment", function(accounts) {
     let concept12;
     let initialBalance;
     describe("Initially,", function(){
-        it("fetch addresses of already-deployed concepts", function(){
-            return Concept.deployed().then(function(instance){
-                mewConcept = instance
+        it("fetches addresses of deployed concepts", function(){
+            return ConceptRegistry.deployed().then(function(instance){
+                conceptReg = instance
+                return conceptReg.mewAddress.call()
+            }).then(function(mewAddress){
+                mewConcept =  Concept.at(mewAddress)
                 return mewConcept.children.call(0)
             }).then(function(child1Address){
                 concept1 = Concept.at(child1Address)
                 return concept1.children.call(0)
             }).then(function(child11Address){
-                concept11 = Concept.at(child1Address)
+                concept11 = Concept.at(child11Address)
                 return concept1.children.call(1)
             }).then(function(child12Address){
-                concept12 = Concept.at(child1Address)
+                concept12 = Concept.at(child12Address)
                 //now check whether the children know their parents
                 return concept1.parents.call(0)
             }).then(function(parentOf1Address){
@@ -55,25 +61,25 @@ contract("Assessment", function(accounts) {
                 assert.equal(parentOf12Address, concept1.address, "concept12 is not linked")
             })
         })
-        it("check whether account 0 is the first assessor", function(){
-                return mewConcept.weights.call(accounts[0]).then(function(user0isMemberOfMew){
-                    assert.equal(user0isMemberOfMew, true, "the first accounts is not a member of mew")
-                })
+        it("checks whether account 0 is the first assessor", function(){
+            return mewConcept.weights.call(accounts[0]).then(function(weightOfUser0inMew){
+                assert.isAbove(weightOfUser0inMew.toNumber(), 0, "the first accounts is not a member of mew")
+            })
         })
-        it("and check whether all accounts are funded", function() {
+        it("and checks whether all accounts are funded", function() {
             return UserRegistry.deployed().then(function(instance){
                 userReg = instance
-                return userReg.balances.call(0)
+                return userReg.balances.call(accounts[0])
             }).then(function(balance0){
                 initialBalance = balance0.toNumber()
-                assert.isAbove(initialBalance, 0, "account 0 does not have any money left")
-                return userReg.balances.call(7)
+                // assert.isAbove(initialBalance, 0, "account 0 does not have any money left")
+                return userReg.balances.call(accounts[7])
             }).then(function(balance7){
                 assert.isAbove(balance7.toNumber(), 0, "account 7 did not get funded")
             })
         })
     })
-    /*describe("More users", function(){
+    describe("More users", function(){
         it("pass the assessment for Concept1", function() {
             // for (var i=0; i<assessorsOfConcept1.length; i++){
             var i = assessorsOfConcept1[0]
@@ -84,7 +90,7 @@ contract("Assessment", function(accounts) {
             var score1 = 5;
             var scores = [];
             var salts = []
-            return Concept1.makeAssessment(cost, size, {from:accounts[i]}).then(function(result){
+            return concept1.makeAssessment(cost, size, {from:accounts[i]}).then(function(result){
                 tmp = getNotificationArgsFromReceipt(result.receipt, 0) // "assessment creation"
                 assessment = Assessment.at(tmp[0].sender)
                 //fetch all called assessors from the fired notifications
@@ -97,16 +103,15 @@ contract("Assessment", function(accounts) {
             }).then(function(){
                 //all called assessors confirm to move to the next stage
                 for (var j = 0; j < calledAssessors.length; j++){
-                    return assessment.confirmAssessor({from:calledAssessors[j]})
+                    assessment.confirmAssessor({from:calledAssessors[j]})
                 }
             }).then(function(){
                 return assessment.assessmentStage.call()
-
             }).then(function(stage){
                 assert.equal(stage.toNumber(),10, "assessment did not move to stage x")
             })
         })
-    })*/
+    })
 })
                         // //all confirmed assessors should commit in a score
                         // for (var j = 0; j < calledAssessors.length; j++){
