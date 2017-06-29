@@ -296,7 +296,7 @@ contract Assessment {
       if(inRewardCluster[score] == true) {
           /* fb(11); */
         uint q = 1; //Inflation rate factor, WE NEED TO FIGURE THIS OUT AT SOME POINT
-        payoutValue = q*cost*((100 - uint(scoreDistance))/100); //The assessor's payout will be some constant times a propotion of their original stake determined by how close to the final score they were
+        payoutValue = (q*cost*((100 - uint(scoreDistance))/100)) + stake[assessors[i]]; //The assessor's payout will be some constant times a propotion of their original stake determined by how close to the final score they were
         Concept(concept).addBalance(assessors[i], payoutValue);
       }
       if(inRewardCluster[score] == false) {
