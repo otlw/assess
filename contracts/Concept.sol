@@ -11,12 +11,13 @@ contract Concept {
   address[] public children; //The concepts that this concept is parent to (ie: Math is parent to Calculus)
   address userRegistry;
   address conceptRegistry;
-  uint public maxWeight; //The current highest weight for this assessment
-  address[] public members; //Those who have earned the concept
-  mapping (address => int) public currentScores; //The most recent score of a user
-  mapping (address => bool) public assessmentExists; //All existing assessments
- mapping (address => uint) public weights; //The weighting used by the assessor selection algorhitm for each member
- mapping (address => mapping (address => uint)) public approval;
+  uint public maxWeight;
+  address[] public members;
+  mapping (address => int) public currentScores;
+  mapping (address => bool) public assessmentExists;
+  mapping (address => uint) public weights;
+  mapping (address => mapping (address => uint)) public approval;
+
   modifier onlyUserRegistry() {
     if(msg.sender != userRegistry)
     {
@@ -27,13 +28,6 @@ contract Concept {
 
   modifier onlyConceptRegistry() {
     if(msg.sender != conceptRegistry) {
-      throw;
-    }
-    _;
-  }
-
-  modifier onlyThis() {
-    if(msg.sender != address(this)) {
       throw;
     }
     _;
@@ -52,8 +46,8 @@ contract Concept {
   @purpose: To build a database of completed assessments
   */
   event CompletedAssessment (
-    address _assessee, //The address of the user who took the assessment
-    int _score, //The score of the assessee
+    address _assessee,
+    int _score,
     address _assessment
   );
 
@@ -107,27 +101,36 @@ contract Concept {
   @param: uint size = the number of assessors
   */
   function makeAssessment(uint cost, uint size) returns(bool) {
-    if(size >= 5 && this.subtractBalance(msg.sender, cost*size)) { //Checks if the assessment has a size of at least 5 and tries to subtract the neccesary tokens from the user
+    if(size >= 5 && subtractBalance(msg.sender, cost*size)) {
       Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost);
-      assessmentExists[address(newAssessment)] = true; //Sets the assessment's existance to true
-      // check if their are enough users in the system to assemble the pool at random
+      assessmentExists[address(newAssessment)] = true;
+      UserRegistry(userRegistry).notification(address(this), 0); //You have been charged for your assessment
+      
       if (Concept(ConceptRegistry(conceptRegistry).mewAddress()).getMemberLength()<size*20){
         newAssessment.setAssessorPoolFromMew(); // simply use all members of mew (Bootstrap phase)
       }
       else{
         newAssessment.setAssessorPool(block.number, address(this), size*20); //assemble the assessorPool by relevance 
       }
+
       return true;
     }
     else {
       return false;
     }
   }
+
+  /*
+    @purpose: To approve addresses to create assessments for users on this concept
+    @param: _from = the address approved to create assessments
+    @param: _amount = the maximum value of Tokens they are allowed to spend
+  */
   function approve(address _from, uint _amount) returns(bool) {
     approval[msg.sender][_from] = _amount;
     return true;
   }
-  event fsender(string where, address sender);
+
+  //@purpose: allow approved address to create assessments for users on this concept
   function makeAssessmentFrom(address _assessee, uint _cost, uint _size) returns(bool) {
     if(approval[_assessee][msg.sender] >= _cost * _size &&
        _size >= 5 &&
@@ -163,16 +166,15 @@ contract Concept {
 
   /*
   @purpose: To add a member to a concept and recursively add a member to parent concept, halving the added weight with each generation and chinging the macWeight for a concept if neccisairy
-  @param: bool pass = whether or not the assessee passed the assessment
   @param: address assessee = the address of the assessee
   @param: uint weight = the weight for the member
   @returns: nothing
   */
   function addMember(address assessee, uint weight) onlyConcept() {
-    members.push(assessee); //adds the member to the array
-    weights[assessee] += weight; //adds the weight to the current value in mapping
-    if(weight > maxWeight) {//checks if the weight is greater than the currant maxWeight
-      maxWeight = weight; //if so changes the maxWeight value
+    members.push(assessee);
+    weights[assessee] += weight;
+    if(weight > maxWeight) {
+      maxWeight = weight;
     }
     if (weight/2 > 0){
         for(uint i = 0; i < parents.length; i++) {
@@ -182,19 +184,15 @@ contract Concept {
   }
 
   function subtractBalance(address _from, uint _amount) returns(bool) {
-    if(assessmentExists[msg.sender] || msg.sender == address(this)) { //Checks if msg.sender is an existing assessment or the concept
+    if(assessmentExists[msg.sender] || msg.sender == address(this)) {
       return UserRegistry(userRegistry).subtractBalance(_from, _amount);
     }
     return false;
   }
 
   function addBalance(address _to, uint _amount)  returns(bool) {
-    if(assessmentExists[msg.sender]) { //Checks if msg.sender is an existing assessment
+    if(assessmentExists[msg.sender]) {
       return UserRegistry(userRegistry).addBalance(_to, _amount);
     }
-  }
-
-  function remove(address reciever) onlyThis() {
-    suicide(reciever);
   }
 }
