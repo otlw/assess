@@ -1,6 +1,5 @@
 var ConceptRegistry = artifacts.require("ConceptRegistry");
 var UserRegistry = artifacts.require("UserRegistry");
-var User = artifacts.require("User");
 var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
 
