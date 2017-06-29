@@ -142,7 +142,6 @@ contract Concept {
         return false;
     }
   }
-  event fb(uint code);
   /*
   @purpose: To finish the assessment process
   @param: int score = the assessee's score
@@ -190,9 +189,7 @@ contract Concept {
   }
 
   function addBalance(address _to, uint _amount)  returns(bool) {
-      fb(31);
     if(assessmentExists[msg.sender]) { //Checks if msg.sender is an existing assessment
-        fb(32);
       return UserRegistry(userRegistry).addBalance(_to, _amount);
     }
   }

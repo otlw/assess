@@ -64,13 +64,10 @@ contract UserRegistry {
     }
   }
 
-  event fb(uint code);
   //@purpose: To preform payouts in Asessments
   function addBalance(address _to, uint _amount) returns(bool) {
-      fb(34);
     if(balances[_to] + _amount > balances[_to]){
       balances[_to] += _amount;
-      fb(35);
       return true;
     }
     else {

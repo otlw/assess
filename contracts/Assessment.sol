@@ -192,8 +192,6 @@ contract Assessment {
       }
     }
   }
-  event fsender(address er);
-  event fb(uint code);
 
   //@purpose: called by assessors to reveal their own commits or others
   function reveal(int8 score, string salt, address assessor) onlyInStage(State.Committed) {
@@ -223,7 +221,6 @@ contract Assessment {
       }
 
       if(done == size) { //If all the assessors have revealed their scored or burned their stakes
-          /* fb(100); */
           assessmentStage = State.Done;
           calculateResult(); //The final result is calculated
       }
@@ -251,7 +248,6 @@ contract Assessment {
   }
 
    function calculateResult() onlyInStage(State.Done) private {
-       /* fb(0); */
     for(uint j = 0; j < size; j++) {
       if(assessorState[assessors[i]] == State.Done) {
         finalAssessors.push(assessors[i]); //Adds all the assessors that completed the assessment process to an array
@@ -285,7 +281,6 @@ contract Assessment {
   }
 
    function payout() onlyInStage(State.Done) private { //TODO order functions according to styleguide
-       /* fb(1); */
     for(uint i = 0; i < size; i++) {
       int score = scores[assessors[i]];
       int scoreDistance = ((score - finalScore)*100)/finalScore;
@@ -294,13 +289,11 @@ contract Assessment {
       }
       uint payoutValue = 1; //Initializes the payoutValue for the assessor
       if(inRewardCluster[score] == true) {
-          /* fb(11); */
         uint q = 1; //Inflation rate factor, WE NEED TO FIGURE THIS OUT AT SOME POINT
         payoutValue = (q*cost*((100 - uint(scoreDistance))/100)) + stake[assessors[i]]; //The assessor's payout will be some constant times a propotion of their original stake determined by how close to the final score they were
         Concept(concept).addBalance(assessors[i], payoutValue);
       }
       if(inRewardCluster[score] == false) {
-          /* fb(22); */
         payoutValue = stake[assessors[i]]*((200 - uint(scoreDistance))/200); //The assessor's payout will be a propotion of their remaining stake determined by their distance from the final score
         Concept(concept).addBalance(assessors[i], payoutValue);
       }
