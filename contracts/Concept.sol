@@ -67,10 +67,10 @@ contract Concept {
   /*
   @purpose: To add the firstUser to Mew
   */
-  function addFirstUser(address user) onlyUserRegistry() {
-    if(ConceptRegistry(conceptRegistry).mewAddress() == address(this))
+  function addInitialMember(address _user, uint _weight) {
+    if(ConceptRegistry(conceptRegistry).distributorAddress() == msg.sender)
     {
-      this.addMember(user, 100);
+      this.addMember(_user, _weight);
     }
   }
 

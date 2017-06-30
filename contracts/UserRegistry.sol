@@ -38,15 +38,6 @@ contract UserRegistry {
     Notification(user, msg.sender, topic);
   }
 
-  function firstUser(address userAddress, uint _initialBalance) {
-    if(firstUserMade == false) {
-      Concept(ConceptRegistry(conceptRegistry).mewAddress()).addFirstUser(userAddress);
-      balances[userAddress] = _initialBalance;
-      firstUserMade = true;
-    }
-  }
-
-
   //@purpose: To perform payouts in Asessments
   function addBalance(address _to, uint _amount) returns(bool) {
     if(balances[_to] + _amount > balances[_to]){
