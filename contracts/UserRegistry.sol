@@ -40,7 +40,6 @@ contract UserRegistry {
 
   function firstUser(address userAddress, uint _initialBalance) {
     if(firstUserMade == false) {
-      Concept(ConceptRegistry(conceptRegistry).mewAddress()).addFirstUser(userAddress);
       balances[userAddress] = _initialBalance;
       firstUserMade = true;
     }
