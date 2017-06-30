@@ -8,7 +8,6 @@ import "./Math.sol";
 //@purpose: To store concept data and create and manage assessments and members
 contract Concept {
   address[] public parents; //The concepts that this concept is child to (ie: Calculus is child to Math)
-  address[] public children; //The concepts that this concept is parent to (ie: Math is parent to Calculus)
   address userRegistry;
   address conceptRegistry;
   uint public maxWeight;
@@ -65,10 +64,6 @@ contract Concept {
     return parents.length;
   }
 
-  function getChildrenLength() constant returns(uint) {
-    return children.length;
-  }
-
   /*
   @purpose: To add the firstUser to Mew
   */
@@ -81,10 +76,6 @@ contract Concept {
 
   function addParent(address _parent) onlyConceptRegistry() {
     parents.push(_parent);
-  }
-
-  function addChild(address _child) onlyConceptRegistry() {
-    children.push(_child);
   }
 
   //@purpose: returns a random member of the Concept. Users with high weights are more likely to be called

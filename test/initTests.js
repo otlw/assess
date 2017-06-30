@@ -29,10 +29,6 @@ contract("ConceptRegistry", function() {
             createdConceptAddress = result.logs[0].args["_concept"]
             return Concept.at(mewAddress)
         }).then(function(mewInstance) {
-            return mewInstance.getChildrenLength.call()
-        }).then(function(length){
-            assert.isAbove(length.toNumber(), 0, "has no children")
-        }).then(function() {
             return Concept.at(createdConceptAddress)
         }).then(function(conceptInstance){
             return conceptInstance.parents.call(0)
@@ -52,12 +48,6 @@ contract("ConceptRegistry", function() {
             childConceptAddress = result.logs[0].args["_concept"]
             childConcept = Concept.at(childConceptAddress); //create abstraction for the created Concept
             //check that the parent is linked to the child-concept
-            return Concept.at(createdConceptAddress)
-        }).then(function(createdConceptInstance) {
-            return createdConceptInstance.children.call(0)
-        }).then(function(childAddress){
-            assert.equal(childAddress, childConceptAddress, "Parent concept does not know its child")
-            //check that the child-concept is linked to the parent
             return childConcept.parents.call(0)
         }).then(function(parentAddressFromChild){
             assert.equal(parentAddressFromChild, parentAddress, "Child concept does not know its parent")

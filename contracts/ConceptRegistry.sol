@@ -35,14 +35,12 @@ contract ConceptRegistry {
     conceptExists[newConceptAddress] = true;
 
     if(parentList.length == 0) {
-      Concept(mewAddress).addChild(newConceptAddress);
       newConcept.addParent(mewAddress);
     }
     for(uint j=0; j < parentList.length; j++) {
       if(!conceptExists[parentList[j]]){
         throw;
       }
-      Concept(parentList[j]).addChild(newConceptAddress);
     }
     ConceptCreation(newConceptAddress);
   }
