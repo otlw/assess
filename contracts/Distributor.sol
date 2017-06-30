@@ -18,7 +18,8 @@ contract Distributor{
     struct ConceptInfo {
         uint id;
         uint[] parents;
-        Member[] members;
+        address[] memberAddresses;
+        uint[] memberWeights;
     }
 
     function Distributor(uint _NInitialConcepts, address _conceptRegistry){
@@ -28,23 +29,20 @@ contract Distributor{
     }
 
     function addNextConcept(uint _id, uint[] _parents, address[] _initialMembers, uint[] _weights ){
-        Member[] memory conceptMembers = new Member[] (_initialMembers.length);
-        for (uint m=0; m< _initialMembers.length; m++){
-            conceptMembers[m] = Member(_initialMembers[m], _weights[m]);
-        }
-        ConceptInfo memory conceptToAdd = ConceptInfo( _id, _parents, conceptMembers);
+        if (conceptIndex == NInitialConcepts) { throw; }
+        ConceptInfo memory conceptToAdd = ConceptInfo( _id, _parents, _initialMembers, _weights);
         setup.push(conceptToAdd);
         address[] memory conceptParents = new address[] (_parents.length);
         for (uint i=0; i < conceptToAdd.parents.length; i++){
-            conceptParents[i] = conceptLookup(conceptToAdd.parents[i]);
+            conceptParents[i] = conceptLookup[conceptToAdd.parents[i]];
         }
         address createdConceptAddress = ConceptRegistry(conceptRegistry).makeConcept(conceptParents);
         conceptLookup[conceptIndex] = createdConceptAddress;
         //add initial Members 
-        for (uint j=0; i < conceptToAdd.members.length; i++){
+        for (uint j=0; i < conceptToAdd.memberAddresses.length; i++){
             Concept(createdConceptAddress).addInitialMember(
-                                                            conceptToAdd.members[j].memberAddress,
-                                                            conceptToAdd.members[j].weight
+                                                            conceptToAdd.memberAddresses[j],
+                                                            conceptToAdd.memberWeights[j]
                                                             );
         }
         conceptIndex++;

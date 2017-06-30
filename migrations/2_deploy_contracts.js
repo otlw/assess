@@ -18,7 +18,7 @@ module.exports = function(deployer) {
   deployer.then( function(){
     return deployer.deploy(ConceptRegistry)
   }).then(function(){
-      return deployer.deploy(Distributor, setup, ConceptRegistry.address)
+      return deployer.deploy(Distributor, setup.length, ConceptRegistry.address)
   }).then(function(){
     return deployer.deploy(UserRegistry, ConceptRegistry.address)
   }).then(function(){
