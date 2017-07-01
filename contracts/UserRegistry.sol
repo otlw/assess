@@ -13,7 +13,6 @@ contract UserRegistry {
   mapping (address => uint) public balances;
   mapping (address => bool) public availability;
   mapping (address => mapping (address => uint)) public allowed;
-  bool firstUserMade = false;
   event Notification(address user, address sender, uint topic);
     /*
       0 = You've started an assessment
@@ -26,8 +25,9 @@ contract UserRegistry {
       7 = Assessment Finished
     */
 
-  function UserRegistry(address _conceptRegistry) {
+  function UserRegistry(address _conceptRegistry, address _user, uint _initialBalance) {
     conceptRegistry = _conceptRegistry;
+    balances[_user] = _initialBalance;
   }
 
   function toggleAvailability() {
@@ -37,14 +37,6 @@ contract UserRegistry {
   function notification(address user, uint topic) {
     Notification(user, msg.sender, topic);
   }
-
-  function firstUser(address userAddress, uint _initialBalance) {
-    if(firstUserMade == false) {
-      balances[userAddress] = _initialBalance;
-      firstUserMade = true;
-    }
-  }
-
 
   //@purpose: To perform payouts in Asessments
   function addBalance(address _to, uint _amount) returns(bool) {

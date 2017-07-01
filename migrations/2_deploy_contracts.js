@@ -20,7 +20,7 @@ module.exports = function(deployer) {
   }).then(function(){
       return deployer.deploy(Distributor, setup.length, ConceptRegistry.address)
   }).then(function(){
-    return deployer.deploy(UserRegistry, ConceptRegistry.address)
+    return deployer.deploy(UserRegistry, ConceptRegistry.address, accounts[0], accounts.length*100)
   }).then(function(){
     return deployer.deploy(Concept, [], UserRegistry.address)
   }).then(function(){
