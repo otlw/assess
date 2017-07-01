@@ -5,12 +5,9 @@ module.exports = function(deployer) {
     var UserRegistryInstance
     deployer.then(function(){
         return UserRegistry.deployed()
-    }).then(function(instance) {
-        UserRegistryInstance = instance
-        return UserRegistryInstance.firstUser(accounts[0], accounts.length * 100)
-    }).then(function(){
+    }).then(function(instance){
         for(i=1; i < accounts.length; i++) {
-            UserRegistryInstance.transfer(accounts[i], 100, {from: accounts[0]})
+            instance.transfer(accounts[i], 100, {from: accounts[0]})
         }
     })
 }
