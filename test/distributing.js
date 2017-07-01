@@ -35,6 +35,19 @@ contract("Distributor", function(accounts) {
             })
         })
         // it("should add the second concept with its initial members")
+        describe("account 0", function(){
+            it("should have a weight in the mew-concept", function(){
+                return Concept.deployed().then(function(instance) {
+                    mewInstance = instance
+                    return instance.getMemberLength.call()
+                }).then(function(memberLength) {
+                    console.log(memberLength.toNumber())
+                    return mewInstance.weights.call(accounts[0])
+                }).then(function(weight) {
+                    assert.isAbove(weight.toNumber(), 0)
+                })
+            })
+        })
     })
 })
 
