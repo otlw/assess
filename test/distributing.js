@@ -38,8 +38,8 @@ contract("Distributor", function(accounts) {
             })
         })
         it("should add the initial users as members with their respective weight", function(){
-            //check for concepts 1 and 3 //TODO loop and check for all
-            p = 1;
+            //check for concepts 0 and 2 //TODO loop and check for all
+            p = 0;
             return distributor.addedConceptMembers.call(p).then(function(membersOfP){
                 memberAddresses = membersOfP
                 return distributor.addedConceptWeights.call(p)
@@ -50,7 +50,7 @@ contract("Distributor", function(accounts) {
                     assert.equal(memberWeights[j].toNumber(), setup[p][3][j], "member " + j +  " got added with the wrong weight")
                 }
             }).then(function(){
-                p = 3
+                p = 2
                 return distributor.addedConceptMembers.call(p)
             }).then(function(membersOfP){
                 memberAddresses = membersOfP
@@ -63,32 +63,28 @@ contract("Distributor", function(accounts) {
                 }
             })
         })
-        it("such that they are propageted upwards through the tree with decreasing weights", function(){
+        it(" which decreases as they are propageted upwards to mew", function(){
             return ConceptRegistry.deployed().then(function(instance){
                 conceptReg = instance
                 return conceptReg.mewAddress.call()
             }).then(function(mewAddress){
                 mewConcept = Concept.at(mewAddress)
-
-                //check whether there is a member in mewConcept:
-                //note this is hacky test for the correct number of members in mew
-                return mewConcept.members.call(0) //this throws if members is empty
-            }).then(function(mew1){
-                assert.equal(mew1, accounts[0], "account0 not propagated to mew")
-                return mewConcept.members.call(2) //this throws if members is empty
-            }).then(function(mew1){
-                assert.equal(mew1, accounts[2], "account2 not propagated to mew")
-
-                //this is a (less but still) hacky test for the correct weights:
-                //check only accounts 1 and 2 //TODO loop and check
+                //check only account 1 for weight>0 in mew //TODO loop and check for all
                 a = 1
                 return mewConcept.weights.call(accounts[a])
             }).then(function(weight){
                 assert.isAbove(weight.toNumber(), 0, "account"  + a +  " has no weight in mew")
+                //check account 2 for a decreased weight
                 a = 2
+                return distributor.conceptLookup.call(0)
+            }).then(function(addressOfConcept0){
+                concept0 = Concept.at(addressOfConcept0)
+                return concept0.weights.call(accounts[a])
+            }).then(function(_weightAt0){
+                weightAt0 = _weightAt0.toNumber()
                 return mewConcept.weights.call(accounts[a])
-            }).then(function(weight){
-                assert.isAbove(weight.toNumber(), 0, "account"  + a +  " has no weight in mew")
+            }).then(function(weightAtMew){
+                assert.isAbove(weightAt0, weightAtMew.toNumber(), "weight of account " + a + " did not decrease")
             })
         })
     })
