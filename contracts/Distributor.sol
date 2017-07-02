@@ -48,4 +48,21 @@ contract Distributor{
         conceptIndex++;
     }
 
+    function addedConcepts() returns(uint){
+        return setup.length;
+    }
+
+    function addedConceptParents(uint id) returns(uint[]){ 
+        return setup[id].parents;
+    }
+
+    function addedConceptMembers(uint id) returns(address[]){
+        return setup[id].memberAddresses;
+    }
+
+    function addedConceptWeights(uint id) returns(uint[]){
+        return setup[id].memberWeights;
+    }
+
+
 }
