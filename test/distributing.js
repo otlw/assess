@@ -5,15 +5,10 @@ var Assessment = artifacts.require("Assessment");
 var Distributor = artifacts.require("Distributor");
 
 utils = require("../js/utils.js")
-
+var deploymentScript = require("../migrations/2_deploy_contracts.js")
+var setup = deploymentScript.setupVariable
 
 contract("Distributor", function(accounts) {
-    var setup = [
-        [0, [], [],[]],
-        [1, [0], [accounts[0]],[100]],
-        [2, [0], [],[]],
-        [3, [2],[accounts[1],accounts[2]],[10]]
-    ];
     var distributor;
     var createdAfter;
     var callsToNext = 0;
