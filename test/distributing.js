@@ -5,15 +5,9 @@ var Assessment = artifacts.require("Assessment");
 var Distributor = artifacts.require("Distributor");
 
 utils = require("../js/utils.js")
-
+var setup  = require("../js/setup.js")
 
 contract("Distributor", function(accounts) {
-    var setup = [
-        [0, [], [],[]],
-        [1, [0], [accounts[0]],[100]],
-        [2, [0], [],[]],
-        [3, [2],[accounts[1],accounts[2]],[10]]
-    ];
     var distributor;
     var createdAfter;
     var callsToNext = 0;
