@@ -5,7 +5,8 @@ var Assessment = artifacts.require("Assessment");
 var Distributor = artifacts.require("Distributor");
 
 utils = require("../js/utils.js")
-var setup  = require("../js/setup.js")
+var deploymentScript = require("../migrations/2_deploy_contracts.js")
+var setup = deploymentScript.setupVariable
 
 contract("Distributor", function(accounts) {
     var distributor;

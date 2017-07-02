@@ -38,3 +38,5 @@ module.exports = function(deployer) {
       instance.addNextConcept(setup[1][0], setup[1][1], setup[1][2], setup[1][3])
   })
 };
+
+module.exports.setupVariable = setup
