@@ -4,6 +4,7 @@ var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
 
 utils = require("../js/utils.js")
+var assess= require("../js/assessmentFunctions.js")
 
 contract('Assessment', function(accounts) {
     let UserRegistryInstance;
@@ -217,4 +218,31 @@ contract('Assessment', function(accounts) {
             })
         })
     })
+
+    describe("A second assessment", function() {
+        var assessors;
+        var secondAssessmentAddress;
+        it("should call two assessors", function(){
+            return ConceptInstance.makeAssessment( cost, size, {from: accounts[3]}).then(function(result) {
+                notifications = utils.getNotificationArgsFromReceipt(result.receipt, 1)
+                secondAssessmentAddress = notifications[0].sender
+                assessors = notifications.map(function(a) { return a.user})
+            })
+            assert.isEqual(assessors.length, 2, "two assessors were not called")
+        })
+
+        it("those assessors should confirm", function(){
+            var secondAssessmentInstance
+            return Assessment.at(secondAssessmentAddress).then(function(instance) {
+                secondAssessmentInstance = instance
+                return assess.confirmAssessors(assessors, secondAssessmentInstance)
+            }).then(function(instance){
+                return secondAssessmentInstance.assessmentStage.call()
+            }).then(function(stage){
+                assert.equal(stage.toNumber(), 2, "the assessment did not enter called stage")
+            })
+        })
+    })
 })
+
+
