@@ -39,7 +39,7 @@ contract Distributor{
         address createdConceptAddress = ConceptRegistry(conceptRegistry).makeConcept(conceptParents);
         conceptLookup[conceptIndex] = createdConceptAddress;
         //add initial Members 
-        for (uint j=0; i < conceptToAdd.memberAddresses.length; i++){
+        for (uint j=0; j < conceptToAdd.memberAddresses.length; j++){
             Concept(createdConceptAddress).addInitialMember(
                                                             conceptToAdd.memberAddresses[j],
                                                             conceptToAdd.memberWeights[j]
