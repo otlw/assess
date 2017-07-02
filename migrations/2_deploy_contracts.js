@@ -5,12 +5,16 @@ var ConceptRegistry = artifacts.require("./ConceptRegistry.sol");
 var UserRegistry = artifacts.require("./UserRegistry.sol");
 var Distributor = artifacts.require("./Distributor.sol");
 var accounts = web3.eth.accounts
+//setup syntax:
+// id, parentIds, memberAddresses, memberWeights
+// also say how many user there are initially in the system
 var setup = [
-    [0, [], [],[]],
-    [1, [0], [accounts[0]],[100]],
-    [2, [0], [],[]],
-    [3, [2],[accounts[1], accounts[2]],[10, 10]]
+    [0, [], [accounts[0]],[20]],
+    [1, [], [],[]],
+    [2, [0], [accounts[1], accounts[2], accounts[3]], [10,10,10]],
+    [3, [0],[accounts[4]],[20]]
 ]
+var nInitialUsers = 5;
 
 module.exports = function(deployer) {
   deployer.deploy(Math);
@@ -45,4 +49,5 @@ module.exports = function(deployer) {
 };
 
 module.exports.setupVariable = setup
+module.exports.nInitialUsers = nInitialUsers
 
