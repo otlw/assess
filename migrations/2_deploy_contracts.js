@@ -5,7 +5,6 @@ var ConceptRegistry = artifacts.require("./ConceptRegistry.sol");
 var UserRegistry = artifacts.require("./UserRegistry.sol");
 var Distributor = artifacts.require("./Distributor.sol");
 var accounts = web3.eth.accounts
-
 var setup = [
     [0, [], [],[]],
     [1, [0], [accounts[0]],[100]],
@@ -23,20 +22,27 @@ module.exports = function(deployer) {
   }).then(function(){
     return deployer.deploy(UserRegistry, ConceptRegistry.address, accounts[0], accounts.length*100)
   }).then(function(){
+    //add mewConcept
     return deployer.deploy(Concept, [], UserRegistry.address)
   }).then(function(){
     return ConceptRegistry.deployed()
   }).then(function(instance){
     console.log(Concept.address, UserRegistry.address, Distributor.address)
       return instance.init(UserRegistry.address, Concept.address, Distributor.address)
-  }).then(function() {
+  }).then(function(){
+      //add initialConcepts via deployer
       return Distributor.deployed()
-  }).then(function(instance) {
-      instance.addNextConcept(setup[0][0], setup[0][1], setup[0][2], setup[0][3])
-      return instance;
-  }).then(function(instance) {
-      instance.addNextConcept(setup[1][0], setup[1][1], setup[1][2], setup[1][3])
-  })
+  }).then(function(instance){
+      distributor = instance
+      return distributor.addNextConcept.apply(null, setup[0]) //apply(null, adds elements of setup[0] as individual args)
+  }).then(function(){
+      return distributor.addNextConcept.apply(null, setup[1])
+  }).then(function(){
+      return distributor.addNextConcept.apply(null, setup[2])
+  }).then(function(){
+      return distributor.addNextConcept.apply(null, setup[3])
+  }) 
 };
 
 module.exports.setupVariable = setup
+
