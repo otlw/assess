@@ -60,7 +60,7 @@ contract('Assessment', function(accounts) {
                 return ConceptInstance.makeAssessment(cost,size, {from: assessee})
             }).then(function(result) {
                 makeAssessmentLogs = result.receipt.logs
-                const eventLogs = utils.getNotificationArgsFromReceipt(result.receipt, 1)
+                const eventLogs = utils.getNotificationArgsFromReceipt(result.receipt, 0)
                 assessmentAddress = eventLogs[0].sender
                 return ConceptInstance.assessmentExists.call(assessmentAddress)
             }).then(function(exists){
