@@ -24,9 +24,9 @@ contract("Distributor", function(accounts) {
                 return distributor.conceptIndex.call()
             }).then(function(nCreated){
                 createdBefore = nCreated.toNumber()
-                return distributor.addNextConcept(setup[0][0], setup[0][1],setup[0][2],setup[0][3])
+                return distributor.addNextConcept(setup[2][0], setup[2][1],setup[2][2],setup[2][3])
             }).then(function(){
-                return distributor.addNextConcept(setup[1][0], setup[1][1],setup[1][2],setup[1][3])
+                return distributor.addNextConcept(setup[3][0], setup[3][1], setup[3][2],setup[3][3])
             }).then(function(){
                 return distributor.conceptIndex.call()
             }).then(function(nCreated){

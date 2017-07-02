@@ -26,7 +26,14 @@ module.exports = function(deployer) {
   }).then(function(){
     return ConceptRegistry.deployed()
   }).then(function(instance){
-    console.log(Concept.address, UserRegistry.address)
+    console.log(Concept.address, UserRegistry.address, Distributor.address)
       return instance.init(UserRegistry.address, Concept.address, Distributor.address)
+  }).then(function() {
+      return Distributor.deployed()
+  }).then(function(instance) {
+      instance.addNextConcept(0, [], [], [])
+      return instance;
+  }).then(function(instance) {
+      instance.addNextConcept(1, [0], [accounts[0]], [100])
   })
 };
