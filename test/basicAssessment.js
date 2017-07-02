@@ -5,6 +5,8 @@ var Assessment = artifacts.require("Assessment");
 var Distributor = artifacts.require("Distributor");
 
 utils = require("../js/utils.js")
+chain = require("../js/assessmentFunctions.js")
+
 var deploymentScript = require("../migrations/2_deploy_contracts.js")
 var setup = deploymentScript.setupVariable
 var nInitialUsers = deploymentScript.nInitialUsers
@@ -15,25 +17,20 @@ contract('Assessment', function(accounts) {
     let distributor;
     let assessedConceptID = 2;
     let assessedConcept;
-    let assessmentAdress;
     let ConceptInstance;
     let assessmentContract;
-    let makeAssessmentLogs;
-    let parentConcept;
     let cost = 2;
     let size = 5;
     let calledAssessors = [];
     let assessee = accounts[nInitialUsers + 1];
     let outsideUser = accounts[nInitialUsers + 2];
-    let assessor = accounts[0];
-    let otherUsersInitialBalance = 50;
-    let user0InitialBalance;
-    let nOthers=5; //should not be more than testrpc accounts -1
     let scores = [];
     let salts = [];
+    let hashes = [];
     for (i=0; i<nInitialUsers; i++){
         scores.push(10)
         salts.push(i.toString())
+        hashes.push(utils.hashScoreAndSalt(scores[i], salts[i]))
     }
     let receiptFromMakeAssessment;
     describe('Before the assessment', function(){
@@ -120,13 +117,14 @@ contract('Assessment', function(accounts) {
                 })
 
                 it("they should be charged", function(){
-                    for (a=0; a<calledAssessors.length; a++){
-                        assessmentContract.confirmAssessor({from: calledAssessors[a]})
-                    }
-                    // return assessmentContract.confirmAssessor( {from: assessor} ).then(function(){
-                    return UserRegistryInstance.balances.call(accounts[2]).then(function(balance){
+                    return UserRegistryInstance.balances.call(calledAssessors[0]).then(function(balance){
+                        assessorInitialBalance = balance.toNumber()
+                        return chain.confirmAssessors(calledAssessors, assessmentContract)
+                    }).then(function(){
+                        return UserRegistryInstance.balances.call(calledAssessors[0])
+                    }).then(function(balance){
                         balanceAfter = balance.toNumber()
-                        assert.equal(balanceAfter, balanceBefore-cost, "assessor did not get charged")
+                        assert.equal(balanceAfter, assessorInitialBalance-cost, "assessor did not get charged")
                     })
                 })
 
@@ -156,11 +154,9 @@ contract('Assessment', function(accounts) {
             })
 
             it("should accept commits from confirmed assessors", function() {
-                for (a=0; a<calledAssessors.length; a++){
-                    hash = utils.hashScoreAndSalt(scores[a], salts[a])
-                    assessmentContract.commit(hash, {from: calledAssessors[a]})
-                }
-                return assessmentContract.done.call().then(function(done){
+                return chain.commitAssessors(calledAssessors, hashes, assessmentContract).then(function(){
+                    return assessmentContract.done.call()
+                }).then(function(done){
                     doneAfter = done.toNumber()
                     assert.equal(doneAfter, calledAssessors.length, "a confirmed assessor could not commit her score")
                 })
@@ -181,68 +177,73 @@ contract('Assessment', function(accounts) {
         //NOTWORKING:->
         describe("Committed", function() {
             
-        //     it("committed assessors can reveal their scores", function() {
-        //         nAssessors = calledAssessors.length
-        //         // console.log(nAssessors)
-        //         for (a=1; a<nAssessors; a++){
-        //             // console.log(salts[a])
-        //             assessmentContract.reveal(scores[a], salts[a], {from: calledAssessors[a]})
-        //         }
-        //         return assessmentContract.done.call().then(function(done) {
-        //             console.log(done)
-        //             assert.equal(done.toNumber(), nAssessors-1, "the assessors couldn't reveal")
-        //         })
-        //     })
-        //     it("should move to the done stage when all assessors have revealed", function(){
-        //         return assessmentContract.assessmentStage.call().then(function(stage){
-        //             return assessmentContract.reveal(scores[0],
-        //                                              salts[0],
-        //                                              calledAssessors[0],
-        //                                              {from: calledAssessors[0]}
-        //                                             )
-        //         }).then(function(result){
-        //             receiptFromLastReveal = result.receipt
-        //             assert.equal(stage.toNumber(), 4, "assessment did not enter done stage")
-        //         })
-        //     })
-         })
+            it("committed assessors can reveal their scores", function() {
+                nAssessors = calledAssessors.length
+                // console.log(calledAssessors.slice(1, nAssessors))
+                // console.log(scores.slice(1, nAssessors))
+                // console.log(salts.slice(1, nAssessors))
+                return chain.revealAssessors(calledAssessors.slice(1, nAssessors),
+                                             scores.slice(1, nAssessors),
+                                             salts.slice(1, nAssessors),
+                                             assessmentContract)
+                    .then(function(){
+                        return assessmentContract.done.call()
+                    }).then(function(done) {
+                        console.log(done.toNumber())
+                        assert.equal(done.toNumber(), nAssessors-1, "at least one assessors couldn't reveal")
+                })
+            })
+
+            it("should move to the done stage when all assessors have revealed", function(){
+                return assessmentContract.reveal(scores[0],
+                                                salts[0],
+                                                calledAssessors[0],
+                                                 {from: calledAssessors[0]})
+                    .then(function(result){
+                        receiptFromLastReveal = result.receipt
+                        return assessmentContract.assessmentStage.call()
+                    }).then(function(stage){
+                        assert.equal(stage.toNumber(), 4, "assessment did not enter done stage") 
+                    })
+            })
+        })
 
         describe("Done", function() {
-            // it("should calculate the assesee's score", function(){
-            //     return assessmentContract.finalScore.call().then(function(finalScore) {
-            //         assert.equal(finalScore.toNumber(), finalScore, "score not calculated correctly")
-            //     })
-            // })
+            it("should calculate the assesee's score", function(){
+                return assessmentContract.finalScore.call().then(function(finalScore) {
+                    assert.equal(finalScore.toNumber(), 10, "score not calculated correctly") //TODO write a javascript function that calculates a score
+                })
+            })
 
-            // describe("The assessee", function(){
-            //     let weight;
+            describe("The assessee", function(){
+                let weight;
 
-            //     it("is added to the concept", function(){
-            //         return ConceptInstance.weights.call(assessee).then(function(weightInConcept){
-            //             weight = weightInConcept.toNumber()
-            //             assert.isAbove(weightInConcept.toNumber(), 0, "the assesee doesn't have a weight in the concept")
-            //         })
-            //     })
+                it("is added to the concept", function(){
+                    return assessedConcept.weights.call(assessee).then(function(weightInConcept){
+                        weight = weightInConcept.toNumber()
+                        assert.isAbove(weightInConcept.toNumber(), 0, "the assesee doesn't have a weight in the concept")
+                    })
+                })
 
-            //     it("is added to the parent at half weight", function() {
-            //         return ConceptInstance.parents.call(0).then(function(parentAddress) {
-            //             return Concept.at(parentAddress)
-            //         }).then(function(parentConceptInstance) {
-            //             return parentConceptInstance.weights.call(assessee)
-            //         }).then(function(weightInParent) {
-            //             assert.isAbove(weightInParent.toNumber(), 0, "the assesse doesn't have a weight in the parent")
-            //             assert.equal(weight/2, weightInParent.toNumber(), "the assessee didn't have half weight in parent")
-            //         })
-            //     })
-            // })
+                it("is added to the parent at half weight", function() {
+                    return assessedConcept.parents.call(0).then(function(parentAddress) {
+                        return Concept.at(parentAddress)
+                    }).then(function(parentConceptInstance) {
+                        return parentConceptInstance.weights.call(assessee)
+                    }).then(function(weightInParent) {
+                        assert.isAbove(weightInParent.toNumber(), 0, "the assesse doesn't have a weight in the parent")
+                        assert.equal(weight/2, weightInParent.toNumber(), "the assessee didn't have half weight in parent")
+                    })
+                })
+            })
 
-            // describe("The Assessor", function(){
-            //     it("should be paid", function() {
-            //         return UserRegistryInstance.balances.call(assessor).then(function(balance){
-            //             assert.isAbove(balance.toNumber(), assessorInitialBalance, "assessor didn't get paid")
-            //         })
-            //     })
-            // })
+            describe("The Assessor", function(){
+                it("should be paid", function() {
+                    return UserRegistryInstance.balances.call(calledAssessors[0]).then(function(balance){
+                        assert.isAbove(balance.toNumber(), assessorInitialBalance, "assessor didn't get paid")
+                    })
+                })
+            })
         })
     })
 })
