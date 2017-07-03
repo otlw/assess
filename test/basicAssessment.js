@@ -172,12 +172,8 @@ contract('Assessment', function(accounts) {
         })
         //NOTWORKING:->
         describe("Committed", function() {
-            
-            it("committed assessors can reveal their scores", function() {
+           it("committed assessors can reveal their scores", function() {
                 nAssessors = calledAssessors.length
-                // console.log(calledAssessors.slice(1, nAssessors))
-                // console.log(scores.slice(1, nAssessors))
-                // console.log(salts.slice(1, nAssessors))
                 return chain.revealAssessors(calledAssessors.slice(1, nAssessors),
                                              scores.slice(1, nAssessors),
                                              salts.slice(1, nAssessors),
@@ -185,7 +181,6 @@ contract('Assessment', function(accounts) {
                     .then(function(){
                         return assessmentContract.done.call()
                     }).then(function(done) {
-                        console.log(done.toNumber())
                         assert.equal(done.toNumber(), nAssessors-1, "at least one assessors couldn't reveal")
                 })
             })
@@ -199,7 +194,7 @@ contract('Assessment', function(accounts) {
                         receiptFromLastReveal = result.receipt
                         return assessmentContract.assessmentStage.call()
                     }).then(function(stage){
-                        assert.equal(stage.toNumber(), 4, "assessment did not enter done stage") 
+                        assert.equal(stage.toNumber(), 4, "assessment did not enter done stage")
                     })
             })
         })

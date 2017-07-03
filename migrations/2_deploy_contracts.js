@@ -38,15 +38,20 @@ module.exports = function(deployer) {
       return Distributor.deployed()
   }).then(function(instance){
       distributor = instance
-      return distributor.addNextConcept.apply(null, setup[0]) //apply(null, adds elements of setup[0] as individual args)
-  }).then(function(){
-      return distributor.addNextConcept.apply(null, setup[1])
-  }).then(function(){
-      return distributor.addNextConcept.apply(null, setup[2])
-  }).then(function(){
-      return distributor.addNextConcept.apply(null, setup[3])
-  }) 
+     initiateConcepts(distributor, setup)
+  })
 };
+
+function initiateConcepts (distributorInstance, _setup) {
+    var chain = new Promise((resolve, reject)=> resolve(0))
+    for(i=0; i < _setup.length; i++) {
+        chain = chain.then(function(index) {
+            distributorInstance.addNextConcept.apply(null, _setup[index])
+            return index += 1
+        })
+    }
+    return chain
+}
 
 module.exports.setupVariable = setup
 module.exports.nInitialUsers = nInitialUsers

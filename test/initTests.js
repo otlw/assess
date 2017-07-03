@@ -3,6 +3,15 @@ var UserRegistry = artifacts.require("UserRegistry");
 var Concept = artifacts.require("Concept");
 var UserRegistryInstance;
 
+<<<<<<< HEAD
+=======
+//to create input for the proxycalls
+//var abi = require("ethjs-abi");
+//const UserRegistryABI = [{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"addBalance","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"userAddress","type":"address"}],"name":"firstUser","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"balances","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"reciever","type":"address"}],"name":"remove","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"userAddress","type":"address"}],"name":"addUser","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"conceptRegistry","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"users","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_amount","type":"uint256"}],"name":"subtractBalance","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"inputs":[{"name":"_conceptRegistry","type":"address"}],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_userAddress","tkirin j ype":"address"}],"name":"UserCreation","type":"event"}]
+
+//const AssessmentABI
+
+>>>>>>> gracePeriodForCommitting
 contract("ConceptRegistry", function() {
     var mewAddress;
     var createdConceptAddress;
@@ -63,8 +72,13 @@ contract("ConceptRegistry", function() {
     })
 })
 
+<<<<<<< HEAD
 contract("Initial Users", function(accounts){ 
     it("should have a balance of 100", function(){
+=======
+contract("Initial User", function(accounts){ 
+    it("should have a balance of 1000", function(){
+>>>>>>> gracePeriodForCommitting
         return UserRegistry.deployed().then(function(instance) {
             return instance.balances.call(accounts[0])
         }).then(function(balance) {

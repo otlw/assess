@@ -152,7 +152,6 @@ contract Concept {
       UserRegistry(userRegistry).notification(assessee, 7); //Assessment on Concept finished
     }
   }
-  event fb(uint x);
   /*
   @purpose: To add a member to a concept and recursively add a member to parent concept, halving the added weight with each generation and chinging the macWeight for a concept if neccisairy
   @param: address assessee = the address of the assessee
