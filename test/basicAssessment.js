@@ -55,20 +55,14 @@ contract('Assessment', function(accounts) {
             }).then(function(balance){
                 assesseeInitialBalance = balance
                 assert.isAbove(assesseeInitialBalance.toNumber(), cost*size)
-            /*}).then(function(){
-                return UserRegistryInstance.balances.call(assessor)
-            }).then(function(balance){
-                assessorInitialBalance = balance
-                assert.isAbove(assessorInitialBalance.toNumber(), cost)*/
             })
         })
     })
 
     describe('Concept', function() {
-        it("should initiate an assessment", function() { //TODO refactor into multiple it(...)'s
+        it("should initiate an assessment", function() {
             return assessedConcept.makeAssessment(cost,size, {from: assessee}).then(function(result) {
                 receiptFromMakeAssessment = result.receipt
-                // makeAssessmentLogs = result.receipt.logs
                 const eventLogs = utils.getNotificationArgsFromReceipt(result.receipt, 0)
                 assessmentAddress = eventLogs[0].sender
                 return assessedConcept.assessmentExists.call(assessmentAddress)
@@ -86,7 +80,6 @@ contract('Assessment', function(accounts) {
 
     describe('In assessment stage', function() {
         let receiptFromLastReveal;
-        
         describe('Called', function() {
             it("should call the assessors", function() {
                 callsToAssessors = utils.getNotificationArgsFromReceipt(receiptFromMakeAssessment, 1)
@@ -100,7 +93,7 @@ contract('Assessment', function(accounts) {
                     })
                 })
             })
-            
+
             describe("When assessors confirm", function(){
                 let receiptFromConfirm;
                 it("they should be rejected if they have not been called", function(){
@@ -174,14 +167,10 @@ contract('Assessment', function(accounts) {
                 })
             })
         })
-        //NOTWORKING:->
+
         describe("Committed", function() {
-            
             it("committed assessors can reveal their scores", function() {
                 nAssessors = calledAssessors.length
-                // console.log(calledAssessors.slice(1, nAssessors))
-                // console.log(scores.slice(1, nAssessors))
-                // console.log(salts.slice(1, nAssessors))
                 return chain.revealAssessors(calledAssessors.slice(1, nAssessors),
                                              scores.slice(1, nAssessors),
                                              salts.slice(1, nAssessors),
@@ -189,7 +178,6 @@ contract('Assessment', function(accounts) {
                     .then(function(){
                         return assessmentContract.done.call()
                     }).then(function(done) {
-                        console.log(done.toNumber())
                         assert.equal(done.toNumber(), nAssessors-1, "at least one assessors couldn't reveal")
                 })
             })
@@ -203,7 +191,7 @@ contract('Assessment', function(accounts) {
                         receiptFromLastReveal = result.receipt
                         return assessmentContract.assessmentStage.call()
                     }).then(function(stage){
-                        assert.equal(stage.toNumber(), 4, "assessment did not enter done stage") 
+                        assert.equal(stage.toNumber(), 4, "assessment did not enter done stage")
                     })
             })
         })
