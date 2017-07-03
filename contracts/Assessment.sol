@@ -26,6 +26,7 @@ contract Assessment {
   address userRegistry;
   address conceptRegistry;
   uint public checkpoint;
+  uint burnRate;
   uint public size;
   uint cost;
   mapping(address => string[]) public data;
@@ -189,6 +190,7 @@ contract Assessment {
         done++; //Increases done by 1 to help progress to the next assessment stage.
 
         if(done <= size/2) {
+            burnRate = cost/(now-checkpoint);
             checkpoint = now + (now - checkpoint);
       }
     }
@@ -230,8 +232,7 @@ contract Assessment {
   function burnStakes() internal {
       for(uint i = 0; i < assessors.length; i++) {
           if(assessorState[assessors[i]] == State.Confirmed) {
-              uint r = 38; //Inverse burn rate
-              stake[assessors[i]] = cost*2**(-(now-checkpoint)/r) - 1; //burns stake as a function of how much time has passed since half of the assessors commited
+              stake[assessors[i]] = cost - (burnRate * (now-checkpoint)); //burns stake as a function of how much time has passed since half of the assessors commited
           }
           if(stake[assessors[i]] == 0) {
               assessorState[assessors[i]] = State.Burned;
