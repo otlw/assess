@@ -20,8 +20,8 @@ contract UserRegistry {
       2 = Confirmed for assessing, stake has been taken
       3 = Assessment Cancelled and you have been refunded
       4 = Assessment Has Started
-      5 = Reveal Score
-      6 = Payout
+      5 = All have commited; Reveal score
+      6 = All have revealed; Tokens paid out
       7 = Assessment Finished
     */
 
