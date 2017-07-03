@@ -158,6 +158,7 @@ contract Assessment {
       }
       if (assessors.length == size) {
           notifyAssessors(uint(State.Confirmed), 4);
+          checkpoint = block.number;
           UserRegistry(userRegistry).notification(assessee, 4);
           assessmentStage = State.Confirmed;
       }
