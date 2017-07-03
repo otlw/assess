@@ -5,6 +5,7 @@ var ConceptRegistry = artifacts.require("./ConceptRegistry.sol");
 var UserRegistry = artifacts.require("./UserRegistry.sol");
 var Distributor = artifacts.require("./Distributor.sol");
 var accounts = web3.eth.accounts
+
 //setup syntax:
 // id, parentIds, memberAddresses, memberWeights
 // also say how many user there are initially in the system
@@ -38,15 +39,19 @@ module.exports = function(deployer) {
       return Distributor.deployed()
   }).then(function(instance){
       distributor = instance
-      return distributor.addNextConcept.apply(null, setup[0]) //apply(null, adds elements of setup[0] as individual args)
-  }).then(function(){
-      return distributor.addNextConcept.apply(null, setup[1])
-  }).then(function(){
-      return distributor.addNextConcept.apply(null, setup[2])
-  }).then(function(){
-      return distributor.addNextConcept.apply(null, setup[3])
-  }) 
+  })
 };
+
+function initiateConcepts (distributorInstance, setup) {
+    var chain = new Promise((resolve, reject)=> resolve(0))
+    for(i=0; i < setup.length; i++) {
+        chain = chain.then(function(index) {
+            distributorInstance.addNextConcept.apply(null, setup[index])
+            return index += 1
+        })
+    }
+    return chain
+}
 
 module.exports.setupVariable = setup
 module.exports.nInitialUsers = nInitialUsers
