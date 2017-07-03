@@ -42,11 +42,11 @@ module.exports = function(deployer) {
   })
 };
 
-function initiateConcepts (distributorInstance, setup) {
+function initiateConcepts (distributorInstance, _setup) {
     var chain = new Promise((resolve, reject)=> resolve(0))
-    for(i=0; i < setup.length; i++) {
+    for(i=0; i < _setup.length; i++) {
         chain = chain.then(function(index) {
-            distributorInstance.addNextConcept.apply(null, setup[index])
+            distributorInstance.addNextConcept.apply(null, _setup[index])
             return index += 1
         })
     }
