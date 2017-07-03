@@ -189,7 +189,7 @@ contract Assessment {
         done++; //Increases done by 1 to help progress to the next assessment stage.
 
         if(done <= size/2) {
-            checkpoint = block.number;
+            checkpoint = block.number + (block.number-checkpoint);
       }
     }
   }
