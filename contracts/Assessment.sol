@@ -70,7 +70,7 @@ contract Assessment {
     concept = msg.sender;
     userRegistry = _userRegistry;
     conceptRegistry = _conceptRegistry;
-    checkpoint = block.number;
+    checkpoint = now;
     size = _size;
     cost = _cost;
     UserRegistry(userRegistry).notification(assessee, 0); // assesse has started an assessment
@@ -143,7 +143,7 @@ contract Assessment {
 
   //@purpose: called by an assessor to confirm and stake
   function confirmAssessor() onlyInStage(State.Called){
-      if (block.number - checkpoint > 1000) {
+      if (now - checkpoint > 12 hours) {
           cancelAssessment(); 
           return;
       }
@@ -158,7 +158,7 @@ contract Assessment {
       }
       if (assessors.length == size) {
           notifyAssessors(uint(State.Confirmed), 4);
-          checkpoint = block.number;
+          checkpoint = now;
           UserRegistry(userRegistry).notification(assessee, 4);
           assessmentStage = State.Confirmed;
       }
@@ -177,7 +177,7 @@ contract Assessment {
 
     if(done == size) {
       notifyAssessors(uint(State.Committed), 5);
-      checkpoint = block.number; //Resets the startTime
+      checkpoint = now; //Resets the startTime
       done = 0; //Resets the done counter
       assessmentStage = State.Committed;
     }
@@ -189,14 +189,14 @@ contract Assessment {
         done++; //Increases done by 1 to help progress to the next assessment stage.
 
         if(done <= size/2) {
-            checkpoint = block.number + (block.number-checkpoint);
+            checkpoint = now + (now - checkpoint);
       }
     }
   }
 
   //@purpose: called by assessors to reveal their own commits or others
   function reveal(int8 score, string salt, address assessor) onlyInStage(State.Committed) {
-      if(block.number - checkpoint > 1000) {
+      if(now - checkpoint > 12 hours) {
           for(uint i = 0; i < assessors.length; i++) {
               if(assessorState[assessors[i]] == State.Committed) { //If the assessor has not revealed their score
                   stake[assessors[i]] = 0;
