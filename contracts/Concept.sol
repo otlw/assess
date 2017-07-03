@@ -92,7 +92,7 @@ contract Concept {
   @param: uint size = the number of assessors
   */
   function makeAssessment(uint cost, uint size) returns(bool) {
-    if(size >= 5 && this.subtractBalance(msg.sender, cost*size)) {
+    if (size >= 5 && this.subtractBalance(msg.sender, cost*size)) {
       Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost);
       assessmentExists[address(newAssessment)] = true;
       if (Concept(ConceptRegistry(conceptRegistry).mewAddress()).getMemberLength()<size*20){
@@ -121,7 +121,7 @@ contract Concept {
 
   //@purpose: allow approved address to create assessments for users on this concept
   function makeAssessmentFrom(address _assessee, uint _cost, uint _size) returns(bool) {
-    if(approval[_assessee][msg.sender] >= _cost * _size &&
+    if (approval[_assessee][msg.sender] >= _cost * _size &&
        _size >= 5 &&
        this.subtractBalance(_assessee, _cost*_size)) {
         Assessment newAssessment = new Assessment(_assessee, userRegistry, conceptRegistry, _size, _cost);

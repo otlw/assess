@@ -141,7 +141,7 @@ contract Assessment {
       assessmentStage = State.Called;
   }
 
-  //@purpose: called by an assessor to confirm and stake
+  //@purpose: called by an assessor to confirm and stake, or to cancel the assessment and refund
   function confirmAssessor() onlyInStage(State.Called){
       if (block.number - startTime > 1000) {
           cancelAssessment(); 

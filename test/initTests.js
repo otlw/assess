@@ -3,12 +3,6 @@ var UserRegistry = artifacts.require("UserRegistry");
 var Concept = artifacts.require("Concept");
 var UserRegistryInstance;
 
-//to create input for the proxycalls
-//var abi = require("ethjs-abi");
-//const UserRegistryABI = [{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"addBalance","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"userAddress","type":"address"}],"name":"firstUser","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"balances","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"reciever","type":"address"}],"name":"remove","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"userAddress","type":"address"}],"name":"addUser","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"conceptRegistry","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"users","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_amount","type":"uint256"}],"name":"subtractBalance","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"inputs":[{"name":"_conceptRegistry","type":"address"}],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_userAddress","tkirin j ype":"address"}],"name":"UserCreation","type":"event"}]
-
-//const AssessmentABI
-
 contract("ConceptRegistry", function() {
     var mewAddress;
     var createdConceptAddress;
@@ -69,18 +63,21 @@ contract("ConceptRegistry", function() {
     })
 })
 
-contract("Initial User", function(accounts){ 
-    it("should have a balance of 1000", function(){
+contract("Initial Users", function(accounts){ 
+    it("should have a balance of 100", function(){
         return UserRegistry.deployed().then(function(instance) {
             return instance.balances.call(accounts[0])
+        }).then(function(balance) {
+            assert.equal(balance.toNumber(), 100)
+            return instance.balances.call(accounts[7])
         }).then(function(balance) {
             assert.equal(balance.toNumber(), 100)
         })
     });
 })
 
-contract("token transfers", function(accounts) {
-    it("Should modify balances correctly", function(){
+contract("UserRegistry", function(accounts) {
+    it("should modify balances correctly", function(){
         var account1InitialBalance;
         var account2InitialBalance;
         var amount = 50;
