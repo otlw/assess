@@ -1,6 +1,7 @@
 abi = require('ethjs-abi')
 ethereumjsABI = require('ethereumjs-abi')
 var UserRegistry = artifacts.require("UserRegistry")
+var Assessment = artifacts.require("Assessment")
 
 
 exports.hashScoreAndSalt = function(_score, _salt, abi) {
@@ -31,3 +32,19 @@ exports.getNotificationArgsFromReceipt = function(_receipt, _topic) {
     }
     return events
 }
+
+exports.getCalledAssessors = function(receiptFromMakeAssessment){
+    calledAssessors = [];
+    callsToAssessors = this.getNotificationArgsFromReceipt(receiptFromMakeAssessment, 1)
+    for (a=0; a<callsToAssessors.length; a++){
+        calledAssessors.push(callsToAssessors[a].user)
+    }
+    return calledAssessors
+}
+exports.getAssessment  = function(receiptFromMakeAssessment){
+    logs = this.getNotificationArgsFromReceipt(receiptFromMakeAssessment, 0)
+    assessmentAddress = logs[0].sender
+    assessmentContract = Assessment.at(assessmentAddress)
+    return assessmentContract
+}
+

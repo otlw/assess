@@ -68,7 +68,6 @@ contract('Assessment', function(accounts) {
         it("should initiate an assessment", function() { //TODO refactor into multiple it(...)'s
             return assessedConcept.makeAssessment(cost,size, {from: assessee}).then(function(result) {
                 receiptFromMakeAssessment = result.receipt
-                // makeAssessmentLogs = result.receipt.logs
                 const eventLogs = utils.getNotificationArgsFromReceipt(result.receipt, 0)
                 assessmentAddress = eventLogs[0].sender
                 return assessedConcept.assessmentExists.call(assessmentAddress)
@@ -89,10 +88,7 @@ contract('Assessment', function(accounts) {
         
         describe('Called', function() {
             it("should call the assessors", function() {
-                callsToAssessors = utils.getNotificationArgsFromReceipt(receiptFromMakeAssessment, 1)
-                for (a=0; a<callsToAssessors.length; a++){
-                    calledAssessors.push(callsToAssessors[a].user)
-                }
+                calledAssessors = utils.getCalledAssessors(receiptFromMakeAssessment)
                 return Assessment.at(assessmentAddress).then(function(instance){
                     assessmentContract = instance
                     return assessmentContract.assessorPoolLength.call().then(function(numAssessors){
