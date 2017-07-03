@@ -39,6 +39,7 @@ module.exports = function(deployer) {
       return Distributor.deployed()
   }).then(function(instance){
       distributor = instance
+      initiateConcepts(distributor, setup)
   })
 };
 
