@@ -5,7 +5,7 @@ import "./Concept.sol";
 //@purpose: To create and store the concept ontology
 contract ConceptRegistry {
   mapping (address => bool) public conceptExists;
-  address userRegistry;
+  address public userRegistry;
   bool initialized = false;
   address public mewAddress; //a manually created contract with no parents
   address public distributorAddress; //a manually created contract with no parents
@@ -13,11 +13,12 @@ contract ConceptRegistry {
   event ConceptCreation (address _concept);
 
   //@purpose: give this contract the address of a UserRegistry and mew Concept
-  function init(address _userRegistry, address mew, address _distributor) returns(bool){
+  function init(address _userRegistry, address _distributor) returns(bool){
     if(initialized == false) {
       userRegistry = _userRegistry;
-      mewAddress = mew;
       distributorAddress = _distributor;
+      Concept mew = new Concept(new address[] (0));
+      mewAddress = address(mew);
       conceptExists[mewAddress] = true;
       initialized = true;
     }
@@ -31,7 +32,7 @@ contract ConceptRegistry {
   @param: address[] parentList = an array of addresses containing the addresses of the concepts parents
   */
   function makeConcept(address[] parentList) returns (address){
-    Concept newConcept = new Concept(parentList, userRegistry);
+    Concept newConcept = new Concept(parentList);
     address newConceptAddress = address(newConcept);
     conceptExists[newConceptAddress] = true;
 

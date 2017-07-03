@@ -3,23 +3,19 @@ var UserRegistry = artifacts.require("UserRegistry");
 var Concept = artifacts.require("Concept");
 var UserRegistryInstance;
 
-//to create input for the proxycalls
-//var abi = require("ethjs-abi");
-//const UserRegistryABI = [{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"addBalance","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"userAddress","type":"address"}],"name":"firstUser","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"balances","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"reciever","type":"address"}],"name":"remove","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"userAddress","type":"address"}],"name":"addUser","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"conceptRegistry","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"users","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_amount","type":"uint256"}],"name":"subtractBalance","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"inputs":[{"name":"_conceptRegistry","type":"address"}],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_userAddress","tkirin j ype":"address"}],"name":"UserCreation","type":"event"}]
-
-//const AssessmentABI
-
 contract("ConceptRegistry", function() {
     var mewAddress;
     var createdConceptAddress;
-    it("should know the mew address", function(){
+    var ConceptRegistryInstance
+    it("should have created the mew contract", function(){
         ConceptRegistry.deployed().then(function(instance) {
-            return instance.mewAddress.call();
+            ConceptRegistryInstance = instance
+            return ConceptRegistryInstance.mewAddress.call();
         }).then(function(address){
             mewAddress = address
-            return Concept.deployed()
-        }).then(function(mewInstance){
-            assert.equal(mewInstance.address, mewAddress, "conceptRegistry doesn't know the mew address")
+            return ConceptRegistryInstance.conceptExists(mewAddress)
+        }).then(function(exists){
+            assert.isTrue(exists, "mew doesn't exist")
         })
     })
     it("should set mew as the parent when not specified", function() {

@@ -50,10 +50,10 @@ contract Concept {
     address _assessment
   );
 
-  function Concept(address[] _parents, address _userRegistry) {
+  function Concept(address[] _parents) {
     parents = _parents;
-    userRegistry = _userRegistry;
-    conceptRegistry = UserRegistry(userRegistry).conceptRegistry();
+    conceptRegistry = msg.sender;
+    userRegistry = ConceptRegistry(conceptRegistry).userRegistry();
   }
 
   function getMemberLength() constant returns(uint) {
@@ -152,6 +152,7 @@ contract Concept {
       UserRegistry(userRegistry).notification(assessee, 7); //Assessment on Concept finished
     }
   }
+  event fb(uint x);
   /*
   @purpose: To add a member to a concept and recursively add a member to parent concept, halving the added weight with each generation and chinging the macWeight for a concept if neccisairy
   @param: address assessee = the address of the assessee
@@ -161,6 +162,7 @@ contract Concept {
   function addMember(address assessee, uint weight) onlyConcept() {
     members.push(assessee);
     weights[assessee] += weight;
+    fb(weight);
     if(weight > maxWeight) {
       maxWeight = weight;
     }
