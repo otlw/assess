@@ -59,7 +59,9 @@ contract("Assessment", function(accounts){
                 return assessmentContract.confirmAssessor({from:calledAssessors[1]})
                 // there should be no notification
             }).then(function(result){
-                assert(false)
+                // there should be no notification
+                cancelAssessmentNotification = utils.getNotificationArgsFromReceipt(result.receipt, 3)
+                assert.isAbove(cancelAssessmentNotification.length, 0, "No cancel-Notification got send")
             })
         })
         it("and everyone with a stake in it is refunded", function(){
@@ -71,10 +73,76 @@ contract("Assessment", function(accounts){
             })
         })
     })
-    /*
+
     describe("When assessors fail to make an assessment", function(){
-        it("their stake is burned according to time passed", function(){
+        let lateAssessorIdx;
+        let initialBalanceAssessor;
+        let nAssessors;
+        let scores = [];
+        let salts = [];
+        let hashes = [];
+        for (i=0; i<nInitialUsers; i++){
+            scores.push(10)
+            salts.push(i.toString())
+            hashes.push(utils.hashScoreAndSalt(scores[i], salts[i]))
+        }
+        let timeUntilHalfCommits = 1*60*60 //1hour
+        it("their stake is burned according to time passed after a grace period", function(){
+            //initiate assessment, save assessors and have them confirm
+            return assessedConcept.makeAssessment(cost, size, {from: assessee}).then(function(result){
+                calledAssessors = utils.getCalledAssessors(result.receipt)
+                console.log(calledAssessors.length)
+                nAssessors = calledAssessors.length 
+                lateAssessorIdx = nAssessors -1 //last one
+                return utils.getAssessment(result.receipt)
+            }).then(function(instance){
+                assessmentContract = instance
+                return chain.confirmAssessors(calledAssessors, assessmentContract)
+            }).then(function(){
+                // save initial balance of assessors how is gonna be late
+                return userReg.balances.call(calledAssessors[lateAssessorIdx])
+            }).then(function(balance){
+                initialBalanceLateAssessor = balance.toNumber()
+                //let time pass so that the grace period is meaningful
+                return chain.evmIncreaseTime(timeUntilHalfCommits)
+            }).then(function(){
+                //have more than first half of assessors commit their score to initiate grace period
+                //note: assessor[nAssessors/2 + 1] will initiate the grace period, so that all others
+                // until assessor[nAssessors - 2 ] will commit during it
+                return chain.commitAssessors(calledAssessors.slice(0, lateAssessorIdx),
+                                             hashes.slice(0, lateAssessorIdx),
+                                             assessmentContract)
+            }).then(function(){
+                console.log(calledAssessors.length)
+                // let time pass so that the grace period is over and then 10% more
+                return chain.evmIncreaseTime(timeUntilHalfCommits + timeUntilHalfCommits/10)
+            }).then(function(){
+                // have the last assessor commit
+                return assessmentContract.commit(hashes[lateAssessorIdx], {from:calledAssessors[lateAssessorIdx]})
+            }).then(function(){
+                //and one more to trigger the reveal phase
+                return assessmentContract.commit(web3.sha3("random"), {from:assessee})
+            }).then(function(){
+                // have all assessors reveal, which triggers payout
+                return chain.revealAssessors(calledAssessors, scores, salts, assessmentContract)
+            }).then(function(){
+                //check balances of first commiters, gracecommiters and latecommiter
+                return userReg.balances.call(calledAssessors[lateAssessorIdx])
+            }).then(function(balance){
+                lateAssessorBalance = balance.toNumber()
+                return userReg.balances.call(calledAssessors[lateAssessorIdx-1])
+            }).then(function(balance){
+                graceAssessorBalance = balance.toNumber()
+                return userReg.balances.call(calledAssessors[0])
+            }).then(function(balance){
+                firstAssessorBalance = balance.toNumber()
+                assert.isAbove(firstAssessorBalance, lateAssessorBalance, "late assessor's stake did not get burned")
+                assert.equal(firstAssessorBalance, graceAssessorBalance, "graceAssessor's stake did get burned")
+                assert.equal(false)
+            })
         })
+
+
         it("and the assessment eventually starts without him", function(){
         })
     })
@@ -92,5 +160,4 @@ contract("Assessment", function(accounts){
         it("their stake minus a proportion if they are outside of it", function(){
         })
     })
-     */
 })

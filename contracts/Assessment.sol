@@ -144,7 +144,7 @@ contract Assessment {
   //@purpose: called by an assessor to confirm and stake, or to cancel the assessment and refund
   function confirmAssessor() onlyInStage(State.Called){
       if (now - checkpoint > 12 hours) {
-          cancelAssessment(); 
+          this.cancelAssessment(); 
           return;
       }
       if (assessorState[msg.sender] == State.Called &&
@@ -172,7 +172,7 @@ contract Assessment {
   //@purpose: called by an assessor to commit a hash of their score //TODO explain in more detail what's happening
   function commit(bytes32 _hash) onlyInStage(State.Confirmed){
     if(done > size/2) {
-        burnStakes();
+        /* burnStakes(); */
     }
 
     if(done == size) {
