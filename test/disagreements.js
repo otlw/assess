@@ -18,7 +18,7 @@ contract("Assessment", function(accounts){
     let assessedConceptID = 2;
     let assessedConcept;
     let assessmentContract;
-    let cost = 2;
+    let cost = 15;
     let size = 5;
     let calledAssessors;
     let assessee = accounts[nInitialUsers + 1];
@@ -143,10 +143,10 @@ contract("Assessment", function(accounts){
         })
 
 
-        it("and the assessment eventually starts without him", function(){
-        })
+        // it("and the assessment eventually starts without him", function(){
+        // })
     })
-    
+   /* 
     describe("When an assessor fails to keep his score a secret", function(){
         it("someone else can steal his stake by revealing his score", function(){
         })
@@ -160,4 +160,5 @@ contract("Assessment", function(accounts){
         it("their stake minus a proportion if they are outside of it", function(){
         })
     })
+    */
 })

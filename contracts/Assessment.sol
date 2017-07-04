@@ -169,11 +169,11 @@ contract Assessment {
     data[msg.sender].push(_data);
     DataSet(msg.sender, data[msg.sender].length - 1);
   }
-
+  event fb(uint c);
   //@purpose: called by an assessor to commit a hash of their score //TODO explain in more detail what's happening
   function commit(bytes32 _hash) onlyInStage(State.Confirmed){
     if(done > size/2) {
-        /* burnStakes(); */
+        burnStakes();
     }
 
     if(done == size) {
@@ -230,8 +230,14 @@ contract Assessment {
   }
 
   function burnStakes() internal {
+      fb(0); 
       for(uint i = 0; i < assessors.length; i++) {
+          fb(1); 
           if(assessorState[assessors[i]] == State.Confirmed) {
+              fb(2); 
+              fb(now-checkpoint); 
+              fb(burnRate);
+              fb(burnRate * (now-checkpoint));
               stake[assessors[i]] = cost - (burnRate * (now-checkpoint)); //burns stake as a function of how much time has passed since half of the assessors commited
           }
           if(stake[assessors[i]] == 0) {
