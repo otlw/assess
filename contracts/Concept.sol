@@ -142,7 +142,6 @@ contract Concept {
   @returns: nothing
   */
   function finishAssessment(int score, address assessee, address assessment) {
-    /* if(msg.sender == assessment) { */
     if (assessmentExists[msg.sender]) {
       if(score > 0) {
         uint weight = Assessment(assessment).size()*uint(score);
@@ -152,7 +151,6 @@ contract Concept {
       UserRegistry(userRegistry).notification(assessee, 7); //Assessment on Concept finished
     }
   }
-  event fb(uint x);
   /*
   @purpose: To add a member to a concept and recursively add a member to parent concept, halving the added weight with each generation and chinging the macWeight for a concept if neccisairy
   @param: address assessee = the address of the assessee
