@@ -17,6 +17,7 @@ var setup = [
 ]
 var nInitialUsers = 5;
 
+
 module.exports = function(deployer) {
   deployer.deploy(Math);
   deployer.link(Math, [Assessment, Concept, ConceptRegistry])
@@ -25,7 +26,7 @@ module.exports = function(deployer) {
   }).then(function(){
       return deployer.deploy(Distributor, setup.length, ConceptRegistry.address)
   }).then(function(){
-    return deployer.deploy(UserRegistry, ConceptRegistry.address, accounts[0], accounts.length*100)
+    return deployer.deploy(UserRegistry, ConceptRegistry.address, accounts[0], accounts.length*10000000000)
   }).then(function(){
     //add mewConcept
     return deployer.deploy(Concept, [], UserRegistry.address)

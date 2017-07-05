@@ -70,11 +70,11 @@ contract("ConceptRegistry", function() {
 })
 
 contract("Initial User", function(accounts){ 
-    it("should have a balance of 1000", function(){
+    it("should have a balance of 100000", function(){
         return UserRegistry.deployed().then(function(instance) {
             return instance.balances.call(accounts[0])
         }).then(function(balance) {
-            assert.equal(balance.toNumber(), 100)
+            assert.equal(balance.toNumber(),10000000000)
         })
     });
 })

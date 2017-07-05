@@ -19,7 +19,7 @@ contract('Assessment', function(accounts) {
     let assessedConcept;
     let ConceptInstance;
     let assessmentContract;
-    let cost = 2;
+    let cost = 10000000;
     let size = 5;
     let calledAssessors = [];
     let assessee = accounts[nInitialUsers + 1];
@@ -125,6 +125,9 @@ contract('Assessment', function(accounts) {
                     return assessmentContract.assessmentStage.call().then(function(stage){
                         assert.equal(stage.toNumber(), 2, "the assessment did not enter called stage")
                     })
+                })
+                it("should wait some time", function(){
+                    return utils.evmIncreaseTime(2000)
                 })
             })
         })
