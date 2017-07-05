@@ -189,10 +189,12 @@ contract Assessment {
         assessorState[msg.sender] = State.Committed;
         done++; //Increases done by 1 to help progress to the next assessment stage.
 
-        if(done <= size/2) {
-            burnRate = cost/(now-checkpoint);
-            checkpoint = now + (now - checkpoint);
+        if(done < size/2) {
+            burnRate = cost / (now - checkpoint);
       }
+        if( done >= size/2 && done - 1 < size/2) {
+            checkpoint = now + (now - checkpoint);
+        }
     }
   }
 
@@ -230,9 +232,12 @@ contract Assessment {
   }
 
   function burnStakes() internal {
+      if(now-checkpoint > now) {
+          return;
+      }
       for(uint i = 0; i < assessors.length; i++) {
           if(assessorState[assessors[i]] == State.Confirmed) {
-              stake[assessors[i]] = cost - (burnRate * (now-checkpoint)); //burns stake as a function of how much time has passed since half of the assessors commited
+              stake[assessors[i]] = cost - (burnRate * (now - checkpoint)); //burns stake as a function of how much time has passed since half of the assessors commited
           }
           if(stake[assessors[i]] == 0) {
               assessorState[assessors[i]] = State.Burned;
