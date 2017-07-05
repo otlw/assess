@@ -162,7 +162,6 @@ contract Concept {
   function addMember(address assessee, uint weight) onlyConcept() {
     members.push(assessee);
     weights[assessee] += weight;
-    fb(weight);
     if(weight > maxWeight) {
       maxWeight = weight;
     }

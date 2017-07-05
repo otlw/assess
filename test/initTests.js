@@ -66,12 +66,12 @@ contract("ConceptRegistry", function() {
 })
 
 contract("Initial User", function(accounts){ 
-    it("should have a balance of 100000", function(){
-        return UserRegistry.deployed().then(function(instance) {
-            return instance.balances.call(accounts[0])
-        }).then(function(balance) {
-            assert.equal(balance.toNumber(),10000000000)
-        })
+    it("should have a balance of 10000000000", async () => {
+        userRegistryInstance = await UserRegistry.deployed()
+        balance = await userRegistryInstance.balances.call(accounts[0])
+        assert.equal(balance.toNumber(),10000000000, "User0 does not have 10 billion Ahas")
+        balance = await userRegistryInstance.balances.call(accounts[4])
+        assert.equal(balance.toNumber(),10000000000, "User4 does not have 10 billion Ahas")
     });
 })
 

@@ -1,6 +1,7 @@
 abi = require('ethjs-abi')
 ethereumjsABI = require('ethereumjs-abi')
 var UserRegistry = artifacts.require("UserRegistry")
+var Assessment = artifacts.require("Assessment")
 
 
 exports.hashScoreAndSalt = function(_score, _salt, abi) {
@@ -44,3 +45,33 @@ exports.evmIncreaseTime = function(seconds) {
       })
     })
   }
+
+exports.getCalledAssessors = function(receiptFromMakeAssessment){
+    calledAssessors = [];
+    callsToAssessors = this.getNotificationArgsFromReceipt(receiptFromMakeAssessment, 1)
+    for (a=0; a<callsToAssessors.length; a++){
+        calledAssessors.push(callsToAssessors[a].user)
+    }
+    return calledAssessors
+}
+
+exports.getAssessment  = function(receiptFromMakeAssessment){
+    logs = this.getNotificationArgsFromReceipt(receiptFromMakeAssessment, 0)
+    assessmentAddress = logs[0].sender
+    assessmentContract = Assessment.at(assessmentAddress)
+    return assessmentContract
+}
+
+exports.getBalances = async function(_accounts, _userRegistryInstance){
+    balances = []
+    for (i=0; i<_accounts.length; i++){
+        tmp = await this.getBalanceOf(_accounts[i],_userRegistryInstance )
+        balances.push(tmp)
+    }
+    return balances
+}
+exports.getBalanceOf = async function(_account, _userRegistryInstance){
+    balance = await _userRegistryInstance.balances.call(_account)
+    return balance.toNumber()
+}
+
