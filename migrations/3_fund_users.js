@@ -7,7 +7,7 @@ module.exports = function(deployer) {
         return UserRegistry.deployed()
     }).then(function(instance){
         for(i=1; i < accounts.length; i++) {
-            instance.transfer(accounts[i], 100, {from: accounts[0]})
+            instance.transfer(accounts[i], 10000000000, {from: accounts[0]})
         }
     })
 }
