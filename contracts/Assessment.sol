@@ -267,8 +267,8 @@ contract Assessment {
 
    function calculateResult() onlyInStage(State.Done) private {
        for(uint j = 0; j < assessors.length; j++) {
-           if(assessorState[assessors[i]] == State.Done) {
-               finalAssessors.push(assessors[i]); //Adds all the assessors that completed the assessment process to an array}
+           if(assessorState[assessors[j]] == State.Done) {
+               finalAssessors.push(assessors[j]); //Adds all the assessors that completed the assessment process to an array}
            }
        }
        int[] memory score = new int[] (finalAssessors.length); //Initializes an array to store scores that is the same length as the number of finalAssessors
@@ -277,24 +277,24 @@ contract Assessment {
        for(uint i = 0; i < finalAssessors.length; i++) {
            score[i] = scores[finalAssessors[i]];
        }
-       /* int meanAbsoluteDeviation = Math.calculateMAD(score,int(finalAssessors.length)); */
-       /* for(uint l = 0; l < score.length; l++) { */
-       /*     for(uint m = 0; m < score.length; m++) { */
-       /*         if(score[l] - score[m] <= meanAbsoluteDeviation) { */
-       /*             clusters[l].push(score[m]); */
-       /*         } */
-       /*     } */
-       /*     if(clusters[l].length > clusters[largestClusterIndex].length) { */
-       /*         largestClusterIndex = l; */
-       /*     } */
-       /* } */
-       /* for (uint o = 0; o < clusters[largestClusterIndex].length; o++) { */
-       /*     averageScore += clusters[largestClusterIndex][o]; */
-       /*     inRewardCluster[clusters[largestClusterIndex][o]] = true; */
-       /* } */
-       /* averageScore /= int(clusters[largestClusterIndex].length); */
-       /* finalScore = averageScore; //Sets the final score to the average score */
-       /* payout(); */
+       int meanAbsoluteDeviation = Math.calculateMAD(score,int(finalAssessors.length));
+       for(uint l = 0; l < score.length; l++) {
+           for(uint m = 0; m < score.length; m++) {
+               if(score[l] - score[m] <= meanAbsoluteDeviation) {
+                   clusters[l].push(score[m]);
+               }
+           }
+           if(clusters[l].length > clusters[largestClusterIndex].length) {
+               largestClusterIndex = l;
+           }
+       }
+       for (uint o = 0; o < clusters[largestClusterIndex].length; o++) {
+           averageScore += clusters[largestClusterIndex][o];
+           inRewardCluster[clusters[largestClusterIndex][o]] = true;
+       }
+       averageScore /= int(clusters[largestClusterIndex].length);
+       finalScore = averageScore; //Sets the final score to the average score
+       payout();
    }
 
    function payout() onlyInStage(State.Done) private { //TODO order functions according to styleguide
