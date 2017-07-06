@@ -43,6 +43,7 @@ contract Assessment {
         }
         _;
     }
+    bool[200] finalCluster;
 
     modifier onlyConceptAssessment() {
         if (msg.sender != address(this) && msg.sender != concept) {
@@ -234,7 +235,7 @@ contract Assessment {
         //If all the assessors have revealed their scored or burned their stakes
         if (done == size) {
             assessmentStage = State.Done;
-            calculateResult(); //The final result is calculated
+            /* calculateResult(); //The final result is calculated */
         }
     }
 
@@ -246,8 +247,7 @@ contract Assessment {
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Confirmed) {
                 stake[assessors[i]] = cost - (burnRate * (now - checkpoint));
-                if (stake[assessors[i]] == 0 ||
-                    stake[assessors[i]] > cost) {
+                if (stake[assessors[i]] == 0 || stake[assessors[i]] > cost) {
                     assessorState[assessors[i]] = State.Burned;
                     stake[assessors[i]] = 0;
                     size--; //decrease size to help progress to the next assessment stage
@@ -263,29 +263,33 @@ contract Assessment {
             }
         }
     }
-
+    event fb(uint x);
     function calculateResult() onlyInStage(State.Done) private {
         int[] memory finalScores = new int[] (done);
         for (uint j = 0; j < assessors.length; j++) {
             if (assessorState[assessors[j]] == State.Done) {
-                finalScores[i] = scores[assessors[i]];
+                finalScores[j] = scores[assessors[j]];
             }
         }
-        bool[] memory finalCluster = Math.getLargestCluster(finalScores);
+        uint finalClusterLength;
+        bool[200] memory finalClusterMask;
+        (finalClusterMask, finalClusterLength) = Math.getLargestCluster(finalScores);
+        /* bool[] memory fCM_reduced = new bool[] (done); */
 
-        for(uint i=0; i<done; i++) {
-            if(finalCluster[i]) {
+        for (uint i=0; i<done; i++) {
+            if (finalClusterMask[i]) {
                 finalScore += finalScores[i];
+                /* fCM_reduced[i] = true; */
             }
+            /* else { fCM_reduced[i] = false; } */
         }
-        averageScore /= int(clusters[largestClusterIndex].length);
-        finalScore = averageScore; //Sets the final score to the average score
-        payout();
-        //Sends assessment info to the concept so that it can update its records
-        Concept(concept).finishAssessment(finalScore, assessee, address(this));
+       finalScore /= int(finalClusterLength);
+        payout(finalClusterMask);
+        /* payout(fCM_reduced); */
     }
-
-    function payout(bool[] finalCluster) onlyInStage(State.Done) private { //TODO order functions according to styleguide
+    
+    /* function payout(bool[] memory finalClusterMask) onlyInStage(State.Done) internal { */
+    function payout(bool[200] finalClusterMask) onlyInStage(State.Done) private {
         uint index=0;
         uint q = 1; //INFLATION
         for (uint i = 0; i < assessors.length; i++) {
@@ -293,17 +297,18 @@ contract Assessment {
                 uint payoutValue;
                 int score = scores[assessors[i]];
                 int scoreDistance = Math.abs(((score - finalScore)*100)/finalScore);
-                if(finalCluster[index]) {
+
+                if(finalClusterMask[index]) {
                     payoutValue = (q*cost*((100 - uint(scoreDistance))/100)) + stake[assessors[i]];
                 }
                 else {
                     payoutValue = stake[assessors[i]]*((200 - uint(scoreDistance))/200);
                 }
                 Concept(concept).addBalance(assessors[i], payoutValue);
+                UserRegistry(userRegistry).notification(assessors[i], 6); //You  got paid!
                 index++;
             }
         }
         Concept(concept).finishAssessment(finalScore, assessee, address(this));
-        UserRegistry(userRegistry).notification(assessors[i], 6); //You  got paid!
     }
 }

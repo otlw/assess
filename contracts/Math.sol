@@ -7,6 +7,7 @@ pragma solidity ^0.4.0;
 */
 
 library Math {
+    uint constant maxAssessors = 200;
   /*
   @purpose: To generate a weak random number between 0 and the specified maximum
   @param: uint seed = seed number for the generation of a random number
@@ -47,16 +48,15 @@ library Math {
     return meanAbsoluteDeviation;
   }
 
-  function getLargestCluster(int[] data) constant returns(int[]){
+
+  function getLargestCluster(int[] data) constant returns(bool[200], uint) {
       uint largestClusterSize = 0;
-      bool[] memory largestCluster = new bool[] (data.length);
-
+      bool[200] memory largestCluster;
       int MAD = calculateMAD(data);
-
       for(uint i=0; i < data.length; i++) {
+          uint clusterSize = 0;
+          bool[200] memory cluster; 
           for (uint j = 0; j < data.length; j++){
-              bool[] memory cluster = new bool[] (data.length);
-              uint clusterSize;
               if(abs(data[i] - data[j]) <= MAD ){
                   cluster[j] = true;
                   clusterSize++;
@@ -67,16 +67,7 @@ library Math {
               }
           }
       }
-
-      int[] memory finalCluster = new int[] (largestClusterSize);
-      for(uint k =0; k < largestCluster.length; k++) {
-          uint index = 0;
-          if(largestCluster[k]) {
-              finalCluster[index] = data[k];
-              index++;
-          }
-      }
-      return finalCluster;
+      return (largestCluster, largestClusterSize);
   }
 
   function abs(int x) returns (int256){

@@ -104,8 +104,9 @@ contract("Burning Stakes:", function(accounts){
         })
 
         it("entirely if they committed during the grace period afterwards", async () =>{
-            assert.equal(assessorPayouts[earlyAssessorIdx],
-                         assessorPayouts[lateAssessorIdx-1], "graceAssessor's stake did get burned")
+            assert.equal(assessorPayouts[lateAssessorIdx-1],
+                         initialBalanceAssessors[lateAssessorIdx-1] + cost,
+                         "graceAssessor's stake did get burned")
         })
 
         it("partially if they were late", async () =>{
