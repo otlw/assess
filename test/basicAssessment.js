@@ -19,7 +19,7 @@ contract('Assessment', function(accounts) {
     let assessedConcept;
     let ConceptInstance;
     let assessmentContract;
-    let cost = 2;
+    let cost = 10000000;
     let size = 5;
     let calledAssessors = [];
     let assessee = accounts[nInitialUsers + 1];
@@ -126,6 +126,9 @@ contract('Assessment', function(accounts) {
                         assert.equal(stage.toNumber(), 2, "the assessment did not enter called stage")
                     })
                 })
+                it("should wait some time", function(){
+                    return utils.evmIncreaseTime(2000)
+                })
             })
         })
         describe("Confirmed", function() {
@@ -142,21 +145,21 @@ contract('Assessment', function(accounts) {
                 }).then(function(done){
                     doneAfter = done.toNumber()
                     assert.equal(doneBefore, doneAfter, "an unconfirmed assessor could commit a score")
-                    assert.equal(doneBefore, 0, "done was not zero")
+                    assert.equal(doneBefore, 0, "done was falsely increased")
                 })
             })
 
             it("should accept commits from confirmed assessors", function() {
-                return chain.commitAssessors(calledAssessors, hashes, assessmentContract).then(function(){
+                return chain.commitAssessors(calledAssessors.slice(1), hashes.slice(1), assessmentContract).then(function(){
                     return assessmentContract.done.call()
                 }).then(function(done){
                     doneAfter = done.toNumber()
-                    assert.equal(doneAfter, calledAssessors.length, "a confirmed assessor could not commit her score")
+                    assert.equal(doneAfter, calledAssessors.length - 1, "a confirmed assessor could not commit her score")
                 })
             })
 
             it("should move to committed stage when all commited", function(){
-                return assessmentContract.commit(web3.sha3("random"), {from: outsideUser}).then(function(result) {
+                return assessmentContract.commit(hashes[0], {from: calledAssessors[0]}).then(function(result) {
                     receiptFromLastCommit = result.receipt
                     return assessmentContract.assessmentStage.call()
                 }).then(function(aState){
@@ -228,7 +231,7 @@ contract('Assessment', function(accounts) {
             describe("The Assessor", function(){
                 it("should be paid", function() {
                     return UserRegistryInstance.balances.call(calledAssessors[0]).then(function(balance){
-                        assert.isAbove(balance.toNumber(), assessorInitialBalance, "assessor didn't get paid")
+                        assert.equal(balance.toNumber(), assessorInitialBalance + cost, "assessor didn't get paid")
                     })
                 })
             })

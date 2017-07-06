@@ -22,14 +22,15 @@ exports.commitAssessors = function(_assessors, _hashes, _assessmentInstance) {
     return chain
 }
 
-exports.revealAssessors = function(_assessors, _scores, _salts, _assessmentInstance) { //TODO refactor to take an object
-    var chain = new Promise((resolve, reject) => resolve(0))
+
+exports.revealAssessors = async function(_assessors, _scores, _salts, _assessmentInstance) {
     for(i=0; i < _assessors.length; i++) {
-        chain = chain.then(function(index) {
-            return _assessmentInstance.reveal(_scores[index], _salts[index], _assessors[index], {from: _assessors[index]}) .then(function(){
-                return index += 1
-            })
-        })
+        stage = await _assessmentInstance.assessmentStage.call()
+        if (stage.toNumber() == 3){
+            await _assessmentInstance.reveal(_scores[i], _salts[i], _assessors[i], {from: _assessors[i]})
+        }
+        else{
+            console.log("wrong stage! " + i + "'-th assessor should not reveal")
+        }
     }
-    return chain
 }
