@@ -96,7 +96,7 @@ contract("Burning Stakes:", function(accounts){
     })
 
     describe("Finally, assessors are payed out their stake", function() {
-        it(" entirely if they committed among the first half of assessors.", async () => {
+        it("entirely if they committed among the first half of assessors.", async () => {
             assessorPayouts = await utils.getBalances(calledAssessors, userReg)
             assert.equal(assessorPayouts[earlyAssessorIdx],
                          initialBalanceAssessors[earlyAssessorIdx] + cost,
@@ -118,7 +118,7 @@ contract("Burning Stakes:", function(accounts){
                            "late assessor's stake got entirely burned")
         })
 
-        it("entirely if they were much too late", async () =>{
+        it("not at all if they were much too late", async () =>{
             assert.equal(assessorPayouts[failingAssessorIdx],
                          initialBalanceAssessors[failingAssessorIdx] - cost,
                          "the failed assessor's stake did not get entirely burned")
