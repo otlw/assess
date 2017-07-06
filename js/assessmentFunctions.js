@@ -1,27 +1,26 @@
-exports.confirmAssessors = function(_assessors, assessmentInstance) {
-    var chain = new Promise((resolve, reject) => resolve(0))
+exports.confirmAssessors = async function(_assessors, _assessmentInstance) {
     for(i=0; i < _assessors.length; i++) {
-        chain = chain.then(function(index) {
-            return assessmentInstance.confirmAssessor({from: _assessors[index]}).then(function(){
-                return index += 1
-            })
-        })
+        stage = await _assessmentInstance.assessmentStage.call()
+        if (stage.toNumber() == 1){
+            await _assessmentInstance.confirmAssessor({from: _assessors[i]})
+        }
+        else{
+            console.log("wrong stage! " + i + "'-th assessor should not confirm")
+        }
     }
-    return chain
 }
 
-exports.commitAssessors = function(_assessors, _hashes, _assessmentInstance) {
-    var chain = new Promise((resolve, reject) => resolve(0))
+exports.commitAssessors = async function(_assessors, _hashes, _assessmentInstance) {
     for(i=0; i < _assessors.length; i++) {
-        chain = chain.then(function(index) {
-            return _assessmentInstance.commit(_hashes[index], {from: _assessors[index]}).then(function(){
-                return index += 1
-            })
-        })
+        stage = await _assessmentInstance.assessmentStage.call()
+        if (stage.toNumber() == 2){
+            await _assessmentInstance.commit(_hashes[i], {from: _assessors[i]})
+        }
+        else{
+            console.log("wrong stage! " + i + "'-th assessor should not confirm")
+        }
     }
-    return chain
 }
-
 
 exports.revealAssessors = async function(_assessors, _scores, _salts, _assessmentInstance) {
     for(i=0; i < _assessors.length; i++) {
