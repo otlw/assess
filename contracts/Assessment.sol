@@ -81,7 +81,7 @@ contract Assessment {
 
 
     function cancelAssessment() onlyConceptAssessment() {
-        Concept(concept).addBalance(assessee, cost*assessors.length);
+        Concept(concept).addBalance(assessee, cost*size);
         UserRegistry(userRegistry).notification(assessee, 3); //Assessment Cancled and you have been refunded
         for (uint i = 0; i < assessors.length; i++) {
             Concept(concept).addBalance(assessors[i], cost);
@@ -146,7 +146,7 @@ contract Assessment {
     function confirmAssessor() onlyInStage(State.Called) {
         // cancel if the assessment is older than 12 hours
         if (now - checkpoint > 12 hours) {
-            cancelAssessment();
+            this.cancelAssessment();
             return;
         }
         if (assessorState[msg.sender] == State.Called &&
