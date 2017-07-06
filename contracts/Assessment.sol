@@ -186,7 +186,7 @@ contract Assessment {
         // if the boundary assessor
         if( done*10 >= 10*size/2 &&
             (done - 1)*10 < 10*size/2) {
-            burnRate = cost / (now - checkpoint);
+            burnRate = (cost / (now - checkpoint)) + 1;
             checkpoint = now + (now - checkpoint);
         }
     }
