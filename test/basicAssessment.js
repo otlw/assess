@@ -15,15 +15,21 @@ contract('Assessment', function(accounts) {
     let UserRegistryInstance;
     let conceptReg;
     let distributor;
+
     let assessedConceptID = 2;
     let assessedConcept;
     let ConceptInstance;
     let assessmentContract;
+
     let cost = 10000000;
     let size = 5;
     let calledAssessors = [];
-    let assessee = accounts[nInitialUsers + 1];
+    let assesseeIdx = nInitialUsers + 1
+    let assessee = accounts[assesseeIdx];
     let outsideUser = accounts[nInitialUsers + 2];
+    var ethBalancesBefore;
+    var ethBalancesAfter;
+
     let scores = [];
     let salts = [];
     let hashes = [];
@@ -61,6 +67,7 @@ contract('Assessment', function(accounts) {
 
     describe('Concept', function() {
         it("should initiate an assessment", function() {
+            ethBalancesBefore = utils.getEthBalances(accounts.slice(0,nInitialUsers + 2))
             return assessedConcept.makeAssessment(cost,size, {from: assessee}).then(function(result) {
                 receiptFromMakeAssessment = result.receipt
                 const eventLogs = utils.getNotificationArgsFromReceipt(result.receipt, 0)
@@ -234,6 +241,30 @@ contract('Assessment', function(accounts) {
                         assert.equal(balance.toNumber(), assessorInitialBalance + cost, "assessor didn't get paid")
                     })
                 })
+            })
+
+            describe("Gast costs", function() {
+                it("shoud cost some gas:", function() {
+                // analyse gas costs
+                ethBalancesAfter = utils.getEthBalances(accounts.slice(0,nInitialUsers + 2))
+                // console.log(ethBalancesBefore)
+                // console.log(ethBalancesAfter)
+                //cost in ether:
+                console.log("Assessee: " + web3.fromWei(ethBalancesBefore[assesseeIdx] -
+                                                        ethBalancesAfter[assesseeIdx],
+                                                        "ether" ) + "ether")
+                console.log("Assessor: " + web3.fromWei(ethBalancesBefore[0] -
+                                                        ethBalancesAfter[0],
+                                                        "ether" ) + " ether")
+                    //in Wei:
+                    var costs = []
+                    for (i=0; i<ethBalancesBefore.length; i++){
+                        costs.push(ethBalancesBefore[i] - ethBalancesAfter[i])
+                    }
+                    console.log("Assessee: " + costs[assesseeIdx] )
+                    console.log("Assessor: " + costs[0])
+
+            })
             })
         })
     })

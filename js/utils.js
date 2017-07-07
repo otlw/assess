@@ -71,3 +71,11 @@ exports.getBalances = async function(_accounts, _userRegistryInstance){
     return balances
 }
 
+exports.getEthBalances = function(_accounts){
+    balances = []
+    for (i=0; i<_accounts.length; i++){
+        balances.push(  web3.eth.getBalance(_accounts[i]).toNumber())
+    }
+    return balances
+}
+
