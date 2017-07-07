@@ -49,7 +49,7 @@ library Math {
   }
 
 
-  function getLargestCluster(int[] data) constant returns(bool[200], uint) {
+  function getLargestCluster(int[] data) returns(bool[200], uint) {
       uint largestClusterSize = 0;
       bool[200] memory largestCluster;
       int MAD = calculateMAD(data);

@@ -43,7 +43,6 @@ contract Assessment {
         }
         _;
     }
-    bool[200] finalCluster;
 
     modifier onlyConceptAssessment() {
         if (msg.sender != address(this) && msg.sender != concept) {
@@ -71,14 +70,13 @@ contract Assessment {
         concept = msg.sender;
         userRegistry = _userRegistry;
         conceptRegistry = _conceptRegistry;
-        checkpoint = now;
+       checkpoint = now;
         size = _size;
         cost = _cost;
         UserRegistry(userRegistry).notification(assessee, 0); // assesse has started an assessment
         assessorPoolLength = 0;
         done = 0;
     }
-
 
     function cancelAssessment() onlyConceptAssessment() {
         Concept(concept).addBalance(assessee, cost*size);
@@ -102,7 +100,6 @@ contract Assessment {
             return false;
         }
     }
-
 
     /*
       @purpose: To recursively set the pool to draw assessors from in the assessment
@@ -199,7 +196,6 @@ contract Assessment {
 
 
     }
-
     //@purpose: called by assessors to reveal their own commits or others
     function reveal(int8 score, string salt, address assessor) onlyInStage(State.Committed) {
         if (now - checkpoint > 12 hours) {
@@ -235,7 +231,7 @@ contract Assessment {
         //If all the assessors have revealed their scored or burned their stakes
         if (done == size) {
             assessmentStage = State.Done;
-            /* calculateResult(); //The final result is calculated */
+            calculateResult(); 
         }
     }
 
@@ -263,17 +259,20 @@ contract Assessment {
             }
         }
     }
-    event fb(uint x);
+
     function calculateResult() onlyInStage(State.Done) private {
         int[] memory finalScores = new int[] (done);
+        uint idx =0;
         for (uint j = 0; j < assessors.length; j++) {
             if (assessorState[assessors[j]] == State.Done) {
-                finalScores[j] = scores[assessors[j]];
+                finalScores[idx] = scores[assessors[j]];
+                idx++;
             }
         }
         uint finalClusterLength;
         bool[200] memory finalClusterMask;
         (finalClusterMask, finalClusterLength) = Math.getLargestCluster(finalScores);
+        //maybe the use of an dynamic memory array will save gas because it helps to avaid having the payoutfunction accepting bool[200 as argument]
         /* bool[] memory fCM_reduced = new bool[] (done); */
 
         for (uint i=0; i<done; i++) {

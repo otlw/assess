@@ -89,7 +89,6 @@ contract("Burning Stakes:", function(accounts){
             // let all assessors reveal
             try {await chain.revealAssessors(calledAssessors, scores, salts, assessmentContract)}
             catch(e){ console.log("At least one assessor could not reveal") }
-
             stage = await assessmentContract.assessmentStage.call()
             assert.equal(stage.toNumber(), 4, "assessment did not move to stage done")
         })
