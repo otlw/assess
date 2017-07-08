@@ -79,3 +79,6 @@ exports.getEthBalances = function(_accounts){
     return balances
 }
 
+exports.weiToDollar = function(wei, etherPrice) {
+    return web3.fromWei(wei,"ether") * etherPrice
+}

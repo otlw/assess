@@ -10,6 +10,8 @@ chain = require("../js/assessmentFunctions.js")
 var deploymentScript = require("../migrations/2_deploy_contracts.js")
 var setup = deploymentScript.setupVariable
 var nInitialUsers = deploymentScript.nInitialUsers
+var gasPrice = deploymentScript.gasPrice
+var etherPrice = deploymentScript.etherPrice
 
 contract('Assessment', function(accounts) {
     let UserRegistryInstance;
@@ -27,8 +29,6 @@ contract('Assessment', function(accounts) {
     let assesseeIdx = nInitialUsers + 1
     let assessee = accounts[assesseeIdx];
     let outsideUser = accounts[nInitialUsers + 2];
-    var ethBalancesBefore;
-    var ethBalancesAfter;
 
     let scores = [];
     let salts = [];
@@ -39,6 +39,9 @@ contract('Assessment', function(accounts) {
         hashes.push(utils.hashScoreAndSalt(scores[i], salts[i]))
     }
     let receiptFromMakeAssessment;
+    var ethBalancesBefore;
+    var ethBalancesAfter;
+    var gasCosts = [];
     describe('Before the assessment', function(){
         it('A concept should be registered', function() {
             return Distributor.deployed().then(function(instance) {
@@ -70,6 +73,12 @@ contract('Assessment', function(accounts) {
             ethBalancesBefore = utils.getEthBalances(accounts.slice(0,nInitialUsers + 2))
             return assessedConcept.makeAssessment(cost,size, {from: assessee}).then(function(result) {
                 receiptFromMakeAssessment = result.receipt
+                gasCosts.push({function: "makeAssessment",
+                               cost: {
+                                   ether:web3.fromWei(receiptFromMakeAssessment.gasUsed * gasPrice, "ether"),
+                                   $: utils.weiToDollar(receiptFromMakeAssessment.gasUsed * gasPrice, etherPrice)
+                               }
+                              })
                 const eventLogs = utils.getNotificationArgsFromReceipt(result.receipt, 0)
                 assessmentAddress = eventLogs[0].sender
                 return assessedConcept.assessmentExists.call(assessmentAddress)
@@ -168,6 +177,13 @@ contract('Assessment', function(accounts) {
             it("should move to committed stage when all commited", function(){
                 return assessmentContract.commit(hashes[0], {from: calledAssessors[0]}).then(function(result) {
                     receiptFromLastCommit = result.receipt
+                    gasCosts.push({function: "commit",
+                                   cost: {
+                                       ether:web3.fromWei(receiptFromLastCommit.gasUsed * gasPrice, "ether"),
+                                       $: utils.weiToDollar(receiptFromLastCommit.gasUsed * gasPrice, etherPrice)
+                                   }
+                                  })
+ 
                     return assessmentContract.assessmentStage.call()
                 }).then(function(aState){
                     assert.equal(aState.toNumber(), 3, "assessment did not enter commit stage" )
@@ -199,6 +215,13 @@ contract('Assessment', function(accounts) {
                                                  {from: calledAssessors[0]})
                     .then(function(result){
                         receiptFromLastReveal = result.receipt
+                        gasCosts.push({function: "last Reveal + calculate + payout",
+                                       cost: {
+                                           ether:web3.fromWei(receiptFromLastReveal.gasUsed * gasPrice, "ether"),
+                                           $: utils.weiToDollar(receiptFromLastReveal.gasUsed * gasPrice, etherPrice)
+                                       }
+                                      })
+                        ethBalancesAfter = utils.getEthBalances(accounts.slice(0,nInitialUsers + 2))
                         return assessmentContract.assessmentStage.call()
                     }).then(function(stage){
                         assert.equal(stage.toNumber(), 4, "assessment did not enter done stage")
@@ -244,26 +267,11 @@ contract('Assessment', function(accounts) {
             })
 
             describe("Gast costs", function() {
-                it("shoud cost some gas:", function() {
-                // analyse gas costs
-                ethBalancesAfter = utils.getEthBalances(accounts.slice(0,nInitialUsers + 2))
-                // console.log(ethBalancesBefore)
-                // console.log(ethBalancesAfter)
-                //cost in ether:
-                console.log("Assessee: " + web3.fromWei(ethBalancesBefore[assesseeIdx] -
-                                                        ethBalancesAfter[assesseeIdx],
-                                                        "ether" ) + "ether")
-                console.log("Assessor: " + web3.fromWei(ethBalancesBefore[0] -
-                                                        ethBalancesAfter[0],
-                                                        "ether" ) + " ether")
-                    //in Wei:
-                    var costs = []
-                    for (i=0; i<ethBalancesBefore.length; i++){
-                        costs.push(ethBalancesBefore[i] - ethBalancesAfter[i])
-                    }
-                    console.log("Assessee: " + costs[assesseeIdx] )
-                    console.log("Assessor: " + costs[0])
-
+                it("Analysis:", async () => {
+                    stage = await assessmentContract.assessmentStage.call()
+                    assert.equal(stage.toNumber(), 4, "gas measured before assessment is done")
+                    console.log('Assuming GasPrice: ' + gasPrice + "  and 1 ether = $" + etherPrice); 
+                    console.log(gasCosts)
             })
             })
         })
