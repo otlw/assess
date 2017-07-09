@@ -61,10 +61,10 @@ library Math {
                   cluster[j] = true;
                   clusterSize++;
               }
-              if(clusterSize > largestClusterSize) {
-                  largestCluster = cluster;
-                  largestClusterSize = clusterSize;
-              }
+          }
+          if(clusterSize > largestClusterSize) {
+              largestCluster = cluster;
+              largestClusterSize = clusterSize;
           }
       }
       return (largestCluster, largestClusterSize);
