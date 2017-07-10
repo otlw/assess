@@ -243,22 +243,17 @@ contract('Assessment', function(accounts) {
             describe("The assessee", function(){
                 let weight;
 
-                it("is added to the concept", function(){
-                    return assessedConcept.weights.call(assessee).then(function(weightInConcept){
-                        weight = weightInConcept.toNumber()
-                        assert.isAbove(weightInConcept.toNumber(), 0, "the assesee doesn't have a weight in the concept")
-                    })
+                it("is added to the concept", async () => {
+                    weightInConcept = await assessedConcept.membersData.call(assessee)
+                    weight = weightInConcept.toNumber()
+                    assert.isAbove(weightInConcept.toNumber(), 0, "the assesee doesn't have a weight in the concept")
                 })
 
-                it("is added to the parent at half weight", function() {
-                    return assessedConcept.parents.call(0).then(function(parentAddress) {
-                        return Concept.at(parentAddress)
-                    }).then(function(parentConceptInstance) {
-                        return parentConceptInstance.weights.call(assessee)
-                    }).then(function(weightInParent) {
-                        assert.isAbove(weightInParent.toNumber(), 0, "the assesse doesn't have a weight in the parent")
-                        assert.equal(weight/2, weightInParent.toNumber(), "the assessee didn't have half weight in parent")
-                    })
+                it("is added to the parent at half weight", async () => {
+                    parentConcept = await Concept.at( await assessedConcept.parents.call(0))
+                    weightInParent = await parentConcept.membersData.call(assessee)
+                    assert.isAbove(weightInParent.toNumber(), 0, "the assesse doesn't have a weight in the parent")
+                    assert.equal(weight/2, weightInParent.toNumber(), "the assessee didn't have half weight in parent")
                 })
             })
 
