@@ -232,9 +232,9 @@ contract('Assessment', function(accounts) {
                     })
             })
         })
-
+        
         describe("Done", function() {
-            it("should calculate the assesee's score", function(){
+            it("should calculate the assessee's score", function(){
                 return assessmentContract.finalScore.call().then(function(finalScore) {
                     assert.equal(finalScore.toNumber(), 10, "score not calculated correctly") //TODO write a javascript function that calculates a score
                 })
@@ -244,14 +244,15 @@ contract('Assessment', function(accounts) {
                 let weight;
 
                 it("is added to the concept", async () => {
-                    weightInConcept = await assessedConcept.membersData.call(assessee)
+                    weightInConcept = await assessedConcept.getWeight.call(assessee)
                     weight = weightInConcept.toNumber()
-                    assert.isAbove(weightInConcept.toNumber(), 0, "the assesee doesn't have a weight in the concept")
+                    assert.isAbove(weight, 0, "the assesee doesn't have a weight in the concept")
                 })
 
                 it("is added to the parent at half weight", async () => {
                     parentConcept = await Concept.at( await assessedConcept.parents.call(0))
-                    weightInParent = await parentConcept.membersData.call(assessee)
+                    weightInParent = await parentConcept.getWeight.call(assessee)
+                    await parentConcept.getWeight(assessee)
                     assert.isAbove(weightInParent.toNumber(), 0, "the assesse doesn't have a weight in the parent")
                     assert.equal(weight/2, weightInParent.toNumber(), "the assessee didn't have half weight in parent")
                 })

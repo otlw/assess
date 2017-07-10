@@ -230,7 +230,7 @@ contract Assessment {
         //If all the assessors have revealed their scored or burned their stakes
         if (done == size) {
             assessmentStage = State.Done;
-            calculateResult(); 
+            calculateResult();
         }
     }
 
@@ -241,7 +241,7 @@ contract Assessment {
                 stake[assessors[i]] = 0;
                 assessorState[assessors[i]] = State.Burned;
                 size--; //decrease size to help progress to the next assessment stage
-            }
+           }
         }
     }
 
@@ -273,9 +273,12 @@ contract Assessment {
         }
         finalScore /= int(finalClusterLength);
         payout(finalClusterMask);
-    }
+       if (finalScore > 0){
+            Concept(concept).addMember(assessee, uint(finalScore) * finalClusterLength);
+        }
+   }
 
-    function payout(bool[200] finalClusterMask) onlyInStage(State.Done) private {
+    function payout(bool[200] finalClusterMask) onlyInStage(State.Done) internal {
         uint index=0;
         uint q = 1; //INFLATION
         for (uint i = 0; i < assessors.length; i++) {
@@ -286,7 +289,7 @@ contract Assessment {
 
                 if(finalClusterMask[index]) {
                     payoutValue = (q*cost*((100 - uint(scoreDistance))/100)) + stake[assessors[i]];
-               }
+                }
                 else {
                     payoutValue = stake[assessors[i]]*((200 - uint(scoreDistance))/200);
                 }

@@ -71,7 +71,7 @@ contract("Distributor", function(accounts) {
                 mewConcept = Concept.at(mewAddress)
                 //check only account 1 for weight>0 in mew //TODO loop and check for all
                 a = 1
-                return mewConcept.membersData.call(accounts[a])
+                return mewConcept.getWeight.call(accounts[a])
             }).then(function(weight){
                 assert.isAbove(weight.toNumber(), 0, "account"  + a +  " has no weight in mew")
                 //check account 2 for a decreased weight
@@ -79,10 +79,10 @@ contract("Distributor", function(accounts) {
                 return distributor.conceptLookup.call(0)
             }).then(function(addressOfConcept0){
                 concept0 = Concept.at(addressOfConcept0)
-                return concept0.membersData.call(accounts[a])
+                return concept0.getWeight.call(accounts[a])
             }).then(function(_weightAt0){
                 weightAt0 = _weightAt0.toNumber()
-                return mewConcept.membersData.call(accounts[a])
+                return mewConcept.getWeight.call(accounts[a])
             }).then(function(weightAtMew){
                 assert.isAbove(weightAt0, weightAtMew.toNumber(), "weight of account " + a + " did not decrease")
             })
