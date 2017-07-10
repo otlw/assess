@@ -13,10 +13,19 @@ contract Concept {
     address conceptRegistry;
     uint public maxWeight;
     address[] public members;
-    mapping (address => int) public currentScores;
     mapping (address => bool) public assessmentExists;
-    mapping (address => uint) public weights;
+    mapping (address => Member) public membersData;
     mapping (address => mapping (address => uint)) public approval;
+
+    struct Member {
+        Score[] assessments;
+        uint weight;
+    }
+
+    struct Score {
+        uint score;
+        uint time;
+    }
 
     modifier onlyUserRegistry() {
         if (msg.sender != userRegistry)
@@ -83,7 +92,7 @@ contract Concept {
     //@purpose: returns a random member of the Concept. Users with high weights are more likely to be called
     function getRandomMember(uint seed) returns(address) {
         address randomUser = members[Math.getRandom(seed, members.length-1)];
-        if (UserRegistry(userRegistry).availability(randomUser) && weights[randomUser] > now % maxWeight) {
+        if (UserRegistry(userRegistry).availability(randomUser) && membersData[randomUser].weight > now % maxWeight) {
             return randomUser;
         }
         return address(0x0);
