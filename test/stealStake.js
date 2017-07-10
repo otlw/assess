@@ -21,6 +21,7 @@ contract("Steal Stake:", function(accounts){
 
     let cost = 1500;
     let size = 5;
+    let timeLimit = 10000;
 
     let calledAssessors;
     let assessee = accounts[nInitialUsers + 1];
@@ -41,7 +42,7 @@ contract("Steal Stake:", function(accounts){
         userReg = await UserRegistry.deployed()
 
         //initiate assessment, save assessors and their initial balance
-        result = await assessedConcept.makeAssessment(cost, size, {from: assessee})
+        result = await assessedConcept.makeAssessment(cost, size, timeLimit, {from: assessee})
         calledAssessors = utils.getCalledAssessors(result.receipt)
         assessmentContract = utils.getAssessment(result.receipt)
         assert.isAbove(calledAssessors.length, size - 1, "not enough assessors were called")
