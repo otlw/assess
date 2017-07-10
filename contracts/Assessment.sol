@@ -286,7 +286,7 @@ contract Assessment {
 
                 if(finalClusterMask[index]) {
                     payoutValue = (q*cost*((100 - uint(scoreDistance))/100)) + stake[assessors[i]];
-                }
+               }
                 else {
                     payoutValue = stake[assessors[i]]*((200 - uint(scoreDistance))/200);
                 }

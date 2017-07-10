@@ -152,14 +152,13 @@ contract Concept {
       @param: address assessment = the address of the assessment
       @returns: nothing
     */
-    function finishAssessment(int score, address assessee, address assessment) {
+    function finishAssessment(int _score, address _assessee) {
         if (assessmentExists[msg.sender]) {
-            if (score > 0) {
-                uint weight = Assessment(assessment).size()*uint(score);
-                this.addMember(assessee, weight);
+            uint baseWeight = Assessment(msg.sender).size()*uint(_score);
+            if (_score > 0) {
+                this.addMember(_assessee, baseWeight);
             }
-            currentScores[assessee] = score; //Maps the assessee to their score
-            UserRegistry(userRegistry).notification(assessee, 7); //Assessment on Concept finished
+            UserRegistry(userRegistry).notification(_assessee, 7); //Assessment on Concept finished
         }
     }
     /*
@@ -168,17 +167,30 @@ contract Concept {
       @param: uint weight = the weight for the member
       @returns: nothing
     */
-    function addMember(address assessee, uint weight) onlyConcept() {
-        members.push(assessee);
-        weights[assessee] += weight;
-        if (weight > maxWeight) {
-            maxWeight = weight;
-        }
-        if (weight/2 > 0) {
+    function addMember(address _assessee, uint _baseWeight) onlyConcept() {
+        membersData[_assessee].assessments.push(Score(_baseWeight, now));
+        members.push(_assessee);
+
+        calculateWeight(_assessee);
+
+        if (_baseWeight/2 > 0) {
             for(uint i = 0; i < parents.length; i++) {
-                Concept(parents[i]).addMember(assessee, weight/2); //recursively adds member to all parent concepts but with half the weight
+                Concept(parents[i]).addMember(_assessee, _baseWeight/2); //recursively adds member to all parent concepts but with half the weight
             }
         }
+    }
+
+    function calculateWeight(address _assessee) private {
+        uint newWeight;
+        for(uint i = 0; i < membersData[_assessee].assessments.length; i++) {
+            newWeight += membersData[_assessee].assessments[i].score * (now - membersData[_assessee].assessments[i].time + 1);
+        }
+
+        if (newWeight > maxWeight) {
+            maxWeight = newWeight;
+        }
+
+        membersData[_assessee].weight = newWeight;
     }
 
     function subtractBalance(address _from, uint _amount) returns(bool) {
