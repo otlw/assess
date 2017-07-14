@@ -295,6 +295,8 @@ contract Assessment {
         averageScore /= int(clusters[largestClusterIndex].length);
         finalScore = averageScore; //Sets the final score to the average score
         payout();
+        //Sends assessment info to the concept so that it can update its records
+        Concept(concept).finishAssessment(finalScore, assessee, address(this));
     }
 
     function payout() onlyInStage(State.Done) private { //TODO order functions according to styleguide
@@ -305,22 +307,18 @@ contract Assessment {
                 if (scoreDistance < 0) {
                     scoreDistance *= -1;
                 }
-                uint payoutValue = 1; //Initializes the payoutValue for the assessor
-                if (inRewardCluster[score] == true) {
+                uint payoutValue = 0; //Initializes the payoutValue for the assessor
+                if (inRewardCluster[score]) {
                     uint q = 1; //Inflation rate factor, WE NEED TO FIGURE THIS OUT AT SOME POINT
-                    //The assessor's payout will be some constant times a propotion of their original stake determined by how close to the final score they were
+                    //The assessor's payout is their stake plus some constant times a proportion of the user's tokens determined by their distance to the final score
                     payoutValue = (q*cost*((100 - uint(scoreDistance))/100)) + stake[assessors[i]];
-                    Concept(concept).addBalance(assessors[i], payoutValue);
-
-                    if (inRewardCluster[score] == false) {
-                        //The assessor's payout will be a propotion of their remaining stake determined by their distance from the final score
-                        payoutValue = stake[assessors[i]]*((200 - uint(scoreDistance))/200);
-                        Concept(concept).addBalance(assessors[i], payoutValue);
-                    }
-                    //Sends assessment info to the concept so that it can update its records
-                    Concept(concept).finishAssessment(finalScore, assessee, address(this));
-                    UserRegistry(userRegistry).notification(assessors[i], 6); //You  got paid!
                 }
+                else {
+                    //The assessor's payout will be a propotion of their remaining stake determined by their distance from the final score
+                    payoutValue = stake[assessors[i]]*((200 - uint(scoreDistance))/200);
+                }
+                Concept(concept).addBalance(assessors[i], payoutValue);
+                UserRegistry(userRegistry).notification(assessors[i], 6); //You  got paid!
             }
         }
     }
