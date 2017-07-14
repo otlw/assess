@@ -64,13 +64,11 @@ contract("Burning Stakes:", function(accounts){
 
     describe("Next, assessors can" , function(){
         it("can commit their hashed scores during thrice the time needed by the first half of them.", async () => {
-            // let time pass so that the grace period is meaningful
-            await utils.evmIncreaseTime(timeUntilHalfCommits)
             await chain.commitAssessors(calledAssessors.slice(0, 3),
                                         hashes.slice(0, 3),
                                         assessmentContract)
 
-            // let a lot of time pass so that the grace period is over twice and their stake will be burned entirely
+            // let a lot of time pass so that the timelimit is over
             await utils.evmIncreaseTime(timeLimit * 1.5)
             await assessmentContract.commit(hashes[0], {from:calledAssessors[0]})
 
@@ -89,17 +87,17 @@ contract("Burning Stakes:", function(accounts){
     })
 
     describe("Finally, assessors are payed out their stake", function() {
-        it("entirely if they committed among the first half of assessors.", async () => {
+        it("entirely if they committed in time.", async () => {
             assessorPayouts = await utils.getBalances(calledAssessors, userReg)
             assert.equal(assessorPayouts[0],
                          initialBalanceAssessors[0] + cost,
                          "assessors did not get payed out correctly")
         })
 
-        it("not at all if they were much too late", async () =>{
+        it("not at all if they were too late.", async () =>{
             assert.equal(assessorPayouts[4],
                          initialBalanceAssessors[4] - cost,
-                         "the failed assessor's stake did not get entirely burned")
+                         "the late assessor's stake did not get entirely burned")
         })
     })
 })
