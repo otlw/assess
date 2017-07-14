@@ -8,6 +8,7 @@ import "./Math.sol";
 //@purpose: To store concept data and create and manage assessments and members
 contract Concept {
     address[] public parents; //The concepts that this concept is child to (ie: Calculus is child to Math)
+    bytes data;
     address userRegistry;
     address conceptRegistry;
     uint public maxWeight;
@@ -50,8 +51,9 @@ contract Concept {
                                address _assessment
                                );
 
-    function Concept(address[] _parents) {
+    function Concept(address[] _parents, bytes _data) {
         parents = _parents;
+        data = _data;
         conceptRegistry = msg.sender;
         userRegistry = ConceptRegistry(conceptRegistry).userRegistry();
     }

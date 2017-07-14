@@ -12,6 +12,7 @@ contract("ConceptRegistry", function() {
             ConceptRegistryInstance = instance
             return ConceptRegistryInstance.mewAddress.call();
         }).then(function(address){
+            console.log(address)
             mewAddress = address
             return ConceptRegistryInstance.conceptExists(mewAddress)
         }).then(function(exists){
@@ -20,7 +21,7 @@ contract("ConceptRegistry", function() {
     })
     it("should set mew as the parent when not specified", function() {
         return ConceptRegistry.deployed().then(function(instance) {
-            return instance.makeConcept([])
+            return instance.makeConcept([], "")
         }).then(function(result){
             createdConceptAddress = result.logs[0].args["_concept"]
             return Concept.at(mewAddress)
@@ -38,7 +39,7 @@ contract("ConceptRegistry", function() {
         return ConceptRegistry.deployed().then(function(instance) {
             //create a 2nd concept to be a child of mew
             parentAddress = createdConceptAddress
-            return instance.makeConcept([parentAddress])
+            return instance.makeConcept([parentAddress], "")
         }).then(function(result){ //catch transaction result
             //fetch the address of the created contract from the Event-log
             childConceptAddress = result.logs[0].args["_concept"]
@@ -51,7 +52,7 @@ contract("ConceptRegistry", function() {
     });
     it("should throw if parent doesn't exist", function(){
         return ConceptRegistry.deployed().then(function(instance) {
-            return instance.makeConcept(["0x123"])
+            return instance.makeConcept(["0x123"], "")
         }).then(function (result) {
             assert(false, "transaction should fail")
         }).catch(function(e){
