@@ -1,0 +1,76 @@
+
+@font-face {
+  font-family: "Muli";
+    src: url("../Fonts/muli/Muli-Regular.ttf") format("truetype");
+    src: url("../Fonts/muli/Muli-Regular.WOFF") format("woff");
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+@font-face {
+  font-family: "Philosopher";
+    src: url("../Fonts/philosopher/Philosopher-Regular.ttf") format("truetype");
+    src: url("../Fonts/philosopher/Philosopher-Regular.WOFF") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Muli Bold";
+    src: url("../Fonts/muli/Muli-Bold.ttf") format("truetype");
+    src: url("../Fonts/muli/Muli-Bold.WOFF") format("woff");
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+@font-face {
+  font-family: "Philosopher Bold";
+    src: url("../Fonts/philosopher/Philosopher-Bold.ttf") format("truetype");
+    src: url("../Fonts/philosopher/Philosopher-Bold.WOFF") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Muli Italic";
+    src: url("../Fonts/muli/Muli-Italic.ttf") format("truetype");
+    src: url("../Fonts/muli/Muli-Italic.WOFF") format("woff");
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+@font-face {
+  font-family: "Philosopher Italic";
+    src: url("../Fonts/philosopher/Philosopher-Italic.ttf") format("truetype");
+    src: url("../Fonts/philosopher/Philosopher-Italic.WOFF") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.philosopher {
+  font-family: "Philosopher";
+}
+
+.muli {
+  font-family: "Muli"
+}
+
+.philosopher-bold {
+  font-family: "Philosopher Bold";
+  color: red;
+}
+
+.muli-bold {
+  font-family: "Muli Bold"
+}
+.philosopher-italic {
+  font-family: "Philosopher Italic";
+  color: red;
+}
+
+.muli-italic {
+  font-family: "Muli Italic"
+}

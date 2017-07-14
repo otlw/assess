@@ -1,0 +1,61 @@
+@import url("css/reset.css");
+@import url("css/animations.css");
+@import url("css/text.css");
+
+html * {
+  --main-off-white: rgb(253, 248, 242);
+  --peach-gray: #CDA683;
+  font-family: 'Vollkorn', serif;
+  border: solid;
+}
+
+body {
+  background: var(--main-off-white);
+  width: 100vw;
+  height: 100vh;
+}
+
+.peach-gray {
+    color: var(--peach-gray);
+}
+
+.tab {
+  padding-left: 0.75em;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.center {
+  justify-content: center;
+  align-items: center;
+}
+
+.dict {
+  padding: 15px;
+  width: 70vw;
+  max-width: 842px;
+}
+
+.main-content {
+  width: 70vw;
+  height: 85vh;
+}
+
+.top-bar {
+  height: 10vh;
+  font-size: 25px;
+}
+
+.side-bar {
+  width: 15vw;
+  height: 100%;
+  background: blue;
+}

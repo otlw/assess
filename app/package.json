@@ -1,0 +1,29 @@
+{
+  "name": "fathom-frontend",
+  "version": "0.0.0",
+  "description": "Front end for fathom",
+  "main": "index.js",
+  "scripts": {
+    "start": "beefy app/index.js:bundle.js --live --open --index=./index.html --cwd ./",
+    "build": "browserify index.js -o bundle.js"
+  },
+  "author": "frankiebee",
+  "license": "ISC",
+  "dependencies": {
+    "browserify": "^13.0.1",
+    "express": "^4.15.3",
+    "obs-store": "^2.4.1",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-hyperscript": "^3.0.0",
+    "react-redux": "^5.0.5",
+    "redux": "^3.7.1",
+    "redux-thunk": "^2.2.0",
+    "watchify": "^3.9.0",
+    "xtend": "^4.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/fathom/frontend.git"
+  }
+}

@@ -1,0 +1,26 @@
+/*
+
+Text specific styles
+
+*/
+
+.title {
+  font-size: 2em;
+}
+
+.sub-title {
+  font-size: 1.25em;
+}
+
+.sub-title-color {
+  font-size: 1.25em;
+  color: var(--peach-gray);
+}
+
+.italic {
+  font-style: italic;
+}
+
+.first::first-letter {
+  color: var(--peach-gray);
+}
