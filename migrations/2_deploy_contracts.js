@@ -10,10 +10,10 @@ var accounts = web3.eth.accounts
 // id, parentIds, memberAddresses, memberWeights
 // also say how many user there are initially in the system
 var setup = [
-    [0, [], [accounts[0]],[20]],
-    [1, [], [],[]],
-    [2, [0], [accounts[1], accounts[2], accounts[3]], [10,10,10]],
-    [3, [0],[accounts[4]],[20]]
+    [0, [], "", [accounts[0]],[20]],
+    [1, [], "", [],[]],
+    [2, [0], "", [accounts[1], accounts[2], accounts[3]], [10,10,10]],
+    [3, [0],"", [accounts[4]],[20]]
 ]
 var nInitialUsers = 5;
 
