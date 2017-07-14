@@ -10,17 +10,21 @@ var assessmentStep = require("../js/assessmentFunctions.js")
 contract("a timed out assessment", (accounts) => {
     let cost = 10;
     let size = 5;
+    let timeLimit = 10000;
+
     let assessee = {address: accounts[5]}
     let assessors;
     let assessorInitialBalance;
+
     let assessment
     let UserRegistryInstance
+
     it ("should create Assessment with "+size+" assessors", async () => {
         UserRegistryInstance = await UserRegistry.deployed()
         const DistributorInstance = await Distributor.deployed()
 
         assessee.balance = await UserRegistryInstance.balances.call(assessee.address)
-        const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(2)).makeAssessment(cost, size, {from: assessee.address})
+        const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(2)).makeAssessment(cost, size, timeLimit, {from: assessee.address})
 
         assessment = Assessment.at(utils.getNotificationArgsFromReceipt(assessmentResult.receipt, 1)[0].sender)
 

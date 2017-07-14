@@ -21,13 +21,10 @@ contract("Burning Stakes:", function(accounts){
 
     let cost = 150000;
     let size = 5;
+    let timeLimit = 10000;
 
     let calledAssessors;
     let assessee = accounts[nInitialUsers + 1];
-
-    let lateAssessorIdx = nInitialUsers - 1;
-    let earlyAssessorIdx = 1;
-    let failingAssessorIdx = 0;
 
     let initialBalanceAssessors;
     let assessorPayouts;
@@ -51,7 +48,7 @@ contract("Burning Stakes:", function(accounts){
             userReg = await UserRegistry.deployed()
 
             //initiate assessment, save assessors and their initial balance
-            result = await assessedConcept.makeAssessment(cost, size, {from: assessee})
+            result = await assessedConcept.makeAssessment(cost, size, timeLimit, {from: assessee})
             calledAssessors = utils.getCalledAssessors(result.receipt)
             assessmentContract = utils.getAssessment(result.receipt)
             assert.isAbove(calledAssessors.length, size -1, "not enough assessors were called")
@@ -67,19 +64,13 @@ contract("Burning Stakes:", function(accounts){
 
     describe("Next, assessors can" , function(){
         it("can commit their hashed scores during thrice the time needed by the first half of them.", async () => {
-            // let time pass so that the grace period is meaningful
-            await utils.evmIncreaseTime(timeUntilHalfCommits)
-            await chain.commitAssessors(calledAssessors.slice(earlyAssessorIdx,lateAssessorIdx),
-                                        hashes.slice(earlyAssessorIdx, lateAssessorIdx),
+            await chain.commitAssessors(calledAssessors.slice(0, 3),
+                                        hashes.slice(0, 3),
                                         assessmentContract)
 
-            // let time pass so that the grace period is over (+10%)
-            await utils.evmIncreaseTime(timeUntilHalfCommits + timeUntilHalfCommits/10)
-            await assessmentContract.commit(hashes[lateAssessorIdx], {from:calledAssessors[lateAssessorIdx]})
-
-            // let a lot of time pass so that the grace period is over twice and their stake will be burned entirely
-            await utils.evmIncreaseTime(timeUntilHalfCommits + timeUntilHalfCommits)
-            await assessmentContract.commit(hashes[earlyAssessorIdx], {from:calledAssessors[earlyAssessorIdx]})
+            // let a lot of time pass so that the timelimit is over
+            await utils.evmIncreaseTime(timeLimit * 1.5)
+            await assessmentContract.commit(hashes[0], {from:calledAssessors[0]})
 
             stage = await assessmentContract.assessmentStage.call()
             assert.equal(stage.toNumber(), 3, "assessment did not move to stage reveal")
@@ -96,32 +87,17 @@ contract("Burning Stakes:", function(accounts){
     })
 
     describe("Finally, assessors are payed out their stake", function() {
-        it("entirely if they committed among the first half of assessors.", async () => {
+        it("entirely if they committed in time.", async () => {
             assessorPayouts = await utils.getBalances(calledAssessors, userReg)
-            assert.equal(assessorPayouts[earlyAssessorIdx],
-                         initialBalanceAssessors[earlyAssessorIdx] + cost,
+            assert.equal(assessorPayouts[0],
+                         initialBalanceAssessors[0] + cost,
                          "assessors did not get payed out correctly")
         })
 
-        it("entirely if they committed during the grace period afterwards", async () =>{
-            assert.equal(assessorPayouts[earlyAssessorIdx],
-                         assessorPayouts[lateAssessorIdx-1], "graceAssessor's stake did get burned")
-        })
-
-        it("partially if they were late", async () =>{
-            assert.isAbove(assessorPayouts[earlyAssessorIdx],
-                           assessorPayouts[lateAssessorIdx],
-                           "late assessor's stake did not get burned")
-
-            assert.isAbove(assessorPayouts[lateAssessorIdx],
-                           initialBalanceAssessors[lateAssessorIdx],
-                           "late assessor's stake got entirely burned")
-        })
-
-        it("not at all if they were much too late", async () =>{
-            assert.equal(assessorPayouts[failingAssessorIdx],
-                         initialBalanceAssessors[failingAssessorIdx] - cost,
-                         "the failed assessor's stake did not get entirely burned")
+        it("not at all if they were too late.", async () =>{
+            assert.equal(assessorPayouts[4],
+                         initialBalanceAssessors[4] - cost,
+                         "the late assessor's stake did not get entirely burned")
         })
     })
 })

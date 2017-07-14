@@ -26,6 +26,7 @@ contract Assessment {
     address userRegistry;
     address conceptRegistry;
     uint public checkpoint; //marks creation of assessment / start of commit phase / start of reveal phase (time in seconds)
+    uint timeLimit;
     uint burnRate;
     uint public size;
     uint cost;
@@ -66,12 +67,13 @@ contract Assessment {
         _;
     }
 
-    function Assessment(address _assessee, address _userRegistry, address _conceptRegistry, uint _size, uint _cost) {
+    function Assessment(address _assessee, address _userRegistry, address _conceptRegistry, uint _size, uint _cost, uint _timeLimit) {
         assessee = _assessee;
         concept = msg.sender;
         userRegistry = _userRegistry;
         conceptRegistry = _conceptRegistry;
         checkpoint = now;
+        timeLimit = _timeLimit;
         size = _size;
         cost = _cost;
         UserRegistry(userRegistry).notification(assessee, 0); // assesse has started an assessment
@@ -173,7 +175,7 @@ contract Assessment {
 
     //@purpose: called by an assessor to commit a hash of their score //TODO explain in more detail what's happening
     function commit(bytes32 _hash) onlyInStage(State.Confirmed) {
-        if (done > size/2) {
+        if ( now > checkpoint + timeLimit) {
             burnStakes();
         }
 
@@ -182,13 +184,6 @@ contract Assessment {
                 commits[msg.sender] = _hash;
                 assessorState[msg.sender] = State.Committed;
                 done++; //Increases done by 1 to help progress to the next assessment stage.
-
-                // if the boundary assessor
-                if ( done*10 >= 10*size/2 &&
-                    (done - 1)*10 < 10*size/2) {
-                    burnRate = (cost / (now - checkpoint)) + 1;
-                    checkpoint = now + (now - checkpoint);
-                }
             }
         if (done == size) {
             notifyAssessors(uint(State.Committed), 5);
@@ -241,18 +236,11 @@ contract Assessment {
 
     //@purpose: burns stakes as a function of how much time has passed since half of the assessors commited
     function burnStakes() internal {
-        if (now-checkpoint > now) { //-> underflows if now before the end of the grace period
-            return;
-        }
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Confirmed) {
-                stake[assessors[i]] = cost - (burnRate * (now - checkpoint));
-                if (stake[assessors[i]] == 0 ||
-                    stake[assessors[i]] > cost) {
-                    assessorState[assessors[i]] = State.Burned;
-                    stake[assessors[i]] = 0;
-                    size--; //decrease size to help progress to the next assessment stage
-                }
+                stake[assessors[i]] = 0;
+                assessorState[assessors[i]] = State.Burned;
+                size--; //decrease size to help progress to the next assessment stage
             }
         }
     }
