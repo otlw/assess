@@ -22,6 +22,7 @@ contract('Assessment', function(accounts) {
     let cost = 10000000;
     let size = 5;
     let timeLimit = 100000000;
+    let waitTime = 100;
 
     let calledAssessors = [];
     let assessee = accounts[nInitialUsers + 1];
@@ -65,7 +66,7 @@ contract('Assessment', function(accounts) {
 
     describe('Concept', function() {
         it("should initiate an assessment", function() {
-            return assessedConcept.makeAssessment(cost,size, timeLimit, {from: assessee}).then(function(result) {
+            return assessedConcept.makeAssessment(cost,size, waitTime, timeLimit, {from: assessee}).then(function(result) {
                 receiptFromMakeAssessment = result.receipt
                 const eventLogs = utils.getNotificationArgsFromReceipt(result.receipt, 0)
                 assessmentAddress = eventLogs[0].sender

@@ -25,8 +25,8 @@ contract Assessment {
     address concept;
     address userRegistry;
     address conceptRegistry;
-    uint public checkpoint; //marks creation of assessment / start of commit phase / start of reveal phase (time in seconds)
-    uint timeLimit;
+    uint public endTime;
+    uint public latestConfirmTime;
     uint burnRate;
     uint public size;
     uint cost;
@@ -67,15 +67,25 @@ contract Assessment {
         _;
     }
 
-    function Assessment(address _assessee, address _userRegistry, address _conceptRegistry, uint _size, uint _cost, uint _timeLimit) {
+    function Assessment(address _assessee,
+                        address _userRegistry,
+                        address _conceptRegistry,
+                        uint _size,
+                        uint _cost,
+                        uint _confirmTime,
+                        uint _timeLimit) {
         assessee = _assessee;
         concept = msg.sender;
         userRegistry = _userRegistry;
         conceptRegistry = _conceptRegistry;
-        checkpoint = now;
-        timeLimit = _timeLimit;
+
+        endTime = now + _timeLimit;
+        latestConfirmTime = now + _confirmTime;
+        assert(latestConfirmTime < endTime);
+
         size = _size;
         cost = _cost;
+
         UserRegistry(userRegistry).notification(assessee, 0); // assesse has started an assessment
         assessorPoolLength = 0;
         done = 0;
@@ -146,8 +156,8 @@ contract Assessment {
 
     //@purpose: called by an assessor to confirm and stake
     function confirmAssessor() onlyInStage(State.Called) {
-        // cancel if the assessment is older than 12 hours
-        if (now - checkpoint > 12 hours) {
+        // cancel if the assessment is older than 12 hours or already past its timelimit
+        if (now > latestConfirmTime){
             this.cancelAssessment();
             return;
         }
@@ -162,7 +172,6 @@ contract Assessment {
         }
         if (assessors.length == size) {
             notifyAssessors(uint(State.Confirmed), 4);
-            checkpoint = now; // reset checkpoint to mark start of actual assessment phase
             UserRegistry(userRegistry).notification(assessee, 4);
             assessmentStage = State.Confirmed;
         }
@@ -175,29 +184,24 @@ contract Assessment {
 
     //@purpose: called by an assessor to commit a hash of their score //TODO explain in more detail what's happening
     function commit(bytes32 _hash) onlyInStage(State.Confirmed) {
-        if ( now > checkpoint + timeLimit) {
+        if (now > endTime) {
             burnStakes();
         }
-
-        if (assessorState[msg.sender] == State.Confirmed)
-            {
+        if (assessorState[msg.sender] == State.Confirmed) {
                 commits[msg.sender] = _hash;
                 assessorState[msg.sender] = State.Committed;
                 done++; //Increases done by 1 to help progress to the next assessment stage.
-            }
+        }
         if (done == size) {
             notifyAssessors(uint(State.Committed), 5);
-            checkpoint = now; //reset checkpoint to mark start of reveal phase
             done = 0; //Resets the done counter
             assessmentStage = State.Committed;
         }
-
-
     }
 
     //@purpose: called by assessors to reveal their own commits or others
     function reveal(int8 score, string salt, address assessor) onlyInStage(State.Committed) {
-        if (now - checkpoint > 12 hours) {
+        if (now > endTime + 12 hours) { //add bigger zerocheck
             for (uint i = 0; i < assessors.length; i++) {
                 if (assessorState[assessors[i]] == State.Committed) { //If the assessor has not revealed their score
                     stake[assessors[i]] = 0;

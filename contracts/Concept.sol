@@ -93,9 +93,9 @@ contract Concept {
       @param: uint cost = the cost per assessor
       @param: uint size = the number of assessors
     */
-    function makeAssessment(uint cost, uint size, uint _timeLimit) returns(bool) {
+    function makeAssessment(uint cost, uint size, uint _waitTime, uint _timeLimit) returns(bool) {
         if (size >= 5 && this.subtractBalance(msg.sender, cost*size)) {
-            Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost, _timeLimit);
+            Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost, _waitTime, _timeLimit);
             assessmentExists[address(newAssessment)] = true;
             if (Concept(ConceptRegistry(conceptRegistry).mewAddress()).getMemberLength()<size*20) {
                 newAssessment.setAssessorPoolFromMew(); // simply use all members of mew (Bootstrap phase)
@@ -122,11 +122,11 @@ contract Concept {
     }
 
     //@purpose: allow approved address to create assessments for users on this concept
-    function makeAssessmentFrom(address _assessee, uint _cost, uint _size, uint _timeLimit) returns(bool) {
+    function makeAssessmentFrom(address _assessee, uint _cost, uint _size, uint _waitTime, uint _timeLimit) returns(bool) {
         if (approval[_assessee][msg.sender] >= _cost * _size &&
            _size >= 5 &&
            this.subtractBalance(_assessee, _cost*_size)) {
-            Assessment newAssessment = new Assessment(_assessee, userRegistry, conceptRegistry, _size, _cost, _timeLimit);
+            Assessment newAssessment = new Assessment(_assessee, userRegistry, conceptRegistry, _size, _cost, _waitTime, _timeLimit);
             assessmentExists[address(newAssessment)] = true;
             newAssessment.setAssessorPool(block.number, address(this), _size*20);
             approval[_assessee][msg.sender] -= _cost*_size;

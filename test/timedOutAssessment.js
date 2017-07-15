@@ -11,6 +11,7 @@ contract("a timed out assessment", (accounts) => {
     let cost = 10;
     let size = 5;
     let timeLimit = 10000;
+    let waitTime = 100;
 
     let assessee = {address: accounts[5]}
     let assessors;
@@ -24,7 +25,7 @@ contract("a timed out assessment", (accounts) => {
         const DistributorInstance = await Distributor.deployed()
 
         assessee.balance = await UserRegistryInstance.balances.call(assessee.address)
-        const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(2)).makeAssessment(cost, size, timeLimit, {from: assessee.address})
+        const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(2)).makeAssessment(cost, size, waitTime, timeLimit, {from: assessee.address})
 
         assessment = Assessment.at(utils.getNotificationArgsFromReceipt(assessmentResult.receipt, 1)[0].sender)
 
@@ -33,8 +34,8 @@ contract("a timed out assessment", (accounts) => {
         assert.equal(assessors.length, size, size + " assessors were called")
     })
 
-    it ("should allow an assessor to confirm after 10 hours", async () => {
-        await utils.evmIncreaseTime(60*60*11)
+    it ("should allow an assessor to confirm before the latest possible Start", async () => {
+        await utils.evmIncreaseTime(waitTime - 5)
 
         const txResult = await assessment.confirmAssessor({from: assessors[0]})
         const notifications = utils.getNotificationArgsFromReceipt(txResult.receipt, 2)
@@ -42,9 +43,9 @@ contract("a timed out assessment", (accounts) => {
         assert.equal(notifications.length, 1, "an assessor couldn't confirm")
     })
 
-    describe ("after 12 hours", function() {
+    describe ("after the latest possible Start it", function() {
         it("shouldn't allow an assessor to confirm", async () => {
-            await utils.evmIncreaseTime(60*60*2)
+            await utils.evmIncreaseTime(waitTime + 5)
 
             const txResult = await assessment.confirmAssessor({from: assessors[1]})
             const notifications = utils.getNotificationArgsFromReceipt(txResult.receipt, 2)
@@ -63,5 +64,4 @@ contract("a timed out assessment", (accounts) => {
             assert.equal(assessorInitialBalance.toNumber(), assessorBalance.toNumber(), "stake wasn't returned")
         })
     })
-
 })
