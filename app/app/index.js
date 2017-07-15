@@ -3,9 +3,18 @@ const h = require('react-hyperscript')
 const Root = require('./components/root')
 const composeStore = require('./scripts/store')
 const {STORAGE_KEY, initialState} = require('./config.js')
-window.addEventListener('load', start)
+window.addEventListener('load', web3Check)
 
-function start () {
+
+function web3Check () {
+  if (window.web3) {
+    window.ethereumProvider = window.web3.currentProvider
+    startApp()
+  }
+}
+
+
+function startApp () {
   const container = document.getElementById('main')
   const data = getStorage()
   const store = composeStore(data || initialState)

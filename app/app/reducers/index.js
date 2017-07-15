@@ -9,13 +9,13 @@ module.exports = rootReducer
 
 function rootReducer (state, action) {
   // clone
+  state = extend(state)
 
   //
   // AppState
   //
 
   state.appState = reduceApp(state, action)
-
   return state
 }
 
