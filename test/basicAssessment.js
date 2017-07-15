@@ -10,22 +10,27 @@ chain = require("../js/assessmentFunctions.js")
 var deploymentScript = require("../migrations/2_deploy_contracts.js")
 var setup = deploymentScript.setupVariable
 var nInitialUsers = deploymentScript.nInitialUsers
+var gasPrice = deploymentScript.gasPrice
+var etherPrice = deploymentScript.etherPrice
 
 contract('Assessment', function(accounts) {
     let UserRegistryInstance;
     let conceptReg;
     let distributor;
+
     let assessedConceptID = 2;
     let assessedConcept;
     let ConceptInstance;
     let assessmentContract;
+
     let cost = 10000000;
     let size = 5;
     let timeLimit = 100000000;
     let waitTime = 100;
 
     let calledAssessors = [];
-    let assessee = accounts[nInitialUsers + 1];
+    let assesseeIdx = nInitialUsers + 1
+    let assessee = accounts[assesseeIdx];
     let outsideUser = accounts[nInitialUsers + 2];
 
     let scores = [];
@@ -38,6 +43,9 @@ contract('Assessment', function(accounts) {
         hashes.push(utils.hashScoreAndSalt(scores[i], salts[i]))
     }
     let receiptFromMakeAssessment;
+    var ethBalancesBefore;
+    var ethBalancesAfter;
+    var gasCosts = [];
     describe('Before the assessment', function(){
         it('A concept should be registered', function() {
             return Distributor.deployed().then(function(instance) {
@@ -66,8 +74,15 @@ contract('Assessment', function(accounts) {
 
     describe('Concept', function() {
         it("should initiate an assessment", function() {
+            ethBalancesBefore = utils.getEthBalances(accounts.slice(0,nInitialUsers + 2))
             return assessedConcept.makeAssessment(cost,size, waitTime, timeLimit, {from: assessee}).then(function(result) {
                 receiptFromMakeAssessment = result.receipt
+                gasCosts.push({function: "makeAssessment",
+                               cost: {
+                                   ether:web3.fromWei(receiptFromMakeAssessment.gasUsed * gasPrice, "ether"),
+                                   $: utils.weiToDollar(receiptFromMakeAssessment.gasUsed * gasPrice, etherPrice)
+                               }
+                              })
                 const eventLogs = utils.getNotificationArgsFromReceipt(result.receipt, 0)
                 assessmentAddress = eventLogs[0].sender
                 return assessedConcept.assessmentExists.call(assessmentAddress)
@@ -166,6 +181,13 @@ contract('Assessment', function(accounts) {
             it("should move to committed stage when all commited", function(){
                 return assessmentContract.commit(hashes[0], {from: calledAssessors[0]}).then(function(result) {
                     receiptFromLastCommit = result.receipt
+                    gasCosts.push({function: "commit",
+                                   cost: {
+                                       ether:web3.fromWei(receiptFromLastCommit.gasUsed * gasPrice, "ether"),
+                                       $: utils.weiToDollar(receiptFromLastCommit.gasUsed * gasPrice, etherPrice)
+                                   }
+                                  })
+ 
                     return assessmentContract.assessmentStage.call()
                 }).then(function(aState){
                     assert.equal(aState.toNumber(), 3, "assessment did not enter commit stage" )
@@ -197,6 +219,13 @@ contract('Assessment', function(accounts) {
                                                  {from: calledAssessors[0]})
                     .then(function(result){
                         receiptFromLastReveal = result.receipt
+                        gasCosts.push({function: "last Reveal + calculate + payout",
+                                       cost: {
+                                           ether:web3.fromWei(receiptFromLastReveal.gasUsed * gasPrice, "ether"),
+                                           $: utils.weiToDollar(receiptFromLastReveal.gasUsed * gasPrice, etherPrice)
+                                       }
+                                      })
+                        ethBalancesAfter = utils.getEthBalances(accounts.slice(0,nInitialUsers + 2))
                         return assessmentContract.assessmentStage.call()
                     }).then(function(stage){
                         assert.equal(stage.toNumber(), 4, "assessment did not enter done stage")
@@ -239,6 +268,15 @@ contract('Assessment', function(accounts) {
                         assert.equal(balance.toNumber(), assessorInitialBalance + cost, "assessor didn't get paid")
                     })
                 })
+            })
+
+            describe("Gast costs", function() {
+                it("Analysis:", async () => {
+                    stage = await assessmentContract.assessmentStage.call()
+                    assert.equal(stage.toNumber(), 4, "gas measured before assessment is done")
+                    console.log('Assuming GasPrice: ' + gasPrice + "  and 1 ether = $" + etherPrice); 
+                    console.log(gasCosts)
+            })
             })
         })
     })

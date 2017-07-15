@@ -8,7 +8,6 @@ import "./UserRegistry.sol";
 contract Assessment {
     address assessee;
     address[] assessors;
-    address[] finalAssessors;
     mapping (address => State) assessorState;
     mapping(uint => int[]) clusters;
     State public assessmentStage;
@@ -91,7 +90,6 @@ contract Assessment {
         done = 0;
     }
 
-
     function cancelAssessment() onlyConceptAssessment() {
         Concept(concept).addBalance(assessee, cost*size);
         UserRegistry(userRegistry).notification(assessee, 3); //Assessment Cancled and you have been refunded
@@ -114,7 +112,6 @@ contract Assessment {
             return false;
         }
     }
-
 
     /*
       @purpose: To recursively set the pool to draw assessors from in the assessment
@@ -198,7 +195,6 @@ contract Assessment {
             assessmentStage = State.Committed;
         }
     }
-
     //@purpose: called by assessors to reveal their own commits or others
     function reveal(int8 score, string salt, address assessor) onlyInStage(State.Committed) {
         if (now > endTime + 12 hours) { //add bigger zerocheck
@@ -234,7 +230,7 @@ contract Assessment {
         //If all the assessors have revealed their scored or burned their stakes
         if (done == size) {
             assessmentStage = State.Done;
-            calculateResult(); //The final result is calculated
+            calculateResult(); 
         }
     }
 
@@ -258,60 +254,47 @@ contract Assessment {
     }
 
     function calculateResult() onlyInStage(State.Done) private {
+        int[] memory finalScores = new int[] (done);
+        uint idx =0;
         for (uint j = 0; j < assessors.length; j++) {
             if (assessorState[assessors[j]] == State.Done) {
-                finalAssessors.push(assessors[j]); //Adds all the assessors that completed the assessment process to an array}
+                finalScores[idx] = scores[assessors[j]];
+                idx++;
             }
         }
-        int[] memory score = new int[] (finalAssessors.length); //Initializes an array to store scores that is the same length as the number of finalAssessors
-        uint largestClusterIndex = 0; //store the index of the largest cluster
-        int averageScore;
-        for (uint i = 0; i < finalAssessors.length; i++) {
-            score[i] = scores[finalAssessors[i]];
-        }
-        int meanAbsoluteDeviation = Math.calculateMAD(score,int(finalAssessors.length));
-        for (uint l = 0; l < score.length; l++) {
-            for (uint m = 0; m < score.length; m++) {
-                if (score[l] - score[m] <= meanAbsoluteDeviation) {
-                    clusters[l].push(score[m]);
-                }
-            }
-            if (clusters[l].length > clusters[largestClusterIndex].length) {
-                largestClusterIndex = l;
+        uint finalClusterLength;
+        bool[200] memory finalClusterMask;
+        (finalClusterMask, finalClusterLength) = Math.getLargestCluster(finalScores);
+
+        for (uint i=0; i<done; i++) {
+            if (finalClusterMask[i]) {
+                finalScore += finalScores[i];
             }
         }
-        for (uint o = 0; o < clusters[largestClusterIndex].length; o++) {
-            averageScore += clusters[largestClusterIndex][o];
-            inRewardCluster[clusters[largestClusterIndex][o]] = true;
-        }
-        averageScore /= int(clusters[largestClusterIndex].length);
-        finalScore = averageScore; //Sets the final score to the average score
-        payout();
-        //Sends assessment info to the concept so that it can update its records
-        Concept(concept).finishAssessment(finalScore, assessee, address(this));
+        finalScore /= int(finalClusterLength);
+        payout(finalClusterMask);
     }
 
-    function payout() onlyInStage(State.Done) private { //TODO order functions according to styleguide
+    function payout(bool[200] finalClusterMask) onlyInStage(State.Done) private {
+        uint index=0;
+        uint q = 1; //INFLATION
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Done) {
+                uint payoutValue;
                 int score = scores[assessors[i]];
-                int scoreDistance = ((score - finalScore)*100)/finalScore;
-                if (scoreDistance < 0) {
-                    scoreDistance *= -1;
-                }
-                uint payoutValue = 0; //Initializes the payoutValue for the assessor
-                if (inRewardCluster[score]) {
-                    uint q = 1; //Inflation rate factor, WE NEED TO FIGURE THIS OUT AT SOME POINT
-                    //The assessor's payout is their stake plus some constant times a proportion of the user's tokens determined by their distance to the final score
+                int scoreDistance = Math.abs(((score - finalScore)*100)/finalScore);
+
+                if(finalClusterMask[index]) {
                     payoutValue = (q*cost*((100 - uint(scoreDistance))/100)) + stake[assessors[i]];
                 }
                 else {
-                    //The assessor's payout will be a propotion of their remaining stake determined by their distance from the final score
                     payoutValue = stake[assessors[i]]*((200 - uint(scoreDistance))/200);
                 }
                 Concept(concept).addBalance(assessors[i], payoutValue);
                 UserRegistry(userRegistry).notification(assessors[i], 6); //You  got paid!
+                index++;
             }
         }
+        Concept(concept).finishAssessment(finalScore, assessee, address(this));
     }
 }
