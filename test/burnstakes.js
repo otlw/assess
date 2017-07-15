@@ -22,6 +22,7 @@ contract("Burning Stakes:", function(accounts){
     let cost = 150000;
     let size = 5;
     let timeLimit = 10000;
+    let waitTime = 100;
 
     let calledAssessors;
     let assessee = accounts[nInitialUsers + 1];
@@ -48,7 +49,7 @@ contract("Burning Stakes:", function(accounts){
             userReg = await UserRegistry.deployed()
 
             //initiate assessment, save assessors and their initial balance
-            result = await assessedConcept.makeAssessment(cost, size, timeLimit, {from: assessee})
+            result = await assessedConcept.makeAssessment(cost, size, waitTime, timeLimit, {from: assessee})
             calledAssessors = utils.getCalledAssessors(result.receipt)
             assessmentContract = utils.getAssessment(result.receipt)
             assert.isAbove(calledAssessors.length, size -1, "not enough assessors were called")
@@ -78,8 +79,10 @@ contract("Burning Stakes:", function(accounts){
 
         it ("reveal their score to finish the assessment.", async () => {
             // let all assessors reveal
-            try {await chain.revealAssessors(calledAssessors, scores, salts, assessmentContract)}
-            catch(e){ console.log("At least one assessor could not reveal") }
+            await chain.revealAssessors(calledAssessors.slice(0,3),
+                                        scores.slice(0,3),
+                                        salts.slice(0,3),
+                                        assessmentContract)
 
             stage = await assessmentContract.assessmentStage.call()
             assert.equal(stage.toNumber(), 4, "assessment did not move to stage done")
