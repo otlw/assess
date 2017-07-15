@@ -5,7 +5,7 @@ const userRegistryAbi = JSON.parse(require('../../build/contracts/ConceptRegistr
 module.exports = {
   STORAGE_KEY: 'fathom-config',
   CONCEPT_REGISTRY: '0x4b54573213d1ecb12f5bd416e39984d04615c45b',
-  USER_REGISTRY: ,
+  USER_REGISTRY: '',
   initialState: {
     appState: {
       currentView: {
