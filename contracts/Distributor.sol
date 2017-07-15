@@ -18,6 +18,7 @@ contract Distributor{
     struct ConceptInfo {
         uint id;
         uint[] parents;
+        bytes data;
         address[] memberAddresses;
         uint[] memberWeights;
     }
@@ -28,15 +29,15 @@ contract Distributor{
         conceptIndex = 0;
     }
 
-    function addNextConcept(uint _id, uint[] _parents, address[] _initialMembers, uint[] _weights ){
+    function addNextConcept(uint _id, uint[] _parents, bytes _data, address[] _initialMembers, uint[] _weights ){
         if (conceptIndex == NInitialConcepts) { throw; }
-        ConceptInfo memory conceptToAdd = ConceptInfo( _id, _parents, _initialMembers, _weights);
+        ConceptInfo memory conceptToAdd = ConceptInfo( _id, _parents, _data, _initialMembers, _weights);
         setup.push(conceptToAdd);
         address[] memory conceptParents = new address[] (_parents.length);
         for (uint i=0; i < conceptToAdd.parents.length; i++){
             conceptParents[i] = conceptLookup[conceptToAdd.parents[i]];
         }
-        address createdConceptAddress = ConceptRegistry(conceptRegistry).makeConcept(conceptParents);
+        address createdConceptAddress = ConceptRegistry(conceptRegistry).makeConcept(conceptParents, _data);
         conceptLookup[conceptIndex] = createdConceptAddress;
         //add initial Members 
         for (uint j=0; j < conceptToAdd.memberAddresses.length; j++){

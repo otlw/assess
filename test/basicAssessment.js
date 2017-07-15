@@ -25,6 +25,9 @@ contract('Assessment', function(accounts) {
 
     let cost = 10000000;
     let size = 5;
+    let timeLimit = 100000000;
+    let waitTime = 100;
+
     let calledAssessors = [];
     let assesseeIdx = nInitialUsers + 1
     let assessee = accounts[assesseeIdx];
@@ -33,6 +36,7 @@ contract('Assessment', function(accounts) {
     let scores = [];
     let salts = [];
     let hashes = [];
+
     for (i=0; i<nInitialUsers; i++){
         scores.push(10)
         salts.push(i.toString())
@@ -71,7 +75,7 @@ contract('Assessment', function(accounts) {
     describe('Concept', function() {
         it("should initiate an assessment", function() {
             ethBalancesBefore = utils.getEthBalances(accounts.slice(0,nInitialUsers + 2))
-            return assessedConcept.makeAssessment(cost,size, {from: assessee}).then(function(result) {
+            return assessedConcept.makeAssessment(cost,size, waitTime, timeLimit, {from: assessee}).then(function(result) {
                 receiptFromMakeAssessment = result.receipt
                 gasCosts.push({function: "makeAssessment",
                                cost: {
