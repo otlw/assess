@@ -272,22 +272,16 @@ contract Assessment {
         uint finalClusterLength;
         bool[200] memory finalClusterMask;
         (finalClusterMask, finalClusterLength) = Math.getLargestCluster(finalScores);
-        //maybe the use of an dynamic memory array will save gas because it helps to avaid having the payoutfunction accepting bool[200 as argument]
-        /* bool[] memory fCM_reduced = new bool[] (done); */
 
         for (uint i=0; i<done; i++) {
             if (finalClusterMask[i]) {
                 finalScore += finalScores[i];
-                /* fCM_reduced[i] = true; */
             }
-            /* else { fCM_reduced[i] = false; } */
         }
-       finalScore /= int(finalClusterLength);
+        finalScore /= int(finalClusterLength);
         payout(finalClusterMask);
-        /* payout(fCM_reduced); */
     }
-    
-    /* function payout(bool[] memory finalClusterMask) onlyInStage(State.Done) internal { */
+
     function payout(bool[200] finalClusterMask) onlyInStage(State.Done) private {
         uint index=0;
         uint q = 1; //INFLATION
