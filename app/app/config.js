@@ -1,5 +1,5 @@
-const conceptRegistryAbi = JSON.parse(require('../../build/contracts/ConceptRegistry.json')).abi
-const userRegistryAbi = JSON.parse(require('../../build/contracts/ConceptRegistry.json')).abi
+const conceptRegistryAbi = require('../../build/contracts/ConceptRegistry.json')
+const userRegistryAbi = require('../../build/contracts/ConceptRegistry.json')
 
 
 module.exports = {

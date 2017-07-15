@@ -1,9 +1,8 @@
-con
 const query = require('eth-query')
 const Eth = require('ethjs')
 const {CONCEPT_REGISTRY, USER_REGISTRY} = require('../config')
-const conceptRegistryAbi = JSON.parse(require('../../../build/contracts/ConceptRegistry.json')).abi
-const userRegistryAbi = JSON.parse(require('../../../build/contracts/ConceptRegistry.json')).abi
+const conceptRegistryAbi = require('../../../build/contracts/ConceptRegistry.json').abi
+const userRegistryAbi = require('../../../build/contracts/ConceptRegistry.json').abi
 const eth = new Eth(global.ethereumProvider)
 const conceptRegistry = eth.contract(conceptRegistryAbi).at(CONCEPT_REGISTRY)
 const userRegistry = eth.contract(userRegistryAbi).at(USER_REGISTRY)
