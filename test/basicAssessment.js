@@ -215,7 +215,6 @@ contract('Assessment', function(accounts) {
             it("should move to the done stage when all assessors have revealed", function(){
                 return assessmentContract.reveal(scores[0],
                                                 salts[0],
-                                                calledAssessors[0],
                                                  {from: calledAssessors[0]})
                     .then(function(result){
                         receiptFromLastReveal = result.receipt
