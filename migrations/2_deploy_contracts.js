@@ -12,10 +12,10 @@ var accounts = web3.eth.accounts
 // also say how many user there are initially in the system
 var lifetime = 60*60*24*365;
 var setup = [
-    [0, [], "", lifetime, [accounts[0]],[20]],
-    [1, [], "", lifetime, [],[]],
-    [2, [0], "", lifetime, [accounts[1], accounts[2], accounts[3]], [10,10,10]],
-    [3, [0],"", lifetime, [accounts[4]],[20]]
+    [0, [], lifetime, "", [accounts[0]],[20]],
+    [1, [], lifetime, "", [],[]],
+    [2, [0], lifetime, "", [accounts[1], accounts[2], accounts[3]], [10,10,10]],
+    [3, [0], lifetime, "", [accounts[4]],[20]]
 ]
 var nInitialUsers = 5;
 
