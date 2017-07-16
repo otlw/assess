@@ -39,30 +39,22 @@ contract Assessment {
     event DataSet(address _dataSetter, uint _index);
 
     modifier onlyAssessorAssessee() {
-        if (msg.sender != assessee && uint(assessorState[msg.sender]) == 0) {
-            throw;
-        }
+        require(msg.sender == assessee || assessorState[msg.sender] != State.None);
         _;
     }
 
     modifier onlyConceptAssessment() {
-        if (msg.sender != address(this) && msg.sender != concept) {
-            throw;
-        }
+        require(msg.sender == address(this) || msg.sender == concept);
         _;
     }
 
     modifier onlyConcept() {
-        if (msg.sender != concept) {
-            throw;
-        }
+        require(msg.sender == concept);
         _;
     }
 
     modifier onlyInStage(State _stage) {
-        if (assessmentStage != _stage) {
-            throw;
-        }
+        require(assessmentStage == _stage);
         _;
     }
 

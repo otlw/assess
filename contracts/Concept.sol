@@ -27,24 +27,17 @@ contract Concept {
     }
 
     modifier onlyUserRegistry() {
-        if (msg.sender != userRegistry)
-            {
-                throw;
-            }
+        require(msg.sender == userRegistry);
         _;
     }
 
     modifier onlyConceptRegistry() {
-        if (msg.sender != conceptRegistry) {
-            throw;
-        }
+        require(msg.sender == conceptRegistry);
         _;
     }
 
     modifier onlyConcept() {
-        if (!ConceptRegistry(conceptRegistry).conceptExists(msg.sender)) {
-            throw;
-        }
+        require(ConceptRegistry(conceptRegistry).conceptExists(msg.sender));
         _;
     }
 

@@ -40,9 +40,7 @@ contract ConceptRegistry {
             newConcept.addParent(mewAddress);
         }
         for (uint j=0; j < parentList.length; j++) {
-            if (!conceptExists[parentList[j]]){
-                throw;
-            }
+            require(conceptExists[parentList[j]]);
         }
         ConceptCreation(newConceptAddress);
         return newConceptAddress;

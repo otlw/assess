@@ -31,7 +31,7 @@ contract Distributor{
     }
 
     function addNextConcept(uint _id, uint[] _parents, uint _lifetime, bytes _data, address[] _initialMembers, uint[] _weights ){
-        if (conceptIndex == NInitialConcepts) { throw; }
+        require(conceptIndex < NInitialConcepts);
         ConceptInfo memory conceptToAdd = ConceptInfo( _id, _parents, _lifetime, _data, _initialMembers, _weights);
         setup.push(conceptToAdd);
         address[] memory conceptParents = new address[] (_parents.length);
