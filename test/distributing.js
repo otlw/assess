@@ -46,8 +46,8 @@ contract("Distributor", function(accounts) {
             }).then(function(weightsOfP){
                 memberWeights = weightsOfP
                 for (j=0; j<memberAddresses.length; j++){
-                    assert.equal(memberAddresses[j], setup[p][3][j], "member " + j +  " did not get added")
-                    assert.equal(memberWeights[j].toNumber(), setup[p][4][j], "member " + j +  " got added with the wrong weight")
+                    assert.equal(memberAddresses[j], setup[p][4][j], "member " + j +  " did not get added")
+                    assert.equal(memberWeights[j].toNumber(), setup[p][5][j], "member " + j +  " got added with the wrong weight")
                 }
             }).then(function(){
                 p = 2
@@ -58,8 +58,8 @@ contract("Distributor", function(accounts) {
             }).then(function(weightsOfP){
                 memberWeights = weightsOfP
                 for (j=0; j<memberAddresses.length; j++){
-                    assert.equal(memberAddresses[j], setup[p][3][j], "member " + j +  " did not get added")
-                    assert.equal(memberWeights[j].toNumber(), setup[p][4][j], "member " + j +  " got added with the wrong weight")
+                    assert.equal(memberAddresses[j], setup[p][4][j], "member " + j +  " did not get added")
+                    assert.equal(memberWeights[j].toNumber(), setup[p][5][j], "member " + j +  " got added with the wrong weight")
                 }
             })
         })
@@ -71,7 +71,7 @@ contract("Distributor", function(accounts) {
                 mewConcept = Concept.at(mewAddress)
                 //check only account 1 for weight>0 in mew //TODO loop and check for all
                 a = 1
-                return mewConcept.weights.call(accounts[a])
+                return mewConcept.getWeight.call(accounts[a])
             }).then(function(weight){
                 assert.isAbove(weight.toNumber(), 0, "account"  + a +  " has no weight in mew")
                 //check account 2 for a decreased weight
@@ -79,10 +79,10 @@ contract("Distributor", function(accounts) {
                 return distributor.conceptLookup.call(0)
             }).then(function(addressOfConcept0){
                 concept0 = Concept.at(addressOfConcept0)
-                return concept0.weights.call(accounts[a])
+                return concept0.getWeight.call(accounts[a])
             }).then(function(_weightAt0){
                 weightAt0 = _weightAt0.toNumber()
-                return mewConcept.weights.call(accounts[a])
+                return mewConcept.getWeight.call(accounts[a])
             }).then(function(weightAtMew){
                 assert.isAbove(weightAt0, weightAtMew.toNumber(), "weight of account " + a + " did not decrease")
             })

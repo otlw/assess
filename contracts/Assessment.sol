@@ -125,7 +125,7 @@ contract Assessment {
         for (uint k=0; k < num; k++) {
             if (assessorPoolLength == size*20) { return; } //
             address randomUser = Concept(_concept).getRandomMember(seed + k);
-            if (addAssessorToPool(randomUser)) {
+            if (randomUser != address(0x0) && addAssessorToPool(randomUser)) {
                 numCalled++;
             }
         }
@@ -240,7 +240,7 @@ contract Assessment {
                 stake[assessors[i]] = 0;
                 assessorState[assessors[i]] = State.Burned;
                 size--; //decrease size to help progress to the next assessment stage
-            }
+           }
         }
     }
 
@@ -272,9 +272,13 @@ contract Assessment {
         }
         finalScore /= int(finalClusterLength);
         payout(finalClusterMask);
-    }
+       if (finalScore > 0){
+            Concept(concept).addMember(assessee, uint(finalScore) * finalClusterLength);
+        }
+       UserRegistry(userRegistry).notification(assessee, 7);
+   }
 
-    function payout(bool[200] finalClusterMask) onlyInStage(State.Done) private {
+    function payout(bool[200] finalClusterMask) onlyInStage(State.Done) internal {
         uint index=0;
         uint q = 1; //INFLATION
         for (uint i = 0; i < assessors.length; i++) {
@@ -294,6 +298,5 @@ contract Assessment {
                 index++;
             }
         }
-        Concept(concept).finishAssessment(finalScore, assessee, address(this));
     }
 }

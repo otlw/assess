@@ -101,7 +101,7 @@ contract("Burning Stakes:", function(accounts){
             assert.equal(assessorPayouts[4],
                          initialBalanceAssessors[4] - cost,
                          "the late assessor's stake did not get entirely burned")
-        })
+       })
     })
 })
 
