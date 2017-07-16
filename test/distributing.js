@@ -46,8 +46,8 @@ contract("Distributor", function(accounts) {
             }).then(function(weightsOfP){
                 memberWeights = weightsOfP
                 for (j=0; j<memberAddresses.length; j++){
-                    assert.equal(memberAddresses[j], setup[p][3][j], "member " + j +  " did not get added")
-                    assert.equal(memberWeights[j].toNumber(), setup[p][4][j], "member " + j +  " got added with the wrong weight")
+                    assert.equal(memberAddresses[j], setup[p][4][j], "member " + j +  " did not get added")
+                    assert.equal(memberWeights[j].toNumber(), setup[p][5][j], "member " + j +  " got added with the wrong weight")
                 }
             }).then(function(){
                 p = 2
@@ -58,8 +58,8 @@ contract("Distributor", function(accounts) {
             }).then(function(weightsOfP){
                 memberWeights = weightsOfP
                 for (j=0; j<memberAddresses.length; j++){
-                    assert.equal(memberAddresses[j], setup[p][3][j], "member " + j +  " did not get added")
-                    assert.equal(memberWeights[j].toNumber(), setup[p][4][j], "member " + j +  " got added with the wrong weight")
+                    assert.equal(memberAddresses[j], setup[p][4][j], "member " + j +  " did not get added")
+                    assert.equal(memberWeights[j].toNumber(), setup[p][5][j], "member " + j +  " got added with the wrong weight")
                 }
             })
         })

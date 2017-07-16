@@ -59,11 +59,11 @@ contract Concept {
                                address _assessment
                                );
 
-    function Concept(address[] _parents, bytes _data) {
+    function Concept(address[] _parents, uint _lifetime, bytes _data) {
         parents = _parents;
         data = _data;
         conceptRegistry = msg.sender;
-        lifetime = now + 60*60*24; //for now : 1 day
+        lifetime = _lifetime;
         userRegistry = ConceptRegistry(conceptRegistry).userRegistry();
     }
 
