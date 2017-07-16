@@ -99,6 +99,9 @@ contract Concept {
                  UserRegistry(userRegistry).availability(randomMember)) {
                 return randomMember;
             }
+            else {
+                return address(0x0);
+            }
         }
         else {
             //remove from list

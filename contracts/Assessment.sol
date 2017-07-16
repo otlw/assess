@@ -125,7 +125,7 @@ contract Assessment {
         for (uint k=0; k < num; k++) {
             if (assessorPoolLength == size*20) { return; } //
             address randomUser = Concept(_concept).getRandomMember(seed + k);
-            if (addAssessorToPool(randomUser)) {
+            if (randomUser != address(0x0) && addAssessorToPool(randomUser)) {
                 numCalled++;
             }
         }
