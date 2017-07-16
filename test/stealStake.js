@@ -71,26 +71,26 @@ contract("Steal Stake:", function(accounts){
     describe("If assessors reveal their own score", function() {
         it ("they are marked as done, and the assessment progresses.", async () => {
             doneBefore = await assessmentContract.done.call()
-            await assessmentContract.reveal(scores[0], salts[0], calledAssessors[0], {from:calledAssessors[0]})
+            await assessmentContract.reveal(scores[0], salts[0], {from:calledAssessors[0]})
             doneAfter = await assessmentContract.done.call()
             assert.equal(doneAfter.toNumber(), doneBefore.toNumber() + 1, "the assessment did not progress")
         })
     })
 
-    describe("If someone else reveals an assessor's score", function() {
+    describe("If someone else steals an assessor's score", function() {
         var balanceBeforeSteal;
         it("the assessor is burned and the size of the assessment reduced.", async () => {
             balanceBeforeSteal = await userReg.balances.call(outsideUser)
 
             sizeBeforeSteal = await assessmentContract.size.call()
-            await  assessmentContract.reveal(scores[1], salts[1], calledAssessors[1], {from:outsideUser})
+            await  assessmentContract.steal(scores[1], salts[1], calledAssessors[1], {from:outsideUser})
             sizeAfterSteal = await assessmentContract.size.call()
             assert.equal(sizeAfterSteal.toNumber(),
                          sizeBeforeSteal.toNumber() - 1,
                          "the assessment's size did not get reduced.")
 
             doneAfterSteal = await assessmentContract.done.call()
-            await  assessmentContract.reveal(scores[1], salts[1], calledAssessors[1], {from:calledAssessors[1]})
+            await  assessmentContract.reveal(scores[1], salts[1], {from:calledAssessors[1]})
             doneAfterTry = await assessmentContract.done.call()
             assert.equal(doneAfterTry.toNumber(),
                          doneAfterSteal.toNumber(),

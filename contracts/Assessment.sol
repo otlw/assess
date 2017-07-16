@@ -195,8 +195,21 @@ contract Assessment {
             assessmentStage = State.Committed;
         }
     }
+
+
+    function steal(int8 _score, string _salt, address assessor) {
+        if(assessorState[assessor] == State.Committed && msg.sender != assessor) {
+            if(commits[assessor] == sha3(_score, _salt)) {
+                Concept(concept).addBalance(msg.sender, stake[assessor]);
+                stake[assessor] = 0;
+                assessorState[assessor] = State.Burned;
+                size--;
+            }
+        }
+    }
+
     //@purpose: called by assessors to reveal their own commits or others
-    function reveal(int8 score, string salt, address assessor) onlyInStage(State.Committed) {
+    function reveal(int8 _score, string _salt) onlyInStage(State.Committed) {
         if (now > endTime + 12 hours) { //add bigger zerocheck
             for (uint i = 0; i < assessors.length; i++) {
                 if (assessorState[assessors[i]] == State.Committed) { //If the assessor has not revealed their score
@@ -205,32 +218,18 @@ contract Assessment {
                     size--;
                 }
             }
-            return;
         }
 
-        bytes32 hash = sha3(score,salt);
-        if (assessorState[assessor] == State.Committed) {
-            if (commits[assessor] == hash) {
-                // log in score and increase done
-                if (msg.sender == assessor) {
-                    scores[msg.sender] = score;
-                    assessorState[assessor] = State.Done;
+        if(assessorState[msg.sender] == State.Committed &&
+           commits[msg.sender] == sha3(_score, _salt)) {
+                    scores[msg.sender] = _score;
+                    assessorState[msg.sender] = State.Done;
                     done++;
-                }
-                else {
-                    // give the stake to the caller and burn assessor
-                    Concept(concept).addBalance(msg.sender, stake[assessor]);
-                    stake[assessor] = 0;
-                    assessorState[assessor] = State.Burned;
-                    size--;
-                }
-            }
         }
 
-        //If all the assessors have revealed their scored or burned their stakes
         if (done == size) {
             assessmentStage = State.Done;
-            calculateResult(); 
+            calculateResult();
         }
     }
 
