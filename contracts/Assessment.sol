@@ -276,6 +276,7 @@ contract Assessment {
        if (finalScore > 0){
             Concept(concept).addMember(assessee, uint(finalScore) * finalClusterLength);
         }
+       UserRegistry(userRegistry).notification(assessee, 7);
    }
 
     function payout(bool[200] finalClusterMask) onlyInStage(State.Done) internal {
@@ -298,6 +299,5 @@ contract Assessment {
                 index++;
             }
         }
-        Concept(concept).finishAssessment(finalScore, assessee, address(this));
     }
 }

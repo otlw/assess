@@ -12,7 +12,6 @@ contract("ConceptRegistry", function() {
             ConceptRegistryInstance = instance
             return ConceptRegistryInstance.mewAddress.call();
         }).then(function(address){
-            console.log(address)
             mewAddress = address
             return ConceptRegistryInstance.conceptExists(mewAddress)
         }).then(function(exists){
