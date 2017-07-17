@@ -15,15 +15,19 @@ contract Concept {
     uint public lifetime;
     mapping (address => bool) public assessmentExists;
     mapping (address => mapping (address => uint)) public approval;
-    mapping (address => address) recentAssessment;
     mapping (address => ComponentWeight[]) weights;
     mapping (address => mapping(address => uint)) componentWeightIndex;
     address[] public members;
-    mapping (address => bool) hasWeight;
+    mapping (address => AssessmentInfo) recentAssessment;
 
     struct ComponentWeight {
         uint weight;
         uint date;
+    }
+
+    struct AssessmentInfo {
+        address assessmentAddress;
+        bool hasWeight;
     }
 
     modifier onlyUserRegistry() {
@@ -98,7 +102,7 @@ contract Concept {
         }
         else {
             //remove from list
-            hasWeight[randomMember] = false;
+            recentAssessment[randomMember].hasWeight = false;
             members[index] = members[members.length - 1];
             members.length = members.length - 1;
             return getRandomMember(seed*2);
@@ -173,14 +177,15 @@ contract Concept {
     */
     function addMember(address _assessee, uint _weight) {
         if (assessmentExists[msg.sender]) {
-            recentAssessment[_assessee] = msg.sender;
+            recentAssessment[_assessee].assessmentAddress = msg.sender;
+            recentAssessment[_assessee].hasWeight = true;
             this.addWeight(_assessee, _weight);
         }
     }
     function addWeight(address _assessee, uint _weight) onlyConcept() {
-        if (!hasWeight[_assessee]) {
+        if (!recentAssessment[_assessee].hasWeight) {
             members.push(_assessee);
-            hasWeight[_assessee] = true;
+            recentAssessment[_assessee].hasWeight = true;
         }
 
         uint idx = componentWeightIndex[_assessee][msg.sender];
