@@ -8,7 +8,6 @@ import "./UserRegistry.sol";
 contract Assessment {
     address assessee;
     address[] assessors;
-    address[] finalAssessors;
     mapping (address => State) assessorState;
     mapping(uint => int[]) clusters;
     State public assessmentStage;
@@ -25,7 +24,8 @@ contract Assessment {
     address concept;
     address userRegistry;
     address conceptRegistry;
-    uint public checkpoint; //marks creation of assessment / start of commit phase / start of reveal phase (time in seconds)
+    uint public endTime;
+    uint public latestConfirmTime;
     uint burnRate;
     uint public size;
     uint cost;
@@ -39,46 +39,48 @@ contract Assessment {
     event DataSet(address _dataSetter, uint _index);
 
     modifier onlyAssessorAssessee() {
-        if (msg.sender != assessee && uint(assessorState[msg.sender]) == 0) {
-            throw;
-        }
+        require(msg.sender == assessee || assessorState[msg.sender] != State.None);
         _;
     }
 
     modifier onlyConceptAssessment() {
-        if (msg.sender != address(this) && msg.sender != concept) {
-            throw;
-        }
+        require(msg.sender == address(this) || msg.sender == concept);
         _;
     }
 
     modifier onlyConcept() {
-        if (msg.sender != concept) {
-            throw;
-        }
+        require(msg.sender == concept);
         _;
     }
 
     modifier onlyInStage(State _stage) {
-        if (assessmentStage != _stage) {
-            throw;
-        }
+        require(assessmentStage == _stage);
         _;
     }
 
-    function Assessment(address _assessee, address _userRegistry, address _conceptRegistry, uint _size, uint _cost) {
+    function Assessment(address _assessee,
+                        address _userRegistry,
+                        address _conceptRegistry,
+                        uint _size,
+                        uint _cost,
+                        uint _confirmTime,
+                        uint _timeLimit) {
         assessee = _assessee;
         concept = msg.sender;
         userRegistry = _userRegistry;
         conceptRegistry = _conceptRegistry;
-        checkpoint = now;
+
+        endTime = now + _timeLimit;
+        latestConfirmTime = now + _confirmTime;
+        assert(latestConfirmTime < endTime);
+
         size = _size;
         cost = _cost;
+
         UserRegistry(userRegistry).notification(assessee, 0); // assesse has started an assessment
         assessorPoolLength = 0;
         done = 0;
     }
-
 
     function cancelAssessment() onlyConceptAssessment() {
         Concept(concept).addBalance(assessee, cost*size);
@@ -103,7 +105,6 @@ contract Assessment {
         }
     }
 
-
     /*
       @purpose: To recursively set the pool to draw assessors from in the assessment
       stops when the pool of potential assessors is 20 times the size of the assessment2
@@ -116,7 +117,7 @@ contract Assessment {
         for (uint k=0; k < num; k++) {
             if (assessorPoolLength == size*20) { return; } //
             address randomUser = Concept(_concept).getRandomMember(seed + k);
-            if (addAssessorToPool(randomUser)) {
+            if (randomUser != address(0x0) && addAssessorToPool(randomUser)) {
                 numCalled++;
             }
         }
@@ -144,8 +145,8 @@ contract Assessment {
 
     //@purpose: called by an assessor to confirm and stake
     function confirmAssessor() onlyInStage(State.Called) {
-        // cancel if the assessment is older than 12 hours
-        if (now - checkpoint > 12 hours) {
+        // cancel if the assessment is older than 12 hours or already past its timelimit
+        if (now > latestConfirmTime){
             this.cancelAssessment();
             return;
         }
@@ -160,7 +161,6 @@ contract Assessment {
         }
         if (assessors.length == size) {
             notifyAssessors(uint(State.Confirmed), 4);
-            checkpoint = now; // reset checkpoint to mark start of actual assessment phase
             UserRegistry(userRegistry).notification(assessee, 4);
             assessmentStage = State.Confirmed;
         }
@@ -173,36 +173,36 @@ contract Assessment {
 
     //@purpose: called by an assessor to commit a hash of their score //TODO explain in more detail what's happening
     function commit(bytes32 _hash) onlyInStage(State.Confirmed) {
-        if (done > size/2) {
+        if (now > endTime) {
             burnStakes();
         }
-
-        if (assessorState[msg.sender] == State.Confirmed)
-            {
+        if (assessorState[msg.sender] == State.Confirmed) {
                 commits[msg.sender] = _hash;
                 assessorState[msg.sender] = State.Committed;
                 done++; //Increases done by 1 to help progress to the next assessment stage.
-
-                // if the boundary assessor
-                if ( done*10 >= 10*size/2 &&
-                    (done - 1)*10 < 10*size/2) {
-                    burnRate = (cost / (now - checkpoint)) + 1;
-                    checkpoint = now + (now - checkpoint);
-                }
-            }
+        }
         if (done == size) {
             notifyAssessors(uint(State.Committed), 5);
-            checkpoint = now; //reset checkpoint to mark start of reveal phase
             done = 0; //Resets the done counter
             assessmentStage = State.Committed;
         }
+    }
 
 
+    function steal(int8 _score, string _salt, address assessor) {
+        if(assessorState[assessor] == State.Committed && msg.sender != assessor) {
+            if(commits[assessor] == sha3(_score, _salt)) {
+                Concept(concept).addBalance(msg.sender, stake[assessor]);
+                stake[assessor] = 0;
+                assessorState[assessor] = State.Burned;
+                size--;
+            }
+        }
     }
 
     //@purpose: called by assessors to reveal their own commits or others
-    function reveal(int8 score, string salt, address assessor) onlyInStage(State.Committed) {
-        if (now - checkpoint > 12 hours) {
+    function reveal(int8 _score, string _salt) onlyInStage(State.Committed) {
+        if (now > endTime + 12 hours) { //add bigger zerocheck
             for (uint i = 0; i < assessors.length; i++) {
                 if (assessorState[assessors[i]] == State.Committed) { //If the assessor has not revealed their score
                     stake[assessors[i]] = 0;
@@ -210,50 +210,29 @@ contract Assessment {
                     size--;
                 }
             }
-            return;
         }
 
-        bytes32 hash = sha3(score,salt);
-        if (assessorState[assessor] == State.Committed) {
-            if (commits[assessor] == hash) {
-                // log in score and increase done
-                if (msg.sender == assessor) {
-                    scores[msg.sender] = score;
-                    assessorState[assessor] = State.Done;
+        if(assessorState[msg.sender] == State.Committed &&
+           commits[msg.sender] == sha3(_score, _salt)) {
+                    scores[msg.sender] = _score;
+                    assessorState[msg.sender] = State.Done;
                     done++;
-                }
-                else {
-                    // give the stake to the caller and burn assessor
-                    Concept(concept).addBalance(msg.sender, stake[assessor]);
-                    stake[assessor] = 0;
-                    assessorState[assessor] = State.Burned;
-                    size--;
-                }
-            }
         }
 
-        //If all the assessors have revealed their scored or burned their stakes
         if (done == size) {
             assessmentStage = State.Done;
-            calculateResult(); //The final result is calculated
+            calculateResult();
         }
     }
 
     //@purpose: burns stakes as a function of how much time has passed since half of the assessors commited
     function burnStakes() internal {
-        if (now-checkpoint > now) { //-> underflows if now before the end of the grace period
-            return;
-        }
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Confirmed) {
-                stake[assessors[i]] = cost - (burnRate * (now - checkpoint));
-                if (stake[assessors[i]] == 0 ||
-                    stake[assessors[i]] > cost) {
-                    assessorState[assessors[i]] = State.Burned;
-                    stake[assessors[i]] = 0;
-                    size--; //decrease size to help progress to the next assessment stage
-                }
-            }
+                stake[assessors[i]] = 0;
+                assessorState[assessors[i]] = State.Burned;
+                size--; //decrease size to help progress to the next assessment stage
+           }
         }
     }
 
@@ -266,59 +245,49 @@ contract Assessment {
     }
 
     function calculateResult() onlyInStage(State.Done) private {
+        int[] memory finalScores = new int[] (done);
+        uint idx =0;
         for (uint j = 0; j < assessors.length; j++) {
             if (assessorState[assessors[j]] == State.Done) {
-                finalAssessors.push(assessors[j]); //Adds all the assessors that completed the assessment process to an array}
+                finalScores[idx] = scores[assessors[j]];
+                idx++;
             }
         }
-        int[] memory score = new int[] (finalAssessors.length); //Initializes an array to store scores that is the same length as the number of finalAssessors
-        uint largestClusterIndex = 0; //store the index of the largest cluster
-        int averageScore;
-        for (uint i = 0; i < finalAssessors.length; i++) {
-            score[i] = scores[finalAssessors[i]];
-        }
-        int meanAbsoluteDeviation = Math.calculateMAD(score,int(finalAssessors.length));
-        for (uint l = 0; l < score.length; l++) {
-            for (uint m = 0; m < score.length; m++) {
-                if (score[l] - score[m] <= meanAbsoluteDeviation) {
-                    clusters[l].push(score[m]);
-                }
-            }
-            if (clusters[l].length > clusters[largestClusterIndex].length) {
-                largestClusterIndex = l;
-            }
-        }
-        for (uint o = 0; o < clusters[largestClusterIndex].length; o++) {
-            averageScore += clusters[largestClusterIndex][o];
-            inRewardCluster[clusters[largestClusterIndex][o]] = true;
-        }
-        averageScore /= int(clusters[largestClusterIndex].length);
-        finalScore = averageScore; //Sets the final score to the average score
-        payout();
-        //Sends assessment info to the concept so that it can update its records
-        Concept(concept).finishAssessment(finalScore, assessee, address(this));
-    }
+        uint finalClusterLength;
+        bool[200] memory finalClusterMask;
+        (finalClusterMask, finalClusterLength) = Math.getLargestCluster(finalScores);
 
-    function payout() onlyInStage(State.Done) private { //TODO order functions according to styleguide
+        for (uint i=0; i<done; i++) {
+            if (finalClusterMask[i]) {
+                finalScore += finalScores[i];
+            }
+        }
+        finalScore /= int(finalClusterLength);
+        payout(finalClusterMask);
+       if (finalScore > 0){
+            Concept(concept).addMember(assessee, uint(finalScore) * finalClusterLength);
+        }
+       UserRegistry(userRegistry).notification(assessee, 7);
+   }
+
+    function payout(bool[200] finalClusterMask) onlyInStage(State.Done) internal {
+        uint index=0;
+        uint q = 1; //INFLATION
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Done) {
+                uint payoutValue;
                 int score = scores[assessors[i]];
-                int scoreDistance = ((score - finalScore)*100)/finalScore;
-                if (scoreDistance < 0) {
-                    scoreDistance *= -1;
-                }
-                uint payoutValue = 0; //Initializes the payoutValue for the assessor
-                if (inRewardCluster[score]) {
-                    uint q = 1; //Inflation rate factor, WE NEED TO FIGURE THIS OUT AT SOME POINT
-                    //The assessor's payout is their stake plus some constant times a proportion of the user's tokens determined by their distance to the final score
+                int scoreDistance = Math.abs(((score - finalScore)*100)/finalScore);
+
+                if(finalClusterMask[index]) {
                     payoutValue = (q*cost*((100 - uint(scoreDistance))/100)) + stake[assessors[i]];
                 }
                 else {
-                    //The assessor's payout will be a propotion of their remaining stake determined by their distance from the final score
                     payoutValue = stake[assessors[i]]*((200 - uint(scoreDistance))/200);
                 }
                 Concept(concept).addBalance(assessors[i], payoutValue);
                 UserRegistry(userRegistry).notification(assessors[i], 6); //You  got paid!
+                index++;
             }
         }
     }

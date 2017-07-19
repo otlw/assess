@@ -8,34 +8,36 @@ import "./Math.sol";
 //@purpose: To store concept data and create and manage assessments and members
 contract Concept {
     address[] public parents; //The concepts that this concept is child to (ie: Calculus is child to Math)
+    bytes data;
     address userRegistry;
     address conceptRegistry;
     uint public maxWeight;
-    address[] public members;
-    mapping (address => int) public currentScores;
+    uint public lifetime;
     mapping (address => bool) public assessmentExists;
-    mapping (address => uint) public weights;
     mapping (address => mapping (address => uint)) public approval;
+    mapping (address => address) recentAssessment;
+    mapping (address => ComponentWeight[]) weights;
+    mapping (address => mapping(address => uint)) componentWeightIndex;
+    address[] public members;
+    mapping (address => bool) hasWeight;
+
+    struct ComponentWeight {
+        uint weight;
+        uint date;
+    }
 
     modifier onlyUserRegistry() {
-        if (msg.sender != userRegistry)
-            {
-                throw;
-            }
+        require(msg.sender == userRegistry);
         _;
     }
 
     modifier onlyConceptRegistry() {
-        if (msg.sender != conceptRegistry) {
-            throw;
-        }
+        require(msg.sender == conceptRegistry);
         _;
     }
 
     modifier onlyConcept() {
-        if (!ConceptRegistry(conceptRegistry).conceptExists(msg.sender)) {
-            throw;
-        }
+        require(ConceptRegistry(conceptRegistry).conceptExists(msg.sender));
         _;
     }
 
@@ -50,9 +52,11 @@ contract Concept {
                                address _assessment
                                );
 
-    function Concept(address[] _parents) {
+    function Concept(address[] _parents, uint _lifetime, bytes _data) {
         parents = _parents;
+        data = _data;
         conceptRegistry = msg.sender;
+        lifetime = _lifetime;
         userRegistry = ConceptRegistry(conceptRegistry).userRegistry();
     }
 
@@ -70,7 +74,7 @@ contract Concept {
     function addInitialMember(address _user, uint _weight) {
         if (ConceptRegistry(conceptRegistry).distributorAddress() == msg.sender)
             {
-                this.addMember(_user, _weight);
+                this.addWeight(_user, _weight);
             }
     }
 
@@ -80,20 +84,46 @@ contract Concept {
 
     //@purpose: returns a random member of the Concept. Users with high weights are more likely to be called
     function getRandomMember(uint seed) returns(address) {
-        address randomUser = members[Math.getRandom(seed, members.length-1)];
-        if (UserRegistry(userRegistry).availability(randomUser) && weights[randomUser] > now % maxWeight) {
-            return randomUser;
+        uint index = Math.getRandom(seed, members.length - 1);
+        address randomMember = members[index];
+        uint weight = getWeight(randomMember);
+        if (weight > 0) {
+            if ( weight > now % maxWeight &&
+                 UserRegistry(userRegistry).availability(randomMember)) {
+                return randomMember;
+            }
+            else {
+                return address(0x0);
+            }
         }
-        return address(0x0);
+        else {
+            //remove from list
+            hasWeight[randomMember] = false;
+            members[index] = members[members.length - 1];
+            members.length = members.length - 1;
+            return getRandomMember(seed*2);
+        }
     }
+
+    function getWeight(address _assessee) returns(uint){
+        uint weight = 0;
+        for (uint i=0; i<weights[_assessee].length; i++){
+            if (weights[_assessee][i].date + lifetime > now){
+                uint timefactor = (weights[_assessee][i].weight * 100 years) / lifetime;
+                weight += (weights[_assessee][i].weight * 100 years - timefactor * (now - weights[_assessee][i].date));
+            }
+        }
+        return weight / 100 years;
+    }
+
     /*
       @purpose: To make a new assessment
       @param: uint cost = the cost per assessor
       @param: uint size = the number of assessors
     */
-    function makeAssessment(uint cost, uint size) returns(bool) {
+    function makeAssessment(uint cost, uint size, uint _waitTime, uint _timeLimit) returns(bool) {
         if (size >= 5 && this.subtractBalance(msg.sender, cost*size)) {
-            Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost);
+            Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost, _waitTime, _timeLimit);
             assessmentExists[address(newAssessment)] = true;
             if (Concept(ConceptRegistry(conceptRegistry).mewAddress()).getMemberLength()<size*20) {
                 newAssessment.setAssessorPoolFromMew(); // simply use all members of mew (Bootstrap phase)
@@ -120,11 +150,11 @@ contract Concept {
     }
 
     //@purpose: allow approved address to create assessments for users on this concept
-    function makeAssessmentFrom(address _assessee, uint _cost, uint _size) returns(bool) {
+    function makeAssessmentFrom(address _assessee, uint _cost, uint _size, uint _waitTime, uint _timeLimit) returns(bool) {
         if (approval[_assessee][msg.sender] >= _cost * _size &&
            _size >= 5 &&
            this.subtractBalance(_assessee, _cost*_size)) {
-            Assessment newAssessment = new Assessment(_assessee, userRegistry, conceptRegistry, _size, _cost);
+            Assessment newAssessment = new Assessment(_assessee, userRegistry, conceptRegistry, _size, _cost, _waitTime, _timeLimit);
             assessmentExists[address(newAssessment)] = true;
             newAssessment.setAssessorPool(block.number, address(this), _size*20);
             approval[_assessee][msg.sender] -= _cost*_size;
@@ -134,38 +164,40 @@ contract Concept {
             return false;
         }
     }
+
     /*
-      @purpose: To finish the assessment process
-      @param: int score = the assessee's score
-      @param: address assessee = the address of the assessee
-      @param: address assessment = the address of the assessment
-      @returns: nothing
-    */
-    function finishAssessment(int score, address assessee, address assessment) {
-        if (assessmentExists[msg.sender]) {
-            if (score > 0) {
-                uint weight = Assessment(assessment).size()*uint(score);
-                this.addMember(assessee, weight);
-            }
-            currentScores[assessee] = score; //Maps the assessee to their score
-            UserRegistry(userRegistry).notification(assessee, 7); //Assessment on Concept finished
-        }
-    }
-    /*
-      @purpose: To add a member to a concept and recursively add a member to parent concept, halving the added weight with each generation and chinging the macWeight for a concept if neccisairy
+      @purpose: To add a member to a concept and to recursively add  a member to parent concept, thereby halving the added weight with each generation and changing the maxWeight of each concept if necessary
       @param: address assessee = the address of the assessee
       @param: uint weight = the weight for the member
       @returns: nothing
     */
-    function addMember(address assessee, uint weight) onlyConcept() {
-        members.push(assessee);
-        weights[assessee] += weight;
-        if (weight > maxWeight) {
-            maxWeight = weight;
+    function addMember(address _assessee, uint _weight) {
+        if (assessmentExists[msg.sender]) {
+            recentAssessment[_assessee] = msg.sender;
+            this.addWeight(_assessee, _weight);
         }
-        if (weight/2 > 0) {
+    }
+    function addWeight(address _assessee, uint _weight) onlyConcept() {
+        if (!hasWeight[_assessee]) {
+            members.push(_assessee);
+            hasWeight[_assessee] = true;
+        }
+
+        uint idx = componentWeightIndex[_assessee][msg.sender];
+        if (idx > 0) {
+            weights[_assessee][idx-1] = ComponentWeight(_weight, now);
+        } else {
+            weights[_assessee].push(ComponentWeight(_weight, now));
+            componentWeightIndex[_assessee][msg.sender] = weights[_assessee].length;
+        }
+
+        if (_weight > maxWeight) {
+            maxWeight = _weight;
+        }
+
+        if(_weight/2 > 0) {
             for(uint i = 0; i < parents.length; i++) {
-                Concept(parents[i]).addMember(assessee, weight/2); //recursively adds member to all parent concepts but with half the weight
+                Concept(parents[i]).addWeight(_assessee, _weight/2);
             }
         }
     }
@@ -176,7 +208,7 @@ contract Concept {
         }
         return false;
     }
-
+    
     function addBalance(address _to, uint _amount)  returns(bool) {
         if (assessmentExists[msg.sender]) {
             return UserRegistry(userRegistry).addBalance(_to, _amount);

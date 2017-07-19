@@ -26,7 +26,7 @@ exports.revealAssessors = async function(_assessors, _scores, _salts, _assessmen
     for(i=0; i < _assessors.length; i++) {
         stage = await _assessmentInstance.assessmentStage.call()
         if (stage.toNumber() == 3){
-            await _assessmentInstance.reveal(_scores[i], _salts[i], _assessors[i], {from: _assessors[i]})
+            await _assessmentInstance.reveal(_scores[i], _salts[i], {from: _assessors[i]})
         }
         else{
             console.log("wrong stage! " + i + "'-th assessor should not reveal")

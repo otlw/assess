@@ -17,7 +17,7 @@ contract ConceptRegistry {
         if (initialized == false) {
             userRegistry = _userRegistry;
             distributorAddress = _distributor;
-            Concept mew = new Concept(new address[] (0));
+            Concept mew = new Concept(new address[] (0),  uint(2**255), "");
             mewAddress = address(mew);
             conceptExists[mewAddress] = true;
             initialized = true;
@@ -31,8 +31,8 @@ contract ConceptRegistry {
       @purpose: To make a concept
       @param: address[] parentList = an array of addresses containing the addresses of the concepts parents
     */
-    function makeConcept(address[] parentList) returns (address){
-        Concept newConcept = new Concept(parentList);
+    function makeConcept(address[] parentList, uint _lifetime, bytes _data) returns (address){
+        Concept newConcept = new Concept(parentList, _lifetime, _data);
         address newConceptAddress = address(newConcept);
         conceptExists[newConceptAddress] = true;
 
@@ -40,9 +40,7 @@ contract ConceptRegistry {
             newConcept.addParent(mewAddress);
         }
         for (uint j=0; j < parentList.length; j++) {
-            if (!conceptExists[parentList[j]]){
-                throw;
-            }
+            require(conceptExists[parentList[j]]);
         }
         ConceptCreation(newConceptAddress);
         return newConceptAddress;

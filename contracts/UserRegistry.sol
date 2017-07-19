@@ -25,6 +25,11 @@ contract UserRegistry {
       7 = Assessment Finished
     */
 
+    modifier onlyConcept() {
+        require(ConceptRegistry(conceptRegistry).conceptExists(msg.sender));
+        _;
+    }
+
     function UserRegistry(address _conceptRegistry, address _user, uint _initialBalance) {
         conceptRegistry = _conceptRegistry;
         balances[_user] = _initialBalance;
@@ -39,7 +44,7 @@ contract UserRegistry {
     }
 
     //@purpose: To perform payouts in Asessments
-    function addBalance(address _to, uint _amount) returns(bool) {
+    function addBalance(address _to, uint _amount) onlyConcept() returns(bool) {
         if (balances[_to] + _amount > balances[_to]){
             balances[_to] += _amount;
             return true;
@@ -50,7 +55,7 @@ contract UserRegistry {
     }
 
     //@purpose: To perform payments and staking for assessments
-    function subtractBalance(address _from, uint _amount) returns(bool) {
+    function subtractBalance(address _from, uint _amount) onlyConcept() returns(bool) {
         if (balances[_from] > _amount){
             balances[_from] -= _amount;
             return true;

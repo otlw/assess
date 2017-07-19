@@ -7,6 +7,7 @@ pragma solidity ^0.4.0;
 */
 
 library Math {
+    uint constant maxAssessors = 200;
   /*
   @purpose: To generate a weak random number between 0 and the specified maximum
   @param: uint seed = seed number for the generation of a random number
@@ -28,14 +29,14 @@ library Math {
     return(uint(sha3(block.blockhash(block.number-1), seed))%(max-min+1) + min); //Hashes the seed number with the last blockhash to generate a random number and shifts it into the desired range by using a modulus and addition
   }
 
-  function calculateMAD(int[] data, int n) constant returns(int) {
+  function calculateMAD(int[] data) constant returns(int) {
     int mean;
     int totalRelativeDistance;
     int meanAbsoluteDeviation;
     for(uint j = 0; j < data.length; j++) {
       mean += data[j];
     }
-    mean /= n;
+    mean /=  int(data.length);
     for(uint k = 0; k < data.length; k++) {
       int distanceFromMean = data[k] - mean;
       if(distanceFromMean < 0) {
@@ -43,7 +44,35 @@ library Math {
       }
       totalRelativeDistance += distanceFromMean;
     }
-    meanAbsoluteDeviation = totalRelativeDistance/n;
+    meanAbsoluteDeviation = totalRelativeDistance/int(data.length);
     return meanAbsoluteDeviation;
   }
+
+
+  function getLargestCluster(int[] data) returns(bool[200], uint) {
+      uint largestClusterSize = 0;
+      bool[200] memory largestCluster;
+      int MAD = calculateMAD(data);
+      for(uint i=0; i < data.length; i++) {
+          uint clusterSize = 0;
+          bool[200] memory cluster; 
+          for (uint j = 0; j < data.length; j++){
+              if(abs(data[i] - data[j]) <= MAD ){
+                  cluster[j] = true;
+                  clusterSize++;
+              }
+          }
+          if(clusterSize > largestClusterSize) {
+              largestCluster = cluster;
+              largestClusterSize = clusterSize;
+          }
+      }
+      return (largestCluster, largestClusterSize);
+  }
+
+  function abs(int x) returns (int256){
+      if( x < 0 ) { return -1*x;}
+      else { return x;}
+  }
 }
+
