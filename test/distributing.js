@@ -11,7 +11,7 @@ var setup = deploymentScript.setupVariable
 contract("Distributor", function(accounts) {
     var distributorInstance;
     var conceptRegistryInstance;
-    var conceptReg;
+
     describe("Distributor", function(){
         it("should create the initial concepts", async () => {
             distributorInstance = await Distributor.deployed()
@@ -30,7 +30,7 @@ contract("Distributor", function(accounts) {
             for( i=0; i<setup.length; i++) {
                 let conceptParents = await distributorInstance.addedConceptParents.call(i)
                 for (j=0; j < conceptParents.length; j++) {
-                    assert.equal(conceptParents[j].toNumber(), setup[i][1][j], "parent " + i +  " did not get added")
+                    assert.equal(conceptParents[j].toNumber(), setup[i][1][j], "parent "+i+ " did not get added")
                 }
             }
         })
@@ -45,29 +45,24 @@ contract("Distributor", function(accounts) {
                 }
             }
         })
-        it(" which decreases as they are propageted upwards to mew", function(){
-            return ConceptRegistry.deployed().then(function(instance){
-                conceptReg = instance
-                return conceptReg.mewAddress.call()
-            }).then(function(mewAddress){
-                mewConcept = Concept.at(mewAddress)
-                //check only account 1 for weight>0 in mew //TODO loop and check for all
-                a = 1
-                return mewConcept.getWeight.call(accounts[a])
-            }).then(function(weight){
-                assert.isAbove(weight.toNumber(), 0, "account"  + a +  " has no weight in mew")
-                //check account 2 for a decreased weight
-                a = 2
-                return distributor.conceptLookup.call(0)
-            }).then(function(addressOfConcept0){
-                concept0 = Concept.at(addressOfConcept0)
-                return concept0.getWeight.call(accounts[a])
-            }).then(function(_weightAt0){
-                weightAt0 = _weightAt0.toNumber()
-                return mewConcept.getWeight.call(accounts[a])
-            }).then(function(weightAtMew){
-                assert.isAbove(weightAt0, weightAtMew.toNumber(), "weight of account " + a + " did not decrease")
-            })
+
+        it("should propagate to the parent according to the rate", async () => {
+            const mew = await conceptRegistryInstance.mewAddress.call()
+            for( i=0; i<setup.length; i++) {
+                let initialConceptInstance = await Concept.at(await distributorInstance.conceptLookup.call(i))
+                let ConceptMembers =  setup[i][5]
+
+                for(j = 0; j<setup[i][1].length; j++) {
+                    let parentConceptInstance = await Concept.at(await distributorInstance.conceptLookup(setup[i][1][j]))
+
+                    for(k = 0; k <ConceptMembers.length; k++) {
+                        let weightInParent = await parentConceptInstance.getWeight.call(ConceptMembers[k])
+                        let weightInChild = await initialConceptInstance.getWeight.call(ConceptMembers[k])
+                        assert.equal(weightInParent.toNumber(),
+                                     Math.floor(weightInChild.toNumber()*(setup[i][2][j]/1000)))
+                    }
+                }
+            }
         })
     })
 })

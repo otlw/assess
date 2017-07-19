@@ -14,16 +14,8 @@ contract Concept {
     uint public maxWeight;
     uint public lifetime;
     mapping (address => bool) public assessmentExists;
-<<<<<<< HEAD
-=======
-    mapping (address => mapping (address => uint)) public approval;
-    mapping (address => address) recentAssessment;
-
-    mapping (address => ComponentWeight[]) weights;
-    mapping (address => mapping(address => uint)) componentWeightIndex;
 
     uint[] propagationRates;
->>>>>>> e17b2d0... add propagationRate in Concept creation
 
     address[] public members;
     mapping (address => MemberData) memberData;
