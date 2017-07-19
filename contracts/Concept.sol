@@ -18,16 +18,17 @@ contract Concept {
     mapping (address => ComponentWeight[]) weights;
     mapping (address => mapping(address => uint)) componentWeightIndex;
     address[] public members;
-    mapping (address => AssessmentInfo) recentAssessment;
+
+    mapping (address => MemberData) memberData;
+
+    struct MemberData {
+        address recentAssessment;
+        bool hasWeight;
+    }
 
     struct ComponentWeight {
         uint weight;
         uint date;
-    }
-
-    struct AssessmentInfo {
-        address assessmentAddress;
-        bool hasWeight;
     }
 
     modifier onlyUserRegistry() {
@@ -213,7 +214,7 @@ contract Concept {
         }
         return false;
     }
-    
+
     function addBalance(address _to, uint _amount)  returns(bool) {
         if (assessmentExists[msg.sender]) {
             return UserRegistry(userRegistry).addBalance(_to, _amount);
