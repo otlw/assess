@@ -6,7 +6,7 @@ var Assessment = artifacts.require("Assessment")
 
 exports.hashScoreAndSalt = function(_score, _salt, abi) {
     return '0x' + ethereumjsABI.soliditySHA3(
-        ["int8", "string"],
+        ["int128", "string"],
         [_score, _salt]
     ).toString('hex')
 }
@@ -74,7 +74,7 @@ exports.getBalances = async function(_accounts, _userRegistryInstance){
 exports.getEthBalances = function(_accounts){
     balances = []
     for (i=0; i<_accounts.length; i++){
-        balances.push(  web3.eth.getBalance(_accounts[i]).toNumber())
+        balances.push(web3.eth.getBalance(_accounts[i]).toNumber())
     }
     return balances
 }

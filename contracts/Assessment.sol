@@ -33,7 +33,7 @@ contract Assessment {
     mapping(address => bytes32) commits;
     mapping(address => uint) stake;
     uint public done; //counter how many assessors have committed/revealed their score
-    mapping(address => int8) scores;
+    mapping(address => int128) scores;
     mapping(int => bool) inRewardCluster;
     int public finalScore;
     event DataSet(address _dataSetter, uint _index);
@@ -189,7 +189,7 @@ contract Assessment {
     }
 
 
-    function steal(int8 _score, string _salt, address assessor) {
+    function steal(int128 _score, string _salt, address assessor) {
         if(assessorState[assessor] == State.Committed && msg.sender != assessor) {
             if(commits[assessor] == sha3(_score, _salt)) {
                 Concept(concept).addBalance(msg.sender, stake[assessor]);
@@ -201,7 +201,7 @@ contract Assessment {
     }
 
     //@purpose: called by assessors to reveal their own commits or others
-    function reveal(int8 _score, string _salt) onlyInStage(State.Committed) {
+    function reveal(int128 _score, string _salt) onlyInStage(State.Committed) {
         if (now > endTime + 12 hours) { //add bigger zerocheck
             for (uint i = 0; i < assessors.length; i++) {
                 if (assessorState[assessors[i]] == State.Committed) { //If the assessor has not revealed their score
@@ -211,7 +211,6 @@ contract Assessment {
                 }
             }
         }
-
         if(assessorState[msg.sender] == State.Committed &&
            commits[msg.sender] == sha3(_score, _salt)) {
                     scores[msg.sender] = _score;
