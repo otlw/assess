@@ -29,9 +29,8 @@ library Math {
     return(uint(sha3(block.blockhash(block.number-1), seed))%(max-min+1) + min); //Hashes the seed number with the last blockhash to generate a random number and shifts it into the desired range by using a modulus and addition
   }
 
-  function calculateMAD(int[] data) constant returns(uint) {
+  function calculateMAD(int[] data) constant returns(uint meanAbsoluteDeviation) {
     int mean;
-    uint meanAbsoluteDeviation;
     for(uint j = 0; j < data.length; j++) {
         mean += data[j];
     }
@@ -40,17 +39,14 @@ library Math {
         meanAbsoluteDeviation += abs(data[k] - mean);
     }
     meanAbsoluteDeviation /= data.length;
-    return meanAbsoluteDeviation;
- }
+  }
 
-
-  function getLargestCluster(int[] data) returns(bool[200], uint) {
-      uint largestClusterSize = 0;
+  function getLargestCluster(int[] data) returns(bool[200], uint largestClusterSize, uint MAD) {
       bool[200] memory largestCluster;
-      uint MAD = calculateMAD(data);
+      MAD = calculateMAD(data);
       for(uint i=0; i < data.length; i++) {
           uint clusterSize = 0;
-          bool[200] memory cluster; 
+          bool[200] memory cluster;
           for (uint j = 0; j < data.length; j++){
               if(abs(data[i] - data[j]) <= MAD ){
                   cluster[j] = true;
@@ -62,7 +58,7 @@ library Math {
               largestClusterSize = clusterSize;
           }
       }
-      return (largestCluster, largestClusterSize);
+      return (largestCluster, largestClusterSize, MAD);
   }
 
   function abs(int x) returns (uint){

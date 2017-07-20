@@ -254,8 +254,9 @@ contract Assessment {
             }
         }
         uint finalClusterLength;
+        uint mad;
         bool[200] memory finalClusterMask;
-        (finalClusterMask, finalClusterLength) = Math.getLargestCluster(finalScores);
+        (finalClusterMask, finalClusterLength, mad) = Math.getLargestCluster(finalScores);
 
         for (uint i=0; i<done; i++) {
             if (finalClusterMask[i]) {
@@ -263,27 +264,29 @@ contract Assessment {
             }
         }
         finalScore /= int(finalClusterLength);
-        payout(finalClusterMask);
+        payout(finalClusterMask, mad);
        if (finalScore > 0){
             Concept(concept).addMember(assessee, uint(finalScore) * finalClusterLength);
         }
        UserRegistry(userRegistry).notification(assessee, 7);
    }
 
-    function payout(bool[200] finalClusterMask) onlyInStage(State.Done) internal {
+    event fb(uint x);
+    function payout(bool[200] finalClusterMask, uint mad) onlyInStage(State.Done) internal {
         uint index=0;
         uint q = 1; //INFLATION
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Done) {
                 uint payoutValue;
                 int score = scores[assessors[i]];
-                uint scoreDistance = Math.abs(((score - finalScore)*100)/finalScore);
-
-                if(finalClusterMask[index]) {
-                    payoutValue = (q*cost*((100 - scoreDistance)/100)) + stake[assessors[i]];
+                uint scoreDistance = mad > 0 ? (Math.abs(score - finalScore)*100) / mad : 0;
+                if (finalClusterMask[index]) {
+                    uint xOfMad = scoreDistance > 10000 ? 10000 : scoreDistance;
+                    payoutValue = (q * cost * (10000 - xOfMad)) / 10000 + stake[assessors[i]];
                 }
                 else {
-                    payoutValue = stake[assessors[i]]*((200 - scoreDistance)/200);
+                    uint xOf2Mad = scoreDistance > 20000 ? 20000 : scoreDistance;
+                    payoutValue = (stake[assessors[i]] * (20000 - xOf2Mad)) / 20000;
                 }
                 Concept(concept).addBalance(assessors[i], payoutValue);
                 UserRegistry(userRegistry).notification(assessors[i], 6); //You  got paid!
