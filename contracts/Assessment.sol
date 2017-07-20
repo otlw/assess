@@ -211,6 +211,7 @@ contract Assessment {
                 }
             }
         }
+
         if(assessorState[msg.sender] == State.Committed &&
            commits[msg.sender] == sha3(_score, _salt)) {
                     scores[msg.sender] = _score;
@@ -276,13 +277,13 @@ contract Assessment {
             if (assessorState[assessors[i]] == State.Done) {
                 uint payoutValue;
                 int score = scores[assessors[i]];
-                int scoreDistance = Math.abs(((score - finalScore)*100)/finalScore);
+                uint scoreDistance = Math.abs(((score - finalScore)*100)/finalScore);
 
                 if(finalClusterMask[index]) {
-                    payoutValue = (q*cost*((100 - uint(scoreDistance))/100)) + stake[assessors[i]];
+                    payoutValue = (q*cost*((100 - scoreDistance)/100)) + stake[assessors[i]];
                 }
                 else {
-                    payoutValue = stake[assessors[i]]*((200 - uint(scoreDistance))/200);
+                    payoutValue = stake[assessors[i]]*((200 - scoreDistance)/200);
                 }
                 Concept(concept).addBalance(assessors[i], payoutValue);
                 UserRegistry(userRegistry).notification(assessors[i], 6); //You  got paid!
