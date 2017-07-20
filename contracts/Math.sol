@@ -41,25 +41,25 @@ library Math {
     meanAbsoluteDeviation /= data.length;
   }
 
-  function getLargestCluster(int[] data) returns(bool[200], uint largestClusterSize, uint MAD) {
-      bool[200] memory largestCluster;
-      MAD = calculateMAD(data);
-      for(uint i=0; i < data.length; i++) {
-          uint clusterSize = 0;
-          bool[200] memory cluster;
-          for (uint j = 0; j < data.length; j++){
-              if(abs(data[i] - data[j]) <= MAD ){
-                  cluster[j] = true;
-                  clusterSize++;
-              }
-          }
-          if(clusterSize > largestClusterSize) {
-              largestCluster = cluster;
-              largestClusterSize = clusterSize;
-          }
-      }
-      return (largestCluster, largestClusterSize, MAD);
-  }
+  function getFinalScore(int[] data) returns(int finalScore,uint largestClusterSize, uint MAD) {
+        //get largest Cluster and its score
+        MAD = calculateMAD(data);
+        for(uint i=0; i < data.length; i++) {
+            uint clusterSize = 0;
+            int clusterScore = 0;
+            for (uint j = 0; j < data.length; j++){
+                if(abs(data[i] - data[j]) <= MAD ){
+                    clusterScore += data[j];
+                    clusterSize++;
+                }
+            }
+            if(clusterSize > largestClusterSize) {
+                largestClusterSize = clusterSize;
+                finalScore = clusterScore/int(clusterSize);
+            }
+        }
+   }
+
 
   function abs(int x) returns (uint){
       if( x < 0 ) { return uint(-1*x); }

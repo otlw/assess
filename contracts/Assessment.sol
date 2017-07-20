@@ -9,7 +9,6 @@ contract Assessment {
     address assessee;
     address[] assessors;
     mapping (address => State) assessorState;
-    mapping(uint => int[]) clusters;
     State public assessmentStage;
     enum State {
         None,
@@ -34,7 +33,6 @@ contract Assessment {
     mapping(address => uint) stake;
     uint public done; //counter how many assessors have committed/revealed their score
     mapping(address => int128) scores;
-    mapping(int => bool) inRewardCluster;
     int public finalScore;
     event DataSet(address _dataSetter, uint _index);
 
@@ -253,40 +251,33 @@ contract Assessment {
                 idx++;
             }
         }
-        uint finalClusterLength;
         uint mad;
-        bool[200] memory finalClusterMask;
-        (finalClusterMask, finalClusterLength, mad) = Math.getLargestCluster(finalScores);
-
-        for (uint i=0; i<done; i++) {
-            if (finalClusterMask[i]) {
-                finalScore += finalScores[i];
-            }
-        }
-        finalScore /= int(finalClusterLength);
-        payout(finalClusterMask, mad);
-       if (finalScore > 0){
+        uint finalClusterLength;
+        (finalScore, finalClusterLength, mad) = Math.getFinalScore(finalScores);
+        payout(finalScore, mad);
+        if (finalScore > 0) {
             Concept(concept).addMember(assessee, uint(finalScore) * finalClusterLength);
         }
-       UserRegistry(userRegistry).notification(assessee, 7);
+        UserRegistry(userRegistry).notification(assessee, 7);
    }
 
     event fb(uint x);
-    function payout(bool[200] finalClusterMask, uint mad) onlyInStage(State.Done) internal {
+    function payout(int finalScore, uint mad) onlyInStage(State.Done) internal {
         uint index=0;
         uint q = 1; //INFLATION
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Done) {
                 uint payoutValue;
                 int score = scores[assessors[i]];
-                uint scoreDistance = mad > 0 ? (Math.abs(score - finalScore)*100) / mad : 0;
-                if (finalClusterMask[index]) {
-                    uint xOfMad = scoreDistance > 10000 ? 10000 : scoreDistance;
-                    payoutValue = (q * cost * (10000 - xOfMad)) / 10000 + stake[assessors[i]];
+                uint distance = Math.abs(score - finalScore);
+                uint xOfMad = mad > 0 ? (distance*10000) / mad : 0;
+                if (mad - distance <= mad){ //is in RewardCluster
+                    uint xOfMadCapped = xOfMad > 10000 ? 10000 : xOfMad;
+                    payoutValue = (q * cost * (10000 - xOfMadCapped)) / 10000 + stake[assessors[i]];
                 }
                 else {
-                    uint xOf2Mad = scoreDistance > 20000 ? 20000 : scoreDistance;
-                    payoutValue = (stake[assessors[i]] * (20000 - xOf2Mad)) / 20000;
+                    uint xOf2MadCapped = xOfMad > 20000 ? 20000 : xOfMad;
+                    payoutValue = (stake[assessors[i]] * (20000 - xOf2MadCapped)) / 20000;
                 }
                 Concept(concept).addBalance(assessors[i], payoutValue);
                 UserRegistry(userRegistry).notification(assessors[i], 6); //You  got paid!
