@@ -156,7 +156,12 @@ contract Concept {
            this.subtractBalance(_assessee, _cost*_size)) {
             Assessment newAssessment = new Assessment(_assessee, userRegistry, conceptRegistry, _size, _cost, _waitTime, _timeLimit);
             assessmentExists[address(newAssessment)] = true;
-            newAssessment.setAssessorPool(block.number, address(this), _size*20);
+            if (Concept(ConceptRegistry(conceptRegistry).mewAddress()).getMemberLength()<_size*20) {
+                newAssessment.setAssessorPoolFromMew(); // simply use all members of mew (Bootstrap phase)
+            }
+            else {
+                newAssessment.setAssessorPool(block.number, address(this), _size*20); //assemble the assessorPool by relevance
+            }
             approval[_assessee][msg.sender] -= _cost*_size;
             return true;
         }
