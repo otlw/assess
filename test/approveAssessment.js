@@ -27,9 +27,8 @@ contract("Make Assessment For:", function(accounts){
         it("should approve the external account in the concept", async () => {
             assessedConceptAddress = await (await Distributor.deployed()).conceptLookup.call(assessedConceptID)
             assessedConcept = Concept.at(assessedConceptAddress)
+            assert.isTrue(await assessedConcept.approve.call(tutor, cost*size, {from:assessee}), "tutor can't be approved")
             await assessedConcept.approve(tutor, cost*size, {from:assessee})
-            approvedCost = await assessedConcept.approval.call(assessee, tutor)
-            assert.equal(approvedCost.toNumber(), cost*size, "Userregistry does not know the tutor got approved")
         })
     })
 
