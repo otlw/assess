@@ -36,28 +36,31 @@ exports.revealAssessors = async function(_assessors, _scores, _salts, _assessmen
 exports.getMAD = function(data){
     mean = 0;
     mean = data.reduce((previous, current) => current += previous)
-    mean /=  solidityRound(data.length);
+    mean =  solidityRound(mean/data.length);
 
     totalRelativeDistance = 0;
     for(k = 0; k < data.length; k++) {
         totalRelativeDistance += Math.abs(data[k] - mean);
     }
-    meanAbsoluteDeviation = solidityRound(totalRelativeDistance/data.length);
+    meanAbsoluteDeviation = Math.floor(totalRelativeDistance/data.length);
     return meanAbsoluteDeviation;
 }
 
 
-exports.getLargestCluster = function(scores){
+exports.getFinalScore = function(scores){
     largestCluster = []
     largestClusterSize = 0;
+    finalScore = 0;
     MAD = this.getMAD(scores)
     for (j=0; j<scores.length; j++){
         clusterSize = 0
         cluster = []
+        clusterScore = 0;
         for (i=0; i<scores.length; i++){
             if (Math.abs(scores[j] - scores[i]) <= MAD ) {
                 cluster.push(true)
                 clusterSize++
+                clusterScore += scores[i]
             } else {
                 cluster.push(false)
             }
@@ -65,21 +68,10 @@ exports.getLargestCluster = function(scores){
         if(clusterSize > largestClusterSize) {
             largestCluster = cluster;
             largestClusterSize = clusterSize;
+            finalScore = solidityRound(clusterScore/largestClusterSize);
         }
     }
-    return [largestCluster, largestClusterSize]
-}
-
-exports.getFinalScore = function(clusterMask, scores){
-    score = 0;
-    finalClusterLength = 0;
-    for (key in scores){
-        if (clusterMask[key]){
-            score += scores[key]
-            finalClusterLength++
-        }
-    }
-    return solidityRound(score/finalClusterLength)
+    return {score: finalScore, mad:MAD, clusterMask:largestCluster, size:largestClusterSize}
 }
 
 //do weird rounding to account for solidity behavior -1/2 = -1 in js but -1/2 = 0 in solidity
@@ -90,17 +82,17 @@ function solidityRound(x){
     else { return Math.floor(x) }
 }
 
-exports.computePayouts = function(clusterMask, scores, finalScore, mad, cost) {
+exports.computePayouts = function(scores, finalScore, mad, cost) {
     payouts = []
     q = 1  //INFLATION RATE
     for (key in scores) {
-        let xOfMad =0;
+        distance = Math.abs(scores[key] - finalScore)
+        let xOfMad = 0;
         if (mad > 0){
-            xOfMad = solidityRound((Math.abs(scores[key] - finalScore)*10000) / mad);
+            xOfMad = Math.floor((distance*10000) / mad);
         }
         // console.log("scoreDinstance(JS) for assessor " + key + " : " + scoreDistance)
-        dist  = Math.abs(scores[key] - finalScore)
-        if(clusterMask[key]) {
+        if( distance <= mad ) { //in RewardCluster
             payouts.push(Math.floor((q*cost * Math.max(10000 - xOfMad, 0))/10000) + cost);
         }
         else {
@@ -110,29 +102,30 @@ exports.computePayouts = function(clusterMask, scores, finalScore, mad, cost) {
     return payouts
 }
 
-exports.generateSetup = function(accounts, maxAssessors, maxScore, cost) {
+exports.generateRandomSetup = function(accounts, maxAssessors, maxScore, cost) {
     size = utils.getRandomInt(5,maxAssessors)
     scores = []
     for (i=0; i<size; i++){
         scores.push(utils.getRandomInt(-maxScore, maxScore))
     }
+    return this.generateSetup(accounts, scores, cost)
+}
+
+exports.generateSetup = function(accounts, scores, cost){
+    size = scores.length
+    assessors = accounts.slice(0, size)
     //generating the right results
-    largestClusterInfo = this.getLargestCluster(scores)
-    var trueClusterMask = largestClusterInfo[0]
-    var largestClusterSize = largestClusterInfo[1]
-    var trueScore = this.getFinalScore(trueClusterMask, scores)
-    return {assessors: accounts.slice(0, size),
+    resultInfo = this.getFinalScore(scores)
+    return {assessors: assessors,
             scores: scores,
             stake: cost,
             size: size,
-            clusterMask: trueClusterMask,
-            largestClusterSize: largestClusterSize,
-            finalScore: trueScore,
-            payouts: this.computePayouts(trueClusterMask,
-                                    scores,
-                                    trueScore,
-                                    this.getMAD(scores),
-                                    cost
-                                   )
+            clusterMask: resultInfo.clusterMask,
+            largestClusterSize: resultInfo.size,
+            finalScore: resultInfo.score,
+            payouts: this.computePayouts(scores,
+                                         resultInfo.score,
+                                         resultInfo.mad,
+                                         cost)
            }
- }
+}

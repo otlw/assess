@@ -1,5 +1,4 @@
 var MathLib = artifacts.require("Math");
-var VirtualAssessment = artifacts.require("VirtualAssessment");
 utils = require("../js/utils.js")
 assess = require("../js/assessmentFunctions.js")
 var accounts = web3.eth.accounts
@@ -8,40 +7,43 @@ var maxSize = 9 //the number of accounts created by testrpc
 var stake = 10000
 var inflationRate = 1;
 //setting random scores
-var maxScore =  2**64;
+var maxScore = 1000;// 2**64;
 var nTests = 5;
 var setups = []
 var trueResults = []
 for (t=0; t<nTests; t++){
-    setup = assess.generateSetup(accounts, maxSize, maxScore, stake)
+    setup = assess.generateRandomSetup(accounts, maxSize, maxScore, stake)
     setups.push(setup)
 }
 
+//add special edgecases here:
+// perfect agreement
+setups.push(assess.generateSetup(accounts,[1000,1000,1000,1000, 1000], stake))
+
 contract("Scoring Unit Tests", function(accounts) {
-    describe(nTests + "virtual assessments with random scores and varying sizes are ", async () => {
+    describe(setups.length + " virtual assessments with random scores and varying sizes are ", async () => {
         outcomes = []
-        it("created.", async () => {
+        it("being run.", async () => {
             mathlib  = await MathLib.deployed()
-            va  = await VirtualAssessment.deployed()
             for (setup of setups) {
                 var payouts = []
                 //run assessment
-                await va.init(setup.scores, setup.stake)
-                await va.calculateResult()
-                await va.payout()
+                resultInfo = await mathlib.getFinalScore.call(setup.scores)
                 // fetch its outcome
-                var finalScore = await va.finalScore.call()
-                var largestClusterSize = await va.largestClusterSize.call()
                 for (var key in setup.assessors) {
-                    payout = await va.payouts.call(key)
+                    payout = await mathlib.getPayout.call(setup.scores[key],
+                                                     resultInfo[0].toNumber(), //finalScore
+                                                     resultInfo[2].toNumber(), //mad
+                                                     stake,
+                                                     inflationRate
+                                                    )
                     payouts.push(payout.toNumber())
                 }
                 // save it for later comparisons
-                outcomes.push({finalScore: finalScore.toNumber(),
-                               largestClusterSize: largestClusterSize.toNumber(),
+                outcomes.push({finalScore: resultInfo[0].toNumber(),
+                               largestClusterSize: resultInfo[1].toNumber(),
                                 payouts: payouts
                               })
-            await va.reset()
             }
         })
 
@@ -53,16 +55,19 @@ contract("Scoring Unit Tests", function(accounts) {
 
         it("The final score is calculated.", async () => {
             for (key in setups){
-                scoredifference = Math.abs(setups[key].finalScore - outcomes[key].finalScore)
-                assert.isBelow(scoredifference, maxScore/1000, "finalScore was not correct")
+                assert.equal(outcomes[key].finalScore, setups[key].finalScore, "finalScore was not correct")
             }
         })
 
         it("Payouts are distributed accordingly.", async () => {
             for (key in setups){
                 for (i=0; i<setups[key].assessors.length; i++){
-                    payoutdifference = Math.abs(setups[key].payouts[i] - outcomes[key].payouts[i])
-                    assert.isBelow(payoutdifference, stake/100, "payout was not correct")
+                    assert.equal(outcomes[key].payouts[i],
+                                 setups[key].payouts[i],
+                                 "payout of assessor " + i + " was not correct: " +
+                                 outcomes[key].payouts[i]  + " instead of " + setups[key].payouts[i] +
+                                 " \n scores are: " + setups[key].scores +
+                                 " \n correct cluster is: " + setups[key].clusterMask + "\n")
                 }
             }
         })

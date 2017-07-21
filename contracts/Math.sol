@@ -41,7 +41,7 @@ library Math {
     meanAbsoluteDeviation /= data.length;
   }
 
-  function getFinalScore(int[] data) returns(int finalScore,uint largestClusterSize, uint MAD) {
+  function getFinalScore(int[] data) returns(int finalScore, uint largestClusterSize, uint MAD) {
         //get largest Cluster and its score
         MAD = calculateMAD(data);
         for(uint i=0; i < data.length; i++) {
@@ -63,7 +63,7 @@ library Math {
   function getPayout(int score, int finalScore, uint mad, uint stake, uint q) returns(uint payout){
       uint distance = abs(score - finalScore);
       uint xOfMad = mad > 0 ? (distance*10000) / mad : 0;
-      if (mad - distance <= mad){ //is in RewardCluster
+      if (mad - distance <= mad){ //is in RewardCluster?
           uint xOfMadCapped = xOfMad > 10000 ? 10000 : xOfMad;
           payout = (q * stake * (10000 - xOfMadCapped)) / 10000 + stake;
       }
