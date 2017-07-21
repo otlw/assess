@@ -261,27 +261,13 @@ contract Assessment {
         UserRegistry(userRegistry).notification(assessee, 7);
    }
 
-    event fb(uint x);
     function payout(int finalScore, uint mad) onlyInStage(State.Done) internal {
-        uint index=0;
-        uint q = 1; //INFLATION
+        uint q = 1; //INFLATION RATE
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Done) {
-                uint payoutValue;
-                int score = scores[assessors[i]];
-                uint distance = Math.abs(score - finalScore);
-                uint xOfMad = mad > 0 ? (distance*10000) / mad : 0;
-                if (mad - distance <= mad){ //is in RewardCluster
-                    uint xOfMadCapped = xOfMad > 10000 ? 10000 : xOfMad;
-                    payoutValue = (q * cost * (10000 - xOfMadCapped)) / 10000 + stake[assessors[i]];
-                }
-                else {
-                    uint xOf2MadCapped = xOfMad > 20000 ? 20000 : xOfMad;
-                    payoutValue = (stake[assessors[i]] * (20000 - xOf2MadCapped)) / 20000;
-                }
+                uint payoutValue = Math.getPayout(scores[assessors[i]], finalScore, mad, stake[assessors[i]], q);
                 Concept(concept).addBalance(assessors[i], payoutValue);
                 UserRegistry(userRegistry).notification(assessors[i], 6); //You  got paid!
-                index++;
             }
         }
     }
