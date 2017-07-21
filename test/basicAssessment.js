@@ -270,7 +270,7 @@ contract('Assessment', function(accounts) {
                 it("Analysis:", async () => {
                     stage = await assessmentContract.assessmentStage.call()
                     assert.equal(stage.toNumber(), 4, "gas measured before assessment is done")
-                    console.log('Assuming GasPrice: ' + gasPrice + "  and 1 ether = $" + etherPrice); 
+                    console.log('Assuming GasPrice: ' + gasPrice + "  and 1 ether = $" + etherPrice);
                     console.log(gasCosts)
             })
             })
