@@ -14,6 +14,16 @@ contract Concept {
     uint public maxWeight;
     uint public lifetime;
     mapping (address => bool) public assessmentExists;
+<<<<<<< HEAD
+=======
+    mapping (address => mapping (address => uint)) public approval;
+    mapping (address => address) recentAssessment;
+
+    mapping (address => ComponentWeight[]) weights;
+    mapping (address => mapping(address => uint)) componentWeightIndex;
+
+    uint[] propagationRates;
+>>>>>>> e17b2d0... add propagationRate in Concept creation
 
     address[] public members;
     mapping (address => MemberData) memberData;
@@ -57,7 +67,11 @@ contract Concept {
                                address _assessment
                                );
 
-    function Concept(address[] _parents, uint _lifetime, bytes _data) {
+    function Concept(address[] _parents, uint[] _propagationRates, uint _lifetime, bytes _data) {
+        for(uint i = 0; i < _propagationRates.length; i++) {
+            require(_propagationRates[i] <= 1000);
+        }
+        propagationRates = _propagationRates;
         parents = _parents;
         data = _data;
         conceptRegistry = msg.sender;
@@ -207,9 +221,9 @@ contract Concept {
             maxWeight = _weight;
         }
 
-        if(_weight/2 > 0) {
-            for(uint i = 0; i < parents.length; i++) {
-                Concept(parents[i]).addWeight(_assessee, _weight/2);
+        for(uint i = 0; i < parents.length; i++) {
+            if((_weight*propagationRates[i])/1000 > 0) {
+                Concept(parents[i]).addWeight(_assessee, (_weight*propagationRates[i])/1000);
             }
         }
     }
