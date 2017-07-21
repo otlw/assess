@@ -5,7 +5,7 @@ import "./ConceptRegistry.sol";
 
 contract Distributor{
     mapping (uint => address) public conceptLookup;
-    uint NInitialConcepts; 
+    uint NInitialConcepts;
     uint public conceptIndex;
     ConceptInfo[] setup;
     address conceptRegistry;
@@ -30,7 +30,7 @@ contract Distributor{
         conceptIndex = 0;
     }
 
-    function addNextConcept(uint _id, uint[] _parents, uint _lifetime, bytes _data, address[] _initialMembers, uint[] _weights ){
+    function addNextConcept(uint _id, uint[] _parents, uint[] _propagationRates, uint _lifetime, bytes _data, address[] _initialMembers, uint[] _weights ){
         require(conceptIndex < NInitialConcepts);
         ConceptInfo memory conceptToAdd = ConceptInfo( _id, _parents, _lifetime, _data, _initialMembers, _weights);
         setup.push(conceptToAdd);
@@ -38,7 +38,7 @@ contract Distributor{
         for (uint i=0; i < conceptToAdd.parents.length; i++){
             conceptParents[i] = conceptLookup[conceptToAdd.parents[i]];
         }
-        address createdConceptAddress = ConceptRegistry(conceptRegistry).makeConcept(conceptParents, _lifetime, _data);
+        address createdConceptAddress = ConceptRegistry(conceptRegistry).makeConcept(conceptParents, _propagationRates, _lifetime, _data);
         conceptLookup[conceptIndex] = createdConceptAddress;
         //add initial Members 
         for (uint j=0; j < conceptToAdd.memberAddresses.length; j++){
