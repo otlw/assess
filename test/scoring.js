@@ -1,6 +1,8 @@
 var MathLib = artifacts.require("Math");
 utils = require("../js/utils.js")
 assess = require("../js/assessmentFunctions.js")
+jsAsses = require("../js/simulateAssessment.js")
+
 var accounts = web3.eth.accounts
 
 var maxSize = 9 //the number of accounts created by testrpc 
@@ -12,13 +14,13 @@ var nTests = 5;
 var setups = []
 var trueResults = []
 for (t=0; t<nTests; t++){
-    setup = assess.generateRandomSetup(accounts, maxSize, maxScore, stake)
+    setup = jsAsses.generateRandomSetup(accounts, maxSize, maxScore, stake)
     setups.push(setup)
 }
 
 //add special edgecases here:
 // perfect agreement
-setups.push(assess.generateSetup(accounts,[1000,1000,1000,1000, 1000], stake))
+setups.push(jsAsses.generateSetup(accounts,[1000,1000,1000,1000, 1000], stake))
 
 contract("Scoring Unit Tests", function(accounts) {
     describe(setups.length + " virtual assessments with random scores and varying sizes are ", async () => {
