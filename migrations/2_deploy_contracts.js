@@ -8,7 +8,7 @@ var accounts = web3.eth.accounts
 
 // var initialConcepts = setup2.tree
 //setup syntax:
-// id, parentIds, memberAddresses, memberWeights
+// id, parentIds, propagationRates,lifetime, memberAddresses, memberWeights
 // also say how many user there are initially in the system
 var lifetime = 60*60*24*365;
 var setup = [
