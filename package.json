@@ -8,6 +8,7 @@
   },
   "scripts": {
     "compile": "truffle compile",
+      "version": "truffle version",
     "test": "testrpc > /dev/null 2>&1 & truffle test"
   },
   "author": "Jared Pereira",
@@ -15,7 +16,7 @@
   "devDependencies": {
     "ethereumjs-testrpc": "^4.0.1",
     "ethjs-abi": "^0.2.0",
-    "truffle": "^3.4.5"
+    "truffle": "3.4.5"
   },
   "dependencies": {
     "ethereumjs-abi": "^0.6.4"
