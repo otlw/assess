@@ -59,6 +59,8 @@ contract Concept {
                                address _assessment
                                );
 
+    event setAssessorIndex (address member, uint index);
+
     function Concept(address[] _parents, uint[] _propagationRates, uint _lifetime, bytes _data) {
         for(uint i = 0; i < _propagationRates.length; i++) {
             require(_propagationRates[i] <= 1000);
@@ -96,6 +98,7 @@ contract Concept {
     function setAvailability(uint _index) {
         if(members[_index] == msg.sender) {
             memberData[msg.sender].isMember = false;
+            setAssessorIndex(members[members.length -1], _index);
             members[_index] = members[members.length - 1];
             members.length = members.length - 1;
         }
@@ -124,6 +127,7 @@ contract Concept {
         else {
             //remove from list
             memberData[randomMember].isMember = false;
+            setAssessorIndex(members[members.length -1], index);
             members[index] = members[members.length - 1];
             members.length = members.length - 1;
             return getRandomMember(seed*2);
