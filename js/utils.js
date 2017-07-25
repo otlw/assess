@@ -6,7 +6,7 @@ var Assessment = artifacts.require("Assessment")
 
 exports.hashScoreAndSalt = function(_score, _salt, abi) {
     return '0x' + ethereumjsABI.soliditySHA3(
-        ["int8", "string"],
+        ["int128", "string"],
         [_score, _salt]
     ).toString('hex')
 }
@@ -74,11 +74,17 @@ exports.getBalances = async function(_accounts, _userRegistryInstance){
 exports.getEthBalances = function(_accounts){
     balances = []
     for (i=0; i<_accounts.length; i++){
-        balances.push(  web3.eth.getBalance(_accounts[i]).toNumber())
+        balances.push(web3.eth.getBalance(_accounts[i]).toNumber())
     }
     return balances
 }
 
 exports.weiToDollar = function(wei, etherPrice) {
     return web3.fromWei(wei,"ether") * etherPrice
+}
+
+exports.getRandomInt  = function(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
 }
