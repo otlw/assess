@@ -8,6 +8,7 @@ import "./UserRegistry.sol";
 contract Assessment {
     address assessee;
     address[] assessors;
+
     mapping (address => State) assessorState;
     State public assessmentStage;
     enum State {
@@ -19,13 +20,13 @@ contract Assessment {
         Burned
     }
 
-    uint public assessorPoolLength;
     address concept;
     address userRegistry;
     address conceptRegistry;
+
     uint public endTime;
     uint public latestConfirmTime;
-    uint burnRate;
+
     uint public size;
     uint cost;
 
@@ -75,7 +76,6 @@ contract Assessment {
         cost = _cost;
 
         UserRegistry(userRegistry).notification(assessee, 0); // assesse has started an assessment
-        assessorPoolLength = 0;
         done = 0;
     }
 
@@ -94,7 +94,6 @@ contract Assessment {
         if (assessorState[assessor] == State.None) {
             UserRegistry(userRegistry).notification(assessor, 1); //Called As A Potential Assessor
             assessorState[assessor] = State.Called;
-            assessorPoolLength++;
             return true;
         }
         else {
@@ -112,7 +111,6 @@ contract Assessment {
     function setAssessorPool(uint seed, address _concept, uint num) onlyConceptAssessment() {
         uint numCalled = 0;
         for (uint k=0; k < num; k++) {
-            if (assessorPoolLength == size*20) { return; } //
             address randomUser = Concept(_concept).getRandomMember(seed + k);
             if (randomUser != address(0x0) && addAssessorToPool(randomUser)) {
                 numCalled++;
@@ -121,7 +119,7 @@ contract Assessment {
         uint remaining = num - numCalled;
         if (remaining > 0) {
             for (uint i = 0; i < Concept(_concept).getParentsLength(); i++) {
-                setAssessorPool(seed + assessorPoolLength, Concept(_concept).parents(i), remaining/Concept(_concept).getParentsLength() + 1); //Calls the remaining users from the parent concepts proportional to their size
+                setAssessorPool(seed + numCalled + i, Concept(_concept).parents(i), remaining/Concept(_concept).getParentsLength() + 1); //Calls the remaining users from the parent concepts proportional to their size
             }
         }
         assessmentStage = State.Called;
