@@ -136,13 +136,13 @@ contract Concept {
 
     function getWeight(address _assessee) returns(uint){
         uint weight = 0;
+
         for (uint i=0; i < memberData[_assessee].weights.length; i++){
-            if (memberData[_assessee].weights[i].date + lifetime > now){
-                uint timefactor = (memberData[_assessee].weights[i].weight * 100 years) / lifetime;
-                weight += (memberData[_assessee].weights[i].weight * 100 years - timefactor * (now - memberData[_assessee].weights[i].date));
+            if (memberData[_assessee].weights[i].date > now){
+                weight += memberData[_assessee].weights[i].weight;
             }
         }
-        return weight / 100 years;
+        return weight;
     }
 
     /*
@@ -223,7 +223,7 @@ contract Concept {
         if (idx > 0) {
             memberData[_assessee].weights[idx-1] = ComponentWeight(_weight, now);
         } else {
-            memberData[_assessee].weights.push(ComponentWeight(_weight, now));
+            memberData[_assessee].weights.push(ComponentWeight(_weight, now + lifetime));
             memberData[_assessee].componentWeightIndex[msg.sender] = memberData[_assessee].weights.length;
         }
 
