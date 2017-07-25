@@ -11,7 +11,6 @@ import "./ConceptRegistry.sol";
 contract UserRegistry {
     address public conceptRegistry;
     mapping (address => uint) public balances;
-    mapping (address => bool) public availability;
     mapping (address => mapping (address => uint)) public allowed;
     event Notification(address user, address sender, uint topic);
     /*
@@ -33,10 +32,6 @@ contract UserRegistry {
     function UserRegistry(address _conceptRegistry, address _user, uint _initialBalance) {
         conceptRegistry = _conceptRegistry;
         balances[_user] = _initialBalance;
-    }
-
-    function toggleAvailability() {
-        availability[msg.sender] = !availability[msg.sender];
     }
 
     function notification(address user, uint topic) {

@@ -22,7 +22,7 @@ contract Concept {
 
     struct MemberData {
         address recentAssessment;
-        bool hasWeight;
+        bool isMember;
         mapping(address => uint) approval;
         ComponentWeight[] weights;
         mapping(address => uint) componentWeightIndex;
@@ -59,6 +59,8 @@ contract Concept {
                                address _assessment
                                );
 
+    event setAssessorIndex (address member, uint index);
+
     function Concept(address[] _parents, uint[] _propagationRates, uint _lifetime, bytes _data) {
         for(uint i = 0; i < _propagationRates.length; i++) {
             require(_propagationRates[i] <= 1000);
@@ -93,14 +95,29 @@ contract Concept {
         parents.push(_parent);
     }
 
+    function setAvailability(uint _index) {
+        if(members[_index] == msg.sender) {
+            memberData[msg.sender].isMember = false;
+            setAssessorIndex(members[members.length -1], _index);
+            members[_index] = members[members.length - 1];
+            members.length = members.length - 1;
+        }
+
+        else {
+            if(getWeight(msg.sender) > 0 && !memberData[msg.sender].isMember){
+                members.push(msg.sender);
+                memberData[msg.sender].isMember = true;
+            }
+        }
+    }
+
     //@purpose: returns a random member of the Concept. Users with high weights are more likely to be called
     function getRandomMember(uint seed) returns(address) {
         uint index = Math.getRandom(seed, members.length - 1);
         address randomMember = members[index];
         uint weight = getWeight(randomMember);
         if (weight > 0) {
-            if ( weight > now % maxWeight &&
-                 UserRegistry(userRegistry).availability(randomMember)) {
+            if ( weight > now % maxWeight) {
                 return randomMember;
             }
             else {
@@ -109,7 +126,8 @@ contract Concept {
         }
         else {
             //remove from list
-            memberData[randomMember].hasWeight = false;
+            memberData[randomMember].isMember = false;
+            setAssessorIndex(members[members.length -1], index);
             members[index] = members[members.length - 1];
             members.length = members.length - 1;
             return getRandomMember(seed*2);
@@ -191,14 +209,14 @@ contract Concept {
     function addMember(address _assessee, uint _weight) {
         if (assessmentExists[msg.sender]) {
             memberData[_assessee].recentAssessment = msg.sender;
-            memberData[_assessee].hasWeight = true;
+            memberData[_assessee].isMember = true;
             this.addWeight(_assessee, _weight);
         }
     }
     function addWeight(address _assessee, uint _weight) onlyConcept() {
-        if (!memberData[_assessee].hasWeight) {
+        if (!memberData[_assessee].isMember) {
             members.push(_assessee);
-            memberData[_assessee].hasWeight = true;
+            memberData[_assessee].isMember = true;
         }
 
         uint idx = memberData[_assessee].componentWeightIndex[msg.sender];
