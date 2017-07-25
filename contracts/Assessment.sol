@@ -28,13 +28,12 @@ contract Assessment {
     uint burnRate;
     uint public size;
     uint cost;
-    mapping(address => string[]) public data;
+
     mapping(address => bytes32) commits;
     mapping(address => uint) stake;
     uint public done; //counter how many assessors have committed/revealed their score
     mapping(address => int128) scores;
     int public finalScore;
-    event DataSet(address _dataSetter, uint _index);
 
     modifier onlyAssessorAssessee() {
         require(msg.sender == assessee || assessorState[msg.sender] != State.None);
@@ -162,11 +161,6 @@ contract Assessment {
             UserRegistry(userRegistry).notification(assessee, 4);
             assessmentStage = State.Confirmed;
         }
-    }
-
-    function setData(string _data) onlyAssessorAssessee() {
-        data[msg.sender].push(_data);
-        DataSet(msg.sender, data[msg.sender].length - 1);
     }
 
     //@purpose: called by an assessor to commit a hash of their score //TODO explain in more detail what's happening
