@@ -12,7 +12,7 @@ var nInitialUsers = deploymentScript.nInitialUsers
 
 contract("Calling Assessors:", function(accounts) {
     let assessedConcept;
-    let assessedConceptID = 2;
+    let assessedConceptID = 0; //uniform distribution
     let conceptReg;
 
     let cost = 15;
@@ -61,7 +61,6 @@ contract("Calling Assessors:", function(accounts) {
 
 async function updateFrequencies(calledAssessors, dict, n, assessedConcept){
     for (let ass of calledAssessors) {
-        console.log(ass)
         if (dict.hasOwnProperty(ass)) {
             dict[ass].calls += 1/n
         } else {

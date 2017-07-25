@@ -10,14 +10,32 @@ var accounts = web3.eth.accounts
 //setup syntax:
 // id, parentIds, propagationRates,lifetime, memberAddresses, memberWeights
 // also say how many user there are initially in the system
+
 var lifetime = 60*60*24*365;
-var setup = [
+var setup1 = [
     [0, [], [500], lifetime, "", [accounts[0]],[20]],
     [1, [], [500], lifetime, "", [],[]],
     [2, [0], [500], lifetime, "", [accounts[1], accounts[2], accounts[3]], [10,10,10]],
     [3, [0], [500],lifetime, "", [accounts[4]],[20]]
 ]
 var nInitialUsers = 5;
+
+// uniform distribution
+// var n = 3;
+// uniform = Array(n).fill(10)
+// uniformUsers = accounts.slice(0,n)
+// // console.log(uniformUsers)
+// var setup2 = [
+//     [0, [], [500], lifetime, "", uniformUsers, uniform]
+//     // [0, [], [500], lifetime, "", [accounts[1], accounts[2], accounts[3]], [10,10,10]],
+//     // [1, [], [500], lifetime, "", [accounts[0]], [100]]
+//     ]
+
+// // nInitialUsers = uniformUsers.length
+// n
+// InitialUsers = n
+
+setup = setup1
 
 module.exports = function(deployer) {
   deployer.deploy(Math);
@@ -37,7 +55,11 @@ module.exports = function(deployer) {
       return Distributor.deployed()
   }).then(function(instance){
       distributor = instance
-      initiateConcepts(distributor, setup)
+      return initiateConcepts(distributor, setup)
+      // with more than 3 initial members per concept we need to refactor initiate concepts
+      //such that its members are added by another fucntion
+  // }).then(function() {
+  //     return initiateMembers(distributor, setup)
   })
 };
 
@@ -52,6 +74,38 @@ function initiateConcepts (distributorInstance, _setup) {
     return chain
 }
 
+function initiateMembers (distributorInstance, _setup) {
+    var chain = new Promise((resolve, reject)=> resolve(0))
+    for(i=0; i < _setup.length; i++) {
+        chain = chain.then(function(index) {
+            distributorInstance.addInitialMembers.apply(null, index)
+            return index += 1
+        })
+    }
+    return chain
+}
+//maybe use this once everything else works
+/*
+async function initiateConcepts2 (distributorInstance, _setup) {
+    for(i=0; i < _setup.length; i++) {
+        await distributorInstance.addNextConcept.apply(null, _setup[i])
+    }
+}
+
+module.exports = async function(deployer) {
+    deployer.deploy(Math);
+    deployer.link(Math, [Assessment, Concept, ConceptRegistry])
+    deployer.deploy(ConceptRegistry)
+    console.log(ConceptRegistry.address)
+    deployer.deploy(Distributor, setup.length, ConceptRegistry.address)
+    deployer.deploy(UserRegistry, ConceptRegistry.address, accounts[0], accounts.length*10000000000)
+    let conceptReg = await ConceptRegistry.deployed() ///hacky code after here: unclear on whether 
+    await conceptReg.init(UserRegistry.address, Distributor.address)
+    let distributor = await Distributor.deployed()
+    await initiateConcepts(distributor, setup)
+}
+
+ */
 
 module.exports.setupVariable = setup
 module.exports.nInitialUsers = nInitialUsers
