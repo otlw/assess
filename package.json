@@ -8,6 +8,7 @@
   },
   "scripts": {
     "compile": "truffle compile",
+      "version": "truffle version",
     "test": "testrpc > /dev/null 2>&1 & truffle test"
   },
   "author": "Jared Pereira",
