@@ -109,9 +109,7 @@ contract('Assessment', function(accounts) {
                 }
                 return Assessment.at(assessmentAddress).then(function(instance){
                     assessmentContract = instance
-                    return assessmentContract.assessorPoolLength.call().then(function(numAssessors){
-                        assert.equal(numAssessors.toNumber(), nInitialUsers , "the assesssors did not get added to the pool")
-                    })
+                    assert.equal(callsToAssessors.length, nInitialUsers , "the assesssors did not get added to the pool")
                 })
             })
 
