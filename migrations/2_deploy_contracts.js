@@ -23,7 +23,7 @@ module.exports = function(deployer) {
   deployer.deploy(Math);
   deployer.link(Math, [Assessment, Concept, ConceptRegistry])
   deployer.then( function(){
-      return deployer.deploy(ConceptRegistry, {gas: 6700000})
+      return deployer.deploy(ConceptRegistry)
   }).then(function(){
       return deployer.deploy(Distributor, setup.length, ConceptRegistry.address)
   }).then(function(){
