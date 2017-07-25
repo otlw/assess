@@ -1,4 +1,4 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.11;
 
 import "./Math.sol";
 import "./Concept.sol";
@@ -9,7 +9,6 @@ contract Assessment {
     address assessee;
     address[] assessors;
     mapping (address => State) assessorState;
-    mapping(uint => int[]) clusters;
     State public assessmentStage;
     enum State {
         None,
@@ -33,8 +32,7 @@ contract Assessment {
     mapping(address => bytes32) commits;
     mapping(address => uint) stake;
     uint public done; //counter how many assessors have committed/revealed their score
-    mapping(address => int8) scores;
-    mapping(int => bool) inRewardCluster;
+    mapping(address => int128) scores;
     int public finalScore;
     event DataSet(address _dataSetter, uint _index);
 
@@ -189,7 +187,7 @@ contract Assessment {
     }
 
 
-    function steal(int8 _score, string _salt, address assessor) {
+    function steal(int128 _score, string _salt, address assessor) {
         if(assessorState[assessor] == State.Committed && msg.sender != assessor) {
             if(commits[assessor] == sha3(_score, _salt)) {
                 Concept(concept).addBalance(msg.sender, stake[assessor]);
@@ -201,7 +199,7 @@ contract Assessment {
     }
 
     //@purpose: called by assessors to reveal their own commits or others
-    function reveal(int8 _score, string _salt) onlyInStage(State.Committed) {
+    function reveal(int128 _score, string _salt) onlyInStage(State.Committed) {
         if (now > endTime + 12 hours) { //add bigger zerocheck
             for (uint i = 0; i < assessors.length; i++) {
                 if (assessorState[assessors[i]] == State.Committed) { //If the assessor has not revealed their score
@@ -253,41 +251,23 @@ contract Assessment {
                 idx++;
             }
         }
+        uint mad;
         uint finalClusterLength;
-        bool[200] memory finalClusterMask;
-        (finalClusterMask, finalClusterLength) = Math.getLargestCluster(finalScores);
-
-        for (uint i=0; i<done; i++) {
-            if (finalClusterMask[i]) {
-                finalScore += finalScores[i];
-            }
-        }
-        finalScore /= int(finalClusterLength);
-        payout(finalClusterMask);
-       if (finalScore > 0){
+        (finalScore, finalClusterLength, mad) = Math.getFinalScore(finalScores);
+        payout(finalScore, mad);
+        if (finalScore > 0) {
             Concept(concept).addMember(assessee, uint(finalScore) * finalClusterLength);
         }
-       UserRegistry(userRegistry).notification(assessee, 7);
+        UserRegistry(userRegistry).notification(assessee, 7);
    }
 
-    function payout(bool[200] finalClusterMask) onlyInStage(State.Done) internal {
-        uint index=0;
-        uint q = 1; //INFLATION
+    function payout(int finalScore, uint mad) onlyInStage(State.Done) internal {
+        uint q = 1; //INFLATION RATE
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Done) {
-                uint payoutValue;
-                int score = scores[assessors[i]];
-                int scoreDistance = Math.abs(((score - finalScore)*100)/finalScore);
-
-                if(finalClusterMask[index]) {
-                    payoutValue = (q*cost*((100 - uint(scoreDistance))/100)) + stake[assessors[i]];
-                }
-                else {
-                    payoutValue = stake[assessors[i]]*((200 - uint(scoreDistance))/200);
-                }
+                uint payoutValue = Math.getPayout(scores[assessors[i]], finalScore, mad, stake[assessors[i]], q);
                 Concept(concept).addBalance(assessors[i], payoutValue);
                 UserRegistry(userRegistry).notification(assessors[i], 6); //You  got paid!
-                index++;
             }
         }
     }

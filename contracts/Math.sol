@@ -1,4 +1,4 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.11;
 
 /*
 @type: contract
@@ -29,50 +29,54 @@ library Math {
     return(uint(sha3(block.blockhash(block.number-1), seed))%(max-min+1) + min); //Hashes the seed number with the last blockhash to generate a random number and shifts it into the desired range by using a modulus and addition
   }
 
-  function calculateMAD(int[] data) constant returns(int) {
+  function calculateMAD(int[] data) constant returns(uint meanAbsoluteDeviation) {
     int mean;
-    int totalRelativeDistance;
-    int meanAbsoluteDeviation;
     for(uint j = 0; j < data.length; j++) {
-      mean += data[j];
+        mean += data[j];
     }
     mean /=  int(data.length);
     for(uint k = 0; k < data.length; k++) {
-      int distanceFromMean = data[k] - mean;
-      if(distanceFromMean < 0) {
-        distanceFromMean *= -1;
-      }
-      totalRelativeDistance += distanceFromMean;
+        meanAbsoluteDeviation += abs(data[k] - mean);
     }
-    meanAbsoluteDeviation = totalRelativeDistance/int(data.length);
-    return meanAbsoluteDeviation;
+    meanAbsoluteDeviation /= data.length;
   }
 
+  function getFinalScore(int[] data) returns(int finalScore, uint largestClusterSize, uint MAD) {
+        //get largest Cluster and its score
+        MAD = calculateMAD(data);
+        for(uint i=0; i < data.length; i++) {
+            uint clusterSize = 0;
+            int clusterScore = 0;
+            for (uint j = 0; j < data.length; j++){
+                if(abs(data[i] - data[j]) <= MAD ){
+                    clusterScore += data[j];
+                    clusterSize++;
+                }
+            }
+            if(clusterSize > largestClusterSize) {
+                largestClusterSize = clusterSize;
+                finalScore = clusterScore/int(clusterSize);
+            }
+        }
+   }
 
-  function getLargestCluster(int[] data) returns(bool[200], uint) {
-      uint largestClusterSize = 0;
-      bool[200] memory largestCluster;
-      int MAD = calculateMAD(data);
-      for(uint i=0; i < data.length; i++) {
-          uint clusterSize = 0;
-          bool[200] memory cluster; 
-          for (uint j = 0; j < data.length; j++){
-              if(abs(data[i] - data[j]) <= MAD ){
-                  cluster[j] = true;
-                  clusterSize++;
-              }
-          }
-          if(clusterSize > largestClusterSize) {
-              largestCluster = cluster;
-              largestClusterSize = clusterSize;
-          }
+  function getPayout(int score, int finalScore, uint mad, uint stake, uint q) returns(uint payout){
+      uint distance = abs(score - finalScore);
+      uint xOfMad = mad > 0 ? (distance*10000) / mad : 0;
+      if (mad - distance <= mad){ //is in RewardCluster?
+          uint xOfMadCapped = xOfMad > 10000 ? 10000 : xOfMad;
+          payout = (q * stake * (10000 - xOfMadCapped)) / 10000 + stake;
       }
-      return (largestCluster, largestClusterSize);
+      else {
+          uint xOf2MadCapped = xOfMad > 20000 ? 20000 : xOfMad;
+          payout = (stake * (20000 - xOf2MadCapped)) / 20000;
+      }
   }
 
-  function abs(int x) returns (int256){
-      if( x < 0 ) { return -1*x;}
-      else { return x;}
+
+  function abs(int x) returns (uint){
+      if( x < 0 ) { return uint(-1*x); }
+      else { return uint(x);}
   }
 }
 

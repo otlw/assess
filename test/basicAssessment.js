@@ -33,12 +33,13 @@ contract('Assessment', function(accounts) {
     let assessee = accounts[assesseeIdx];
     let outsideUser = accounts[nInitialUsers + 2];
 
+    let score = 1000;
     let scores = [];
     let salts = [];
     let hashes = [];
 
     for (i=0; i<nInitialUsers; i++){
-        scores.push(10)
+        scores.push(score)
         salts.push(i.toString())
         hashes.push(utils.hashScoreAndSalt(scores[i], salts[i]))
     }
@@ -235,7 +236,7 @@ contract('Assessment', function(accounts) {
         describe("Done", function() {
             it("should calculate the assessee's score", function(){
                 return assessmentContract.finalScore.call().then(function(finalScore) {
-                    assert.equal(finalScore.toNumber(), 10, "score not calculated correctly") //TODO write a javascript function that calculates a score
+                    assert.equal(finalScore.toNumber(), score, "score not calculated correctly")
                 })
             })
 
@@ -269,7 +270,7 @@ contract('Assessment', function(accounts) {
                 it("Analysis:", async () => {
                     stage = await assessmentContract.assessmentStage.call()
                     assert.equal(stage.toNumber(), 4, "gas measured before assessment is done")
-                    console.log('Assuming GasPrice: ' + gasPrice + "  and 1 ether = $" + etherPrice); 
+                    console.log('Assuming GasPrice: ' + gasPrice + "  and 1 ether = $" + etherPrice);
                     console.log(gasCosts)
             })
             })
