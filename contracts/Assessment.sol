@@ -8,6 +8,7 @@ import "./UserRegistry.sol";
 contract Assessment {
     address assessee;
     address[] assessors;
+
     mapping (address => State) assessorState;
     State public assessmentStage;
     enum State {
@@ -22,9 +23,10 @@ contract Assessment {
     address concept;
     address userRegistry;
     address conceptRegistry;
+
     uint public endTime;
     uint public latestConfirmTime;
-    uint burnRate;
+
     uint public size;
     uint cost;
     mapping(address => string[]) public data;
