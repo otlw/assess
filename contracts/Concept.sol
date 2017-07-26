@@ -31,12 +31,7 @@ contract Concept {
     struct ComponentWeight {
         uint weight;
         uint date;
-    }
-
-    modifier onlyUserRegistry() {
-        require(msg.sender == userRegistry);
-        _;
-    }
+    } 
 
     modifier onlyConceptRegistry() {
         require(msg.sender == conceptRegistry);
@@ -47,17 +42,6 @@ contract Concept {
         require(ConceptRegistry(conceptRegistry).conceptExists(msg.sender));
         _;
     }
-
-    /*
-      @type: event
-      @name: CompletedAssessment
-      @purpose: To build a database of completed assessments
-    */
-    event CompletedAssessment (
-                               address _assessee,
-                               int _score,
-                               address _assessment
-                               );
 
     event setAssessorIndex (address member, uint index);
 

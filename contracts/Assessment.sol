@@ -36,11 +36,6 @@ contract Assessment {
     mapping(address => int128) scores;
     int public finalScore;
 
-    modifier onlyAssessorAssessee() {
-        require(msg.sender == assessee || assessorState[msg.sender] != State.None);
-        _;
-    }
-
     modifier onlyConceptAssessment() {
         require(msg.sender == address(this) || msg.sender == concept);
         _;
