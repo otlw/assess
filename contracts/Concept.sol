@@ -10,7 +10,7 @@ contract Concept {
     address[] public parents; //The concepts that this concept is child to (ie: Calculus is child to Math)
     bytes data;
     address userRegistry;
-    address conceptRegistry;
+    address public conceptRegistry;
     uint public maxWeight;
     uint public lifetime;
     mapping (address => bool) public assessmentExists;
@@ -136,7 +136,7 @@ contract Concept {
     */
     function makeAssessment(uint cost, uint size, uint _waitTime, uint _timeLimit) returns(bool) {
         if (size >= 5 && this.subtractBalance(msg.sender, cost*size)) {
-            Assessment newAssessment = new Assessment(msg.sender, userRegistry, conceptRegistry, size, cost, _waitTime, _timeLimit);
+            Assessment newAssessment = new Assessment(msg.sender, size, cost, _waitTime, _timeLimit);
             assessmentExists[address(newAssessment)] = true;
             if (Concept(ConceptRegistry(conceptRegistry).mewAddress()).getMemberLength()<size*20) {
                 newAssessment.setAssessorPoolFromMew(); // simply use all members of mew (Bootstrap phase)
@@ -167,7 +167,7 @@ contract Concept {
         if (memberData[_assessee].approval[msg.sender] >= _cost * _size &&
            _size >= 5 &&
            this.subtractBalance(_assessee, _cost*_size)) {
-            Assessment newAssessment = new Assessment(_assessee, userRegistry, conceptRegistry, _size, _cost, _waitTime, _timeLimit);
+            Assessment newAssessment = new Assessment(_assessee, _size, _cost, _waitTime, _timeLimit);
             assessmentExists[address(newAssessment)] = true;
 
             if (Concept(ConceptRegistry(conceptRegistry).mewAddress()).getMemberLength()<_size*20) {
