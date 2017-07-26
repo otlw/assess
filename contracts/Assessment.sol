@@ -22,7 +22,6 @@ contract Assessment {
 
     address concept;
     address userRegistry;
-    address conceptRegistry;
 
     uint public endTime;
     uint public latestConfirmTime;
@@ -35,11 +34,6 @@ contract Assessment {
     uint public done; //counter how many assessors have committed/revealed their score
     mapping(address => int128) scores;
     int public finalScore;
-
-    modifier onlyAssessorAssessee() {
-        require(msg.sender == assessee || assessorState[msg.sender] != State.None);
-        _;
-    }
 
     modifier onlyConceptAssessment() {
         require(msg.sender == address(this) || msg.sender == concept);
@@ -57,16 +51,13 @@ contract Assessment {
     }
 
     function Assessment(address _assessee,
-                        address _userRegistry,
-                        address _conceptRegistry,
                         uint _size,
                         uint _cost,
                         uint _confirmTime,
                         uint _timeLimit) {
         assessee = _assessee;
         concept = msg.sender;
-        userRegistry = _userRegistry;
-        conceptRegistry = _conceptRegistry;
+        userRegistry = ConceptRegistry(Concept(concept).conceptRegistry()).userRegistry();
 
         endTime = now + _timeLimit;
         latestConfirmTime = now + _confirmTime;
@@ -86,7 +77,7 @@ contract Assessment {
             Concept(concept).addBalance(assessors[i], cost);
             UserRegistry(userRegistry).notification(assessors[i], 3); //Assessment Cancled and you have been refunded
         }
-        suicide(conceptRegistry);
+        suicide(Concept(concept).conceptRegistry());
     }
 
     //@purpose: adds a user to the pool eligible to accept an assessment
@@ -130,7 +121,7 @@ contract Assessment {
       assembling them at random is not meaningful. This will use all members of mew instead
     */
     function setAssessorPoolFromMew() onlyConcept() {
-        Concept mew = Concept(ConceptRegistry(conceptRegistry).mewAddress()); //TODO: can this be more elegant and/or in one line?
+        Concept mew = Concept(ConceptRegistry(Concept(concept).conceptRegistry()).mewAddress()); //TODO: can this be more elegant and/or in one line?
         for (uint i=0; i<mew.getMemberLength(); i++) {
             addAssessorToPool(mew.members(i));
         }
