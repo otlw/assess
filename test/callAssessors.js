@@ -12,7 +12,7 @@ var nInitialUsers = deploymentScript.nInitialUsers
 
 contract("Calling Assessors:", function(accounts) {
     let assessedConcept;
-    let assessedConceptID = 0; //uniform distribution
+    let assessedConceptID = 4; //uniform distribution
     let conceptReg;
 
     let cost = 15;
@@ -23,7 +23,7 @@ contract("Calling Assessors:", function(accounts) {
     let assessee = accounts[nInitialUsers + 1];
 
     let initialWeightsInMew;
-    nAssessments = 1;
+    nAssessments = 35;
 
     assessorInfo = {}
     describe(nAssessments + " assessments are created ", async () => {
@@ -39,7 +39,7 @@ contract("Calling Assessors:", function(accounts) {
             }
             for (rct of receipts) {
                 calledAssessors = await utils.getCalledAssessors(rct)
-                assessorInfo = await updateFrequencies(calledAssessors, assessorInfo, size*nAssessments, assessedConcept)
+                assessorInfo = await updateFrequencies(calledAssessors, assessorInfo, size*nAssessments, assessedConcept, accounts)
             }
             // console.log(assessorInfo)
         })
@@ -48,24 +48,30 @@ contract("Calling Assessors:", function(accounts) {
         it ("the assessor-frequencies are written to a file ", async () => {
             calls = ""
             weights = ""
+            accountIndices = ""
             for (let key in assessorInfo) {
                 //write to ouputFile
                  calls += assessorInfo[key].calls + ','
                  weights += assessorInfo[key].weight + ','
-            }
-            fs.writeFileSync('tmp.csv',calls + '\n' + weights)
+                 accountIndices += assessorInfo[key].accountIdx + ','
+            } 
+            fs.writeFileSync('tmp.csv',calls + '\n' + weights + '\n' + accountIndices + '\n' + "N=" + nAssessments + ",")
         })
     })
 })
 
-async function updateFrequencies(calledAssessors, dict, n, assessedConcept){
+async function updateFrequencies(calledAssessors, dict, n, assessedConcept, accounts){
     for (let ass of calledAssessors) {
         if (dict.hasOwnProperty(ass)) {
             dict[ass].calls += 1
         } else {
             w = (await assessedConcept.getWeight.call(ass)).toNumber()
-            dict[ass] = {calls: 1, weight: w}
+            dict[ass] = {calls: 1, weight: w, accountIdx: accounts.indexOf(ass)}
         }
     }
     return dict
+}
+
+function isAssessor(address){
+    return
 }

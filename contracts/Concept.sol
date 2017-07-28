@@ -95,33 +95,61 @@ contract Concept {
         }
     }
 
-    //@purpose: returns a random member of the Concept. Users with high weights are more likely to be called
-    function getRandomMember(uint seed) returns(address) {
-        uint index = Math.getRandom(seed, members.length - 1);
-        address randomMember = members[index];
-        uint weight = getWeight(randomMember);
-        if (weight > 0) {
-            if ( weight > now % maxWeight) {
-                return randomMember;
-            }
-            else {
-                return address(0x0);
+    //@purpose: returns a random member of the Concept.
+    //Users with high weights are more likely to be called
+    //@returns the address of the member (0x0 if there is no member)
+    function getRandomWinner(uint seed) returns(address winner) {
+        uint weight1;
+        (weight1, winner) = getRandomMemberWeight(seed);
+        if (winner == address(0x0)){
+            return winner;
+        }
+        address randomMember2;
+        uint weight2 = weight1;
+        while (weight1 == weight2) {
+            (weight2, randomMember2) = getRandomMemberWeight(seed);
+            if (randomMember2 == address(0x0) || weight1 >= weight2) {
+                return winner;
             }
         }
-        else {
-            //remove from list
-            memberData[randomMember].isMember = false;
-            setAssessorIndex(members[members.length -1], index);
-            members[index] = members[members.length - 1];
-            members.length = members.length - 1;
-            return getRandomMember(seed*2);
+    }
+
+    /*
+      @purpose: function to lookup the weight of the member at the listindex,
+      which will also remove looked up members from the list if these are no longer
+      eligible for being an assessor because the expiration date has passed
+      @returns a random members weight and address, (0 and 0x0 if there are no members)
+    */
+    function getRandomMemberWeight(uint seed) returns(uint weight, address memberAddress){
+        uint index = Math.getRandom(seed, members.length - 1);
+        memberAddress = members[index];
+        while (weight == 0) {
+            weight = getWeight(memberAddress);
+            if (weight > 0) {
+                return (weight, memberAddress);
+            } else {
+                //remove from member list
+                memberData[memberAddress].isMember = false;
+                setAssessorIndex(members[members.length -1], index);
+                members[index] = members[members.length - 1]; //THIS NEEDS TO BE TESTED!
+                /* members.length = members.length - 1; */
+                //if there still is a member left
+                if (--members.length > 0) {
+                    // try another index
+                    index = Math.getRandom(seed*2, members.length - 1);
+                    memberAddress = members[index];
+                } else {
+                    //otherwise return zeroAddress
+                    return (0, address(0x0));
+                }
+            }
         }
     }
 
     function getWeight(address _assessee) returns(uint){
         uint weight = 0;
 
-        for (uint i=0; i < memberData[_assessee].weights.length; i++){
+        for (uint i=0; i < memberData[_assessee].weights.length; i++) {
             if (memberData[_assessee].weights[i].date > now){
                 weight += memberData[_assessee].weights[i].weight;
             }
@@ -138,11 +166,11 @@ contract Concept {
         if (size >= 5 && this.subtractBalance(msg.sender, cost*size)) {
             Assessment newAssessment = new Assessment(msg.sender, size, cost, _waitTime, _timeLimit);
             assessmentExists[address(newAssessment)] = true;
-            if (Concept(ConceptRegistry(conceptRegistry).mewAddress()).getMemberLength()<size*20) {
+            if (Concept(ConceptRegistry(conceptRegistry).mewAddress()).getMemberLength()<size*5) { //changed from 20 to 5
                 newAssessment.setAssessorPoolFromMew(); // simply use all members of mew (Bootstrap phase)
             }
-            else{
-                newAssessment.setAssessorPool(block.number, address(this), size*20); //assemble the assessorPool by relevance
+            else{//changed from 20 to 5
+                newAssessment.setAssessorPool(block.number, address(this), size*5); //assemble the assessorPool by relevance
             }
 
             return true;
@@ -205,7 +233,7 @@ contract Concept {
 
         uint idx = memberData[_assessee].componentWeightIndex[msg.sender];
         if (idx > 0) {
-            memberData[_assessee].weights[idx-1] = ComponentWeight(_weight, now);
+            memberData[_assessee].weights[idx-1] = ComponentWeight(_weight, now + lifetime); //shoudl be now +lifetime
         } else {
             memberData[_assessee].weights.push(ComponentWeight(_weight, now + lifetime));
             memberData[_assessee].componentWeightIndex[msg.sender] = memberData[_assessee].weights.length;

@@ -97,12 +97,15 @@ contract Assessment {
       stops when the pool of potential assessors is 20 times the size of the assessment2
       @param: uint seed = the seed number for random number generation
       @param: address _concept = the concept being called from
-      @param: uint num = the number of assessors to be called
+      @param: uint num = the total number of assessors to be called
     */
     function setAssessorPool(uint seed, address _concept, uint num) onlyConceptAssessment() {
         uint numCalled = 0;
-        for (uint k=0; k < num; k++) {
-            address randomUser = Concept(_concept).getRandomMember(seed + k);
+        uint membersOfConcept = Concept(_concept).getMemberLength();
+        //we want to call at most half of the members of each concept
+        uint maxFromThisPool = num > membersOfConcept/2 ? membersOfConcept/2 : num;
+        for (uint k=0; k < maxFromThisPool; k++) {
+            address randomUser = Concept(_concept).getRandomWinner(seed + k);
             if (randomUser != address(0x0) && addAssessorToPool(randomUser)) {
                 numCalled++;
             }

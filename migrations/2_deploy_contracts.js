@@ -17,20 +17,29 @@ var setup1 = [
     [2, "", [0], [500], lifetime, [accounts[1], accounts[2], accounts[3]], [10,10,10]],
     [3, "", [0], [500],lifetime, [accounts[4]],[20]]
 ]
-// var nInitialUsers = 5;
+var nInitialUsers = 5;
 
 // uniform distribution
-var n = 10;
+var n = 100;
 uniform = Array(n).fill(10)
+var stairs = []
+steps = 10;
+for (i=0; i<steps; i++) {
+    stairs = stairs.concat(Array(n/steps).fill(10*(i+1)))
+}
 uniformUsers = accounts.slice(0,n)
-// console.log(uniformUsers)
 var setup2 = [
-    [0, "", [], [500], lifetime, uniformUsers, uniform],
+    [0, "", [], [500], lifetime, [], []],
+    [1, "", [0], [500], lifetime, [], []],
+    [2, "", [1], [500], lifetime, [], []],
+    [3, "", [2], [500], lifetime, [], []],
+    [4, "", [3], [500], lifetime, uniformUsers, stairs]
     ]
 
-nInitialUsers = 1 + n //uniformUsers.length
+nInitialUsers = n //uniformUsers.length
 
 setup = setup2
+// setup = setup1
 
 module.exports = function(deployer) {
   var distributor;
@@ -61,7 +70,6 @@ function initiateConcepts (distributorInstance, _setup, accounts) {
     var chain = new Promise((resolve, reject)=> resolve(0))
     for(i=0; i < _setup.length; i++) {
         chain = chain.then(function(index) {
-            // distributorInstance.addNextConcept.apply(null, _setup[index], {from: accounts[index]})
             distributorInstance.addNextConcept(_setup[index][0], _setup[index][1],
                                                _setup[index][2], _setup[index][3],
                                                _setup[index][4], _setup[index][5].length,
@@ -76,9 +84,7 @@ function initiateMembers (distributorInstance, _setup) {
     var chain = new Promise((resolve, reject)=> resolve(0))
     for(i=0; i < _setup.length; i++) {
         chain = chain.then(function(index) {
-            // var index = idx;
             addInitialMembers(distributorInstance, setup[index][0], _setup[index][5], _setup[index][6])
-        // }).then(function() {
             return index += 1
         })
     }
@@ -88,7 +94,7 @@ function addInitialMembers(distributorInstance, _conceptId, _members, _weights) 
     var chain = new Promise((resolve, reject)=> resolve(0))
     for(i=0; i < _members.length; i++) {
         chain = chain.then(function(index) {
-            console.log("add member" + index + " to concept" + _conceptId)
+            // console.log("add member" + index + " to concept" + _conceptId)
             distributorInstance.addInitialMember(_conceptId, _members[index], _weights[index])
             return index += 1
         })
