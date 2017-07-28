@@ -8,36 +8,32 @@ var accounts = web3.eth.accounts
 
 // var initialConcepts = setup2.tree
 //setup syntax:
-// id, parentIds, propagationRates,lifetime, memberAddresses, memberWeights
-// also say how many user there are initially in the system
+// id, data, parentIds, propagationRates,lifetime, memberAddresses, memberWeights
 
 var lifetime = 60*60*24*365;
 var setup1 = [
-    [0, [], [500], lifetime, "", [accounts[0]],[20]],
-    [1, [], [500], lifetime, "", [],[]],
-    [2, [0], [500], lifetime, "", [accounts[1], accounts[2], accounts[3]], [10,10,10]],
-    [3, [0], [500],lifetime, "", [accounts[4]],[20]]
+    [0, "", [], [500], lifetime, [accounts[0]],[20]],
+    [1, "", [], [500], lifetime,  [],[]],
+    [2, "", [0], [500], lifetime, [accounts[1], accounts[2], accounts[3]], [10,10,10]],
+    [3, "", [0], [500],lifetime, [accounts[4]],[20]]
 ]
-var nInitialUsers = 5;
+// var nInitialUsers = 5;
 
 // uniform distribution
-// var n = 3;
-// uniform = Array(n).fill(10)
-// uniformUsers = accounts.slice(0,n)
-// // console.log(uniformUsers)
-// var setup2 = [
-//     [0, [], [500], lifetime, "", uniformUsers, uniform]
-//     // [0, [], [500], lifetime, "", [accounts[1], accounts[2], accounts[3]], [10,10,10]],
-//     // [1, [], [500], lifetime, "", [accounts[0]], [100]]
-//     ]
+var n = 10;
+uniform = Array(n).fill(10)
+uniformUsers = accounts.slice(0,n)
+// console.log(uniformUsers)
+var setup2 = [
+    [0, "", [], [500], lifetime, uniformUsers, uniform],
+    ]
 
-// // nInitialUsers = uniformUsers.length
-// n
-// InitialUsers = n
+nInitialUsers = 1 + n //uniformUsers.length
 
-setup = setup1
+setup = setup2
 
 module.exports = function(deployer) {
+  var distributor;
   deployer.deploy(Math);
   deployer.link(Math, [Assessment, Concept, ConceptRegistry])
   deployer.then( function(){
@@ -55,19 +51,21 @@ module.exports = function(deployer) {
       return Distributor.deployed()
   }).then(function(instance){
       distributor = instance
-      return initiateConcepts(distributor, setup)
-      // with more than 3 initial members per concept we need to refactor initiate concepts
-      //such that its members are added by another fucntion
-  // }).then(function() {
-  //     return initiateMembers(distributor, setup)
+      return initiateConcepts(distributor, setup, accounts)
+  }).then(function() {
+      return initiateMembers(distributor, setup)
   })
 };
 
-function initiateConcepts (distributorInstance, _setup) {
+function initiateConcepts (distributorInstance, _setup, accounts) {
     var chain = new Promise((resolve, reject)=> resolve(0))
     for(i=0; i < _setup.length; i++) {
         chain = chain.then(function(index) {
-            distributorInstance.addNextConcept.apply(null, _setup[index])
+            // distributorInstance.addNextConcept.apply(null, _setup[index], {from: accounts[index]})
+            distributorInstance.addNextConcept(_setup[index][0], _setup[index][1],
+                                               _setup[index][2], _setup[index][3],
+                                               _setup[index][4], _setup[index][5].length,
+                                               {from:accounts[index]})
             return index += 1
         })
     }
@@ -78,7 +76,20 @@ function initiateMembers (distributorInstance, _setup) {
     var chain = new Promise((resolve, reject)=> resolve(0))
     for(i=0; i < _setup.length; i++) {
         chain = chain.then(function(index) {
-            distributorInstance.addInitialMembers.apply(null, index)
+            // var index = idx;
+            addInitialMembers(distributorInstance, setup[index][0], _setup[index][5], _setup[index][6])
+        // }).then(function() {
+            return index += 1
+        })
+    }
+    return chain
+}
+function addInitialMembers(distributorInstance, _conceptId, _members, _weights) {
+    var chain = new Promise((resolve, reject)=> resolve(0))
+    for(i=0; i < _members.length; i++) {
+        chain = chain.then(function(index) {
+            console.log("add member" + index + " to concept" + _conceptId)
+            distributorInstance.addInitialMember(_conceptId, _members[index], _weights[index])
             return index += 1
         })
     }
@@ -88,7 +99,8 @@ function initiateMembers (distributorInstance, _setup) {
 /*
 async function initiateConcepts2 (distributorInstance, _setup) {
     for(i=0; i < _setup.length; i++) {
-        await distributorInstance.addNextConcept.apply(null, _setup[i])
+        // await distributorInstance.addNextConcept.apply(null, _setup[i])
+        await distributorInstance.addNextConcept(_setup[i][0], _setup[i][1], _setup[i][2], _setup[i][3], _setup[i][4], _setup[i][5], _setup[i][6])
     }
 }
 
@@ -102,10 +114,13 @@ module.exports = async function(deployer) {
     let conceptReg = await ConceptRegistry.deployed() ///hacky code after here: unclear on whether 
     await conceptReg.init(UserRegistry.address, Distributor.address)
     let distributor = await Distributor.deployed()
-    await initiateConcepts(distributor, setup)
-}
+ deployer.deploy(UserRegiAddableMembers.address, accounts[0], accounts.length*10000000000)
+ let conceptReg = await CinitialM;
+ await conceptReg.init(UserRegistry.address, Distributor.address)
 
- */
+    // await initiateConcepts2(distributor, setup)
+}
+*/
 
 module.exports.setupVariable = setup
 module.exports.nInitialUsers = nInitialUsers

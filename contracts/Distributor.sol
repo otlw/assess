@@ -17,9 +17,10 @@ contract Distributor{
 
     struct ConceptInfo {
         uint id;
+        bytes data;
         uint[] parents;
         uint lifetime;
-        bytes data;
+        uint initialMembersToBeAdded;
         address[] memberAddresses;
         uint[] memberWeights;
     }
@@ -31,14 +32,14 @@ contract Distributor{
     }
 
     function addNextConcept(uint _id,
+                            bytes _data,
                             uint[] _parents,
                             uint[] _propagationRates,
                             uint _lifetime,
-                            bytes _data,
-                            address[] _initialMembers,
-                            uint[] _weights){
+                            uint _nInitialMembers
+                            ) {
         require(conceptIndex < NInitialConcepts);
-        ConceptInfo memory conceptToAdd = ConceptInfo( _id, _parents, _lifetime, _data, _initialMembers, _weights);
+        ConceptInfo memory conceptToAdd = ConceptInfo( _id, _data, _parents, _lifetime, _nInitialMembers, new address[](0), new uint[](0));
         setup.push(conceptToAdd);
         address[] memory conceptParents = new address[] (_parents.length);
         for (uint i=0; i < conceptToAdd.parents.length; i++){
@@ -50,24 +51,24 @@ contract Distributor{
                                                                                      _data);
         conceptLookup[conceptIndex] = createdConceptAddress;
         //add initial Members //this shoudl happen in an extra function
-        for (uint j=0; j < conceptToAdd.memberAddresses.length; j++){
-            Concept(createdConceptAddress).addInitialMember(
-                                                            conceptToAdd.memberAddresses[j],
-                                                            conceptToAdd.memberWeights[j]
-                                                            );
-        }
+        /* for (uint j=0; j < conceptToAdd.memberAddresses.length; j++){ */
+        /*     Concept(createdConceptAddress).addInitialMember( */
+        /*                                                     conceptToAdd.memberAddresses[j], */
+        /*                                                     conceptToAdd.memberWeights[j] */
+        /*                                                     ); */
+        /* } */
         conceptIndex++;
     }
 
-    function addInitialMembers(uint _id) {
-        ConceptInfo conceptToAddTo = setup[_id];
+    function addInitialMember(uint _id, address _memberAddress, uint _memberWeight) {
         /* require(_id < conceptIndex && conceptToAddTo.id == _id); */ //prevent calls to nonexistsing concepts
-        address createdConceptAddress = conceptLookup[_id];
-        for (uint j=0; j < conceptToAddTo.memberAddresses.length; j++) {
-            Concept(createdConceptAddress).addInitialMember(
-                                                            conceptToAddTo.memberAddresses[j],
-                                                            conceptToAddTo.memberWeights[j]
-                                                            );
+        ConceptInfo conceptToAddTo = setup[_id];
+        if (conceptToAddTo.initialMembersToBeAdded > 0){
+            address createdConceptAddress = conceptLookup[_id];
+            Concept(createdConceptAddress).addInitialMember(_memberAddress, _memberWeight);
+            conceptToAddTo.memberAddresses.push(_memberAddress);
+            conceptToAddTo.memberWeights.push(_memberWeight);
+            conceptToAddTo.initialMembersToBeAdded--;
         }
     }
 
@@ -86,6 +87,10 @@ contract Distributor{
 
     function addedConceptMembersLength(uint id) returns(uint){
         return setup[id].memberAddresses.length;
+    }
+
+    function addedConceptAddableMembers(uint id) returns(uint){
+        return setup[id].initialMembersToBeAdded;
     }
 
     function addedConceptMemberAddress(uint id, uint _mIdx) returns(address){

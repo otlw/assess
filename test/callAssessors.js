@@ -23,11 +23,11 @@ contract("Calling Assessors:", function(accounts) {
     let assessee = accounts[nInitialUsers + 1];
 
     let initialWeightsInMew;
-    nAssessments = 3;
+    nAssessments = 1;
 
     assessorInfo = {}
     describe(nAssessments + " assessments are created ", async () => {
-
+        
         it("and assessors called.", async () =>{
             distributor  = await Distributor.deployed()
             assessedConceptAddress = await distributor.conceptLookup.call(assessedConceptID)
@@ -38,11 +38,10 @@ contract("Calling Assessors:", function(accounts) {
                 receipts.push(result.receipt)
             }
             for (rct of receipts) {
-                // console.log(rct )
                 calledAssessors = await utils.getCalledAssessors(rct)
                 assessorInfo = await updateFrequencies(calledAssessors, assessorInfo, size*nAssessments, assessedConcept)
             }
-            console.log(assessorInfo)
+            // console.log(assessorInfo)
         })
 
         //in line with their weight in the parentConcept
@@ -52,7 +51,7 @@ contract("Calling Assessors:", function(accounts) {
             for (let key in assessorInfo) {
                 //write to ouputFile
                  calls += assessorInfo[key].calls + ','
-                 weights += assessorInfo[key].weightMew + ','
+                 weights += assessorInfo[key].weight + ','
             }
             fs.writeFileSync('tmp.csv',calls + '\n' + weights)
         })
@@ -62,10 +61,10 @@ contract("Calling Assessors:", function(accounts) {
 async function updateFrequencies(calledAssessors, dict, n, assessedConcept){
     for (let ass of calledAssessors) {
         if (dict.hasOwnProperty(ass)) {
-            dict[ass].calls += 1/n
+            dict[ass].calls += 1
         } else {
-            w = await assessedConcept.getWeight.call(ass)
-            dict[ass] = {calls: 1/n, weightMew: w.toNumber()}
+            w = (await assessedConcept.getWeight.call(ass)).toNumber()
+            dict[ass] = {calls: 1, weight: w}
         }
     }
     return dict
