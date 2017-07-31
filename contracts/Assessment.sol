@@ -119,19 +119,6 @@ contract Assessment {
         assessmentStage = State.Called;
     }
 
-    /*
-      @purpose: To set the pool of assessors when there are so few users in the system that
-      assembling them at random is not meaningful. This will use all members of mew instead
-    */
-    function setAssessorPoolFromMew() onlyConcept() {
-        Concept mew = Concept(ConceptRegistry(Concept(concept).conceptRegistry()).mewAddress()); //TODO: can this be more elegant and/or in one line?
-        for (uint i=0; i<mew.getMemberLength(); i++) {
-            addAssessorToPool(mew.members(i));
-        }
-        size = mew.getMemberLength();
-        assessmentStage = State.Called;
-    }
-
     //@purpose: called by an assessor to confirm and stake
     function confirmAssessor() onlyInStage(State.Called) {
         // cancel if the assessment is older than 12 hours or already past its timelimit

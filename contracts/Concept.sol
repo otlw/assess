@@ -166,13 +166,7 @@ contract Concept {
         if (size >= 5 && this.subtractBalance(msg.sender, cost*size)) {
             Assessment newAssessment = new Assessment(msg.sender, size, cost, _waitTime, _timeLimit);
             assessmentExists[address(newAssessment)] = true;
-            /* if (Concept(ConceptRegistry(conceptRegistry).mewAddress()).getMemberLength()<size*5) { //changed from 20 to 5 */
-            /*     newAssessment.setAssessorPoolFromMew(); // simply use all members of mew (Bootstrap phase) */
-            /* } */
-            /* else{//changed from 20 to 5 */
             newAssessment.setAssessorPool(block.number, address(this), size*5); //assemble the assessorPool by relevance
-            /* } */
-
             return true;
         }
         else {
@@ -197,13 +191,7 @@ contract Concept {
            this.subtractBalance(_assessee, _cost*_size)) {
             Assessment newAssessment = new Assessment(_assessee, _size, _cost, _waitTime, _timeLimit);
             assessmentExists[address(newAssessment)] = true;
-
-            if (Concept(ConceptRegistry(conceptRegistry).mewAddress()).getMemberLength()<_size*20) {
-                newAssessment.setAssessorPoolFromMew(); // simply use all members of mew (Bootstrap phase)
-            }
-            else {
-                newAssessment.setAssessorPool(block.number, address(this), _size*20); //assemble the assessorPool by relevance
-            }
+            newAssessment.setAssessorPool(block.number, address(this), _size*20); //assemble the assessorPool by relevance
             memberData[_assessee].approval[msg.sender] -= _cost*_size;
             return true;
         }

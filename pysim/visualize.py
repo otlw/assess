@@ -16,7 +16,7 @@ rows = []
 with open(datafile, 'rb') as f:
    csvreader = csv.reader(f)
    for row in csvreader:
-       rows.append(row[:-1])
+       rows.append(row[1:-1])
 
 calls = rows[0]
 weights = rows[1]

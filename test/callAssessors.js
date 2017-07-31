@@ -23,7 +23,7 @@ contract("Calling Assessors:", function(accounts) {
     let size = 5;
     let timeLimit = 10000;
     let waitTime = 100;
- 
+
     let assessee = accounts[nInitialUsers + 1];
 
     let initialWeightsInMew;
@@ -31,7 +31,7 @@ contract("Calling Assessors:", function(accounts) {
 
     assessorInfo = {}
     describe(nAssessments + " assessments are created ", async () => {
-        
+
         it("and assessors called.", async () =>{
             distributor  = await Distributor.deployed()
             assessedConceptAddress = await distributor.conceptLookup.call(assessedConceptID)
@@ -50,16 +50,16 @@ contract("Calling Assessors:", function(accounts) {
 
         //in line with their weight in the parentConcept
         it ("the assessor-frequencies are written to a file ", async () => {
-            calls = "calls:"
-            weights = "weight:"
-            accountIndices = "accountIndex:"
+            calls = "calls:,"
+            weights = "weight:,"
+            accountIndices = "accountIndex:,"
             for (let key in assessorInfo) {
                 //write to ouputFile
                  calls += assessorInfo[key].calls + ','
                  weights += assessorInfo[key].weight + ','
                  accountIndices += assessorInfo[key].accountIdx + ','
             }
-            fs.writeFileSync('tmp.csv',calls + '\n' + weights + '\n' + accountIndices + '\n' + "N=" + nAssessments + ",")
+            fs.writeFileSync('tmp.csv',calls + '\n' + weights + '\n' + accountIndices + '\n' + ",N=" + nAssessments + ",")
         })
     })
 })
