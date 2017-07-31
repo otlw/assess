@@ -22,7 +22,7 @@ contract("Not enough assessors confirm", (accounts) => {
 
     describe("A timed out assessment", async () => {
 
-        it ("should create Assessment with "+size+" assessors", async () => {
+        it ("should create Assessment with at least "+size+" assessors", async () => {
             UserRegistryInstance = await UserRegistry.deployed()
             const DistributorInstance = await Distributor.deployed()
 
