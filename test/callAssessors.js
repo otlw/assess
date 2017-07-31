@@ -23,7 +23,7 @@ contract("Calling Assessors:", function(accounts) {
     let assessee = accounts[nInitialUsers + 1];
 
     let initialWeightsInMew;
-    nAssessments = 35;
+    nAssessments = 3;
 
     assessorInfo = {}
     describe(nAssessments + " assessments are created ", async () => {
@@ -46,15 +46,15 @@ contract("Calling Assessors:", function(accounts) {
 
         //in line with their weight in the parentConcept
         it ("the assessor-frequencies are written to a file ", async () => {
-            calls = ""
-            weights = ""
-            accountIndices = ""
+            calls = "calls:"
+            weights = "weight:"
+            accountIndices = "accountIndex:"
             for (let key in assessorInfo) {
                 //write to ouputFile
                  calls += assessorInfo[key].calls + ','
                  weights += assessorInfo[key].weight + ','
                  accountIndices += assessorInfo[key].accountIdx + ','
-            } 
+            }
             fs.writeFileSync('tmp.csv',calls + '\n' + weights + '\n' + accountIndices + '\n' + "N=" + nAssessments + ",")
         })
     })
@@ -70,8 +70,4 @@ async function updateFrequencies(calledAssessors, dict, n, assessedConcept, acco
         }
     }
     return dict
-}
-
-function isAssessor(address){
-    return
 }

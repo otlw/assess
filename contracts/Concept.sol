@@ -105,12 +105,12 @@ contract Concept {
             return winner;
         }
         address randomMember2;
-        uint weight2 = weight1;
-        while (weight1 == weight2) {
-            (weight2, randomMember2) = getRandomMemberWeight(seed);
-            if (randomMember2 == address(0x0) || weight1 >= weight2) {
-                return winner;
-            }
+        uint weight2;
+        (weight2, randomMember2) = getRandomMemberWeight(seed*3);
+        if (randomMember2 == address(0x0) || weight1 >= weight2) {
+            return winner;
+        } else {
+            return address(0x0);
         }
     }
 
