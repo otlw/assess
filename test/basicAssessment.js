@@ -29,6 +29,7 @@ contract('Assessment', function(accounts) {
     let waitTime = 100;
 
     let calledAssessors = [];
+    let confirmedAssessors = [];
     let assesseeIdx = nInitialUsers + 1
     let assessee = accounts[assesseeIdx];
     let assesseeInitialBalance;
@@ -97,7 +98,7 @@ contract('Assessment', function(accounts) {
                 for (a=0; a<callsToAssessors.length; a++){
                     calledAssessors.push(callsToAssessors[a].user)
                 }
-                assert.equal(callsToAssessors.length, nInitialUsers , "the assesssors did not get added to the pool")
+                assert.isAbove(callsToAssessors.length, size , "not enough assesssors got added to the pool")
             })
 
             describe("When assessors confirm", async () => {
@@ -111,11 +112,12 @@ contract('Assessment', function(accounts) {
                 })
 
                 it("they should be charged", async () => {
-                    assessorInitialBalance = await userReg.balances.call(calledAssessors[0])
-                    await chain.confirmAssessors(calledAssessors, assessmentContract)
-                    balanceAfter = await userReg.balances.call(calledAssessors[0])
+                    confirmedAssessors = calledAssessors.slice(0, size)
+                    assessorInitialBalance = await userReg.balances.call(confirmedAssessors[0])
+                    await chain.confirmAssessors(confirmedAssessors, assessmentContract)
+                    balanceAfter = await userReg.balances.call(confirmedAssessors[0])
 
-                    assert.equal(balanceAfter, assessorInitialBalance - cost, )
+                    assert.equal(balanceAfter, assessorInitialBalance - cost)
                 })
 
                 it("should move to the called stage if enough confirmed", async () => {
@@ -142,13 +144,13 @@ contract('Assessment', function(accounts) {
             })
 
             it("should accept commits from confirmed assessors", async () => {
-                await chain.commitAssessors(calledAssessors.slice(1), hashes.slice(1), assessmentContract)
+                await chain.commitAssessors(confirmedAssessors.slice(1), hashes.slice(1), assessmentContract)
                 let doneAfter = await assessmentContract.done.call()
-                assert.equal(doneAfter.toNumber(), calledAssessors.length - 1, "a confirmed assessor couldn't commit")
+                assert.equal(doneAfter.toNumber(), confirmedAssessors.length - 1, "a confirmed assessor couldn't commit")
             })
 
             it("should move to committed stage when all commited", async () => {
-                txResult = await assessmentContract.commit(hashes[0], {from: calledAssessors[0]})
+                txResult = await assessmentContract.commit(hashes[0], {from: confirmedAssessors[0]})
                 receiptFromLastCommit = txResult.receipt
                 gasCosts.push({function: "commit",
                                cost: {
@@ -167,9 +169,9 @@ contract('Assessment', function(accounts) {
 
         describe("Committed", function() {
             it("committed assessors can reveal their scores", async () => {
-                nAssessors = calledAssessors.length
+                nAssessors = confirmedAssessors.length
 
-                await chain.revealAssessors(calledAssessors.slice(1, nAssessors),
+                await chain.revealAssessors(confirmedAssessors.slice(1, nAssessors),
                                              scores.slice(1, nAssessors),
                                              salts.slice(1, nAssessors),
                                              assessmentContract)
@@ -181,7 +183,7 @@ contract('Assessment', function(accounts) {
             it("should move to the done stage when all assessors have revealed", async() => {
                 let result = await assessmentContract.reveal(scores[0],
                                                 salts[0],
-                                                 {from: calledAssessors[0]})
+                                                 {from: confirmedAssessors[0]})
 
                 receiptFromLastReveal = result.receipt
                 gasCosts.push({function: "last Reveal + calculate + payout",
@@ -222,7 +224,7 @@ contract('Assessment', function(accounts) {
 
             describe("The Assessor", function(){
                 it("should be paid", async () => {
-                    balanceAfter = await userReg.balances.call(calledAssessors[0])
+                    balanceAfter = await userReg.balances.call(confirmedAssessors[0])
                     assert.equal(balanceAfter.toNumber(), assessorInitialBalance.toNumber() + cost, "assessor didn't get paid")
                 })
             })

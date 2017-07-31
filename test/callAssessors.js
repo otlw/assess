@@ -9,6 +9,10 @@ var deploymentScript = require("../migrations/2_deploy_contracts.js")
 var setup = deploymentScript.setupVariable
 var nInitialUsers = deploymentScript.nInitialUsers
 
+// NOTE: these tests do not analyze whether the calling of assessors is meaningful!
+// in order to do that, one should switch to a simpler distribution of initial members
+// and weights in ../migrations/2_deploy_contracts.js (e.g. the uniformDistribution)
+// and run ../pysim/visualize.py to look at the effect of weights on the call frequency.
 
 contract("Calling Assessors:", function(accounts) {
     let assessedConcept;
@@ -23,7 +27,7 @@ contract("Calling Assessors:", function(accounts) {
     let assessee = accounts[nInitialUsers + 1];
 
     let initialWeightsInMew;
-    nAssessments = 3;
+    nAssessments = 1;
 
     assessorInfo = {}
     describe(nAssessments + " assessments are created ", async () => {

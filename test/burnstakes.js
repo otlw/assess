@@ -25,6 +25,7 @@ contract("Burning Stakes:", function(accounts){
     let waitTime = 100;
 
     let calledAssessors;
+    let confirmedAssessors;
     let assessee = accounts[nInitialUsers + 1];
 
     let initialBalanceAssessors;
@@ -57,21 +58,22 @@ contract("Burning Stakes:", function(accounts){
 
         it("called assessors stake to confirm.", async () =>{
             initialBalanceAssessors = await utils.getBalances(calledAssessors, userReg)
-            await chain.confirmAssessors(calledAssessors, assessmentContract)
-            balancesAfter = await utils.getBalances(calledAssessors, userReg)
+            confirmedAssessors = calledAssessors.slice(0, size)
+            await chain.confirmAssessors(confirmedAssessors, assessmentContract)
+            balancesAfter = await utils.getBalances(confirmedAssessors , userReg)
             assert.equal(balancesAfter[0] , initialBalanceAssessors[0] - cost, "stake did not get taken")
         })
     })
 
     describe("Next, assessors can" , function(){
         it("can commit their hashed scores during thrice the time needed by the first half of them.", async () => {
-            await chain.commitAssessors(calledAssessors.slice(0, 3),
+            await chain.commitAssessors(confirmedAssessors.slice(0, 3),
                                         hashes.slice(0, 3),
                                         assessmentContract)
 
             // let a lot of time pass so that the timelimit is over
             await utils.evmIncreaseTime(timeLimit * 1.5)
-            await assessmentContract.commit(hashes[0], {from:calledAssessors[0]})
+            await assessmentContract.commit(hashes[0], {from:confirmedAssessors[0]})
 
             stage = await assessmentContract.assessmentStage.call()
             assert.equal(stage.toNumber(), 3, "assessment did not move to stage reveal")
@@ -79,7 +81,7 @@ contract("Burning Stakes:", function(accounts){
 
         it ("reveal their score to finish the assessment.", async () => {
             // let all assessors reveal
-            await chain.revealAssessors(calledAssessors.slice(0,3),
+            await chain.revealAssessors(confirmedAssessors.slice(0,3),
                                         scores.slice(0,3),
                                         salts.slice(0,3),
                                         assessmentContract)
@@ -91,7 +93,7 @@ contract("Burning Stakes:", function(accounts){
 
     describe("Finally, assessors are payed out their stake", function() {
         it("entirely if they committed in time.", async () => {
-            assessorPayouts = await utils.getBalances(calledAssessors, userReg)
+            assessorPayouts = await utils.getBalances(confirmedAssessors, userReg)
             assert.equal(assessorPayouts[0],
                          initialBalanceAssessors[0] + cost,
                          "assessors did not get payed out correctly")

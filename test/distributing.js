@@ -27,11 +27,11 @@ contract("Distributor", function(accounts) {
         })
 
         it("such that they are linked to their parents", async () => {
-            for( i=0; i<setup.length; i++) {
+            for (i=0; i<setup.length; i++) {
                 nParents = await distributorInstance.addedConceptParentsLength.call(i)
                 for (j=0; j < nParents.toNumber(); j++) {
                     let conceptParent = await distributorInstance.addedConceptParent.call(i,j)
-                    assert.equal(conceptParent.toNumber(), setup[i][1][j], "parent "+i+ " did not get added")
+                    assert.equal(conceptParent.toNumber(), setup[i][2][j], "parent "+ j + " of concept " + i + " did not get added")
                 }
             }
         })

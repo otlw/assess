@@ -113,8 +113,8 @@ function defaultSetup(){
         [0, "", [], [500], lifetime, users[0], initialWeights[3]],
         [1, "", [], [500], lifetime, users[1], initialWeights[3]],
         [2, "", [0], [500], lifetime, users[2], initialWeights[1]],
-        [3, "", [0], [500], lifetime, users[3], initialWeights[2]],
-        [4, "", [1], [500], lifetime, users[4], initialWeights[3]]
+        [3, "", [0], [500], lifetime, users[3], initialWeights[2]]
+        // [4, "", [1], [500], lifetime, users[4], initialWeights[3]]
     ]
     return {tree: setup, n: nInitialUsers}
 }

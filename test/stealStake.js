@@ -25,6 +25,7 @@ contract("Steal Stake:", function(accounts){
     let waitTime = 10;
 
     let calledAssessors;
+    let confirmedAssessors;
     let assessee = accounts[nInitialUsers + 1];
     let outsideUser = accounts[nInitialUsers + 2];
 
@@ -50,9 +51,10 @@ contract("Steal Stake:", function(accounts){
     })
 
     it("Called assessors stake to confirm.", async () =>{
-        initialBalanceAssessors = await utils.getBalances(calledAssessors, userReg)
-        await chain.confirmAssessors(calledAssessors, assessmentContract)
-        balancesAfter = await utils.getBalances(calledAssessors, userReg)
+        confirmedAssessors = calledAssessors.slice(0, size)
+        initialBalanceAssessors = await utils.getBalances(confirmedAssessors, userReg)
+        await chain.confirmAssessors(confirmedAssessors, assessmentContract)
+        balancesAfter = await utils.getBalances(confirmedAssessors, userReg)
         assert.equal(balancesAfter[0] , initialBalanceAssessors[0] - cost, "stake did not get taken")
 
         stage = await assessmentContract.assessmentStage.call()
@@ -60,8 +62,8 @@ contract("Steal Stake:", function(accounts){
     })
 
     it ("Assessors commit their hashed scores and the assessment advances.", async () => {
-        await utils.evmIncreaseTime(60) 
-        await chain.commitAssessors(calledAssessors,
+        await utils.evmIncreaseTime(60)
+        await chain.commitAssessors(confirmedAssessors,
                                      hashes,
                                      assessmentContract)
         stage = await assessmentContract.assessmentStage.call()
@@ -71,7 +73,7 @@ contract("Steal Stake:", function(accounts){
     describe("If assessors reveal their own score", function() {
         it ("they are marked as done, and the assessment progresses.", async () => {
             doneBefore = await assessmentContract.done.call()
-            await assessmentContract.reveal(scores[0], salts[0], {from:calledAssessors[0]})
+            await assessmentContract.reveal(scores[0], salts[0], {from:confirmedAssessors[0]})
             doneAfter = await assessmentContract.done.call()
             assert.equal(doneAfter.toNumber(), doneBefore.toNumber() + 1, "the assessment did not progress")
         })
@@ -83,14 +85,14 @@ contract("Steal Stake:", function(accounts){
             balanceBeforeSteal = await userReg.balances.call(outsideUser)
 
             sizeBeforeSteal = await assessmentContract.size.call()
-            await  assessmentContract.steal(scores[1], salts[1], calledAssessors[1], {from:outsideUser})
+            await  assessmentContract.steal(scores[1], salts[1], confirmedAssessors[1], {from:outsideUser})
             sizeAfterSteal = await assessmentContract.size.call()
             assert.equal(sizeAfterSteal.toNumber(),
                          sizeBeforeSteal.toNumber() - 1,
                          "the assessment's size did not get reduced.")
 
             doneAfterSteal = await assessmentContract.done.call()
-            await  assessmentContract.reveal(scores[1], salts[1], {from:calledAssessors[1]})
+            await  assessmentContract.reveal(scores[1], salts[1], {from:confirmedAssessors[1]})
             doneAfterTry = await assessmentContract.done.call()
             assert.equal(doneAfterTry.toNumber(),
                          doneAfterSteal.toNumber(),
