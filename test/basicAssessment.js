@@ -18,7 +18,7 @@ contract('Assessment', function(accounts) {
     let conceptReg;
     let distributor;
 
-    let assessedConceptID = 0;
+    let assessedConceptID = 4;
     let assessedConcept;
     let ConceptInstance;
     let assessmentContract;
@@ -98,7 +98,7 @@ contract('Assessment', function(accounts) {
                 for (a=0; a<callsToAssessors.length; a++){
                     calledAssessors.push(callsToAssessors[a].user)
                 }
-                assert.isAbove(callsToAssessors.length, size , "not enough assesssors got added to the pool")
+                assert.isAtLeast(callsToAssessors.length, size , "not enough assesssors got added to the pool")
             })
 
             describe("When assessors confirm", async () => {

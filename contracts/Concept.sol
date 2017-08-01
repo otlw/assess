@@ -22,7 +22,7 @@ contract Concept {
 
     struct MemberData {
         address recentAssessment;
-        bool isMember;
+        uint index;
         mapping(address => uint) approval;
         ComponentWeight[] weights;
         mapping(address => uint) componentWeightIndex;
@@ -31,7 +31,7 @@ contract Concept {
     struct ComponentWeight {
         uint weight;
         uint date;
-    } 
+    }
 
     modifier onlyConceptRegistry() {
         require(msg.sender == conceptRegistry);
@@ -79,82 +79,75 @@ contract Concept {
         parents.push(_parent);
     }
 
-    function setAvailability(uint _index) {
-        if(members[_index] == msg.sender) {
-            memberData[msg.sender].isMember = false;
-            setAssessorIndex(members[members.length -1], _index);
-            members[_index] = members[members.length - 1];
-            members.length = members.length - 1;
-        }
-
-        else {
-            if(getWeight(msg.sender) > 0 && !memberData[msg.sender].isMember){
+    /*
+      @purpose: add the caller of this function to the arrays of potential assessors
+      if they still have a weight in the concept
+      @returns true if they are available as assessor
+    */
+    function setAvailability() returns(bool success){
+        if (getWeight(msg.sender) > 0) {
+            if (memberData[msg.sender].index == 0) {
                 members.push(msg.sender);
-                memberData[msg.sender].isMember = true;
+                memberData[msg.sender].index = members.length;
+                success = true;
+            }
+            else {
+                removeMember(msg.sender);
             }
         }
-    }
+   }
 
-    //@purpose: returns a random member of the Concept.
-    //Users with high weights are more likely to be called
-    //@returns the address of the member (0x0 if there is no member)
-    function getRandomWinner(uint seed) returns(address winner) {
+    /*
+      //@purpose: returns a random member of the Concept or the zero address (both with approx. 50%)
+      //Users with high weights are more likely to be called
+      //@returns the address of the member (0x0 if there is no member)
+    */
+    function getWeightedRandomMember(uint seed) returns(address){
         uint weight1;
-        (weight1, winner) = getRandomMemberWeight(seed);
-        if (winner == address(0x0)){
-            return winner;
-        }
-        address randomMember2;
         uint weight2;
-        (weight2, randomMember2) = getRandomMemberWeight(seed*3);
-        if (randomMember2 == address(0x0) || weight1 >= weight2) {
-            return winner;
-        } else {
-            return address(0x0);
+        address randomMember1;
+        while (members.length > 1 && weight1 == 0) {
+            uint index1 = Math.getRandom(seed, members.length - 1);
+            randomMember1 = members[index1];
+            weight1 = getWeight(randomMember1);
+        }
+        while (members.length > 1 && weight2 == 0) {
+                uint index2 = Math.getRandom(seed * 2, members.length - 1);
+                address randomMember2 = members[index2];
+                weight2 = getWeight(randomMember2);
+        }
+        if (weight1 > weight2) {
+            return randomMember1;
         }
     }
 
     /*
-      @purpose: function to lookup the weight of the member at the listindex,
-      which will also remove looked up members from the list if these are no longer
-      eligible for being an assessor because the expiration date has passed
-      @returns a random members weight and address, (0 and 0x0 if there are no members)
+      @purpose: get the weight of a given member, also removes that member from the array
+      if there legitimating assessment is expired
     */
-    function getRandomMemberWeight(uint seed) returns(uint weight, address memberAddress){
-        uint index = Math.getRandom(seed, members.length - 1);
-        memberAddress = members[index];
-        while (weight == 0) {
-            weight = getWeight(memberAddress);
-            if (weight > 0) {
-                return (weight, memberAddress);
-            } else {
-                //remove from member list
-                memberData[memberAddress].isMember = false;
-                setAssessorIndex(members[members.length -1], index);
-                members[index] = members[members.length - 1]; //THIS NEEDS TO BE TESTED!
-                /* members.length = members.length - 1; */
-                //if there still is a member left
-                if (--members.length > 0) {
-                    // try another index
-                    index = Math.getRandom(seed*2, members.length - 1);
-                    memberAddress = members[index];
-                } else {
-                    //otherwise return zeroAddress
-                    return (0, address(0x0));
-                }
+    function getWeight(address _member) returns(uint weight){
+        for (uint i=0; i < memberData[_member].weights.length; i++) {
+            if (memberData[_member].weights[i].date > now){
+                weight += memberData[_member].weights[i].weight;
             }
+        }
+        if (weight == 0) {
+            removeMember(_member);
         }
     }
-
-    function getWeight(address _assessee) returns(uint){
-        uint weight = 0;
-
-        for (uint i=0; i < memberData[_assessee].weights.length; i++) {
-            if (memberData[_assessee].weights[i].date > now){
-                weight += memberData[_assessee].weights[i].weight;
-            }
+    /*
+      @purpose: removes member at a given index from the members array by substituting they with
+      the last member and then decreasing the size of the members array
+      @returns the updated number of members in the concept
+    */
+    function removeMember(address _member) internal returns(uint){
+        uint index = memberData[_member].index;
+        if (index > 0){
+            members[index] = members[members.length - 1]; //THIS NEEDS TO BE TESTED!
+            memberData[_member].index = 0;
+            members.length--;
         }
-        return weight;
+        return members.length;
     }
 
     /*
@@ -209,19 +202,19 @@ contract Concept {
     function addMember(address _assessee, uint _weight) {
         if (assessmentExists[msg.sender]) {
             memberData[_assessee].recentAssessment = msg.sender;
-            memberData[_assessee].isMember = true;
+            memberData[_assessee].index = 0;
             this.addWeight(_assessee, _weight);
         }
     }
     function addWeight(address _assessee, uint _weight) onlyConcept() {
-        if (!memberData[_assessee].isMember) {
+        if (memberData[_assessee].index == 0) {
             members.push(_assessee);
-            memberData[_assessee].isMember = true;
+            memberData[_assessee].index = members.length;
         }
 
         uint idx = memberData[_assessee].componentWeightIndex[msg.sender];
         if (idx > 0) {
-            memberData[_assessee].weights[idx-1] = ComponentWeight(_weight, now + lifetime); //shoudl be now +lifetime
+            memberData[_assessee].weights[idx-1] = ComponentWeight(_weight, now + lifetime);
         } else {
             memberData[_assessee].weights.push(ComponentWeight(_weight, now + lifetime));
             memberData[_assessee].componentWeightIndex[msg.sender] = memberData[_assessee].weights.length;

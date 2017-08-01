@@ -16,7 +16,7 @@ var nInitialUsers = deploymentScript.nInitialUsers
 
 contract("Calling Assessors:", function(accounts) {
     let assessedConcept;
-    let assessedConceptID = 4; //uniform distribution
+    let assessedConceptID = 4; // use testrpc -a 110 when using uniform distribution
     let conceptReg;
 
     let cost = 15;
@@ -35,7 +35,7 @@ contract("Calling Assessors:", function(accounts) {
         it("and assessors called.", async () =>{
             distributor  = await Distributor.deployed()
             assessedConceptAddress = await distributor.conceptLookup.call(assessedConceptID)
-            assessedConcept = Concept.at(assessedConceptAddress)
+            assessedConcept = await Concept.at(assessedConceptAddress)
             receipts = []
             for (i=0; i<nAssessments; i++){
                 result = await assessedConcept.makeAssessment(cost, size, waitTime, timeLimit, {from: assessee})

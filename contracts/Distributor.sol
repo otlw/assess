@@ -36,8 +36,7 @@ contract Distributor{
                             uint[] _parents,
                             uint[] _propagationRates,
                             uint _lifetime,
-                            uint _nInitialMembers
-                            ) {
+                            uint _nInitialMembers) {
         require(conceptIndex < NInitialConcepts);
         ConceptInfo memory conceptToAdd = ConceptInfo( _id, _data, _parents, _lifetime, _nInitialMembers, new address[](0), new uint[](0));
         setup.push(conceptToAdd);
