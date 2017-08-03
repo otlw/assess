@@ -18,7 +18,6 @@ contract("Make Assessment For:", function(accounts){
     let waitTime = 600
     let timeLimit = 1200
 
-    let calledAssessors;
     let assessee = accounts[nInitialUsers + 1];
     let outsideUser = accounts[nInitialUsers + 2];
     let tutor = accounts[nInitialUsers + 3];

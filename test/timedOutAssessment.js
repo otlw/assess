@@ -7,7 +7,7 @@ var Distributor = artifacts.require("Distributor")
 var utils = require("../js/utils.js")
 var chain = require("../js/assessmentFunctions.js")
 
-contract("a timed out assessment", (accounts) => {
+contract("An assessment where not enough asssessors confirm", (accounts) => {
     let cost = 10;
     let size = 5;
     let timeLimit = 10000;
@@ -16,22 +16,23 @@ contract("a timed out assessment", (accounts) => {
     let assessee = {address: accounts[5]}
     let assessors;
     let assessorInitialBalance;
+    let assessedConcept = 4;
 
     let assessment
     let UserRegistryInstance
 
-    it ("should create Assessment with "+size+" assessors", async () => {
+    it ("should be created with at least "+size+" assessors", async () => {
         UserRegistryInstance = await UserRegistry.deployed()
         const DistributorInstance = await Distributor.deployed()
 
         assessee.balance = await UserRegistryInstance.balances.call(assessee.address)
-        const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(2)).makeAssessment(cost, size, waitTime, timeLimit, {from: assessee.address})
+        const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(assessedConcept)).makeAssessment(cost, size, waitTime, timeLimit, {from: assessee.address})
 
         assessment = Assessment.at(utils.getNotificationArgsFromReceipt(assessmentResult.receipt, 1)[0].sender)
 
         assessors = utils.getCalledAssessors(assessmentResult.receipt)
         assessorInitialBalance = await UserRegistryInstance.balances.call(assessors[0])
-        assert.equal(assessors.length, size, size + " assessors were called")
+        assert.isAtLeast(assessors.length, size, "the minimum of at least" + size + " assessors was not called")
     })
 
     it ("should allow an assessor to confirm before the latest possible Start", async () => {
@@ -39,11 +40,10 @@ contract("a timed out assessment", (accounts) => {
 
         const txResult = await assessment.confirmAssessor({from: assessors[0]})
         const notifications = utils.getNotificationArgsFromReceipt(txResult.receipt, 2)
-
-        assert.equal(notifications.length, 1, "an assessor couldn't confirm")
     })
 
-    describe ("after the latest possible Start it", function() {
+
+    describe ("After the deadline, it ", function() {
         it("shouldn't allow an assessor to confirm", async () => {
             await utils.evmIncreaseTime(waitTime + 5)
 
@@ -66,13 +66,14 @@ contract("a timed out assessment", (accounts) => {
     })
 })
 
-contract ("An Assessment", (accounts) => {
+contract ("An assessment where assessors fail to reveal", (accounts) => {
     let assessee = {address: accounts[5]}
     let assessors;
 
     let finalBalances;
     let initialBalances;
 
+    let size = 5;
     let assessment
     let UserRegistryInstance
 
@@ -81,7 +82,7 @@ contract ("An Assessment", (accounts) => {
 
     let hashes = Array(5).fill(utils.hashScoreAndSalt(4, "hihihi"))
 
-    it ("should run with 5 assessors until Reveal Stage", async () => {
+    it ("should run until the reveal stage", async () => {
         UserRegistryInstance = await UserRegistry.deployed()
         const DistributorInstance = await Distributor.deployed()
 
@@ -93,9 +94,8 @@ contract ("An Assessment", (accounts) => {
         assessors = utils.getCalledAssessors(assessmentResult.receipt)
         initialBalances = await utils.getBalances(assessors, UserRegistryInstance)
 
-        await chain.confirmAssessors(assessors, assessment)
-        //await chain.commitAssessors(assessors, Array(assessors.length).fill(utils.hashScoreAndSalt(1, "2")), assessment)
-        await chain.commitAssessors(assessors, hashes, assessment)
+        await chain.confirmAssessors(assessors.slice(0,size), assessment)
+        await chain.commitAssessors(assessors.slice(0,size), hashes, assessment)
 
         stage = await assessment.assessmentStage.call()
 
@@ -109,7 +109,7 @@ contract ("An Assessment", (accounts) => {
         assert.equal(done.toNumber(), 3)
     })
 
-    describe("If more than 12 hours passes", () => {
+    describe("After 12 hours", () => {
         it("assessors shouldn't be able to confirm", async () => {
             utils.evmIncreaseTime(13*60*60)
             await assessment.reveal(4, "hihihi")
@@ -132,3 +132,4 @@ contract ("An Assessment", (accounts) => {
         })
     })
 })
+        
