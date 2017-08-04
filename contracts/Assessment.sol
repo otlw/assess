@@ -2,7 +2,6 @@ pragma solidity ^0.4.11;
 
 import "./Math.sol";
 import "./Concept.sol";
-import "./ConceptRegistry.sol";
 import "./UserRegistry.sol";
 
 contract Assessment {
@@ -57,7 +56,7 @@ contract Assessment {
                         uint _timeLimit) {
         assessee = _assessee;
         concept = msg.sender;
-        userRegistry = ConceptRegistry(Concept(concept).conceptRegistry()).userRegistry();
+        userRegistry = Concept(concept).userRegistry();
 
         endTime = now + _timeLimit;
         latestConfirmTime = now + _confirmTime;
@@ -77,7 +76,7 @@ contract Assessment {
             Concept(concept).addBalance(assessors[i], cost);
             UserRegistry(userRegistry).notification(assessors[i], 3); //Assessment Cancled and you have been refunded
         }
-        suicide(Concept(concept).conceptRegistry());
+        suicide(concept);
     }
 
     //@purpose: adds a user to the pool eligible to accept an assessment
