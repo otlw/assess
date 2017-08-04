@@ -9,8 +9,8 @@ import "./Math.sol";
 contract Concept {
     address[] public parents; //The concepts that this concept is child to (ie: Calculus is child to Math)
     bytes data;
-    address userRegistry;
-    address public conceptRegistry;
+    address public userRegistry;
+    address conceptRegistry;
     uint public maxWeight;
     uint public lifetime;
     mapping (address => bool) public assessmentExists;
