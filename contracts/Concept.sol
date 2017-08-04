@@ -41,9 +41,6 @@ contract Concept {
     event setAssessorIndex (address member, uint index);
 
     function Concept(address[] _parents, uint[] _propagationRates, uint _lifetime, bytes _data) {
-        for(uint i = 0; i < _propagationRates.length; i++) {
-            require(_propagationRates[i] <= 1000);
-        }
         propagationRates = _propagationRates;
         parents = _parents;
         data = _data;
