@@ -32,17 +32,19 @@ contract ConceptRegistry {
       @param: address[] parentList = an array of addresses containing the addresses of the concepts parents
     */
     function makeConcept(address[] parentList, uint[] _propagationRates, uint _lifetime, bytes _data) returns (address){
-        Concept newConcept = new Concept(parentList, _propagationRates, _lifetime, _data);
-        address newConceptAddress = address(newConcept);
-        conceptExists[newConceptAddress] = true;
-
-        if (parentList.length == 0) {
-            newConcept.addParent(mewAddress);
-        }
         for (uint j=0; j < parentList.length; j++) {
             require(conceptExists[parentList[j]]);
+            require(_propagationRates[j] <= 1000);
         }
-        ConceptCreation(newConceptAddress);
-        return newConceptAddress;
+
+        if (parentList.length == 0) {
+            parentList = new address[] (1);
+            parentList[0] = mewAddress;
+        }
+        Concept newConcept = new Concept(parentList, _propagationRates, _lifetime, _data);
+
+        conceptExists[address(newConcept)] = true;
+        ConceptCreation(address(newConcept));
+        return address(newConcept);
     }
 }
