@@ -33,11 +33,6 @@ contract Concept {
         uint date;
     }
 
-    modifier onlyConceptRegistry() {
-        require(msg.sender == conceptRegistry);
-        _;
-    }
-
     modifier onlyConcept() {
         require(ConceptRegistry(conceptRegistry).conceptExists(msg.sender));
         _;
@@ -73,10 +68,6 @@ contract Concept {
             {
                 this.addWeight(_user, _weight);
             }
-    }
-
-    function addParent(address _parent) onlyConceptRegistry() {
-        parents.push(_parent);
     }
 
     /*

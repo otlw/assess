@@ -44,5 +44,9 @@ contract ConceptRegistry {
         }
         ConceptCreation(newConceptAddress);
         return newConceptAddress;
+        if (parentList.length == 0) {
+            parentList = new address[] (1);
+            parentList[0] = mewAddress;
+        }
     }
 }
