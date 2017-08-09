@@ -48,14 +48,14 @@ contract UserRegistry {
 
     //@purpose: To perform payments and staking for assessments
     function subtractBalance(address _from, uint _amount) onlyConcept() returns(bool) {
-        if (balances[_from] > _amount){
+        if (balances[_from] >= _amount){
             balances[_from] -= _amount;
             return true;
         }
     }
 
     function transfer(address _to, uint _amount) returns(bool) {
-        if (balances[msg.sender] > _amount &&
+        if (balances[msg.sender] >= _amount &&
            balances[_to] + _amount > balances[_to]) {
             balances[msg.sender] -= _amount;
             balances[_to] += _amount;
@@ -71,7 +71,7 @@ contract UserRegistry {
     //@purpose: transfer tokens from an account
     function transferFrom(address _from, address _to, uint _amount) returns(bool) {
         if (allowed[_from][msg.sender] > _amount &&
-           balances[_from] > _amount &&
+           balances[_from] >= _amount &&
            balances[_to] > balances[_to] + _amount) {
             balances[_from] -= _amount;
             balances[_to] += _amount;
