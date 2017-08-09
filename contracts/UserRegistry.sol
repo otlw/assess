@@ -44,9 +44,6 @@ contract UserRegistry {
             balances[_to] += _amount;
             return true;
         }
-        else {
-            return false;
-        }
     }
 
     //@purpose: To perform payments and staking for assessments
@@ -55,7 +52,6 @@ contract UserRegistry {
             balances[_from] -= _amount;
             return true;
         }
-        return false;
     }
 
     function transfer(address _to, uint _amount) returns(bool) {
@@ -65,15 +61,11 @@ contract UserRegistry {
             balances[_to] += _amount;
             return true;
         }
-        else {
-            return false;
-        }
     }
 
     //@purpose: approve an address to transfer tokens on a users behalf
-    function approve(address _spender, uint _amount) returns(bool) {
+    function approve(address _spender, uint _amount) {
         allowed[msg.sender][_spender] = _amount;
-        return true;
     }
 
     //@purpose: transfer tokens from an account
@@ -85,9 +77,6 @@ contract UserRegistry {
             balances[_to] += _amount;
             allowed[_from][msg.sender] -= _amount;
             return true;
-        }
-        else {
-            return false;
         }
     }
 }
