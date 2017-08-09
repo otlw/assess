@@ -70,10 +70,10 @@ contract Assessment {
     }
 
     function cancelAssessment() onlyConceptAssessment() {
-        Concept(concept).addBalance(assessee, cost*size);
+        UserRegistry(userRegistry).addBalance(assessee, cost*size, concept);
         UserRegistry(userRegistry).notification(assessee, 3); //Assessment Cancled and you have been refunded
         for (uint i = 0; i < assessors.length; i++) {
-            Concept(concept).addBalance(assessors[i], cost);
+            UserRegistry(userRegistry).addBalance(assessors[i], cost, concept);
             UserRegistry(userRegistry).notification(assessors[i], 3); //Assessment Cancled and you have been refunded
         }
         suicide(concept);
@@ -162,7 +162,7 @@ contract Assessment {
     function steal(int128 _score, string _salt, address assessor) {
         if(assessorState[assessor] == State.Committed && msg.sender != assessor) {
             if(commits[assessor] == sha3(_score, _salt)) {
-                Concept(concept).addBalance(msg.sender, stake[assessor]);
+                UserRegistry(userRegistry).addBalance(msg.sender, stake[assessor], concept);
                 stake[assessor] = 0;
                 assessorState[assessor] = State.Burned;
                 size--;
@@ -238,7 +238,7 @@ contract Assessment {
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Done) {
                 uint payoutValue = Math.getPayout(scores[assessors[i]], finalScore, mad, stake[assessors[i]], q);
-                Concept(concept).addBalance(assessors[i], payoutValue);
+                UserRegistry(userRegistry).addBalance(assessors[i], payoutValue, concept);
                 UserRegistry(userRegistry).notification(assessors[i], 6); //You  got paid!
             }
         }
