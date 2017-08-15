@@ -4,6 +4,7 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 
 const ConceptView = require('./concept-view')
+const ConceptListView = require('./concept-list-view')
 
 function mapStateToProps (state) {
   return {
@@ -18,18 +19,12 @@ class App extends Component {
         style: {
         },
       }, [
-        this.renderTopBar(),
-        h('.row', {},[
-          this.renderSideBar(),
-          h('.main-content', {},[
-            this.renderMainView()
-          ]),
-        ]),
+          this.renderNewConceptView(),
+          h(ConceptListView)
       ])
-
   }
 
-  renderMainView () {
+  renderNewConceptView () {
     const props = this.props
     switch (props.currentView.name) {
       case 'concepts':
@@ -37,14 +32,6 @@ class App extends Component {
       default:
         return h('h1.whoops', 'Whoops state poorly constructed')
     }
-  }
-
-  renderTopBar () {
-    return h('h1.top-bar', 'Fathom')
-  }
-
-  renderSideBar () {
-    return h('.side-bar', 'side-bar')
   }
 }
 
