@@ -31,7 +31,9 @@
     "react-redux": "^5.0.5",
     "redux": "^3.7.1",
     "redux-thunk": "^2.2.0",
+    "truffle-contract": "^2.0.5",
     "watchify": "^3.9.0",
+    "web3": "0.19.0",
     "xtend": "^4.0.1"
   }
 }
