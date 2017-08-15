@@ -1,4 +1,4 @@
-var Math = artifacts.require("./Math.sol");
+var MathContract = artifacts.require("./Math.sol");
 var Concept = artifacts.require("./Concept.sol");
 var Assessment = artifacts.require("./Assessment.sol");
 var ConceptRegistry = artifacts.require("./ConceptRegistry.sol");
@@ -12,8 +12,8 @@ var nInitialUsers = setup.n
 
 module.exports = function(deployer) {
   var distributor;
-  deployer.deploy(Math);
-  deployer.link(Math, [Assessment, Concept, ConceptRegistry])
+  deployer.deploy(MathContract);
+  deployer.link(MathContract, [Assessment, Concept, ConceptRegistry])
   deployer.then( function(){
       return deployer.deploy(ConceptRegistry)
   }).then(function(){
@@ -29,6 +29,7 @@ module.exports = function(deployer) {
       return Distributor.deployed()
   }).then(function(instance){
       distributor = instance
+      console.log(setup.tree)
       return initiateConcepts(distributor, setup.tree, accounts)
   }).then(function() {
       return initiateMembers(distributor, setup.tree)
@@ -84,11 +85,11 @@ function getUniformSetup(n, bins, accounts) {
     //setup syntax:
     // id, data, parentIds, propagationRates,lifetime, memberAddresses, memberWeights
     setup = [
-        [0, "", [], [500], lifetime, [], []],
-        [1, "", [0], [500], lifetime, [], []],
-        [2, "", [1], [500], lifetime, [], []],
-        [3, "", [2], [500], lifetime, [], []],
-        [4, "", [3], [500], lifetime, uniformUsers, stairs]
+        [0, randomName(), [], [500], lifetime, [], []],
+        [1, randomName(), [0], [500], lifetime, [], []],
+        [2, randomName(), [1], [500], lifetime, [], []],
+        [3, randomName(), [2], [500], lifetime, [], []],
+        [4, randomName(), [3], [500], lifetime, uniformUsers, stairs]
     ]
 
     nInitialUsers = n //uniformUsers.length
@@ -110,14 +111,30 @@ function defaultSetup(){
     //setup syntax:
     // id, data, parentIds, propagationRates,lifetime, memberAddresses, memberWeights
     var setup = [
-        [0, "", [], [500], lifetime, users[0], initialWeights[3]],
-        [1, "", [], [500], lifetime, users[1], initialWeights[3]],
-        [2, "", [0], [500], lifetime, users[2], initialWeights[1]],
-        [3, "", [0], [500], lifetime, users[3], initialWeights[2]],
-        [4, "", [1], [500], lifetime, users[4], initialWeights[3]]
+        [0, randomName(), [], [500], lifetime, users[0], initialWeights[3]],
+        [1, randomName(), [], [500], lifetime, users[1], initialWeights[3]],
+        [2, randomName(), [0], [500], lifetime, users[2], initialWeights[1]],
+        [3, randomName(), [0], [500], lifetime, users[3], initialWeights[2]],
+        [4, randomName(), [1], [500], lifetime, users[4], initialWeights[3]]
     ]
     return {tree: setup, n: nInitialUsers}
 }
+
+
+function randomName () {
+    var adjectives = ["Fruity ", "Banana-esque ", "Undergraduate ", "Wiggly ", "Technical ", "Advanced ", "Magical ", "Hyper ", "Omniprescent ", "", ""]
+    var nouns = ["Math ", "Banana ", "Badger ", "Fruit ", "Bagpipe ", "Boating ", "Coffee ", "Wiggle "]
+    var skills = ["Studies", "101", "Research", "Experimental Science", "Speculation"]
+
+    var name = randomElement(adjectives) + randomElement(nouns) + randomElement(skills)
+    return web3.toHex(name)
+}
+
+function randomElement(list) {
+    var i = Math.floor(Math.random()*list.length)
+    return list[i]
+}
+
 
 module.exports.setupVariable = setup.tree
 module.exports.nInitialUsers = setup.n
