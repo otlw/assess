@@ -9,7 +9,7 @@
   "scripts": {
     "build": "browserify index.js -o bundle.js",
     "compile": "truffle compile",
-    "test": " testrpc > /dev/null 2>&1 & truffle test"
+    "test": "testrpc -a 50 > /dev/null 2>&1 & truffle test"
   },
   "author": "Jared Pereira",
   "license": "ISC",

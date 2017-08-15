@@ -9,83 +9,79 @@ var deploymentScript = require("../migrations/2_deploy_contracts.js")
 var setup = deploymentScript.setupVariable
 
 contract("Distributor", function(accounts) {
-    var distributor;
-    var conceptReg;
+    var distributorInstance;
+    var conceptRegistryInstance;
+
     describe("Distributor", function(){
-        it("should create the initial concepts", function(){
-            return Distributor.deployed().then(function(instance){
-                distributor = instance
-                return distributor.addedConcepts.call()
-            }).then(function(added){
-                assert.equal(added.toNumber(), setup.length, "an incorrect number of concepts got added")
-            })
+        it("should create the initial concepts", async () => {
+            distributorInstance = await Distributor.deployed()
+            conceptRegistryInstance = await ConceptRegistry.deployed()
+
+            numConceptsAdded = await distributorInstance.addedConceptsLength.call()
+            assert.equal(numConceptsAdded.toNumber(), setup.length, "an incorrect number of concepts got added")
+
+            for(i=0; i<setup.length; i++) {
+                let conceptAddress = await distributorInstance.conceptLookup.call(i)
+                assert.isTrue(await conceptRegistryInstance.conceptExists.call(conceptAddress), "Concept doesn't exist")
+            }
         })
-        it("such that they are linked to their parents", function(){
-            //check whether it worked for the first and third concepts
-            //TODO once looping over promises works, this should be done for all concepts
-            p = 1;
-            return distributor.addedConceptParents.call(p).then(function(parentsOfP){
-                for (i=0; i<parentsOfP.length; i++){
-                    assert.equal(parentsOfP[i].toNumber(), setup[p][1][i], "parent " + i +  " did not get added") //TODO add index i of fialed parent
+
+        it("such that they are linked to their parents", async () => {
+            for (i=0; i<setup.length; i++) {
+                nParents = await distributorInstance.addedConceptParentsLength.call(i)
+                for (j=0; j < nParents.toNumber(); j++) {
+                    let conceptParent = await distributorInstance.addedConceptParent.call(i,j)
+                    assert.equal(conceptParent.toNumber(), setup[i][2][j], "parent "+ j + " of concept " + i + " did not get added")
                 }
-            }).then(function(){
-                p =2;
-                return distributor.addedConceptParents.call(p)
-            }).then(function(parentsOfP){
-                for (i=0; i<parentsOfP.length; i++){
-                    assert.equal(parentsOfP[i].toNumber(), setup[p][1][i], "parent did not get added")
-                }
-            })
+            }
         })
-        it("should add the initial users as members with their respective weight", function(){
-            //check for concepts 0 and 2 //TODO loop and check for all
-            p = 0;
-            return distributor.addedConceptMembers.call(p).then(function(membersOfP){
-                memberAddresses = membersOfP
-                return distributor.addedConceptWeights.call(p)
-            }).then(function(weightsOfP){
-                memberWeights = weightsOfP
-                for (j=0; j<memberAddresses.length; j++){
-                    assert.equal(memberAddresses[j], setup[p][4][j], "member " + j +  " did not get added")
-                    assert.equal(memberWeights[j].toNumber(), setup[p][5][j], "member " + j +  " got added with the wrong weight")
+
+        it("should add the initial users as members with their respective weight", async () => {
+            for( i=0; i<setup.length; i++) {
+                let conceptInstance = await Concept.at(await distributorInstance.conceptLookup.call(i))
+                conceptMemberLength = (await distributorInstance.addedConceptMembersLength.call(i)).toNumber()
+                assert.isAtLeast((await conceptInstance.getMemberLength.call()).toNumber(),
+                                 conceptMemberLength,
+                                 "less members in the concept than in mentioned in the distributor")
+
+                emptySpots = (await distributorInstance.addedConceptAddableMembers.call(i)).toNumber()
+                assert.equal(emptySpots, 0, "the distributor does not remember all added members members")
+
+                for(j=0; j<conceptMemberLength; j++) {
+                    let memberAddress = await distributorInstance.addedConceptMemberAddress.call(i,j)
+                    weight =  await conceptInstance.getWeight.call(memberAddress)
+                    assert.equal(weight.toNumber(), setup[i][6][j])
                 }
-            }).then(function(){
-                p = 2
-                return distributor.addedConceptMembers.call(p)
-            }).then(function(membersOfP){
-                memberAddresses = membersOfP
-                return distributor.addedConceptWeights.call(p)
-            }).then(function(weightsOfP){
-                memberWeights = weightsOfP
-                for (j=0; j<memberAddresses.length; j++){
-                    assert.equal(memberAddresses[j], setup[p][4][j], "member " + j +  " did not get added")
-                    assert.equal(memberWeights[j].toNumber(), setup[p][5][j], "member " + j +  " got added with the wrong weight")
-                }
-            })
+            }
         })
-        it(" which decreases as they are propageted upwards to mew", function(){
-            return ConceptRegistry.deployed().then(function(instance){
-                conceptReg = instance
-                return conceptReg.mewAddress.call()
-            }).then(function(mewAddress){
-                mewConcept = Concept.at(mewAddress)
-                //check only account 1 for weight>0 in mew //TODO loop and check for all
-                a = 1
-                return mewConcept.getWeight.call(accounts[a])
-            }).then(function(weight){
-                assert.isAbove(weight.toNumber(), 0, "account"  + a +  " has no weight in mew")
-                //check account 2 for a decreased weight
-                a = 2
-                return distributor.conceptLookup.call(0)
-            }).then(function(addressOfConcept0){
-                concept0 = Concept.at(addressOfConcept0)
-                return concept0.getWeight.call(accounts[a])
-            }).then(function(_weightAt0){
-                weightAt0 = _weightAt0.toNumber()
-                return mewConcept.getWeight.call(accounts[a])
-            }).then(function(weightAtMew){
-                assert.isAbove(weightAt0, weightAtMew.toNumber(), "weight of account " + a + " did not decrease")
-            })
+
+        it("should not allow the addition of more members than specified", async () => {
+            for( i=0; i<setup.length; i++) {
+                conceptMemberLengthBefore = (await distributorInstance.addedConceptMembersLength.call(i)).toNumber()
+                let conceptInstance = await Concept.at(await distributorInstance.conceptLookup.call(0))
+                await distributorInstance.addInitialMember(0, accounts[0], 10)
+                conceptMemberLengthAfter = (await distributorInstance.addedConceptMembersLength.call(i)).toNumber()
+                assert.equal(conceptMemberLengthBefore, conceptMemberLengthAfter, "a member could be added")
+            }
+        })
+
+        it("should propagate to the parent according to the rate", async () => {
+            const mew = await conceptRegistryInstance.mewAddress.call()
+            for( i=0; i<setup.length; i++) {
+                let initialConceptInstance = await Concept.at(await distributorInstance.conceptLookup.call(i))
+                let conceptMembers =  setup[i][5]
+
+                for(j = 0; j<setup[i][1].length; j++) {
+                    let parentConceptInstance = await Concept.at(await distributorInstance.conceptLookup(setup[i][1][j]))
+
+                    for(k = 0; k <conceptMembers.length; k++) {
+                        let weightInParent = await parentConceptInstance.getWeight.call(conceptMembers[k])
+                        let weightInChild = await initialConceptInstance.getWeight.call(conceptMembers[k])
+                        assert.equal(weightInParent.toNumber(),
+                                     Math.floor(weightInChild.toNumber()*(setup[i][2][j]/1000)))
+                    }
+                }
+            }
         })
     })
 })

@@ -6,26 +6,18 @@ var UserRegistry = artifacts.require("./UserRegistry.sol");
 var Distributor = artifacts.require("./Distributor.sol");
 var accounts = web3.eth.accounts
 
-// var initialConcepts = setup2.tree
-//setup syntax:
-// id, parentIds, memberAddresses, memberWeights
-// also say how many user there are initially in the system
-var lifetime = 60*60*24*365;
-var setup = [
-    [0, [], lifetime, "", [accounts[0]],[20]],
-    [1, [], lifetime, "", [],[]],
-    [2, [0], lifetime, "", [accounts[1], accounts[2], accounts[3]], [10,10,10]],
-    [3, [0], lifetime, "", [accounts[4]],[20]]
-]
-var nInitialUsers = 5;
+// setup = getUniformSetup(100, 10, accounts)
+setup = defaultSetup()
+var nInitialUsers = setup.n
 
 module.exports = function(deployer) {
+  var distributor;
   deployer.deploy(Math);
   deployer.link(Math, [Assessment, Concept, ConceptRegistry])
   deployer.then( function(){
       return deployer.deploy(ConceptRegistry)
   }).then(function(){
-      return deployer.deploy(Distributor, setup.length, ConceptRegistry.address)
+      return deployer.deploy(Distributor, setup.tree.length, ConceptRegistry.address)
   }).then(function(){
     return deployer.deploy(UserRegistry, ConceptRegistry.address, accounts[0], accounts.length*10000000000)
   }).then(function(){
@@ -37,24 +29,98 @@ module.exports = function(deployer) {
       return Distributor.deployed()
   }).then(function(instance){
       distributor = instance
-      initiateConcepts(distributor, setup)
+      return initiateConcepts(distributor, setup.tree, accounts)
+  }).then(function() {
+      return initiateMembers(distributor, setup.tree)
   })
 };
 
-function initiateConcepts (distributorInstance, _setup) {
+function initiateConcepts (distributorInstance, _setup, accounts) {
+    console.log("deploying initial Concepts...")
     var chain = new Promise((resolve, reject)=> resolve(0))
     for(i=0; i < _setup.length; i++) {
         chain = chain.then(function(index) {
-            distributorInstance.addNextConcept.apply(null, _setup[index])
+            distributorInstance.addNextConcept(_setup[index][0], _setup[index][1],
+                                               _setup[index][2], _setup[index][3],
+                                               _setup[index][4], _setup[index][5].length,
+                                               {from:accounts[index]})
             return index += 1
         })
     }
     return chain
 }
 
+function initiateMembers (distributorInstance, _setup) {
+    console.log("adding initial members...")
+    var chain = new Promise((resolve, reject)=> resolve(0))
+    for(i=0; i < _setup.length; i++) {
+        chain = chain.then(function(index) {
+            addInitialMembers(distributorInstance, _setup[index][0], _setup[index][5], _setup[index][6])
+            return index += 1
+        })
+    }
+    return chain
+}
 
-module.exports.setupVariable = setup
-module.exports.nInitialUsers = nInitialUsers
+function addInitialMembers(distributorInstance, _conceptId, _members, _weights) {
+    var chain = new Promise((resolve, reject)=> resolve(0))
+    for(i=0; i < _members.length; i++) {
+        chain = chain.then(function(index) {
+            distributorInstance.addInitialMember(_conceptId, _members[index], _weights[index])
+            return index += 1
+        })
+    }
+    return chain
+}
+
+function getUniformSetup(n, bins, accounts) {
+    // uniform distribution
+    var lifetime = 60*60*24*365;
+    var stairs = []
+    for (i=0; i<bins; i++) {
+        stairs = stairs.concat(Array(n/bins).fill(10*(i+1)))
+    }
+    uniformUsers = accounts.slice(0,n)
+    //setup syntax:
+    // id, data, parentIds, propagationRates,lifetime, memberAddresses, memberWeights
+    setup = [
+        [0, "", [], [500], lifetime, [], []],
+        [1, "", [0], [500], lifetime, [], []],
+        [2, "", [1], [500], lifetime, [], []],
+        [3, "", [2], [500], lifetime, [], []],
+        [4, "", [3], [500], lifetime, uniformUsers, stairs]
+    ]
+
+    nInitialUsers = n //uniformUsers.length
+    return {tree: setup, n: nInitialUsers}
+}
+
+function defaultSetup(){
+    // create five groups of initial Users and five sets of different weights
+    nInitialUserGroups = 5
+    groupSize = 8
+    nInitialUsers = nInitialUserGroups * groupSize
+    users = []
+    initialWeights = []
+    lifetime = 60*60*24*365;
+    for (i=0; i<nInitialUserGroups; i++) {
+        users.push(accounts.slice(i*groupSize, (i+1) * groupSize))
+        initialWeights.push(Array(groupSize).fill(10*(i+1)))
+    }
+    //setup syntax:
+    // id, data, parentIds, propagationRates,lifetime, memberAddresses, memberWeights
+    var setup = [
+        [0, "", [], [500], lifetime, users[0], initialWeights[3]],
+        [1, "", [], [500], lifetime, users[1], initialWeights[3]],
+        [2, "", [0], [500], lifetime, users[2], initialWeights[1]],
+        [3, "", [0], [500], lifetime, users[3], initialWeights[2]],
+        [4, "", [1], [500], lifetime, users[4], initialWeights[3]]
+    ]
+    return {tree: setup, n: nInitialUsers}
+}
+
+module.exports.setupVariable = setup.tree
+module.exports.nInitialUsers = setup.n
 module.exports.etherPrice = 217 //as of 07/07/2017
 module.exports.gasPrice = 1000000000 //safe low cost of 07/07/17 WATCHOUT: if you change this value you must change it in ./truffle.js!!
 

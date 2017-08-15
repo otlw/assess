@@ -1,15 +1,14 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.11;
 
 import "./Math.sol";
 import "./Concept.sol";
-import "./ConceptRegistry.sol";
 import "./UserRegistry.sol";
 
 contract Assessment {
     address assessee;
     address[] assessors;
+
     mapping (address => State) assessorState;
-    mapping(uint => int[]) clusters;
     State public assessmentStage;
     enum State {
         None,
@@ -20,28 +19,20 @@ contract Assessment {
         Burned
     }
 
-    uint public assessorPoolLength;
     address concept;
     address userRegistry;
-    address conceptRegistry;
+
     uint public endTime;
     uint public latestConfirmTime;
-    uint burnRate;
+
     uint public size;
     uint cost;
-    mapping(address => string[]) public data;
+
     mapping(address => bytes32) commits;
     mapping(address => uint) stake;
     uint public done; //counter how many assessors have committed/revealed their score
-    mapping(address => int8) scores;
-    mapping(int => bool) inRewardCluster;
+    mapping(address => int128) scores;
     int public finalScore;
-    event DataSet(address _dataSetter, uint _index);
-
-    modifier onlyAssessorAssessee() {
-        require(msg.sender == assessee || assessorState[msg.sender] != State.None);
-        _;
-    }
 
     modifier onlyConceptAssessment() {
         require(msg.sender == address(this) || msg.sender == concept);
@@ -59,16 +50,13 @@ contract Assessment {
     }
 
     function Assessment(address _assessee,
-                        address _userRegistry,
-                        address _conceptRegistry,
                         uint _size,
                         uint _cost,
                         uint _confirmTime,
                         uint _timeLimit) {
         assessee = _assessee;
         concept = msg.sender;
-        userRegistry = _userRegistry;
-        conceptRegistry = _conceptRegistry;
+        userRegistry = Concept(concept).userRegistry();
 
         endTime = now + _timeLimit;
         latestConfirmTime = now + _confirmTime;
@@ -78,7 +66,6 @@ contract Assessment {
         cost = _cost;
 
         UserRegistry(userRegistry).notification(assessee, 0); // assesse has started an assessment
-        assessorPoolLength = 0;
         done = 0;
     }
 
@@ -89,7 +76,7 @@ contract Assessment {
             Concept(concept).addBalance(assessors[i], cost);
             UserRegistry(userRegistry).notification(assessors[i], 3); //Assessment Cancled and you have been refunded
         }
-        suicide(conceptRegistry);
+        suicide(concept);
     }
 
     //@purpose: adds a user to the pool eligible to accept an assessment
@@ -97,7 +84,6 @@ contract Assessment {
         if (assessorState[assessor] == State.None) {
             UserRegistry(userRegistry).notification(assessor, 1); //Called As A Potential Assessor
             assessorState[assessor] = State.Called;
-            assessorPoolLength++;
             return true;
         }
         else {
@@ -110,13 +96,15 @@ contract Assessment {
       stops when the pool of potential assessors is 20 times the size of the assessment2
       @param: uint seed = the seed number for random number generation
       @param: address _concept = the concept being called from
-      @param: uint num = the number of assessors to be called
+      @param: uint num = the total number of assessors to be called
     */
     function setAssessorPool(uint seed, address _concept, uint num) onlyConceptAssessment() {
         uint numCalled = 0;
-        for (uint k=0; k < num; k++) {
-            if (assessorPoolLength == size*20) { return; } //
-            address randomUser = Concept(_concept).getRandomMember(seed + k);
+        uint membersOfConcept = Concept(_concept).getMemberLength();
+        //we want to call at most half of the members of each concept
+        uint maxFromThisPool = num > membersOfConcept/2 ? membersOfConcept/2 : num;
+        for (uint k=0; k < maxFromThisPool; k++) {
+            address randomUser = Concept(_concept).getWeightedRandomMember(seed + k);
             if (randomUser != address(0x0) && addAssessorToPool(randomUser)) {
                 numCalled++;
             }
@@ -124,22 +112,9 @@ contract Assessment {
         uint remaining = num - numCalled;
         if (remaining > 0) {
             for (uint i = 0; i < Concept(_concept).getParentsLength(); i++) {
-                setAssessorPool(seed + assessorPoolLength, Concept(_concept).parents(i), remaining/Concept(_concept).getParentsLength() + 1); //Calls the remaining users from the parent concepts proportional to their size
+                setAssessorPool(seed + numCalled + i, Concept(_concept).parents(i), remaining/Concept(_concept).getParentsLength() + 1); //Calls the remaining users from the parent concepts proportional to their size
             }
         }
-        assessmentStage = State.Called;
-    }
-
-    /*
-      @purpose: To set the pool of assessors when there are so few users in the system that
-      assembling them at random is not meaningful. This will use all members of mew instead
-    */
-    function setAssessorPoolFromMew() onlyConcept() {
-        Concept mew = Concept(ConceptRegistry(conceptRegistry).mewAddress()); //TODO: can this be more elegant and/or in one line?
-        for (uint i=0; i<mew.getMemberLength(); i++) {
-            addAssessorToPool(mew.members(i));
-        }
-        size = mew.getMemberLength();
         assessmentStage = State.Called;
     }
 
@@ -166,11 +141,6 @@ contract Assessment {
         }
     }
 
-    function setData(string _data) onlyAssessorAssessee() {
-        data[msg.sender].push(_data);
-        DataSet(msg.sender, data[msg.sender].length - 1);
-    }
-
     //@purpose: called by an assessor to commit a hash of their score //TODO explain in more detail what's happening
     function commit(bytes32 _hash) onlyInStage(State.Confirmed) {
         if (now > endTime) {
@@ -189,7 +159,7 @@ contract Assessment {
     }
 
 
-    function steal(int8 _score, string _salt, address assessor) {
+    function steal(int128 _score, string _salt, address assessor) {
         if(assessorState[assessor] == State.Committed && msg.sender != assessor) {
             if(commits[assessor] == sha3(_score, _salt)) {
                 Concept(concept).addBalance(msg.sender, stake[assessor]);
@@ -201,7 +171,7 @@ contract Assessment {
     }
 
     //@purpose: called by assessors to reveal their own commits or others
-    function reveal(int8 _score, string _salt) onlyInStage(State.Committed) {
+    function reveal(int128 _score, string _salt) onlyInStage(State.Committed) {
         if (now > endTime + 12 hours) { //add bigger zerocheck
             for (uint i = 0; i < assessors.length; i++) {
                 if (assessorState[assessors[i]] == State.Committed) { //If the assessor has not revealed their score
@@ -253,41 +223,23 @@ contract Assessment {
                 idx++;
             }
         }
+        uint mad;
         uint finalClusterLength;
-        bool[200] memory finalClusterMask;
-        (finalClusterMask, finalClusterLength) = Math.getLargestCluster(finalScores);
-
-        for (uint i=0; i<done; i++) {
-            if (finalClusterMask[i]) {
-                finalScore += finalScores[i];
-            }
-        }
-        finalScore /= int(finalClusterLength);
-        payout(finalClusterMask);
-       if (finalScore > 0){
+        (finalScore, finalClusterLength, mad) = Math.getFinalScore(finalScores);
+        payout(finalScore, mad);
+        if (finalScore > 0) {
             Concept(concept).addMember(assessee, uint(finalScore) * finalClusterLength);
         }
-       UserRegistry(userRegistry).notification(assessee, 7);
+        UserRegistry(userRegistry).notification(assessee, 7);
    }
 
-    function payout(bool[200] finalClusterMask) onlyInStage(State.Done) internal {
-        uint index=0;
-        uint q = 1; //INFLATION
+    function payout(int finalScore, uint mad) onlyInStage(State.Done) internal {
+        uint q = 1; //INFLATION RATE
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Done) {
-                uint payoutValue;
-                int score = scores[assessors[i]];
-                int scoreDistance = Math.abs(((score - finalScore)*100)/finalScore);
-
-                if(finalClusterMask[index]) {
-                    payoutValue = (q*cost*((100 - uint(scoreDistance))/100)) + stake[assessors[i]];
-                }
-                else {
-                    payoutValue = stake[assessors[i]]*((200 - uint(scoreDistance))/200);
-                }
+                uint payoutValue = Math.getPayout(scores[assessors[i]], finalScore, mad, stake[assessors[i]], q);
                 Concept(concept).addBalance(assessors[i], payoutValue);
                 UserRegistry(userRegistry).notification(assessors[i], 6); //You  got paid!
-                index++;
             }
         }
     }
