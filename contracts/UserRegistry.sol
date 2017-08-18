@@ -39,7 +39,9 @@ contract UserRegistry {
     }
 
     //@purpose: To perform payouts in Asessments
-    function addBalance(address _to, uint _amount) onlyConcept() returns(bool) {
+    function addBalance(address _to, uint _amount, address _concept) returns(bool) {
+        require(ConceptRegistry(conceptRegistry).conceptExists(_concept) &&
+                Concept(_concept).assessmentExists(msg.sender));
         if (balances[_to] + _amount > balances[_to]){
             balances[_to] += _amount;
             return true;

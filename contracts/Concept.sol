@@ -225,10 +225,4 @@ contract Concept {
         }
         return false;
     }
-
-    function addBalance(address _to, uint _amount)  returns(bool) {
-        if (assessmentExists[msg.sender]) {
-            return UserRegistry(userRegistry).addBalance(_to, _amount);
-        }
-    }
 }
