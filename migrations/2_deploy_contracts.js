@@ -122,9 +122,9 @@ function defaultSetup(){
 
 
 function randomName () {
-    var adjectives = ["Fruity ", "Banana-esque ", "Undergraduate ", "Wiggly ", "Technical ", "Advanced ", "Magical ", "Hyper ", "Omniprescent ", "", ""]
+    var adjectives = ["Fruity ", "Banana-esque ", "Undergraduate ", "Wiggly ", "Technical ", "Experimental ", "Advanced ", "Magical ", "Hyper ", "Omniprescent ", "", ""]
     var nouns = ["Math ", "Banana ", "Badger ", "Fruit ", "Bagpipe ", "Boating ", "Coffee ", "Wiggle "]
-    var skills = ["Studies", "101", "Research", "Experimental Science", "Speculation"]
+    var skills = ["Studies", "101", "Research", "Science", "Speculation"]
 
     var name = randomElement(adjectives) + randomElement(nouns) + randomElement(skills)
     return web3.toHex(name)

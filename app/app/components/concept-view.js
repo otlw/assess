@@ -3,42 +3,29 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../scripts/actions')
+const Link = require('react-router-dom').Link
 
-const Form = require('./concept-form')
 function mapStateToProps (state) {
-  return {
-    subview: state.appState.currentView.subview,
-  }
+    return {
+        conceptList: state.appState.conceptList
+    }
 }
-class ConceptView extends Component {
-  render () {
-    const props = this.props
 
-    return h('.concept-view', {
-        style: {
-        },
-      }, [
-        this.renderSubview(),
-      ])
+class Concept extends Component {
+    componentDidMount() {
+        this.props.dispatch(actions.getConcept)
+    }
+    render () {
+        const props = this.props
+        const concept = this.props.conceptList.find(function(concept) {
+            return concept.address = props.match.params.concept
+        })
 
-  }
-
-  renderSubview () {
-    switch (this.props.subview) {
-      case 'concept-form':
-        return h(Form)
-      default:
-        return h('', [
-          h('button', {
-            onClick: (event) => {
-              event.preventDefault()
-              this.props.dispatch(actions.showConceptForm())
-
-            }
-          }, 'Create Concepts')
+        console.log(props.conceptList)
+        return h('h1', {}, [
+            concept.name, concept.address
         ])
     }
-  }
-}
+} 
 
-module.exports = connect(mapStateToProps)(ConceptView)
+module.exports = connect(mapStateToProps)(Concept)

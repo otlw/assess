@@ -1,16 +1,17 @@
-const conceptRegistryAbi = require('../../build/contracts/ConceptRegistry.json')
-const userRegistryAbi = require('../../build/contracts/ConceptRegistry.json')
+const conceptRegistryContract = require('../../build/contracts/ConceptRegistry.json')
+const userRegistryContract = require('../../build/contracts/ConceptRegistry.json')
 
 
 module.exports = {
   STORAGE_KEY: 'fathom-config',
-  CONCEPT_REGISTRY: '0x4b54573213d1ecb12f5bd416e39984d04615c45b',
+  CONCEPT_REGISTRY_CONTRACT: conceptRegistryContract,
   USER_REGISTRY: '',
   initialState: {
     appState: {
       currentView: {
         name: 'concepts',
       },
+      conceptList: []
     }
   }
 }

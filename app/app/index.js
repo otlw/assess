@@ -1,3 +1,4 @@
+const web3 = require('web3')
 const render = require('react-dom').render
 const h = require('react-hyperscript')
 const Root = require('./components/root')

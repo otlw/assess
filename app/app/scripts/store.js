@@ -8,5 +8,5 @@ module.exports = configureStore
 const createStoreWithMiddleware = applyMiddleware(thunkMiddleware)(createStore)
 
 function configureStore (initialState) {
-  return createStoreWithMiddleware(rootReducer, initialState)
+    return createStoreWithMiddleware(rootReducer, initialState)
 }

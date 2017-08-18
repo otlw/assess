@@ -10,7 +10,7 @@ contract ConceptRegistry {
     address public mewAddress; //a manually created contract with no parents
     address public distributorAddress; //a manually created contract with no parents
 
-    event ConceptCreation (address _concept);
+    event ConceptCreation (address _concept, bytes _data);
 
     //@purpose: give this contract the address of a UserRegistry and mew Concept
     function init(address _userRegistry, address _distributor) returns(bool){
@@ -44,7 +44,7 @@ contract ConceptRegistry {
         Concept newConcept = new Concept(parentList, _propagationRates, _lifetime, _data);
 
         conceptExists[address(newConcept)] = true;
-        ConceptCreation(address(newConcept));
+        ConceptCreation(address(newConcept), _data);
         return address(newConcept);
     }
 }
