@@ -37,8 +37,6 @@ contract Concept {
         _;
     }
 
-    event setAssessorIndex (address member, uint index);
-
     function Concept(address[] _parents, uint[] _propagationRates, uint _lifetime, bytes _data) {
         propagationRates = _propagationRates;
         parents = _parents;
