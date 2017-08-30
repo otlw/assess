@@ -11,7 +11,6 @@ contract Concept {
     bytes data;
     address public userRegistry;
     address conceptRegistry;
-    uint public maxWeight;
     uint public lifetime;
     mapping (address => bool) public assessmentExists;
 
@@ -182,7 +181,7 @@ contract Concept {
     }
 
     /*
-      @purpose: To add a member to a concept and to recursively add  a member to parent concept, thereby halving the added weight with each generation and changing the maxWeight of each concept if necessary
+      @purpose: To add a member to a concept and to recursively add  a member to parent concept
       @param: address assessee = the address of the assessee
       @param: uint weight = the weight for the member
       @returns: nothing
@@ -206,10 +205,6 @@ contract Concept {
         } else {
             memberData[_assessee].weights.push(ComponentWeight(_weight, now + lifetime));
             memberData[_assessee].componentWeightIndex[msg.sender] = memberData[_assessee].weights.length;
-        }
-
-        if (_weight > maxWeight) {
-            maxWeight = _weight;
         }
 
         for(uint i = 0; i < parents.length; i++) {
