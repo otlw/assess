@@ -34,11 +34,6 @@ contract Assessment {
     mapping(address => int128) scores;
     int public finalScore;
 
-    modifier onlyConceptAssessment() {
-        require(msg.sender == address(this) || msg.sender == concept);
-        _;
-    }
-
     modifier onlyConcept() {
         require(msg.sender == concept);
         _;
@@ -69,7 +64,7 @@ contract Assessment {
         done = 0;
     }
 
-    function cancelAssessment() onlyConceptAssessment() {
+    function cancelAssessment() internal {
         UserRegistry(userRegistry).addBalance(assessee, cost*size, concept);
         UserRegistry(userRegistry).notification(assessee, 3); //Assessment Cancled and you have been refunded
         for (uint i = 0; i < assessors.length; i++) {
@@ -98,7 +93,7 @@ contract Assessment {
       @param: address _concept = the concept being called from
       @param: uint num = the total number of assessors to be called
     */
-    function setAssessorPool(uint seed, address _concept, uint num) onlyConceptAssessment() {
+    function setAssessorPool(uint seed, address _concept, uint num) onlyConcept() {
         uint numCalled = 0;
         uint membersOfConcept = Concept(_concept).getMemberLength();
         //we want to call at most half of the members of each concept
@@ -122,7 +117,7 @@ contract Assessment {
     function confirmAssessor() onlyInStage(State.Called) {
         // cancel if the assessment is older than 12 hours or already past its timelimit
         if (now > latestConfirmTime){
-            this.cancelAssessment();
+            cancelAssessment();
             return;
         }
         if (assessorState[msg.sender] == State.Called &&
