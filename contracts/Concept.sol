@@ -22,7 +22,6 @@ contract Concept {
     struct MemberData {
         address recentAssessment;
         uint index;
-        mapping(address => uint) approval;
         ComponentWeight[] weights;
         mapping(address => uint) componentWeightIndex;
     }
@@ -36,8 +35,6 @@ contract Concept {
         require(ConceptRegistry(conceptRegistry).conceptExists(msg.sender));
         _;
     }
-
-    event setAssessorIndex (address member, uint index);
 
     function Concept(address[] _parents, uint[] _propagationRates, uint _lifetime, bytes _data) {
         propagationRates = _propagationRates;
@@ -147,32 +144,6 @@ contract Concept {
             Assessment newAssessment = new Assessment(msg.sender, size, cost, _waitTime, _timeLimit);
             assessmentExists[address(newAssessment)] = true;
             newAssessment.setAssessorPool(block.number, address(this), size*5); //assemble the assessorPool by relevance
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    /*
-      @purpose: To approve addresses to create assessments for users on this concept
-      @param: _from = the address approved to create assessments
-      @param: _amount = the maximum value of Tokens they are allowed to spend
-    */
-    function approve(address _from, uint _amount) returns(bool) {
-        memberData[msg.sender].approval[_from] = _amount;
-        return true;
-    }
-
-    //@purpose: allow approved address to create assessments for users on this concept
-    function makeAssessmentFrom(address _assessee, uint _cost, uint _size, uint _waitTime, uint _timeLimit) returns(bool) {
-        if (memberData[_assessee].approval[msg.sender] >= _cost * _size &&
-           _size >= 5 &&
-           this.subtractBalance(_assessee, _cost*_size)) {
-            Assessment newAssessment = new Assessment(_assessee, _size, _cost, _waitTime, _timeLimit);
-            assessmentExists[address(newAssessment)] = true;
-            newAssessment.setAssessorPool(block.number, address(this), _size*20); //assemble the assessorPool by relevance
-            memberData[_assessee].approval[msg.sender] -= _cost*_size;
             return true;
         }
         else {

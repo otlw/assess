@@ -13,7 +13,7 @@ contract ConceptRegistry {
     event ConceptCreation (address _concept);
 
     //@purpose: give this contract the address of a UserRegistry and mew Concept
-    function init(address _userRegistry, address _distributor) returns(bool){
+    function init(address _userRegistry, address _distributor){
         if (initialized == false) {
             userRegistry = _userRegistry;
             distributorAddress = _distributor;
@@ -21,9 +21,6 @@ contract ConceptRegistry {
             mewAddress = address(mew);
             conceptExists[mewAddress] = true;
             initialized = true;
-        }
-        else {
-            return(false);
         }
     }
 
