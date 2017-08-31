@@ -153,9 +153,9 @@ contract Assessment {
 
 
     function steal(int128 _score, string _salt, address assessor) {
-        if(assessorState[assessor] == State.Committed && msg.sender != assessor) {
+        if(assessorState[assessor] == State.Committed) {
             if(commits[assessor] == sha3(_score, _salt)) {
-                UserRegistry(userRegistry).addBalance(msg.sender, cost, concept);
+                UserRegistry(userRegistry).addBalance(msg.sender, cost/2, concept);
                 assessorState[assessor] = State.Burned;
                 size--;
             }
