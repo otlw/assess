@@ -29,7 +29,6 @@ contract Assessment {
     uint cost;
 
     mapping(address => bytes32) commits;
-    mapping(address => uint) stake;
     uint public done; //counter how many assessors have committed/revealed their score
     mapping(address => int128) scores;
     int public finalScore;
@@ -126,7 +125,6 @@ contract Assessment {
             ) {
             assessors.push(msg.sender);
             assessorState[msg.sender] = State.Confirmed;
-            stake[msg.sender] = cost;
             UserRegistry(userRegistry).notification(msg.sender, 2); //Confirmed for assessing, stake has been taken
         }
         if (assessors.length == size) {
@@ -157,8 +155,7 @@ contract Assessment {
     function steal(int128 _score, string _salt, address assessor) {
         if(assessorState[assessor] == State.Committed && msg.sender != assessor) {
             if(commits[assessor] == sha3(_score, _salt)) {
-                UserRegistry(userRegistry).addBalance(msg.sender, stake[assessor], concept);
-                stake[assessor] = 0;
+                UserRegistry(userRegistry).addBalance(msg.sender, cost, concept);
                 assessorState[assessor] = State.Burned;
                 size--;
             }
@@ -170,7 +167,6 @@ contract Assessment {
         if (now > endTime + 12 hours) { //add bigger zerocheck
             for (uint i = 0; i < assessors.length; i++) {
                 if (assessorState[assessors[i]] == State.Committed) { //If the assessor has not revealed their score
-                    stake[assessors[i]] = 0;
                     assessorState[assessors[i]] = State.Burned;
                     size--;
                 }
@@ -194,7 +190,6 @@ contract Assessment {
     function burnStakes() internal {
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Confirmed) {
-                stake[assessors[i]] = 0;
                 assessorState[assessors[i]] = State.Burned;
                 size--; //decrease size to help progress to the next assessment stage
            }
@@ -232,7 +227,7 @@ contract Assessment {
         uint q = 1; //INFLATION RATE
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Done) {
-                uint payoutValue = Math.getPayout(scores[assessors[i]], finalScore, mad, stake[assessors[i]], q);
+                uint payoutValue = Math.getPayout(scores[assessors[i]], finalScore, mad, cost, q);
                 UserRegistry(userRegistry).addBalance(assessors[i], payoutValue, concept);
                 UserRegistry(userRegistry).notification(assessors[i], 6); //You  got paid!
             }
