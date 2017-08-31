@@ -102,7 +102,7 @@ contract("Steal Stake:", function(accounts){
         it("and his stake is given to the account who revealed it.",async () => {
             balance = await userReg.balances.call(outsideUser)
             assert.equal(balance.toNumber(),
-                         balanceBeforeSteal.toNumber() + cost,
+                        balanceBeforeSteal.toNumber() + cost/2,
                          "stake was not given to the stealer")
         })
     })
