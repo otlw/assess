@@ -15,8 +15,8 @@ contract("ConceptRegistry", function() {
 
         assert.isTrue(await conReg.conceptExists.call(mewAddress), "mew doesn't exist")
     })
-    it("should set mew as the parent when not specified", async () => {
-        let txReciept = await conReg.makeConcept([], [500], 60*60*24, "")
+    it("should allow mew as the parent when specified", async () => {
+        let txReciept = await conReg.makeConcept([mewAddress], [500], 60*60*24, "")
         createdConceptAddress = txReciept.logs[0].args["_concept"]
 
         let createdConcept = await Concept.at(createdConceptAddress)
@@ -35,7 +35,7 @@ contract("ConceptRegistry", function() {
         try {
             await conReg.makeConcept(["0x123"], [500], 60*60*24, "")
         } catch (e) {
-            if(e.toString().indexOf('invalid opcode') > 0) {
+            if(e.toString().indexOf('out of gas') > 0) {
                 assert(true)
             }
             else {

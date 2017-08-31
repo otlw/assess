@@ -37,10 +37,17 @@ contract Concept {
     }
 
     function Concept(address[] _parents, uint[] _propagationRates, uint _lifetime, bytes _data) {
+        require(_parents.length == _propagationRates.length);
+        conceptRegistry = msg.sender;
+
+        for (uint j=0; j < _parents.length; j++) {
+            require(ConceptRegistry(conceptRegistry).conceptExists(_parents[j]));
+            require(_propagationRates[j] <= 1000);
+        }
+
         propagationRates = _propagationRates;
         parents = _parents;
         data = _data;
-        conceptRegistry = msg.sender;
         lifetime = _lifetime;
         userRegistry = ConceptRegistry(conceptRegistry).userRegistry();
     }
