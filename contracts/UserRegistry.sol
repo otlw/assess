@@ -39,55 +39,46 @@ contract UserRegistry {
     }
 
     //@purpose: To perform payouts in Asessments
-    function addBalance(address _to, uint _amount) onlyConcept() returns(bool) {
+    function addBalance(address _to, uint _amount, address _concept) returns(bool) {
+        require(ConceptRegistry(conceptRegistry).conceptExists(_concept) &&
+                Concept(_concept).assessmentExists(msg.sender));
         if (balances[_to] + _amount > balances[_to]){
             balances[_to] += _amount;
             return true;
-        }
-        else {
-            return false;
         }
     }
 
     //@purpose: To perform payments and staking for assessments
     function subtractBalance(address _from, uint _amount) onlyConcept() returns(bool) {
-        if (balances[_from] > _amount){
+        if (balances[_from] >= _amount){
             balances[_from] -= _amount;
             return true;
         }
-        return false;
     }
 
     function transfer(address _to, uint _amount) returns(bool) {
-        if (balances[msg.sender] > _amount &&
+        if (balances[msg.sender] >= _amount &&
            balances[_to] + _amount > balances[_to]) {
             balances[msg.sender] -= _amount;
             balances[_to] += _amount;
             return true;
         }
-        else {
-            return false;
-        }
     }
 
     //@purpose: approve an address to transfer tokens on a users behalf
-    function approve(address _spender, uint _amount) returns(bool) {
+    function approve(address _spender, uint _amount) {
         allowed[msg.sender][_spender] = _amount;
-        return true;
     }
 
     //@purpose: transfer tokens from an account
     function transferFrom(address _from, address _to, uint _amount) returns(bool) {
         if (allowed[_from][msg.sender] > _amount &&
-           balances[_from] > _amount &&
+           balances[_from] >= _amount &&
            balances[_to] > balances[_to] + _amount) {
             balances[_from] -= _amount;
             balances[_to] += _amount;
             allowed[_from][msg.sender] -= _amount;
             return true;
-        }
-        else {
-            return false;
         }
     }
 }

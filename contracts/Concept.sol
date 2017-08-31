@@ -9,9 +9,8 @@ import "./Math.sol";
 contract Concept {
     address[] public parents; //The concepts that this concept is child to (ie: Calculus is child to Math)
     bytes data;
-    address userRegistry;
-    address public conceptRegistry;
-    uint public maxWeight;
+    address public userRegistry;
+    address conceptRegistry;
     uint public lifetime;
     mapping (address => bool) public assessmentExists;
 
@@ -189,7 +188,7 @@ contract Concept {
     }
 
     /*
-      @purpose: To add a member to a concept and to recursively add  a member to parent concept, thereby halving the added weight with each generation and changing the maxWeight of each concept if necessary
+      @purpose: To add a member to a concept and to recursively add  a member to parent concept
       @param: address assessee = the address of the assessee
       @param: uint weight = the weight for the member
       @returns: nothing
@@ -215,10 +214,6 @@ contract Concept {
             memberData[_assessee].componentWeightIndex[msg.sender] = memberData[_assessee].weights.length;
         }
 
-        if (_weight > maxWeight) {
-            maxWeight = _weight;
-        }
-
         for(uint i = 0; i < parents.length; i++) {
             if((_weight*propagationRates[i])/1000 > 0) {
                 Concept(parents[i]).addWeight(_assessee, (_weight*propagationRates[i])/1000);
@@ -231,11 +226,5 @@ contract Concept {
             return UserRegistry(userRegistry).subtractBalance(_from, _amount);
         }
         return false;
-    }
-
-    function addBalance(address _to, uint _amount)  returns(bool) {
-        if (assessmentExists[msg.sender]) {
-            return UserRegistry(userRegistry).addBalance(_to, _amount);
-        }
     }
 }
