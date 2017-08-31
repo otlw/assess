@@ -29,6 +29,8 @@ module.exports = function(deployer) {
       return Distributor.deployed()
   }).then(function(instance){
       distributor = instance
+      instance.init()
+  }).then(function(){
       return initiateConcepts(distributor, setup.tree, accounts)
   }).then(function() {
       return initiateMembers(distributor, setup.tree)
@@ -84,11 +86,11 @@ function getUniformSetup(n, bins, accounts) {
     //setup syntax:
     // id, data, parentIds, propagationRates,lifetime, memberAddresses, memberWeights
     setup = [
-        [0, "", [], [500], lifetime, [], []],
-        [1, "", [0], [500], lifetime, [], []],
-        [2, "", [1], [500], lifetime, [], []],
-        [3, "", [2], [500], lifetime, [], []],
-        [4, "", [3], [500], lifetime, uniformUsers, stairs]
+        [0, "", [0], [500], lifetime, [], []],
+        [1, "", [1], [500], lifetime, [], []],
+        [2, "", [2], [500], lifetime, [], []],
+        [3, "", [3], [500], lifetime, [], []],
+        [4, "", [4], [500], lifetime, uniformUsers, stairs]
     ]
 
     nInitialUsers = n //uniformUsers.length
@@ -110,11 +112,11 @@ function defaultSetup(){
     //setup syntax:
     // id, data, parentIds, propagationRates,lifetime, memberAddresses, memberWeights
     var setup = [
-        [0, "", [], [500], lifetime, users[0], initialWeights[3]],
-        [1, "", [], [500], lifetime, users[1], initialWeights[3]],
-        [2, "", [0], [500], lifetime, users[2], initialWeights[1]],
-        [3, "", [0], [500], lifetime, users[3], initialWeights[2]],
-        [4, "", [1], [500], lifetime, users[4], initialWeights[3]]
+        [0, "", [0], [500], lifetime, users[0], initialWeights[3]],
+        [1, "", [0], [500], lifetime, users[1], initialWeights[3]],
+        [2, "", [1], [500], lifetime, users[2], initialWeights[1]],
+        [3, "", [1], [500], lifetime, users[3], initialWeights[2]],
+        [4, "", [2], [500], lifetime, users[4], initialWeights[3]]
     ]
     return {tree: setup, n: nInitialUsers}
 }
