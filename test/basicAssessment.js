@@ -45,6 +45,7 @@ contract('Assessment', function(accounts) {
         salts.push(i.toString())
         hashes.push(utils.hashScoreAndSalt(scores[i], salts[i]))
     }
+
     let receiptFromMakeAssessment;
     var ethBalancesBefore;
     var gasCosts = [];
