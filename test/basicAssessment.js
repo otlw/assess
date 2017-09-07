@@ -1,5 +1,5 @@
 var ConceptRegistry = artifacts.require("ConceptRegistry");
-var UserRegistry = artifacts.require("UserRegistry");
+var FathomToken = artifacts.require("FathomToken");
 var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
 var Distributor = artifacts.require("Distributor");
@@ -14,7 +14,7 @@ var gasPrice = deploymentScript.gasPrice
 var etherPrice = deploymentScript.etherPrice
 
 contract('Assessment', function(accounts) {
-    let userReg;
+    let aha;
     let conceptReg;
     let distributor;
 
@@ -60,8 +60,8 @@ contract('Assessment', function(accounts) {
         })
 
         it("users should have enough tokens", async() => {
-            userReg = await UserRegistry.deployed()
-            assesseeInitialBalance =  await userReg.balances.call(assessee)
+            aha = await FathomToken.deployed()
+            assesseeInitialBalance =  await aha.balances.call(assessee)
 
             assert.isAbove(assesseeInitialBalance.toNumber(), cost*size)
         })
@@ -85,7 +85,7 @@ contract('Assessment', function(accounts) {
         })
 
         it("should charge the assessee", async() => {
-            const balance = await userReg.balances.call(assessee)
+            const balance = await aha.balances.call(assessee)
             assert.equal(balance.toNumber(), assesseeInitialBalance - cost*size, "the assessee did not get charged correctly")
             })
         })
@@ -105,18 +105,18 @@ contract('Assessment', function(accounts) {
             describe("When assessors confirm", async () => {
                 let receiptFromConfirm;
                 it("they should be rejected if they have not been called", async() => {
-                    balanceBefore = await userReg.balances.call(outsideUser)
+                    balanceBefore = await aha.balances.call(outsideUser)
                     await assessmentContract.confirmAssessor({from: outsideUser})
-                    balanceAfter = await userReg.balances.call(outsideUser)
+                    balanceAfter = await aha.balances.call(outsideUser)
 
                     assert.equal(balanceBefore.toNumber(), balanceAfter.toNumber(), "an uncalled assessor could stake")
                 })
 
                 it("they should be charged", async () => {
                     confirmedAssessors = calledAssessors.slice(0, size)
-                    assessorInitialBalance = await userReg.balances.call(confirmedAssessors[0])
+                    assessorInitialBalance = await aha.balances.call(confirmedAssessors[0])
                     await chain.confirmAssessors(confirmedAssessors, assessmentContract)
-                    balanceAfter = await userReg.balances.call(confirmedAssessors[0])
+                    balanceAfter = await aha.balances.call(confirmedAssessors[0])
 
                     assert.equal(balanceAfter, assessorInitialBalance - cost)
                 })
@@ -225,7 +225,7 @@ contract('Assessment', function(accounts) {
 
             describe("The Assessor", function(){
                 it("should be paid", async () => {
-                    balanceAfter = await userReg.balances.call(confirmedAssessors[0])
+                    balanceAfter = await aha.balances.call(confirmedAssessors[0])
                     assert.equal(balanceAfter.toNumber(), assessorInitialBalance.toNumber() + cost, "assessor didn't get paid")
                 })
             })

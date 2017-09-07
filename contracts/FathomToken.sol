@@ -9,7 +9,7 @@ import "./lib/StandardToken.sol";
 @name: UserRegistry
 @purpose: To store data about users for easy, secure access and manage token balances
 */
-contract UserRegistry is StandardToken{
+contract FathomToken is StandardToken{
     address public conceptRegistry;
     string public constant name = "Aha";
 
@@ -30,7 +30,7 @@ contract UserRegistry is StandardToken{
         _;
     }
 
-    function UserRegistry(address _conceptRegistry, address _initialUser, uint _initialBalance) {
+    function FathomToken(address _conceptRegistry, address _initialUser, uint _initialBalance) {
         conceptRegistry = _conceptRegistry;
         totalSupply = _initialBalance;
         balances[_initialUser] = _initialBalance;
