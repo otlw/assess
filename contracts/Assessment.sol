@@ -227,7 +227,7 @@ contract Assessment {
         uint q = 1; //INFLATION RATE
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Done) {
-                uint payoutValue = Math.getPayout(scores[assessors[i]], finalScore, mad, cost, q);
+                uint payoutValue = Math.getPayout(Math.abs(scores[assessors[i]] - finalScore), mad, cost, q);
                 UserRegistry(userRegistry).addBalance(assessors[i], payoutValue, concept);
                 UserRegistry(userRegistry).notification(assessors[i], 6); //You  got paid!
             }
