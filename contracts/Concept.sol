@@ -1,6 +1,6 @@
 pragma solidity ^0.4.11;
 
-import "./UserRegistry.sol";
+import "./FathomToken.sol";
 import "./ConceptRegistry.sol";
 import "./Assessment.sol";
 import "./Math.sol";
@@ -9,7 +9,7 @@ import "./Math.sol";
 contract Concept {
     address[] public parents; //The concepts that this concept is child to (ie: Calculus is child to Math)
     bytes data;
-    address public userRegistry;
+    address public fathomToken;
     address conceptRegistry;
     uint public lifetime;
     mapping (address => bool) public assessmentExists;
@@ -49,7 +49,7 @@ contract Concept {
         parents = _parents;
         data = _data;
         lifetime = _lifetime;
-        userRegistry = ConceptRegistry(conceptRegistry).userRegistry();
+        fathomToken = ConceptRegistry(conceptRegistry).fathomToken();
     }
 
     function getMemberLength() constant returns(uint) {
@@ -194,7 +194,7 @@ contract Concept {
 
     function subtractBalance(address _from, uint _amount) returns(bool) {
         if (assessmentExists[msg.sender] || msg.sender == address(this)) {
-            return UserRegistry(userRegistry).subtractBalance(_from, _amount);
+            return FathomToken(fathomToken).subtractBalance(_from, _amount);
         }
         return false;
     }

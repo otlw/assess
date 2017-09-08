@@ -5,7 +5,7 @@ import "./Concept.sol";
 //@purpose: To create and store the concept ontology
 contract ConceptRegistry {
     mapping (address => bool) public conceptExists;
-    address public userRegistry;
+    address public fathomToken;
     bool initialized = false;
     address public mewAddress; //a manually created contract with no parents
     address public distributorAddress; //a manually created contract with no parents
@@ -13,9 +13,9 @@ contract ConceptRegistry {
     event ConceptCreation (address _concept);
 
     //@purpose: give this contract the address of a UserRegistry and mew Concept
-    function init(address _userRegistry, address _distributor){
+    function init(address _token, address _distributor){
         if (initialized == false) {
-            userRegistry = _userRegistry;
+            fathomToken = _token;
             distributorAddress = _distributor;
             Concept mew = new Concept(new address[] (0), new uint[] (0), uint(2**255), "");
             mewAddress = address(mew);

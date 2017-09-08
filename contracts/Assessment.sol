@@ -2,7 +2,7 @@ pragma solidity ^0.4.11;
 
 import "./Math.sol";
 import "./Concept.sol";
-import "./UserRegistry.sol";
+import "./FathomToken.sol";
 
 contract Assessment {
     address assessee;
@@ -20,7 +20,7 @@ contract Assessment {
     }
 
     address concept;
-    address userRegistry;
+    address fathomToken;
 
     uint public endTime;
     uint public latestConfirmTime;
@@ -50,7 +50,7 @@ contract Assessment {
                         uint _timeLimit) {
         assessee = _assessee;
         concept = msg.sender;
-        userRegistry = Concept(concept).userRegistry();
+        fathomToken = Concept(concept).fathomToken();
 
         endTime = now + _timeLimit;
         latestConfirmTime = now + _confirmTime;
@@ -59,16 +59,16 @@ contract Assessment {
         size = _size;
         cost = _cost;
 
-        UserRegistry(userRegistry).notification(assessee, 0); // assesse has started an assessment
+        FathomToken(fathomToken).notification(assessee, 0); // assesse has started an assessment
         done = 0;
     }
 
     function cancelAssessment() internal {
-        UserRegistry(userRegistry).addBalance(assessee, cost*size, concept);
-        UserRegistry(userRegistry).notification(assessee, 3); //Assessment Cancled and you have been refunded
+        FathomToken(fathomToken).addBalance(assessee, cost*size, concept);
+        FathomToken(fathomToken).notification(assessee, 3); //Assessment Cancled and you have been refunded
         for (uint i = 0; i < assessors.length; i++) {
-            UserRegistry(userRegistry).addBalance(assessors[i], cost, concept);
-            UserRegistry(userRegistry).notification(assessors[i], 3); //Assessment Cancled and you have been refunded
+            FathomToken(fathomToken).addBalance(assessors[i], cost, concept);
+            FathomToken(fathomToken).notification(assessors[i], 3); //Assessment Cancled and you have been refunded
         }
         suicide(concept);
     }
@@ -76,7 +76,7 @@ contract Assessment {
     //@purpose: adds a user to the pool eligible to accept an assessment
     function addAssessorToPool(address assessor) onlyConcept() returns(bool) {
         if (assessorState[assessor] == State.None) {
-            UserRegistry(userRegistry).notification(assessor, 1); //Called As A Potential Assessor
+            FathomToken(fathomToken).notification(assessor, 1); //Called As A Potential Assessor
             assessorState[assessor] = State.Called;
             return true;
         }
@@ -125,11 +125,11 @@ contract Assessment {
             ) {
             assessors.push(msg.sender);
             assessorState[msg.sender] = State.Confirmed;
-            UserRegistry(userRegistry).notification(msg.sender, 2); //Confirmed for assessing, stake has been taken
+            FathomToken(fathomToken).notification(msg.sender, 2); //Confirmed for assessing, stake has been taken
         }
         if (assessors.length == size) {
             notifyAssessors(uint(State.Confirmed), 4);
-            UserRegistry(userRegistry).notification(assessee, 4);
+            FathomToken(fathomToken).notification(assessee, 4);
             assessmentStage = State.Confirmed;
         }
     }
@@ -155,7 +155,7 @@ contract Assessment {
     function steal(int128 _score, string _salt, address assessor) {
         if(assessorState[assessor] == State.Committed) {
             if(commits[assessor] == sha3(_score, _salt)) {
-                UserRegistry(userRegistry).addBalance(msg.sender, cost/2, concept);
+                FathomToken(fathomToken).addBalance(msg.sender, cost/2, concept);
                 assessorState[assessor] = State.Burned;
                 size--;
             }
@@ -199,7 +199,7 @@ contract Assessment {
     function notifyAssessors(uint _state, uint _topic) private {
         for (uint i=0; i < assessors.length; i++) {
             if (uint(assessorState[assessors[i]]) == _state) {
-                UserRegistry(userRegistry).notification(assessors[i], _topic);
+                FathomToken(fathomToken).notification(assessors[i], _topic);
             }
         }
     }
@@ -220,16 +220,16 @@ contract Assessment {
         if (finalScore > 0) {
             Concept(concept).addMember(assessee, uint(finalScore) * finalClusterLength);
         }
-        UserRegistry(userRegistry).notification(assessee, 7);
+        FathomToken(fathomToken).notification(assessee, 7);
    }
 
-    function payout(int finalScore, uint mad) onlyInStage(State.Done) internal {
+    function payout(int _finalScore, uint mad) onlyInStage(State.Done) internal {
         uint q = 1; //INFLATION RATE
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Done) {
-                uint payoutValue = Math.getPayout(scores[assessors[i]], finalScore, mad, cost, q);
-                UserRegistry(userRegistry).addBalance(assessors[i], payoutValue, concept);
-                UserRegistry(userRegistry).notification(assessors[i], 6); //You  got paid!
+                uint payoutValue = Math.getPayout(scores[assessors[i]], _finalScore, mad, cost, q);
+                FathomToken(fathomToken).addBalance(assessors[i], payoutValue, concept);
+                FathomToken(fathomToken).notification(assessors[i], 6); //You  got paid!
             }
         }
     }
