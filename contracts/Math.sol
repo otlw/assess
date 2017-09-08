@@ -29,7 +29,7 @@ library Math {
     return(uint(sha3(block.blockhash(block.number-1), seed))%(max-min+1) + min); //Hashes the seed number with the last blockhash to generate a random number and shifts it into the desired range by using a modulus and addition
   }
 
-  function calculateMAD(int[] data) constant returns(uint meanAbsoluteDeviation) {
+  function calculateMAD(int[] data) returns(uint meanAbsoluteDeviation) {
     int mean;
     for(uint j = 0; j < data.length; j++) {
         mean += data[j];
@@ -41,9 +41,8 @@ library Math {
     meanAbsoluteDeviation /= data.length;
   }
 
-  function getFinalScore(int[] data) returns(int finalScore, uint largestClusterSize, uint MAD) {
+  function getFinalScore(int[] data, uint MAD) returns(int finalScore, uint largestClusterSize) {
         //get largest Cluster and its score
-        MAD = calculateMAD(data);
         for(uint i=0; i < data.length; i++) {
             uint clusterSize = 0;
             int clusterScore = 0;
