@@ -170,7 +170,6 @@ contract Concept {
     function addMember(address _assessee, uint _weight) {
         if (assessmentExists[msg.sender]) {
             memberData[_assessee].recentAssessment = msg.sender;
-            memberData[_assessee].index = 0;
             this.addWeight(_assessee, _weight);
         }
     }
