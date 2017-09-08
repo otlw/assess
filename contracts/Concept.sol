@@ -153,7 +153,7 @@ contract Concept {
             Assessment newAssessment = new Assessment(msg.sender, size, cost, _waitTime, _timeLimit);
             assessmentExists[address(newAssessment)] = true;
             FathomToken(fathomToken).takeBalance(msg.sender, address(newAssessment), cost*size, address(this));
-            newAssessment.setAssessorPool(block.number, address(this), size*5); //assemble the assessorPool by relevance
+            newAssessment.setAssessorPool(uint(block.blockhash(block.number - 1)), address(this), size*5);
             return true;
         }
         else {
