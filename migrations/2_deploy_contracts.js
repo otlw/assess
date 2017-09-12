@@ -44,7 +44,7 @@ function initiateConcepts (distributorInstance, _setup, accounts) {
         chain = chain.then(function(index) {
             distributorInstance.addNextConcept(_setup[index][0], _setup[index][1],
                                                _setup[index][2], _setup[index][3],
-                                               _setup[index][4], _setup[index][5].length,
+                                               _setup[index][4].length,
                                                {from:accounts[index]})
             return index += 1
         })
@@ -57,7 +57,7 @@ function initiateMembers (distributorInstance, _setup) {
     var chain = new Promise((resolve, reject)=> resolve(0))
     for(i=0; i < _setup.length; i++) {
         chain = chain.then(function(index) {
-            addInitialMembers(distributorInstance, _setup[index][0], _setup[index][5], _setup[index][6])
+            addInitialMembers(distributorInstance, index + 1, _setup[index][4], _setup[index][5]) // +1 because 0 is mew
             return index += 1
         })
     }
@@ -86,11 +86,11 @@ function getUniformSetup(n, bins, accounts) {
     //setup syntax:
     // id, data, parentIds, propagationRates,lifetime, memberAddresses, memberWeights
     setup = [
-        [0, "", [0], [500], lifetime, [], []],
-        [1, "", [1], [500], lifetime, [], []],
-        [2, "", [2], [500], lifetime, [], []],
-        [3, "", [3], [500], lifetime, [], []],
-        [4, "", [4], [500], lifetime, uniformUsers, stairs]
+        [1, "", [0], [500], lifetime, [], []],
+        [2, "", [1], [500], lifetime, [], []],
+        [3, "", [2], [500], lifetime, [], []],
+        [4, "", [3], [500], lifetime, [], []],
+        [5, "", [4], [500], lifetime, uniformUsers, stairs]
     ]
 
     nInitialUsers = n //uniformUsers.length
@@ -101,7 +101,6 @@ function defaultSetup(){
     // create five groups of initial Users and five sets of different weights
     nInitialUserGroups = 5
     groupSize = 8
-    nInitialUsers = nInitialUserGroups * groupSize
     users = []
     initialWeights = []
     lifetime = 60*60*24*365;
@@ -110,15 +109,15 @@ function defaultSetup(){
         initialWeights.push(Array(groupSize).fill(10*(i+1)))
     }
     //setup syntax:
-    // id, data, parentIds, propagationRates,lifetime, memberAddresses, memberWeights
+    // data, parentIds, propagationRates,lifetime, memberAddresses, memberWeights
     var setup = [
-        [0, "", [0], [500], lifetime, users[0], initialWeights[3]],
-        [1, "", [0], [500], lifetime, users[1], initialWeights[3]],
-        [2, "", [1], [500], lifetime, users[2], initialWeights[1]],
-        [3, "", [1], [500], lifetime, users[3], initialWeights[2]],
-        [4, "", [2], [500], lifetime, users[4], initialWeights[3]]
+        ["", [0], [500], lifetime, users[0], initialWeights[3]], // concept will have id 1 (0 is mew)
+        ["", [0], [500], lifetime, users[1], initialWeights[1]], // id 2
+        ["", [1], [500], lifetime, users[2], initialWeights[2]], // id 3
+        ["", [2], [500], lifetime, users[3], initialWeights[3]], // ...
+        ["", [3], [500], lifetime, users[4], initialWeights[3]]
     ]
-    return {tree: setup, n: nInitialUsers}
+    return {tree: setup, n: setup.length * groupSize}
 }
 
 module.exports.setupVariable = setup.tree

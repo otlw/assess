@@ -12,6 +12,17 @@ contract("Distributor", function(accounts) {
     var conceptRegistryInstance;
 
     describe("Distributor", function(){
+
+        it("is initialized and knows about the mew-concept", async () => {
+            distributorInstance = await Distributor.deployed()
+            conceptRegistryInstance = await ConceptRegistry.deployed()
+            initialized = await distributorInstance.initialized.call()
+            assert(initialized)
+            mewByD = await distributorInstance.conceptLookup.call(0)
+            mewByC = await conceptRegistryInstance.mewAddress.call()
+            assert.equal(mewByC, mewByD, "mewAddress is not correct")
+        })
+
         it("should create the initial concepts", async () => {
             distributorInstance = await Distributor.deployed()
             conceptRegistryInstance = await ConceptRegistry.deployed()
@@ -27,51 +38,60 @@ contract("Distributor", function(accounts) {
 
         it("such that they are linked to their parents", async () => {
             for (i=0; i<setup.length; i++) {
-                nParents = await distributorInstance.addedConceptParentsLength.call(i)
+                // Note: concept 0 in setup will have id=1 in the distributor because mew is 0
+                // but ommitted from the setup array
+                nParents = await distributorInstance.addedConceptParentsLength.call(i+1)
                 for (j=0; j < nParents.toNumber(); j++) {
-                    let conceptParent = await distributorInstance.addedConceptParent.call(i,j)
-                    assert.equal(conceptParent.toNumber(), setup[i][2][j], "parent "+ j + " of concept " + i + " did not get added")
+                    let conceptParent = await distributorInstance.addedConceptParent.call(i+1,j)
+                    assert.equal(conceptParent.toNumber(), setup[i][1][j], "parent "+ j + " of concept " + i + " did not get added")
                 }
             }
         })
 
         it("should add the initial users as members with their respective weight", async () => {
             for( i=0; i<setup.length; i++) {
-                let conceptInstance = await Concept.at(await distributorInstance.conceptLookup.call(i))
-                conceptMemberLength = (await distributorInstance.addedConceptMembersLength.call(i)).toNumber()
+                let conceptInstance = await Concept.at(await distributorInstance.conceptLookup.call(i+1))
+                conceptMemberLength = (await distributorInstance.addedConceptMembersLength.call(i+1)).toNumber()
                 assert.isAtLeast((await conceptInstance.getMemberLength.call()).toNumber(),
                                  conceptMemberLength,
                                  "less members in the concept than in mentioned in the distributor")
 
-                emptySpots = (await distributorInstance.addedConceptAddableMembers.call(i)).toNumber()
+                emptySpots = (await distributorInstance.addedConceptAddableMembers.call(i+1)).toNumber()
                 assert.equal(emptySpots, 0, "the distributor does not remember all added members members")
 
                 for(j=0; j<conceptMemberLength; j++) {
-                    let memberAddress = await distributorInstance.addedConceptMemberAddress.call(i,j)
+                    let memberAddress = await distributorInstance.addedConceptMemberAddress.call(i+1,j)
                     weight =  await conceptInstance.getWeight.call(memberAddress)
-                    assert.equal(weight.toNumber(), setup[i][6][j])
+                    assert.isAtLeast(weight.toNumber(), setup[i][5][j], "Member " + j + "of concept " + i + " is off:")
                 }
             }
         })
 
         it("should not allow the addition of more members than specified", async () => {
             for( i=0; i<setup.length; i++) {
-                conceptMemberLengthBefore = (await distributorInstance.addedConceptMembersLength.call(i)).toNumber()
-                let conceptInstance = await Concept.at(await distributorInstance.conceptLookup.call(0))
-                await distributorInstance.addInitialMember(0, accounts[0], 10)
-                conceptMemberLengthAfter = (await distributorInstance.addedConceptMembersLength.call(i)).toNumber()
-                assert.equal(conceptMemberLengthBefore, conceptMemberLengthAfter, "a member could be added")
+                conceptMemberLengthBefore = (await distributorInstance.addedConceptMembersLength.call(i+1)).toNumber()
+                assert.equal(conceptMemberLengthBefore, setup[i][4].length, "not all members were added beforehand")
+
+                let conceptInstance = await Concept.at(await distributorInstance.conceptLookup.call(i+1))
+                try {
+                    await distributorInstance.addInitialMember(i+1, accounts[0], 10)
+                } catch (e) {
+                    if (e.toString().indexOf('invalid opcode') > 0) {
+                        assert(true, "an 'invalid-opcode' is thrown")
+                    } else {
+                        assert(false, e.toString(), "execution should have failed with an invalid opcode error")
+                    }
+                }
             }
         })
 
         it("should propagate to the parent according to the rate", async () => {
-            const mew = await conceptRegistryInstance.mewAddress.call()
-            for( i=0; i<setup.length; i++) {
-                let initialConceptInstance = await Concept.at(await distributorInstance.conceptLookup.call(i))
-                let conceptMembers =  setup[i][5]
+            for(i=0; i<setup.length; i++) {
+                let initialConceptInstance = await Concept.at(await distributorInstance.conceptLookup.call(i+1))
+                let conceptMembers =  setup[i][4]
 
                 for(j = 0; j<setup[i][1].length; j++) {
-                    let parentConceptInstance = await Concept.at(await distributorInstance.conceptLookup(setup[i][1][j]))
+                    let parentConceptInstance = await Concept.at(await distributorInstance.conceptLookup.call(setup[i][1][j]))
 
                     for(k = 0; k <conceptMembers.length; k++) {
                         let weightInParent = await parentConceptInstance.getWeight.call(conceptMembers[k])

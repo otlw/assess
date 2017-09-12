@@ -26,7 +26,8 @@ contract("An assessment where not enough asssessors confirm", (accounts) => {
         const DistributorInstance = await Distributor.deployed()
 
         assessee.balance = await aha.balances.call(assessee.address)
-        const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(assessedConcept)).makeAssessment(cost, size, waitTime, timeLimit, {from: assessee.address})
+        assessedConceptAddress = await DistributorInstance.conceptLookup.call(assessedConcept)
+        const assessmentResult = await Concept.at(assessedConceptAddress).makeAssessment(cost, size, waitTime, timeLimit, {from: assessee.address})
 
         assessment = Assessment.at(utils.getNotificationArgsFromReceipt(assessmentResult.receipt, 1)[0].sender)
 
@@ -87,7 +88,7 @@ contract ("An assessment where assessors fail to reveal", (accounts) => {
         const DistributorInstance = await Distributor.deployed()
 
         assessee.balance = await aha.balances.call(assessee.address)
-        const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(2)).makeAssessment(cost, size, 1000, 2000, {from: assessee.address})
+        const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup.call(2)).makeAssessment(cost, size, 1000, 2000, {from: assessee.address})
 
         assessment = Assessment.at(utils.getNotificationArgsFromReceipt(assessmentResult.receipt, 1)[0].sender)
 
@@ -132,4 +133,3 @@ contract ("An assessment where assessors fail to reveal", (accounts) => {
         })
     })
 })
-
