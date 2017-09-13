@@ -4,17 +4,17 @@ import "./Concept.sol";
 import "./ConceptRegistry.sol";
 
 contract Distributor{
-    /* mapping (uint => address) public conceptLookup; */
-    uint nInitialConcepts; //how many concepts shall be added below the mew-concept
-    uint public nextConceptIndex; //keeps track of how many concepts have been added
-    mapping (uint => ConceptInfo) public setup;
+
+    // specify many concepts can be added below the mew-concept
+    uint nInitialConcepts;
+
+    // counter to keep track of how many concepts have been added
+    // mew will be created while initialization so it will start at 1
+    uint public nextConceptIndex;
+
+    mapping (uint => ConceptInfo) setup;
     address conceptRegistry;
     bool public initialized;
-
-    struct Member {
-        address memberAddress;
-        uint weight;
-    }
 
     struct ConceptInfo {
         bytes data;
@@ -33,6 +33,7 @@ contract Distributor{
 
     function init () {
         require(!initialized);
+        // creating mew
         setup[0] = ConceptInfo("", new uint[](0), 0, 0, new address[](0), new uint[](0), ConceptRegistry(conceptRegistry).mewAddress());
         nextConceptIndex = 1;
         initialized = true;

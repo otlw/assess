@@ -86,11 +86,11 @@ function getUniformSetup(n, bins, accounts) {
     //setup syntax:
     // id, data, parentIds, propagationRates,lifetime, memberAddresses, memberWeights
     setup = [
-        [1, "", [0], [500], lifetime, [], []],
-        [2, "", [1], [500], lifetime, [], []],
-        [3, "", [2], [500], lifetime, [], []],
-        [4, "", [3], [500], lifetime, [], []],
-        [5, "", [4], [500], lifetime, uniformUsers, stairs]
+        ["", [0], [500], lifetime, [], []],
+        ["", [1], [500], lifetime, [], []],
+        ["", [2], [500], lifetime, [], []],
+        ["", [3], [500], lifetime, [], []],
+        ["", [4], [500], lifetime, uniformUsers, stairs]
     ]
 
     nInitialUsers = n //uniformUsers.length
