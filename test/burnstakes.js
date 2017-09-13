@@ -1,5 +1,5 @@
 var ConceptRegistry = artifacts.require("ConceptRegistry");
-var UserRegistry = artifacts.require("UserRegistry");
+var FathomToken = artifacts.require("FathomToken");
 var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
 var Distributor = artifacts.require("Distributor");
@@ -13,7 +13,7 @@ var nInitialUsers = deploymentScript.nInitialUsers
 
 contract("Burning Stakes:", function(accounts){
     let conceptReg;
-    let userReg;
+    let aha;
     let distributor;
     let assessedConceptID = 2;
     let assessedConcept;
@@ -47,7 +47,7 @@ contract("Burning Stakes:", function(accounts){
             distributor  = await Distributor.deployed()
             assessedConceptAddress = await distributor.conceptLookup.call(assessedConceptID)
             assessedConcept = Concept.at(assessedConceptAddress)
-            userReg = await UserRegistry.deployed()
+            aha = await FathomToken.deployed()
 
             //initiate assessment, save assessors and their initial balance
             result = await assessedConcept.makeAssessment(cost, size, waitTime, timeLimit, {from: assessee})
@@ -57,10 +57,10 @@ contract("Burning Stakes:", function(accounts){
         })
 
         it("called assessors stake to confirm.", async () =>{
-            initialBalanceAssessors = await utils.getBalances(calledAssessors, userReg)
+            initialBalanceAssessors = await utils.getBalances(calledAssessors, aha)
             confirmedAssessors = calledAssessors.slice(0, size)
             await chain.confirmAssessors(confirmedAssessors, assessmentContract)
-            balancesAfter = await utils.getBalances(confirmedAssessors , userReg)
+            balancesAfter = await utils.getBalances(confirmedAssessors , aha)
             assert.equal(balancesAfter[0] , initialBalanceAssessors[0] - cost, "stake did not get taken")
         })
     })
@@ -93,7 +93,7 @@ contract("Burning Stakes:", function(accounts){
 
     describe("Finally, assessors are payed out their stake", function() {
         it("entirely if they committed in time.", async () => {
-            assessorPayouts = await utils.getBalances(confirmedAssessors, userReg)
+            assessorPayouts = await utils.getBalances(confirmedAssessors, aha)
             assert.equal(assessorPayouts[0],
                          initialBalanceAssessors[0] + cost,
                          "assessors did not get payed out correctly")

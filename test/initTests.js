@@ -1,9 +1,9 @@
 var ConceptRegistry = artifacts.require("ConceptRegistry");
-var UserRegistry = artifacts.require("UserRegistry");
+var FathomToken = artifacts.require("FathomToken");
 var Concept = artifacts.require("Concept");
 
 var conReg
-var userReg
+var aha
 
 contract("ConceptRegistry", function() {
     var mewAddress;
@@ -47,23 +47,23 @@ contract("ConceptRegistry", function() {
 
 contract("Initial User", function(accounts){ 
     it("should have a balance of 10000000000", async () => {
-        userReg = await UserRegistry.deployed()
-        balance = await userReg.balances.call(accounts[0])
+        aha = await FathomToken.deployed()
+        balance = await aha.balances.call(accounts[0])
         assert.equal(balance.toNumber(),10000000000, "User0 does not have 10 billion Ahas")
-        balance = await userReg.balances.call(accounts[4])
+        balance = await aha.balances.call(accounts[4])
         assert.equal(balance.toNumber(),10000000000, "User4 does not have 10 billion Ahas")
     });
 })
 
 contract("token transfers", function(accounts) {
     it("Should modify balances correctly", async () => {
-        var account1InitialBalance = await userReg.balances.call(accounts[0]);
-        var account2InitialBalance = await userReg.balances.call(accounts[1]);
+        var account1InitialBalance = await aha.balances.call(accounts[0]);
+        var account2InitialBalance = await aha.balances.call(accounts[1]);
         var amount = 50;
 
-        await userReg.transfer(accounts[1], amount, {from: accounts[0]})
+        await aha.transfer(accounts[1], amount, {from: accounts[0]})
 
-        assert.equal(account1InitialBalance - await userReg.balances.call(accounts[0]), amount)
-        assert.equal(await userReg.balances.call(accounts[1]) - account1InitialBalance, amount)
+        assert.equal(account1InitialBalance - await aha.balances.call(accounts[0]), amount)
+        assert.equal(await aha.balances.call(accounts[1]) - account1InitialBalance, amount)
    })
 })

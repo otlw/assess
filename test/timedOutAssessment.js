@@ -1,5 +1,5 @@
 var ConceptRegistry = artifacts.require("ConceptRegistry");
-var UserRegistry = artifacts.require("UserRegistry");
+var FathomToken = artifacts.require("FathomToken");
 var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
 var Distributor = artifacts.require("Distributor")
@@ -19,19 +19,19 @@ contract("An assessment where not enough asssessors confirm", (accounts) => {
     let assessedConcept = 4;
 
     let assessment
-    let UserRegistryInstance
+    let aha
 
     it ("should be created with at least "+size+" assessors", async () => {
-        UserRegistryInstance = await UserRegistry.deployed()
+        aha = await FathomToken.deployed()
         const DistributorInstance = await Distributor.deployed()
 
-        assessee.balance = await UserRegistryInstance.balances.call(assessee.address)
+        assessee.balance = await aha.balances.call(assessee.address)
         const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(assessedConcept)).makeAssessment(cost, size, waitTime, timeLimit, {from: assessee.address})
 
         assessment = Assessment.at(utils.getNotificationArgsFromReceipt(assessmentResult.receipt, 1)[0].sender)
 
         assessors = utils.getCalledAssessors(assessmentResult.receipt)
-        assessorInitialBalance = await UserRegistryInstance.balances.call(assessors[0])
+        assessorInitialBalance = await aha.balances.call(assessors[0])
         assert.isAtLeast(assessors.length, size, "the minimum of at least" + size + " assessors was not called")
     })
 
@@ -54,13 +54,13 @@ contract("An assessment where not enough asssessors confirm", (accounts) => {
         })
 
         it("should return the payment to the user", async () => {
-            const balance = await UserRegistryInstance.balances.call(assessee.address)
+            const balance = await aha.balances.call(assessee.address)
 
             assert.equal(balance.toNumber(), assessee.balance.toNumber(), "payment wasn't returned")
         })
 
         it("should return payment to the assessors", async () => {
-            const assessorBalance = await UserRegistryInstance.balances.call(assessors[0])
+            const assessorBalance = await aha.balances.call(assessors[0])
             assert.equal(assessorInitialBalance.toNumber(), assessorBalance.toNumber(), "stake wasn't returned")
         })
     })
@@ -75,7 +75,7 @@ contract ("An assessment where assessors fail to reveal", (accounts) => {
 
     let size = 5;
     let assessment
-    let UserRegistryInstance
+    let aha
 
     let scores = Array(5).fill(4)
     let salts = Array(5).fill("hihihi")
@@ -83,16 +83,16 @@ contract ("An assessment where assessors fail to reveal", (accounts) => {
     let hashes = Array(5).fill(utils.hashScoreAndSalt(4, "hihihi"))
 
     it ("should run until the reveal stage", async () => {
-        UserRegistryInstance = await UserRegistry.deployed()
+        aha = await FathomToken.deployed()
         const DistributorInstance = await Distributor.deployed()
 
-        assessee.balance = await UserRegistryInstance.balances.call(assessee.address)
+        assessee.balance = await aha.balances.call(assessee.address)
         const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(2)).makeAssessment(10, 5, 1000, 2000, {from: assessee.address})
 
         assessment = Assessment.at(utils.getNotificationArgsFromReceipt(assessmentResult.receipt, 1)[0].sender)
 
         assessors = utils.getCalledAssessors(assessmentResult.receipt)
-        initialBalances = await utils.getBalances(assessors, UserRegistryInstance)
+        initialBalances = await utils.getBalances(assessors, aha)
 
         await chain.confirmAssessors(assessors.slice(0,size), assessment)
         await chain.commitAssessors(assessors.slice(0,size), hashes, assessment)
@@ -119,7 +119,7 @@ contract ("An assessment where assessors fail to reveal", (accounts) => {
         })
 
         it("should payout assessors who did commit", async () => {
-            finalBalances = await utils.getBalances(assessors, UserRegistryInstance)
+            finalBalances = await utils.getBalances(assessors, aha)
             for(i=0; i < 2; i++) {
                 assert.isAbove(finalBalances[i], initialBalances[i])
             }

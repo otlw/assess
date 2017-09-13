@@ -1,5 +1,5 @@
 var ConceptRegistry = artifacts.require("ConceptRegistry");
-var UserRegistry = artifacts.require("UserRegistry");
+var FathomToken = artifacts.require("FathomToken");
 var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
 var Distributor = artifacts.require("Distributor");
@@ -13,7 +13,7 @@ var nInitialUsers = deploymentScript.nInitialUsers
 
 contract("Steal Stake:", function(accounts){
     let conceptReg;
-    let userReg;
+    let aha;
 
     let assessedConceptID = 2;
     let assessedConcept;
@@ -41,7 +41,7 @@ contract("Steal Stake:", function(accounts){
     it("An assessment is created and users are called to be assessors.", async () =>{
         assessedConceptAddress = await (await Distributor.deployed()).conceptLookup.call(assessedConceptID)
         assessedConcept = Concept.at(assessedConceptAddress)
-        userReg = await UserRegistry.deployed()
+        aha = await FathomToken.deployed()
 
         //initiate assessment, save assessors and their initial balance
         result = await assessedConcept.makeAssessment(cost, size, waitTime, timeLimit, {from: assessee})
@@ -52,9 +52,9 @@ contract("Steal Stake:", function(accounts){
 
     it("Called assessors stake to confirm.", async () =>{
         confirmedAssessors = calledAssessors.slice(0, size)
-        initialBalanceAssessors = await utils.getBalances(confirmedAssessors, userReg)
+        initialBalanceAssessors = await utils.getBalances(confirmedAssessors, aha)
         await chain.confirmAssessors(confirmedAssessors, assessmentContract)
-        balancesAfter = await utils.getBalances(confirmedAssessors, userReg)
+        balancesAfter = await utils.getBalances(confirmedAssessors, aha)
         assert.equal(balancesAfter[0] , initialBalanceAssessors[0] - cost, "stake did not get taken")
 
         stage = await assessmentContract.assessmentStage.call()
@@ -82,7 +82,7 @@ contract("Steal Stake:", function(accounts){
     describe("If someone else steals an assessor's score", function() {
         var balanceBeforeSteal;
         it("the assessor is burned and the size of the assessment reduced.", async () => {
-            balanceBeforeSteal = await userReg.balances.call(outsideUser)
+            balanceBeforeSteal = await aha.balances.call(outsideUser)
 
             sizeBeforeSteal = await assessmentContract.size.call()
             await  assessmentContract.steal(scores[1], salts[1], confirmedAssessors[1], {from:outsideUser})
@@ -100,7 +100,7 @@ contract("Steal Stake:", function(accounts){
         })
 
         it("and his stake is given to the account who revealed it.",async () => {
-            balance = await userReg.balances.call(outsideUser)
+            balance = await aha.balances.call(outsideUser)
             assert.equal(balance.toNumber(),
                         balanceBeforeSteal.toNumber() + cost/2,
                          "stake was not given to the stealer")
