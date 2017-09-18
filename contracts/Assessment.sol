@@ -213,21 +213,21 @@ contract Assessment {
                 idx++;
             }
         }
-        uint mad;
+        uint mad = Math.calculateMAD(finalScores);
         uint finalClusterLength;
-        (finalScore, finalClusterLength, mad) = Math.getFinalScore(finalScores);
-        payout(finalScore, mad);
+        (finalScore, finalClusterLength) = Math.getFinalScore(finalScores, mad);
+        payout(mad);
         if (finalScore > 0) {
             Concept(concept).addMember(assessee, uint(finalScore) * finalClusterLength);
         }
         FathomToken(fathomToken).notification(assessee, 7);
    }
 
-    function payout(int _finalScore, uint mad) onlyInStage(State.Done) internal {
+    function payout(uint mad) onlyInStage(State.Done) internal {
         uint q = 1; //INFLATION RATE
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Done) {
-                uint payoutValue = Math.getPayout(scores[assessors[i]], _finalScore, mad, cost, q);
+                uint payoutValue = Math.getPayout(Math.abs(scores[assessors[i]] - finalScore), mad, cost, q);
                 FathomToken(fathomToken).addBalance(assessors[i], payoutValue, concept);
                 FathomToken(fathomToken).notification(assessors[i], 6); //You  got paid!
             }

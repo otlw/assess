@@ -30,15 +30,16 @@ contract("Scoring Unit Tests", function(accounts) {
             for (setup of setups) {
                 var payouts = []
                 //run assessment
-                resultInfo = await mathlib.getFinalScore.call(setup.scores)
+                mad = (await mathlib.calculateMAD.call(setup.scores)).toNumber()
+                resultInfo = await mathlib.getFinalScore.call(setup.scores, mad)
                 // fetch its outcome
                 for (var key in setup.assessors) {
-                    payout = await mathlib.getPayout.call(setup.scores[key],
-                                                     resultInfo[0].toNumber(), //finalScore
-                                                     resultInfo[2].toNumber(), //mad
-                                                     stake,
-                                                     inflationRate
-                                                    )
+                    distance = Math.abs(setup.scores[key] - resultInfo[0].toNumber())
+                    payout = await mathlib.getPayout.call(distance,
+                                                          mad,
+                                                          stake,
+                                                          inflationRate
+                                                         )
                     payouts.push(payout.toNumber())
                 }
                 // save it for later comparisons
