@@ -40,16 +40,6 @@ contract FathomToken is StandardToken{
         Notification(user, msg.sender, topic);
     }
 
-    //@purpose: To perform payouts in Asessments
-    function addBalance(address _to, uint _amount, address _concept) returns(bool) {
-        require(ConceptRegistry(conceptRegistry).conceptExists(_concept) &&
-                Concept(_concept).assessmentExists(msg.sender));
-        if (balances[_to] + _amount > balances[_to]){
-            balances[_to] += _amount;
-            return true;
-        }
-    }
-
     //@purpose: To perform payments and staking for assessments
     function takeBalance(address _from, uint _amount) onlyConcept() returns(bool) {
         return transferBalance(_from, msg.sender, _amount);
