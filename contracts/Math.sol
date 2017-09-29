@@ -44,7 +44,10 @@ library Math {
                     clusterSize++;
                 }
             }
-            if(clusterSize > largestClusterSize) {
+            // save new cluster as finalCluster if it is bigger
+            // in case of a draw, the cluster with a lower score wins
+            if (clusterSize > largestClusterSize ||
+                (clusterSize == largestClusterSize && clusterScore/int(clusterSize) < finalScore)) {
                 largestClusterSize = clusterSize;
                 finalScore = clusterScore/int(clusterSize);
             }

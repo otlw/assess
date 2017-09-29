@@ -19,20 +19,22 @@ exports.getFinalScore = function(scores){
     for (j=0; j<scores.length; j++){
         clusterSize = 0
         cluster = []
-        clusterScore = 0;
+        clusterSum = 0;
         for (i=0; i<scores.length; i++){
             if (Math.abs(scores[j] - scores[i]) <= MAD ) {
                 cluster.push(true)
                 clusterSize++
-                clusterScore += scores[i]
+                clusterSum += scores[i]
             } else {
                 cluster.push(false)
             }
         }
-        if(clusterSize > largestClusterSize) {
-            largestCluster = cluster;
-            largestClusterSize = clusterSize;
-            finalScore = solidityRound(clusterScore/largestClusterSize);
+        clusterScore = solidityRound(clusterSum/clusterSize);
+        if (clusterSize > largestClusterSize ||
+            (clusterSize == largestClusterSize && clusterScore < finalScore )) {
+                largestCluster = cluster;
+                largestClusterSize = clusterSize;
+                finalScore = clusterScore;
         }
     }
     return {score: finalScore, mad:MAD, clusterMask:largestCluster, size:largestClusterSize}

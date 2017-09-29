@@ -17,10 +17,17 @@ for (t=0; t<nTests; t++){
     setup = jsAsses.generateRandomSetup(accounts, maxSize, maxScore, stake)
     setups.push(setup)
 }
+// flag to generate output
+var verbose = true
 
 //add special edgecases here:
+
 // perfect agreement
 setups.push(jsAsses.generateSetup(accounts,[1000,1000,1000,1000, 1000], stake))
+
+//draw (should go for lower score)
+setups.push(jsAsses.generateSetup(accounts,[200, 200, 200, 1000, 1000, 1000], stake))
+setups.push(jsAsses.generateSetup(accounts,[200, 200, 200, 10, 10, 10], stake))
 
 contract("Scoring Unit Tests", function(accounts) {
     describe(setups.length + " virtual assessments with random scores and varying sizes are ", async () => {
@@ -43,10 +50,14 @@ contract("Scoring Unit Tests", function(accounts) {
                     payouts.push(payout.toNumber())
                 }
                 // save it for later comparisons
-                outcomes.push({finalScore: resultInfo[0].toNumber(),
+                outcomes.push({scores: setup.scores,
+                               finalScore: resultInfo[0].toNumber(),
                                largestClusterSize: resultInfo[1].toNumber(),
                                 payouts: payouts
                               })
+            }
+            if (verbose) {
+                console.log(outcomes)
             }
         })
 
