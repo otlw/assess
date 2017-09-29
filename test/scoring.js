@@ -18,7 +18,7 @@ for (t=0; t<nTests; t++){
     setups.push(setup)
 }
 // flag to generate output
-var verbose = true
+var verbose = false
 
 //add special edgecases here:
 
