@@ -51,7 +51,7 @@ contract FathomToken is StandardToken{
     }
 
     //@purpose: To perform payments and staking for assessments
-    function subtractBalance(address _from, uint _amount) onlyConcept() returns(bool) {
+    function takeBalance(address _from, uint _amount) onlyConcept() returns(bool) {
         return transferBalance(_from, msg.sender, _amount);
     }
 }

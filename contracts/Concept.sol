@@ -192,9 +192,12 @@ contract Concept {
         }
     }
 
-    function subtractBalance(address _from, uint _amount) returns(bool) {
+    function takeBalance(address _from, uint _amount) returns(bool) {
         if (assessmentExists[msg.sender] || msg.sender == address(this)) {
-            return FathomToken(fathomToken).subtractBalance(_from, _amount);
+            if(FathomToken(fathomToken).takeBalance(_from, _amount)){
+                FathomToken(fathomToken).transfer(msg.sender, _amount);
+                return true;
+            }
         }
         return false;
     }
