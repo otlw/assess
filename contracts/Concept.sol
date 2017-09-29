@@ -147,10 +147,11 @@ contract Concept {
       @param: uint size = the number of assessors
     */
     function makeAssessment(uint cost, uint size, uint _waitTime, uint _timeLimit) returns(bool) {
-        if (size >= 5 && this.subtractBalance(msg.sender, cost*size)) {
+        if (size >= 5 && FathomToken(fathomToken).takeBalance(msg.sender, cost*size)) {
             Assessment newAssessment = new Assessment(msg.sender, size, cost, _waitTime, _timeLimit);
             assessmentExists[address(newAssessment)] = true;
             newAssessment.setAssessorPool(block.number, address(this), size*5); //assemble the assessorPool by relevance
+            FathomToken(fathomToken).transfer(address(newAssessment), cost*size);
             return true;
         }
         else {
