@@ -11,44 +11,34 @@ exports.getMAD = function(data){
     return meanAbsoluteDeviation;
 }
 
-// this function could use some proper refactoring
-// TODO: currently it is not smooth but following exactly along the lines of the solidity equivalent
 exports.getFinalScore = function(scores){
-    largestCluster = []
-    largestClusterSize = 0;
-    largestClusterMAD = 1111;
-    finalScore = 0;
+    var winner = {size:0, mad:111111, score:0, mask: []}
+    clusters = []
     MAD = this.getMAD(scores)
     for (j=0; j<scores.length; j++){
-        clusterSize = 0
-        cluster = []
-        clusterSum = 0;
-        clusterScores = []
-        clusterMAD = 0;
+        var candidate = {sum:0, size:0, mad:111111, score:0, mask: [], scores: []}
         for (i=0; i<scores.length; i++){
             if (Math.abs(scores[j] - scores[i]) <= MAD ) {
-                cluster.push(true)
-                clusterSize++
-                clusterSum += scores[i]
-                clusterScores.push(scores[i])
+                candidate.mask.push(true)
+                candidate.size = candidate.size + 1
+                candidate.sum += scores[i]
+                candidate.scores.push(scores[i])
             } else {
-                cluster.push(false)
+                candidate.mask.push(false)
             }
-            if (clusterScores.length > 0) {
-                clusterMAD = this.getMAD(clusterScores)
+            if (candidate.size > 0) {
+                candidate.mad = this.getMAD(candidate.scores)
             }
         }
-        clusterScore = solidityRound(clusterSum/clusterSize);
-        if (clusterSize > largestClusterSize ||
-            (clusterSize == largestClusterSize &&
-             (clusterMAD < largestClusterMAD || (clusterMAD == largestClusterMAD && clusterScore < finalScore )))) {
-                largestCluster = cluster;
-                largestClusterSize = clusterSize;
-                largestClusterMAD = clusterMAD;
-                finalScore = clusterScore;
+        candidate.score = solidityRound(candidate.sum/candidate.size);
+        if (candidate.size > winner.size ||
+            (candidate.size == winner.size &&
+             (candidate.mad < winner.mad || (candidate.mad == winner.mad && candidate.score < winner.score )))) {
+                 winner = {sum:candidate.sum, size:candidate.size, mad:candidate.mad, score:candidate.score, mask: candidate.mask, scores: candidate.scores}
         }
     }
-    return {score: finalScore, mad:MAD, clusterMask:largestCluster, size:largestClusterSize, clusterMAD: largestClusterMAD}
+    console.log("chosen winner before return:", winner)
+    return {score: winner.score, mad:MAD, clusterMask:winner.mask, size:winner.size, clusterMAD: winner.mad}
 }
 
 //do weird rounding to account for solidity behavior -1/2 = -1 in js but -1/2 = 0 in solidity

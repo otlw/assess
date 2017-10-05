@@ -60,7 +60,6 @@ library Math {
             if (clusterSize > largestClusterSize ||
                 (clusterSize == largestClusterSize &&
                  ((clusterMAD < largestClusterMAD) || (clusterMAD == largestClusterMAD && clusterScore < largestClusterScore)))) {
-            /* if (clusterSize > largestClusterSize) { */
                 largestClusterSize = clusterSize;
                 largestClusterScore = clusterScore;
                 largestClusterMAD = clusterMAD;

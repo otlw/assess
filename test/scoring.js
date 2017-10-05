@@ -18,17 +18,18 @@ for (t=0; t<nTests; t++){
     setups.push(setup)
 }
 // flag to generate output
-var verbose = true
+var verbose = false
 
 //add special edgecases here:
-
 // perfect agreement
 setups.push(jsAsses.generateSetup(accounts,[1000,1000,1000,1000, 1000], stake))
 
 //draw (should go for lower score)
 setups.push(jsAsses.generateSetup(accounts,[200, 200, 200, 1000, 1000, 1000], stake))
 setups.push(jsAsses.generateSetup(accounts,[200, 200, 200, 10, 10, 10], stake))
-setups.push(jsAsses.generateSetup(accounts,[200, 200, 200, 180, 180, 180], stake))
+
+//draw (should go for higher consensus)
+setups.push(jsAsses.generateSetup(accounts,[199, 200, 201, 995, 1000, 1005], stake))
 
 contract("Scoring Unit Tests", function(accounts) {
     describe(setups.length + " virtual assessments with random scores and varying sizes are ", async () => {
@@ -70,7 +71,7 @@ contract("Scoring Unit Tests", function(accounts) {
 
         it("The final score is calculated.", async () => {
             for (key in setups){
-                assert.equal(outcomes[key].finalScore, setups[key].finalScore, "finalScore was not correct")
+                assert.equal(outcomes[key].finalScore, setups[key].finalScore, "Error in setup " + key + ". FinalScore was not correct")
             }
         })
 
