@@ -18,38 +18,52 @@ library Math {
     }
 
   /*
-    @purpose: To calculate the mean average distance of an array of datapoints
+    @purpose: To calculate the mean average distance of a (sub-)array of datapoints
     @param: int[] data = the array of datapoints
+    @param: length = the position of the array that should be not considered any more
   */
-  function calculateMAD(int[] data) returns(uint meanAbsoluteDeviation) {
+  function calculateMAD(int[] data, uint length ) returns(uint meanAbsoluteDeviation) {
+      assert(length <= data.length);
       int mean;
-      for(uint j = 0; j < data.length; j++) {
+      for(uint j = 0; j < length; j++) {
           mean += data[j];
       }
-      mean /=  int(data.length);
-      for(uint k = 0; k < data.length; k++) {
+      mean /=  int(length);
+      for(uint k = 0; k < length; k++) {
           meanAbsoluteDeviation += abs(data[k] - mean);
       }
-      meanAbsoluteDeviation /= data.length;
+      meanAbsoluteDeviation /= length;
   }
 
-  function getFinalScore(int[] data, uint MAD) returns(int finalScore, uint largestClusterSize) {
-        //get largest Cluster and its score
-        for(uint i=0; i < data.length; i++) {
+  function getFinalScore(int[] data, uint MAD) returns(int largestClusterScore, uint largestClusterSize) {
+      //get largest Cluster and its score
+      uint largestClusterMAD;
+      for(uint i=0; i < data.length; i++) {
             uint clusterSize = 0;
-            int clusterScore = 0;
+            int clusterSum = 0;
+            int[] memory scores = new int[](data.length);
+            uint idx = 0;
             for (uint j = 0; j < data.length; j++){
                 if(abs(data[i] - data[j]) <= MAD ){
-                    clusterScore += data[j];
+                    clusterSum += data[j];
                     clusterSize++;
+                    scores[idx] = data[j];
+                    idx++;
                 }
             }
+            uint clusterMAD = calculateMAD(scores, clusterSize);
+            int clusterScore = clusterSum/int(clusterSize);
             // save new cluster as finalCluster if it is bigger
-            // in case of a draw, the cluster with a lower score wins
+            // in case of a draw, tiebreakers are
+            // 1) smaller mean average distance within the cluster (~consensus)
+            // 2) a lower score (~rigor)
             if (clusterSize > largestClusterSize ||
-                (clusterSize == largestClusterSize && clusterScore/int(clusterSize) < finalScore)) {
+                (clusterSize == largestClusterSize &&
+                 ((clusterMAD < largestClusterMAD) || (clusterMAD == largestClusterMAD && clusterScore < largestClusterScore)))) {
+            /* if (clusterSize > largestClusterSize) { */
                 largestClusterSize = clusterSize;
-                finalScore = clusterScore/int(clusterSize);
+                largestClusterScore = clusterScore;
+                largestClusterMAD = clusterMAD;
             }
         }
    }

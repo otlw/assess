@@ -231,7 +231,7 @@ contract Assessment {
                 idx++;
             }
         }
-        uint mad = Math.calculateMAD(finalScores);
+        uint mad = Math.calculateMAD(finalScores, done);
         uint finalClusterLength;
         (finalScore, finalClusterLength) = Math.getFinalScore(finalScores, mad);
         payout(mad);

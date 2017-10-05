@@ -18,7 +18,7 @@ for (t=0; t<nTests; t++){
     setups.push(setup)
 }
 // flag to generate output
-var verbose = false
+var verbose = true
 
 //add special edgecases here:
 
@@ -28,6 +28,7 @@ setups.push(jsAsses.generateSetup(accounts,[1000,1000,1000,1000, 1000], stake))
 //draw (should go for lower score)
 setups.push(jsAsses.generateSetup(accounts,[200, 200, 200, 1000, 1000, 1000], stake))
 setups.push(jsAsses.generateSetup(accounts,[200, 200, 200, 10, 10, 10], stake))
+setups.push(jsAsses.generateSetup(accounts,[200, 200, 200, 180, 180, 180], stake))
 
 contract("Scoring Unit Tests", function(accounts) {
     describe(setups.length + " virtual assessments with random scores and varying sizes are ", async () => {
@@ -37,7 +38,7 @@ contract("Scoring Unit Tests", function(accounts) {
             for (setup of setups) {
                 var payouts = []
                 //run assessment
-                mad = (await mathlib.calculateMAD.call(setup.scores)).toNumber()
+                mad = (await mathlib.calculateMAD.call(setup.scores, setup.scores.length)).toNumber()
                 resultInfo = await mathlib.getFinalScore.call(setup.scores, mad)
                 // fetch its outcome
                 for (var key in setup.assessors) {

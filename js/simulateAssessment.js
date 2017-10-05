@@ -11,33 +11,44 @@ exports.getMAD = function(data){
     return meanAbsoluteDeviation;
 }
 
+// this function could use some proper refactoring
+// TODO: currently it is not smooth but following exactly along the lines of the solidity equivalent
 exports.getFinalScore = function(scores){
     largestCluster = []
     largestClusterSize = 0;
+    largestClusterMAD = 1111;
     finalScore = 0;
     MAD = this.getMAD(scores)
     for (j=0; j<scores.length; j++){
         clusterSize = 0
         cluster = []
         clusterSum = 0;
+        clusterScores = []
+        clusterMAD = 0;
         for (i=0; i<scores.length; i++){
             if (Math.abs(scores[j] - scores[i]) <= MAD ) {
                 cluster.push(true)
                 clusterSize++
                 clusterSum += scores[i]
+                clusterScores.push(scores[i])
             } else {
                 cluster.push(false)
+            }
+            if (clusterScores.length > 0) {
+                clusterMAD = this.getMAD(clusterScores)
             }
         }
         clusterScore = solidityRound(clusterSum/clusterSize);
         if (clusterSize > largestClusterSize ||
-            (clusterSize == largestClusterSize && clusterScore < finalScore )) {
+            (clusterSize == largestClusterSize &&
+             (clusterMAD < largestClusterMAD || (clusterMAD == largestClusterMAD && clusterScore < finalScore )))) {
                 largestCluster = cluster;
                 largestClusterSize = clusterSize;
+                largestClusterMAD = clusterMAD;
                 finalScore = clusterScore;
         }
     }
-    return {score: finalScore, mad:MAD, clusterMask:largestCluster, size:largestClusterSize}
+    return {score: finalScore, mad:MAD, clusterMask:largestCluster, size:largestClusterSize, clusterMAD: largestClusterMAD}
 }
 
 //do weird rounding to account for solidity behavior -1/2 = -1 in js but -1/2 = 0 in solidity
