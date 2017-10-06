@@ -65,8 +65,15 @@ contract Assessment {
         done = 0;
     }
 
+<<<<<<< 0acfddb15a2b949802508cae501aa038ac15ca8f
     function cancelAssessment() private {
         FathomToken(fathomToken).transfer(assessee, cost*size);
+=======
+    /** ends the assessment, refunds the assessee and all assessors who have not been burned
+    */
+    function cancelAssessment() private {
+        FathomToken(fathomToken).addBalance(assessee, cost*assessors.length, concept);
+>>>>>>> tests for cancelled due to minSize
         FathomToken(fathomToken).notification(assessee, 3); //Assessment Cancled and you have been refunded
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] != State.Burned) {
@@ -77,7 +84,7 @@ contract Assessment {
         suicide(concept);
     }
 
-    //@purpose: adds a user to the pool eligible to accept an assessment
+    //adds a user to the pool eligible to accept an assessment
     function addAssessorToPool(address assessor) onlyConcept() returns(bool) {
         if (assessor != assessee && assessorState[assessor] == State.None) {
             FathomToken(fathomToken).notification(assessor, 1); //Called As A Potential Assessor
@@ -90,7 +97,7 @@ contract Assessment {
     }
 
     /*
-      @purpose: To recursively set the pool to draw assessors from in the assessment
+      To recursively set the pool to draw assessors from in the assessment
       stops when the pool of potential assessors is 20 times the size of the assessment2
       @param: uint seed = the seed number for random number generation
       @param: address _concept = the concept being called from
@@ -116,7 +123,7 @@ contract Assessment {
         assessmentStage = State.Called;
     }
 
-    //@purpose: called by an assessor to confirm and stake
+    // called by an assessor to confirm and stake
     function confirmAssessor() onlyInStage(State.Called) {
         // cancel if the assessment is older than 12 hours or already past its timelimit
         if (now > checkpoint){
@@ -137,8 +144,7 @@ contract Assessment {
             assessmentStage = State.Confirmed;
         }
     }
-
-    //@purpose: called by an assessor to commit a hash of their score //TODO explain in more detail what's happening
+    //called by an assessor to commit a hash of their score //TODO explain in more detail what's happening
     function commit(bytes32 _hash) onlyInStage(State.Confirmed) {
         if (now > endTime) {
             burnStakes();
@@ -168,10 +174,14 @@ contract Assessment {
         }
     }
 
+<<<<<<< 0acfddb15a2b949802508cae501aa038ac15ca8f
     //@purpose: called by assessors to reveal their own commits or others
     // must be called between 12 hours after the latest commit and 24 hours after the
     // end of the assessment. If the last commit happens during at the last possible
     // point in time (right before endtime), this period will be 12hours
+=======
+    // called by assessors to reveal their own commits or others
+>>>>>>> tests for cancelled due to minSize
     function reveal(int128 _score, string _salt) onlyInStage(State.Committed) {
         // scores can only be revealed after the challenge period has passed
         require(now > checkpoint);
@@ -197,7 +207,7 @@ contract Assessment {
         }
     }
 
-    //@purpose: burns stakes of all assessors who are committed
+    //burns stakes of all assessors who are not committed
     function burnStakes() private {
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Confirmed) {
@@ -206,7 +216,7 @@ contract Assessment {
         }
     }
 
-    /* @purpose: mark an assessor as burned, reduce size and cancel assessment
+    /* mark an assessor as burned, reduce size and cancel assessment
       if the size is below five.
       @param _assessor address of the assessor to be burned
       @param _idx index of the assessor in the assessor array (only used if the assessor address is zero)
