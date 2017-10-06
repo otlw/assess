@@ -65,12 +65,14 @@ contract Assessment {
         done = 0;
     }
 
-    function cancelAssessment() internal {
+    function cancelAssessment() private {
         FathomToken(fathomToken).transfer(assessee, cost*size);
         FathomToken(fathomToken).notification(assessee, 3); //Assessment Cancled and you have been refunded
         for (uint i = 0; i < assessors.length; i++) {
-            FathomToken(fathomToken).transfer(assessors[i], cost);
-            FathomToken(fathomToken).notification(assessors[i], 3); //Assessment Cancled and you have been refunded
+            if (assessorState[assessors[i]] != State.Burned) {
+                FathomToken(fathomToken).transfer(assessors[i], cost);
+                FathomToken(fathomToken).notification(assessors[i], 3); //Assessment Cancled and you have been refunded
+            }
         }
         suicide(concept);
     }
@@ -177,8 +179,7 @@ contract Assessment {
         if (now > endTime + 24 hours) {
             for (uint i = 0; i < assessors.length; i++) {
                 if (assessorState[assessors[i]] == State.Committed) {
-                    assessorState[assessors[i]] = State.Burned;
-                    size--;
+                    burnAssessor(address(0x0), i);
                 }
             }
         }
@@ -196,13 +197,24 @@ contract Assessment {
         }
     }
 
-    //@purpose: burns stakes as a function of how much time has passed since half of the assessors commited
-    function burnStakes() internal {
+    //@purpose: burns stakes of all assessors who are committed
+    function burnStakes() private {
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Confirmed) {
-                assessorState[assessors[i]] = State.Burned;
-                size--; //decrease size to help progress to the next assessment stage
+                burnAssessor(address(0x0), i);
            }
+        }
+    }
+
+    /* @purpose: mark an assessor as burned, reduce size and cancel assessment
+      if the size is below five.
+      @param _assessor address of the assessor to be burned
+      @param _idx index of the assessor in the assessor array (only used if the assessor address is zero)
+    */
+    function burnAssessor(address _assessor, uint _idx) private {
+        assessorState[_assessor != address(0x0) ? _assessor : assessors[_idx]] = State.Burned;
+        if (--size < 5) {
+            cancelAssessment();
         }
     }
 
@@ -233,7 +245,7 @@ contract Assessment {
         FathomToken(fathomToken).notification(assessee, 7);
    }
 
-    function payout(uint mad) onlyInStage(State.Done) internal {
+    function payout(uint mad) onlyInStage(State.Done) private {
         uint q = 1; //INFLATION RATE
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Done) {
