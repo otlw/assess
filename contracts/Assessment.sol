@@ -65,20 +65,16 @@ contract Assessment {
         done = 0;
     }
 
-<<<<<<< 0acfddb15a2b949802508cae501aa038ac15ca8f
-    function cancelAssessment() private {
-        FathomToken(fathomToken).transfer(assessee, cost*size);
-=======
     /** ends the assessment, refunds the assessee and all assessors who have not been burned
     */
     function cancelAssessment() private {
-        FathomToken(fathomToken).addBalance(assessee, cost*assessors.length, concept);
->>>>>>> tests for cancelled due to minSize
-        FathomToken(fathomToken).notification(assessee, 3); //Assessment Cancled and you have been refunded
+        uint assesseeRefund = assessmentStage == State.Called ? cost * size : cost * assessors.length; //in later stages size can be reduced by burned assessors
+        FathomToken(fathomToken).addBalance(assessee, assesseeRefund, concept);
+        FathomToken(fathomToken).notification(assessee, 3); //Assessment Cancelled and you have been refunded
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] != State.Burned) {
-                FathomToken(fathomToken).transfer(assessors[i], cost);
-                FathomToken(fathomToken).notification(assessors[i], 3); //Assessment Cancled and you have been refunded
+                FathomToken(fathomToken).addBalance(assessors[i], cost, concept);
+                FathomToken(fathomToken).notification(assessors[i], 3); //Assessment Cancelled and you have been refunded
             }
         }
         suicide(concept);
