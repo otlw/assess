@@ -65,8 +65,7 @@ contract Assessment {
         done = 0;
     }
 
-    /** ends the assessment, refunds the assessee and all assessors who have not been burned
-    */
+    // ends the assessment, refunds the assessee and all assessors who have not been burned
     function cancelAssessment() private {
         uint assesseeRefund = assessmentStage == State.Called ? cost * size : cost * assessors.length; //in later stages size can be reduced by burned assessors
         FathomToken(fathomToken).addBalance(assessee, assesseeRefund, concept);
@@ -170,14 +169,10 @@ contract Assessment {
         }
     }
 
-<<<<<<< 0acfddb15a2b949802508cae501aa038ac15ca8f
     //@purpose: called by assessors to reveal their own commits or others
     // must be called between 12 hours after the latest commit and 24 hours after the
     // end of the assessment. If the last commit happens during at the last possible
     // point in time (right before endtime), this period will be 12hours
-=======
-    // called by assessors to reveal their own commits or others
->>>>>>> tests for cancelled due to minSize
     function reveal(int128 _score, string _salt) onlyInStage(State.Committed) {
         // scores can only be revealed after the challenge period has passed
         require(now > checkpoint);
