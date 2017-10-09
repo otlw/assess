@@ -71,13 +71,28 @@ contract("Steal Stake:", function(accounts){
     })
 
     describe("If assessors reveal their own score", function() {
+
+        it ("an error is thrown if they try to do so before the end of the 12h challenge period", async () => {
+            try {
+                await assessmentContract.reveal(scores[0], salts[0], {from:confirmedAssessors[0]})
+            } catch (e) {
+                if (e.toString().indexOf('invalid opcode') > 0) {
+                    assert(true, "an 'invalid-opcode' is thrown")
+                } else {
+                    assert(false, e.toString(), "execution should have failed with an invalid opcode error")
+                }
+            }
+        })
+
         it ("they are marked as done, and the assessment progresses.", async () => {
+            await utils.evmIncreaseTime(60*60*13) // let 12h challenge period pass
             doneBefore = await assessmentContract.done.call()
             await assessmentContract.reveal(scores[0], salts[0], {from:confirmedAssessors[0]})
             doneAfter = await assessmentContract.done.call()
             assert.equal(doneAfter.toNumber(), doneBefore.toNumber() + 1, "the assessment did not progress")
         })
-    })
+
+   })
 
     describe("If someone else steals an assessor's score", function() {
         var balanceBeforeSteal;
@@ -104,6 +119,16 @@ contract("Steal Stake:", function(accounts){
             assert.equal(balance.toNumber(),
                         balanceBeforeSteal.toNumber() + cost/2,
                          "stake was not given to the stealer")
+        })
+    })
+
+    describe("If an assessors waits too long to reveal his score", async () => {
+        it("their stake is burned and the assessment moves on", async () => {
+            await utils.evmIncreaseTime(60*60*130) // let latest revealTime pass
+            sizeBefore = await assessmentContract.size.call()
+            await assessmentContract.reveal(scores[0], salts[0], {from:confirmedAssessors[2]})
+            sizeAfter = await assessmentContract.size.call()
+            assert.isBelow(sizeAfter.toNumber(), sizeBefore.toNumber(), "the assessment's size did not get reduced.")
         })
     })
 })

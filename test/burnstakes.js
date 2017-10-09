@@ -66,13 +66,14 @@ contract("Burning Stakes:", function(accounts){
     })
 
     describe("Next, assessors can" , function(){
-        it("can commit their hashed scores during thrice the time needed by the first half of them.", async () => {
+        it("can commit their hashed scores during, iff they do so before the end of the assessment.", async () => {
             await chain.commitAssessors(confirmedAssessors.slice(0, 3),
                                         hashes.slice(0, 3),
                                         assessmentContract)
 
             // let a lot of time pass so that the timelimit is over
-            await utils.evmIncreaseTime(timeLimit * 1.5)
+            await utils.evmIncreaseTime(timeLimit + 20)
+            // call commmit() to burn all uncommitted assessors and move to next stage
             await assessmentContract.commit(hashes[0], {from:confirmedAssessors[0]})
 
             stage = await assessmentContract.assessmentStage.call()
@@ -80,6 +81,8 @@ contract("Burning Stakes:", function(accounts){
         })
 
         it ("reveal their score to finish the assessment.", async () => {
+            // let the 12h challenge period pass
+            await utils.evmIncreaseTime(60*60*13)
             // let all assessors reveal
             await chain.revealAssessors(confirmedAssessors.slice(0,3),
                                         scores.slice(0,3),
