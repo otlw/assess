@@ -101,11 +101,13 @@ contract Concept {
             uint index1 = Math.getRandom(seed, members.length - 1);
             randomMember1 = members[index1];
             weight1 = getWeight(randomMember1);
+            seed++;
         }
         while (members.length > 1 && weight2 == 0) {
                 uint index2 = Math.getRandom(seed * 2, members.length - 1);
                 address randomMember2 = members[index2];
                 weight2 = getWeight(randomMember2);
+                seed += 10;
         }
         if (weight1 > weight2) {
             return randomMember1;
