@@ -23,8 +23,9 @@ contract Assessment {
     address fathomToken;
 
     uint public endTime;
-    uint public latestConfirmTime;
-
+    // will keep track of timelimits for 1) latest possible time to confirm and
+    // 2) earliest time to reveal
+    uint public checkpoint;
     uint public size;
     uint cost;
 
@@ -53,8 +54,9 @@ contract Assessment {
         fathomToken = Concept(concept).fathomToken();
 
         endTime = now + _timeLimit;
-        latestConfirmTime = now + _confirmTime;
-        assert(latestConfirmTime < endTime);
+        // set checkpoint to latest possible time to confirm
+        checkpoint = now + _confirmTime;
+        assert(checkpoint < endTime);
 
         size = _size;
         cost = _cost;
@@ -115,7 +117,7 @@ contract Assessment {
     //@purpose: called by an assessor to confirm and stake
     function confirmAssessor() onlyInStage(State.Called) {
         // cancel if the assessment is older than 12 hours or already past its timelimit
-        if (now > latestConfirmTime){
+        if (now > checkpoint){
             cancelAssessment();
             return;
         }
@@ -145,6 +147,8 @@ contract Assessment {
                 done++; //Increases done by 1 to help progress to the next assessment stage.
         }
         if (done == size) {
+            //set checkpoint to end of 12 hour challenge period after which scores can be revealed
+            checkpoint = now + 12 hours;
             notifyAssessors(uint(State.Committed), 5);
             done = 0; //Resets the done counter
             assessmentStage = State.Committed;
@@ -163,10 +167,16 @@ contract Assessment {
     }
 
     //@purpose: called by assessors to reveal their own commits or others
+    // must be called between 12 hours after the latest commit and 24 hours after the
+    // end of the assessment. If the last commit happens during at the last possible
+    // point in time (right before endtime), this period will be 12hours
     function reveal(int128 _score, string _salt) onlyInStage(State.Committed) {
-        if (now > endTime + 12 hours) { //add bigger zerocheck
+        // scores can only be revealed after the challenge period has passed
+        require(now > checkpoint);
+        // If the time to reveal has passed, burn all unrevealed assessors
+        if (now > endTime + 24 hours) {
             for (uint i = 0; i < assessors.length; i++) {
-                if (assessorState[assessors[i]] == State.Committed) { //If the assessor has not revealed their score
+                if (assessorState[assessors[i]] == State.Committed) {
                     assessorState[assessors[i]] = State.Burned;
                     size--;
                 }
