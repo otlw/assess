@@ -170,6 +170,7 @@ contract('Assessment', function(accounts) {
 
         describe("Committed", function() {
             it("committed assessors can reveal their scores", async () => {
+                await utils.evmIncreaseTime(60*60*13) // let 12h challenge period pass
                 nAssessors = confirmedAssessors.length
 
                 await chain.revealAssessors(confirmedAssessors.slice(1, nAssessors),
