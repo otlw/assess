@@ -35,7 +35,7 @@ contract("ConceptRegistry", function() {
         try {
             await conReg.makeConcept(["0x123"], [500], 60*60*24, "")
         } catch (e) {
-            if(e.toString().indexOf('out of gas') > 0) {
+            if(e.toString().indexOf('invalid opcode') > 0) {
                 assert(true)
             }
             else {
