@@ -149,9 +149,10 @@ contract Concept {
       @param: uint size = the number of assessors
     */
     function makeAssessment(uint cost, uint size, uint _waitTime, uint _timeLimit) returns(bool) {
-        if (size >= 5 && this.subtractBalance(msg.sender, cost*size)) {
+        if (size >= 5 && FathomToken(fathomToken).balanceOf(msg.sender)>= cost*size) {
             Assessment newAssessment = new Assessment(msg.sender, size, cost, _waitTime, _timeLimit);
             assessmentExists[address(newAssessment)] = true;
+            FathomToken(fathomToken).takeBalance(msg.sender, address(newAssessment), cost*size, address(this));
             newAssessment.setAssessorPool(block.number, address(this), size*5); //assemble the assessorPool by relevance
             return true;
         }
@@ -192,12 +193,5 @@ contract Concept {
                 Concept(parents[i]).addWeight(_assessee, (_weight*propagationRates[i])/1000);
             }
         }
-    }
-
-    function subtractBalance(address _from, uint _amount) returns(bool) {
-        if (assessmentExists[msg.sender] || msg.sender == address(this)) {
-            return FathomToken(fathomToken).subtractBalance(_from, _amount);
-        }
-        return false;
     }
 }
