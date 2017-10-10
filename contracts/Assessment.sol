@@ -142,7 +142,7 @@ contract Assessment {
     //called by an assessor to commit a hash of their score //TODO explain in more detail what's happening
     function commit(bytes32 _hash) onlyInStage(State.Confirmed) {
         if (now > endTime) {
-            burnStakes();
+            burnStakes(State.Confirmed);
         }
         if (assessorState[msg.sender] == State.Confirmed) {
                 commits[msg.sender] = _hash;
@@ -178,11 +178,7 @@ contract Assessment {
         require(now > checkpoint);
         // If the time to reveal has passed, burn all unrevealed assessors
         if (now > endTime + 24 hours) {
-            for (uint i = 0; i < assessors.length; i++) {
-                if (assessorState[assessors[i]] == State.Committed) {
-                    burnAssessor(assessors[i]);
-                }
-            }
+            burnStakes(State.Committed);
         }
 
         if(assessorState[msg.sender] == State.Committed &&
@@ -198,10 +194,10 @@ contract Assessment {
         }
     }
 
-    //burns stakes of all assessors who are not committed
-    function burnStakes() private {
+    //burns stakes of all assessors who are in a certain state
+    function burnStakes(State _state) private {
         for (uint i = 0; i < assessors.length; i++) {
-            if (assessorState[assessors[i]] == State.Confirmed) {
+            if (assessorState[assessors[i]] == _state) {
                 burnAssessor(assessors[i]);
            }
         }
