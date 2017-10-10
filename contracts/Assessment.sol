@@ -180,7 +180,7 @@ contract Assessment {
         if (now > endTime + 24 hours) {
             for (uint i = 0; i < assessors.length; i++) {
                 if (assessorState[assessors[i]] == State.Committed) {
-                    burnAssessor(address(0x0), i);
+                    burnAssessor(assessors[i]);
                 }
             }
         }
@@ -202,18 +202,17 @@ contract Assessment {
     function burnStakes() private {
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Confirmed) {
-                burnAssessor(address(0x0), i);
+                burnAssessor(assessors[i]);
            }
         }
     }
 
-    /* mark an assessor as burned, reduce size and cancel assessment
-      if the size is below five.
-      @param _assessor address of the assessor to be burned
-      @param _idx index of the assessor in the assessor array (only used if the assessor address is zero)
+    /** mark an assessor as burned, reduce size and cancel assessment
+        if the size is below five.
+        @param _assessor address of the assessor to be burned
     */
-    function burnAssessor(address _assessor, uint _idx) private {
-        assessorState[_assessor != address(0x0) ? _assessor : assessors[_idx]] = State.Burned;
+    function burnAssessor(address _assessor) private {
+        assessorState[_assessor] = State.Burned;
         if (--size < 5) {
             cancelAssessment();
         }
