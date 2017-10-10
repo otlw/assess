@@ -25,11 +25,6 @@ contract FathomToken is StandardToken{
       7 = Assessment Finished
     */
 
-    modifier onlyConcept() {
-        require(ConceptRegistry(conceptRegistry).conceptExists(msg.sender));
-        _;
-    }
-
     function FathomToken(address _conceptRegistry, address _initialUser, uint _initialBalance) {
         conceptRegistry = _conceptRegistry;
         totalSupply = _initialBalance;
@@ -40,21 +35,16 @@ contract FathomToken is StandardToken{
         Notification(user, msg.sender, topic);
     }
 
-    //@purpose: To perform payouts in Asessments
-    function addBalance(address _to, uint _amount, address _concept) returns(bool) {
-        require(ConceptRegistry(conceptRegistry).conceptExists(_concept) &&
-                Concept(_concept).assessmentExists(msg.sender));
-        if (balances[_to] + _amount > balances[_to]){
-            balances[_to] += _amount;
-            return true;
-        }
-    }
-
     //@purpose: To perform payments and staking for assessments
-    function subtractBalance(address _from, uint _amount) onlyConcept() returns(bool) {
-        if (balances[_from] >= _amount){
-            balances[_from] -= _amount;
-            return true;
-        }
+    function takeBalance(address _from,  address _to, uint _amount, address _concept) returns(bool) {
+        require(ConceptRegistry(conceptRegistry).conceptExists(_concept));
+        if(msg.sender != _concept) require(Concept(_concept).assessmentExists(msg.sender));
+
+        require(balances[_from] >= _amount
+                && balances[_to] + _amount > balances[_to]);
+        balances[_from] -= _amount;
+        balances[_to] += _amount;
+        Transfer(_from, _to, _amount);
+        return true;
     }
 }

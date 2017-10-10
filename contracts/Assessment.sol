@@ -66,10 +66,10 @@ contract Assessment {
     }
 
     function cancelAssessment() internal {
-        FathomToken(fathomToken).addBalance(assessee, cost*size, concept);
+        FathomToken(fathomToken).transfer(assessee, cost*size);
         FathomToken(fathomToken).notification(assessee, 3); //Assessment Cancled and you have been refunded
         for (uint i = 0; i < assessors.length; i++) {
-            FathomToken(fathomToken).addBalance(assessors[i], cost, concept);
+            FathomToken(fathomToken).transfer(assessors[i], cost);
             FathomToken(fathomToken).notification(assessors[i], 3); //Assessment Cancled and you have been refunded
         }
         suicide(concept);
@@ -123,7 +123,7 @@ contract Assessment {
         }
         if (assessorState[msg.sender] == State.Called &&
             assessors.length < size &&
-            Concept(concept).subtractBalance(msg.sender, cost)
+            FathomToken(fathomToken).takeBalance(msg.sender, address(this), cost, concept)
             ) {
             assessors.push(msg.sender);
             assessorState[msg.sender] = State.Confirmed;
@@ -159,7 +159,7 @@ contract Assessment {
     function steal(int128 _score, string _salt, address assessor) {
         if(assessorState[assessor] == State.Committed) {
             if(commits[assessor] == sha3(_score, _salt)) {
-                FathomToken(fathomToken).addBalance(msg.sender, cost/2, concept);
+                FathomToken(fathomToken).transfer(msg.sender, cost/2);
                 assessorState[assessor] = State.Burned;
                 size--;
             }
@@ -238,7 +238,7 @@ contract Assessment {
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Done) {
                 uint payoutValue = Math.getPayout(Math.abs(scores[assessors[i]] - finalScore), mad, cost, q);
-                FathomToken(fathomToken).addBalance(assessors[i], payoutValue, concept);
+                FathomToken(fathomToken).transfer(assessors[i], payoutValue);
                 FathomToken(fathomToken).notification(assessors[i], 6); //You  got paid!
             }
         }
