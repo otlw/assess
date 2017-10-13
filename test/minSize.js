@@ -93,6 +93,7 @@ contract ("Minimum size violations will cancel assessments", (accounts) => {
         it ("all five assessors confirm and commit, but only four assessors reveal", async () => {
             await chain.confirmAssessors(assessors.slice(0,size), assessment)
             await chain.commitAssessors(assessors.slice(0,size), hashes, assessment)
+            utils.evmIncreaseTime(13*60*60) //let challenge period pass
             await chain.revealAssessors(assessors.slice(1,size), scores.slice(1,size), salts.slice(1,size), assessment)
 
             stage = await assessment.assessmentStage.call()

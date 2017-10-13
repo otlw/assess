@@ -70,6 +70,7 @@ contract ("An assessment where assessors fail to reveal", (accounts) => {
     let initialBalances;
 
     let size = 6;
+    let cost = 10;
     let assessment
     let aha
 
@@ -86,29 +87,31 @@ contract ("An assessment where assessors fail to reveal", (accounts) => {
         const DistributorInstance = await Distributor.deployed()
 
         assessee.balance = await aha.balances.call(assessee.address)
-        const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(2)).makeAssessment(10, size, 1000, 2000, {from: assessee.address})
+        const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(2)).makeAssessment(cost, size, 1000, 2000, {from: assessee.address})
 
         assessment = Assessment.at(utils.getNotificationArgsFromReceipt(assessmentResult.receipt, 1)[0].sender)
 
         assessors = utils.getCalledAssessors(assessmentResult.receipt)
+        assert.isAbove(assessors.length, size -1, "not enough assessors were called")
         initialBalances = await utils.getBalances(assessors, aha)
 
         await chain.confirmAssessors(assessors.slice(0,size), assessment)
-        await chain.commitAssessors(assessors.slice(0,size), hashes, assessment)
+        await chain.commitAssessors(assessors, hashes, assessment)
 
         stage = await assessment.assessmentStage.call()
 
         assert.equal(stage.toNumber(), 3, "did not reach Committed stage")
     })
 
-    it ("should allow assessors to reveal before 12 hours have passed", async () => {
+    it ("should allow assessors to reveal before 24 hours have passed", async () => {
+        utils.evmIncreaseTime(13*60*60) // wait challenge period
         await chain.revealAssessors(assessors.slice(1, size), scores.slice(1, size), salts.slice(1, size), assessment)
 
         const done = await assessment.done.call()
         assert.equal(done.toNumber(), size-1)
     })
 
-    describe("After 12 hours", () => {
+    describe("After 24 hours", () => {
         it("assessors shouldn't be able to reveal", async () => {
             utils.evmIncreaseTime(13*60*60)
             await assessment.reveal(4, "hihihi")

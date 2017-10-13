@@ -68,11 +68,11 @@ contract Assessment {
     // ends the assessment, refunds the assessee and all assessors who have not been burned
     function cancelAssessment() private {
         uint assesseeRefund = assessmentStage == State.Called ? cost * size : cost * assessors.length; //in later stages size can be reduced by burned assessors
-        FathomToken(fathomToken).addBalance(assessee, assesseeRefund, concept);
+        FathomToken(fathomToken).transfer(assessee, assesseeRefund);
         FathomToken(fathomToken).notification(assessee, 3); //Assessment Cancelled and you have been refunded
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] != State.Burned) {
-                FathomToken(fathomToken).addBalance(assessors[i], cost, concept);
+                FathomToken(fathomToken).transfer(assessors[i], cost);
                 FathomToken(fathomToken).notification(assessors[i], 3); //Assessment Cancelled and you have been refunded
             }
         }
