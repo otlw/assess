@@ -20,7 +20,7 @@ contract("Burning Stakes:", function(accounts){
     let assessmentContract;
 
     let cost = 150000;
-    let size = 5;
+    let size = 6;
     let timeLimit = 10000;
     let waitTime = 100;
 
@@ -66,9 +66,9 @@ contract("Burning Stakes:", function(accounts){
     })
 
     describe("Next, assessors can" , function(){
-        it("can commit their hashed scores during, iff they do so before the end of the assessment.", async () => {
-            await chain.commitAssessors(confirmedAssessors.slice(0, 3),
-                                        hashes.slice(0, 3),
+        it("can commit their hashed scores, iff they do so before the end of the assessment.", async () => {
+            await chain.commitAssessors(confirmedAssessors.slice(1, size),
+                                        hashes.slice(1, size),
                                         assessmentContract)
 
             // let a lot of time pass so that the timelimit is over
@@ -84,9 +84,9 @@ contract("Burning Stakes:", function(accounts){
             // let the 12h challenge period pass
             await utils.evmIncreaseTime(60*60*13)
             // let all assessors reveal
-            await chain.revealAssessors(confirmedAssessors.slice(0,3),
-                                        scores.slice(0,3),
-                                        salts.slice(0,3),
+            await chain.revealAssessors(confirmedAssessors.slice(1,size),
+                                        scores.slice(1,size),
+                                        salts.slice(1,size),
                                         assessmentContract)
 
             stage = await assessmentContract.assessmentStage.call()
@@ -97,14 +97,14 @@ contract("Burning Stakes:", function(accounts){
     describe("Finally, assessors are payed out their stake", function() {
         it("entirely if they committed in time.", async () => {
             assessorPayouts = await utils.getBalances(confirmedAssessors, aha)
-            assert.equal(assessorPayouts[0],
-                         initialBalanceAssessors[0] + cost,
+            assert.equal(assessorPayouts[1],
+                         initialBalanceAssessors[1] + cost,
                          "assessors did not get payed out correctly")
         })
 
         it("not at all if they were too late.", async () =>{
-            assert.equal(assessorPayouts[4],
-                         initialBalanceAssessors[4] - cost,
+            assert.equal(assessorPayouts[0],
+                         initialBalanceAssessors[0] - cost,
                          "the late assessor's stake did not get entirely burned")
        })
     })

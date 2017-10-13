@@ -65,17 +65,21 @@ contract Assessment {
         done = 0;
     }
 
-    function cancelAssessment() internal {
-        FathomToken(fathomToken).transfer(assessee, cost*size);
-        FathomToken(fathomToken).notification(assessee, 3); //Assessment Cancled and you have been refunded
+    // ends the assessment, refunds the assessee and all assessors who have not been burned
+    function cancelAssessment() private {
+        uint assesseeRefund = assessmentStage == State.Called ? cost * size : cost * assessors.length; //in later stages size can be reduced by burned assessors
+        FathomToken(fathomToken).transfer(assessee, assesseeRefund);
+        FathomToken(fathomToken).notification(assessee, 3); //Assessment Cancelled and you have been refunded
         for (uint i = 0; i < assessors.length; i++) {
-            FathomToken(fathomToken).transfer(assessors[i], cost);
-            FathomToken(fathomToken).notification(assessors[i], 3); //Assessment Cancled and you have been refunded
+            if (assessorState[assessors[i]] != State.Burned) {
+                FathomToken(fathomToken).transfer(assessors[i], cost);
+                FathomToken(fathomToken).notification(assessors[i], 3); //Assessment Cancelled and you have been refunded
+            }
         }
         suicide(concept);
     }
 
-    //@purpose: adds a user to the pool eligible to accept an assessment
+    //adds a user to the pool eligible to accept an assessment
     function addAssessorToPool(address assessor) onlyConcept() returns(bool) {
         if (assessor != assessee && assessorState[assessor] == State.None) {
             FathomToken(fathomToken).notification(assessor, 1); //Called As A Potential Assessor
@@ -88,7 +92,7 @@ contract Assessment {
     }
 
     /*
-      @purpose: To recursively set the pool to draw assessors from in the assessment
+      To recursively set the pool to draw assessors from in the assessment
       stops when the pool of potential assessors is 20 times the size of the assessment2
       @param: uint seed = the seed number for random number generation
       @param: address _concept = the concept being called from
@@ -114,7 +118,7 @@ contract Assessment {
         assessmentStage = State.Called;
     }
 
-    //@purpose: called by an assessor to confirm and stake
+    // called by an assessor to confirm and stake
     function confirmAssessor() onlyInStage(State.Called) {
         // cancel if the assessment is older than 12 hours or already past its timelimit
         if (now > checkpoint){
@@ -135,11 +139,10 @@ contract Assessment {
             assessmentStage = State.Confirmed;
         }
     }
-
-    //@purpose: called by an assessor to commit a hash of their score //TODO explain in more detail what's happening
+    //called by an assessor to commit a hash of their score //TODO explain in more detail what's happening
     function commit(bytes32 _hash) onlyInStage(State.Confirmed) {
         if (now > endTime) {
-            burnStakes();
+            burnStakes(State.Confirmed);
         }
         if (assessorState[msg.sender] == State.Confirmed) {
                 commits[msg.sender] = _hash;
@@ -175,12 +178,7 @@ contract Assessment {
         require(now > checkpoint);
         // If the time to reveal has passed, burn all unrevealed assessors
         if (now > endTime + 24 hours) {
-            for (uint i = 0; i < assessors.length; i++) {
-                if (assessorState[assessors[i]] == State.Committed) {
-                    assessorState[assessors[i]] = State.Burned;
-                    size--;
-                }
-            }
+            burnStakes(State.Committed);
         }
 
         if(assessorState[msg.sender] == State.Committed &&
@@ -196,13 +194,23 @@ contract Assessment {
         }
     }
 
-    //@purpose: burns stakes as a function of how much time has passed since half of the assessors commited
-    function burnStakes() internal {
+    //burns stakes of all assessors who are in a certain state
+    function burnStakes(State _state) private {
         for (uint i = 0; i < assessors.length; i++) {
-            if (assessorState[assessors[i]] == State.Confirmed) {
-                assessorState[assessors[i]] = State.Burned;
-                size--; //decrease size to help progress to the next assessment stage
+            if (assessorState[assessors[i]] == _state) {
+                burnAssessor(assessors[i]);
            }
+        }
+    }
+
+    /** mark an assessor as burned, reduce size and cancel assessment
+        if the size is below five.
+        @param _assessor address of the assessor to be burned
+    */
+    function burnAssessor(address _assessor) private {
+        assessorState[_assessor] = State.Burned;
+        if (--size < 5) {
+            cancelAssessment();
         }
     }
 
@@ -233,7 +241,7 @@ contract Assessment {
         FathomToken(fathomToken).notification(assessee, 7);
    }
 
-    function payout(uint mad) onlyInStage(State.Done) internal {
+    function payout(uint mad) onlyInStage(State.Done) private {
         uint q = 1; //INFLATION RATE
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Done) {

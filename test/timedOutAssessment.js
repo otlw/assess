@@ -55,7 +55,6 @@ contract("An assessment where not enough asssessors confirm", (accounts) => {
 
         it("should return the payment to the user", async () => {
             const balance = await aha.balances.call(assessee.address)
-
             assert.equal(balance.toNumber(), assessee.balance.toNumber(), "payment wasn't returned")
         })
 
@@ -67,70 +66,70 @@ contract("An assessment where not enough asssessors confirm", (accounts) => {
 })
 
 contract ("An assessment where assessors fail to reveal", (accounts) => {
-    let assessee = {address: accounts[5]}
-    let assessors;
-
     let finalBalances;
     let initialBalances;
 
-    let size = 5;
+    let size = 6;
+    let cost = 10;
     let assessment
     let aha
 
-    let scores = Array(5).fill(4)
-    let salts = Array(5).fill("hihihi")
+    let assessee = {address: accounts[size+1]}
+    let assessors;
 
-    let hashes = Array(5).fill(utils.hashScoreAndSalt(4, "hihihi"))
+    let scores = Array(size).fill(4)
+    let salts = Array(size).fill("hihihi")
+
+    let hashes = Array(size).fill(utils.hashScoreAndSalt(4, "hihihi"))
 
     it ("should run until the reveal stage", async () => {
         aha = await FathomToken.deployed()
         const DistributorInstance = await Distributor.deployed()
 
         assessee.balance = await aha.balances.call(assessee.address)
-        const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(2)).makeAssessment(10, 5, 1000, 2000, {from: assessee.address})
+        const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(2)).makeAssessment(cost, size, 1000, 2000, {from: assessee.address})
 
         assessment = Assessment.at(utils.getNotificationArgsFromReceipt(assessmentResult.receipt, 1)[0].sender)
 
         assessors = utils.getCalledAssessors(assessmentResult.receipt)
+        assert.isAbove(assessors.length, size -1, "not enough assessors were called")
         initialBalances = await utils.getBalances(assessors, aha)
 
         await chain.confirmAssessors(assessors.slice(0,size), assessment)
-        await chain.commitAssessors(assessors.slice(0,size), hashes, assessment)
+        await chain.commitAssessors(assessors, hashes, assessment)
 
         stage = await assessment.assessmentStage.call()
 
         assert.equal(stage.toNumber(), 3, "did not reach Committed stage")
     })
 
-    it ("should allow assessors to confirm before 12 hours have passed", async () => {
-        // let challenge period pass
-        utils.evmIncreaseTime(13*60*60)
-        await chain.revealAssessors(assessors.slice(0,3 ), scores.slice(0, 3), salts.slice(0, 3), assessment)
+    it ("should allow assessors to reveal before 24 hours have passed", async () => {
+        utils.evmIncreaseTime(13*60*60) // wait challenge period
+        await chain.revealAssessors(assessors.slice(1, size), scores.slice(1, size), salts.slice(1, size), assessment)
 
         const done = await assessment.done.call()
-        assert.equal(done.toNumber(), 3)
+        assert.equal(done.toNumber(), size-1)
     })
 
-    describe("After 12 hours", () => {
-        it("assessors shouldn't be able to confirm", async () => {
+    describe("After 24 hours", () => {
+        it("assessors shouldn't be able to reveal", async () => {
             utils.evmIncreaseTime(13*60*60)
             await assessment.reveal(4, "hihihi")
 
             const done = await assessment.done.call()
-            assert.equal(done.toNumber(), 3)
+            assert.equal(done.toNumber(), size-1)
         })
 
-        it("should payout assessors who did commit", async () => {
+        it("should payout assessors who did reveal", async () => {
             finalBalances = await utils.getBalances(assessors, aha)
-            for(i=0; i < 2; i++) {
+            for(i=1; i < 4; i++) {
                 assert.isAbove(finalBalances[i], initialBalances[i])
             }
         })
 
         it("should not payout assessors who didn't reveal", () => {
-            for(i = 3; i < 5; i++) {
-                assert.isBelow(finalBalances[i], initialBalances[i])
-            }
+                assert.isBelow(finalBalances[0], initialBalances[0])
         })
     })
 })
+
