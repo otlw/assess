@@ -22,6 +22,7 @@ contract('Assessment', function(accounts) {
     let assessedConcept;
     let ConceptInstance;
     let assessmentContract;
+    let assessmentData;
 
     let cost = 10000000;
     let size = 5;
@@ -70,23 +71,24 @@ contract('Assessment', function(accounts) {
     describe('Concept', function() {
         it("should initiate an assessment", async () => {
             ethBalancesBefore = utils.getEthBalances(accounts.slice(0,nInitialUsers + 2))
-            txResult = await assessedConcept.makeAssessment(cost,size, waitTime, timeLimit, {from: assessee})
-            receiptFromMakeAssessment = txResult.receipt
+
+            assessmentData = await chain.makeAssessment(assessedConcept.address, assessee, cost, size, waitTime, timeLimit)
+            receiptFromMakeAssessment = assessmentData.txResult.receipt
+
             gasCosts.push({function: "makeAssessment",
                            cost: {
                                ether:web3.fromWei(receiptFromMakeAssessment.gasUsed * gasPrice, "ether"),
                                $: utils.weiToDollar(receiptFromMakeAssessment.gasUsed * gasPrice, etherPrice)
                            }})
 
-            const eventLogs = utils.getNotificationArgsFromReceipt(receiptFromMakeAssessment, 0)
-            assessmentContract = Assessment.at(eventLogs[0].sender)
+            assessmentContract = Assessment.at(assessmentData.address)
 
-            assert.isTrue(await assessedConcept.assessmentExists.call(eventLogs[0].sender), "the assessment hasn't been created")
+            assert.isTrue(await assessedConcept.assessmentExists.call(assessmentContract.address), "the assessment hasn't been created")
         })
 
         it("should charge the assessee", async() => {
             const balance = await aha.balances.call(assessee)
-            assert.equal(balance.toNumber(), assesseeInitialBalance - cost*size, "the assessee did not get charged correctly")
+            assert.equal(balance.toNumber(), assesseeInitialBalance - cost*size*assessmentData.tries, "the assessee did not get charged correctly")
             })
         })
 
@@ -95,11 +97,8 @@ contract('Assessment', function(accounts) {
 
         describe('Called', function() {
             it("should call the assessors", async() => {
-                callsToAssessors = utils.getNotificationArgsFromReceipt(receiptFromMakeAssessment, 1)
-                for (a=0; a<callsToAssessors.length; a++){
-                    calledAssessors.push(callsToAssessors[a].user)
-                }
-                assert.isAtLeast(callsToAssessors.length, size , "not enough assesssors got added to the pool")
+                calledAssessors = assessmentData.assessors
+                assert.isAtLeast(calledAssessors.length, size , "not enough assesssors got added to the pool")
             })
 
             describe("When assessors confirm", async () => {

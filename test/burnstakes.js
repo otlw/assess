@@ -50,9 +50,10 @@ contract("Burning Stakes:", function(accounts){
             aha = await FathomToken.deployed()
 
             //initiate assessment, save assessors and their initial balance
-            result = await assessedConcept.makeAssessment(cost, size, waitTime, timeLimit, {from: assessee})
-            calledAssessors = utils.getCalledAssessors(result.receipt)
-            assessmentContract = utils.getAssessment(result.receipt)
+            assessmentData = await chain.makeAssessment(assessedConceptAddress, assessee, cost, size, waitTime, timeLimit)
+            assessmentContract = Assessment.at(assessmentData.address)
+            calledAssessors = assessmentData.assessors
+
             assert.isAbove(calledAssessors.length, size -1, "not enough assessors were called")
         })
 
