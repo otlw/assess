@@ -37,7 +37,6 @@ exports.getFinalScore = function(scores){
                  winner = {sum:candidate.sum, size:candidate.size, mad:candidate.mad, score:candidate.score, mask: candidate.mask, scores: candidate.scores}
         }
     }
-    console.log("chosen winner before return:", winner)
     return {score: winner.score, mad:MAD, clusterMask:winner.mask, size:winner.size, clusterMAD: winner.mad}
 }
 
