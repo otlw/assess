@@ -31,12 +31,12 @@ contract ("Minimum size violations will cancel assessments", (accounts) => {
             aha = await FathomToken.deployed()
             const DistributorInstance = await Distributor.deployed()
 
-            assessee.balance = await aha.balances.call(assessee.address)
-            const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(2)).makeAssessment(cost, size, 1000, timelimit, {from: assessee.address})
+            assessmentData = await chain.makeAssessment((await DistributorInstance.conceptLookup(2)), assessee.address, cost, size, 1000, timelimit)
+            assessment = Assessment.at(assessmentData.address)
+            assessors = assessmentData.assessors
+            // save the assessee's balance before the last makeAssessment() call
+            assessee.balance = (await aha.balances.call(assessee.address)).toNumber() + cost * size
 
-            assessment = Assessment.at(utils.getNotificationArgsFromReceipt(assessmentResult.receipt, 1)[0].sender)
-
-            assessors = utils.getCalledAssessors(assessmentResult.receipt)
             initialBalances = await utils.getBalances(assessors, aha)
             assert.isAbove(assessors.length, size-1, "not enough assessors were called")
         })
@@ -61,7 +61,7 @@ contract ("Minimum size violations will cancel assessments", (accounts) => {
 
         it("the assessee is refunded", async () => {
             balanceAfterRefund = await aha.balanceOf.call(assessee.address)
-            assert.equal(assessee.balance.toNumber(), balanceAfterRefund.toNumber(), "assessee did not get refunded")
+            assert.equal(assessee.balance, balanceAfterRefund.toNumber(), "assessee did not get refunded")
         })
 
         it("the assessors who committed are refunded", async () => {
@@ -80,12 +80,12 @@ contract ("Minimum size violations will cancel assessments", (accounts) => {
             aha = await FathomToken.deployed()
             const DistributorInstance = await Distributor.deployed()
 
-            assessee.balance = await aha.balances.call(assessee.address)
-            const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(2)).makeAssessment(cost, size, 1000, timelimit, {from: assessee.address})
+            assessmentData = await chain.makeAssessment((await DistributorInstance.conceptLookup(2)), assessee.address, cost, size, 1000, timelimit)
+            assessment = Assessment.at(assessmentData.address)
+            assessors = assessmentData.assessors
 
-            assessment = Assessment.at(utils.getNotificationArgsFromReceipt(assessmentResult.receipt, 1)[0].sender)
-
-            assessors = utils.getCalledAssessors(assessmentResult.receipt)
+            // save the assessee's balance before the last makeAssessment() call
+            assessee.balance = (await aha.balances.call(assessee.address)).toNumber() + cost * size
             initialBalances = await utils.getBalances(assessors, aha)
             assert.isAbove(assessors.length, size-1, "not enough assessors were called")
         })
@@ -112,7 +112,7 @@ contract ("Minimum size violations will cancel assessments", (accounts) => {
 
         it("the assessee is refunded", async () => {
             balanceAfterRefund = await aha.balanceOf.call(assessee.address)
-            assert.equal(assessee.balance.toNumber(), balanceAfterRefund.toNumber(), "assessee did not get refunded")
+            assert.equal(assessee.balance, balanceAfterRefund.toNumber(), "assessee did not get refunded")
         })
 
         it("the assessors who revealed are refunded", async () => {

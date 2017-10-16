@@ -120,7 +120,7 @@ contract Assessment {
 
     // called by an assessor to confirm and stake
     function confirmAssessor() onlyInStage(State.Called) {
-        // cancel if the assessment is older than 12 hours or already past its timelimit
+        // cancel if the assessment is past its startTime
         if (now > checkpoint){
             cancelAssessment();
             return;

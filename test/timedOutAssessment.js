@@ -10,10 +10,10 @@ var chain = require("../js/assessmentFunctions.js")
 contract("An assessment where not enough asssessors confirm", (accounts) => {
     let cost = 10;
     let size = 5;
-    let timeLimit = 10000;
-    let waitTime = 100;
+    let timeLimit = 2000;
+    let waitTime = 1000;
 
-    let assessee = {address: accounts[5]}
+    let assessee = {address: accounts[size+1]}
     let assessors;
     let assessorInitialBalance;
     let assessedConcept = 4;
@@ -25,12 +25,12 @@ contract("An assessment where not enough asssessors confirm", (accounts) => {
         aha = await FathomToken.deployed()
         const DistributorInstance = await Distributor.deployed()
 
-        assessee.balance = await aha.balances.call(assessee.address)
-        const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(assessedConcept)).makeAssessment(cost, size, waitTime, timeLimit, {from: assessee.address})
+        assessmentData = await chain.makeAssessment((await DistributorInstance.conceptLookup(2)), assessee.address, cost, size, waitTime, timeLimit)
+        assessment = Assessment.at(assessmentData.address)
+        assessors = assessmentData.assessors
 
-        assessment = Assessment.at(utils.getNotificationArgsFromReceipt(assessmentResult.receipt, 1)[0].sender)
-
-        assessors = utils.getCalledAssessors(assessmentResult.receipt)
+        // save the assessee's balance before the last makeAssessment() call
+        assessee.balance = (await aha.balances.call(assessee.address)).toNumber() + cost * size
         assessorInitialBalance = await aha.balances.call(assessors[0])
         assert.isAtLeast(assessors.length, size, "the minimum of at least" + size + " assessors was not called")
     })
@@ -53,9 +53,9 @@ contract("An assessment where not enough asssessors confirm", (accounts) => {
             assert.equal(notifications.length, 0, "an assessor could confirm")
         })
 
-        it("should return the payment to the user", async () => {
+        it("should return the payment to the assessee", async () => {
             const balance = await aha.balances.call(assessee.address)
-            assert.equal(balance.toNumber(), assessee.balance.toNumber(), "payment wasn't returned")
+            assert.equal(balance.toNumber(), assessee.balance, "payment wasn't returned")
         })
 
         it("should return payment to the assessors", async () => {
@@ -86,13 +86,12 @@ contract ("An assessment where assessors fail to reveal", (accounts) => {
         aha = await FathomToken.deployed()
         const DistributorInstance = await Distributor.deployed()
 
+
+        assessmentData = await chain.makeAssessment((await DistributorInstance.conceptLookup(2)), assessee.address, cost, size, 1000, 2000)
+        assessment = Assessment.at(assessmentData.address)
+        assessors = assessmentData.assessors
         assessee.balance = await aha.balances.call(assessee.address)
-        const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(2)).makeAssessment(cost, size, 1000, 2000, {from: assessee.address})
 
-        assessment = Assessment.at(utils.getNotificationArgsFromReceipt(assessmentResult.receipt, 1)[0].sender)
-
-        assessors = utils.getCalledAssessors(assessmentResult.receipt)
-        assert.isAbove(assessors.length, size -1, "not enough assessors were called")
         initialBalances = await utils.getBalances(assessors, aha)
 
         await chain.confirmAssessors(assessors.slice(0,size), assessment)
