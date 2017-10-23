@@ -234,20 +234,42 @@ contract Assessment {
         uint mad = Math.calculateMAD(finalScores);
         uint finalClusterLength;
         (finalScore, finalClusterLength) = Math.getFinalScore(finalScores, mad);
-        payout(mad);
+        payout(mad, finalClusterLength);
         if (finalScore > 0) {
             Concept(concept).addMember(assessee, uint(finalScore) * finalClusterLength);
         }
         FathomToken(fathomToken).notification(assessee, 7);
    }
 
-    function payout(uint mad) onlyInStage(State.Done) private {
+    function payout(uint mad, uint finalClusterLength) onlyInStage(State.Done) internal {
         uint q = 1; //INFLATION RATE
+        uint dissentBonus = 0;
+        bool[] memory inAssessor = new bool[] (assessors.length);
+        uint[] memory inAssessorPayout = new uint[] (assessors.length);
+        // pay out dissenting assessors their reduced stake and save how much stake to redistribute to whom
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Done) {
-                uint payoutValue = Math.getPayout(Math.abs(scores[assessors[i]] - finalScore), mad, cost, q);
-                FathomToken(fathomToken).transfer(assessors[i], payoutValue);
-                FathomToken(fathomToken).notification(assessors[i], 6); //You  got paid!
+                uint payoutValue;
+                bool dissenting;
+                (payoutValue, dissenting) = Math.getPayout(Math.abs(scores[assessors[i]] - finalScore), mad, cost, q);
+                if (dissenting) {
+                    dissentBonus += cost - payoutValue;
+                    if (payoutValue > 0) {
+                        FathomToken(fathomToken).transfer(assessors[i], payoutValue);
+                    }
+                    FathomToken(fathomToken).notification(assessors[i], 6); //All have revealed; Tokens paid out
+                } else {
+                    inAssessor[i] = true;
+                    inAssessorPayout[i] = payoutValue;
+                }
+            }
+        }
+        // pay out the majority-assessors their share of stake + the remainders of any dissenting assessors
+        for (uint j = 0; j < inAssessorPayout.length; j++) {
+            if (inAssessor[j]) {
+                FathomToken(fathomToken).transfer(assessors[j],
+                                                    inAssessorPayout[j] + dissentBonus/finalClusterLength);
+                FathomToken(fathomToken).notification(assessors[j], 6); //All have revealed; Tokens paid out
             }
         }
     }

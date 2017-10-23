@@ -51,15 +51,22 @@ library Math {
         }
    }
 
-  function getPayout(uint distance, uint mad, uint stake, uint q) returns(uint payout){
+  /*
+    @purpose: To calculate the proportion of stake an assessors gets back and whether
+    or not the remained should be distributed to the others or not (iff they are not in
+    the biggest cluster)
+  */
+  function getPayout(uint distance, uint mad, uint stake, uint q) returns(uint payout, bool dissenting){
       uint xOfMad = mad > 0 ? (distance*10000) / mad : 0;
-      if (mad - distance <= mad){ //is in RewardCluster?
+      //if in rewardCluster
+      if ((distance < mad) || (mad == 0 && distance == 0)) {
           uint xOfMadCapped = xOfMad > 10000 ? 10000 : xOfMad;
           payout = (q * stake * (10000 - xOfMadCapped)) / 10000 + stake;
       }
       else {
           uint xOf2MadCapped = xOfMad > 20000 ? 20000 : xOfMad;
           payout = (stake * (20000 - xOf2MadCapped)) / 20000;
+          dissenting = true;
       }
   }
 

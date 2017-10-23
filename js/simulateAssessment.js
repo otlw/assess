@@ -46,8 +46,10 @@ function solidityRound(x){
     else { return Math.floor(x) }
 }
 
-exports.computePayouts = function(scores, finalScore, mad, cost) {
+exports.computePayouts = function(scores, finalScore, mad, cost, dissentBonus=false) {
     payouts = []
+    dissentBonus = 0
+    inAssessorsIdxs = []
     q = 1  //INFLATION RATE
     for (key in scores) {
         distance = Math.abs(scores[key] - finalScore)
@@ -56,26 +58,36 @@ exports.computePayouts = function(scores, finalScore, mad, cost) {
             xOfMad = Math.floor((distance*10000) / mad);
         }
         // console.log("scoreDinstance(JS) for assessor " + key + " : " + scoreDistance)
-        if( distance <= mad ) { //in RewardCluster
+        if ((distance < mad) || (mad==0 && distance==0)) { //in RewardCluster?
             payouts.push(Math.floor((q*cost * Math.max(10000 - xOfMad, 0))/10000) + cost);
+            inAssessorsIdxs.push(key)
         }
         else {
-            payouts.push(Math.floor((cost * Math.max(20000 - xOfMad, 0)) / 20000));
+            payoutValue = Math.floor((cost * Math.max(20000 - xOfMad, 0)) / 20000)
+            payouts.push(payoutValue)
+            dissentBonus += cost - payoutValue
         }
     }
+    // add dissentBonus to equal parts to all inCluster assessors
+    if (dissentBonus == true) {
+        for (i=0; i< inAssessorsIdxs.length; i++) {
+            payouts[inAssessorsIdxs[i]] += Math.floor(dissentBonus/inAssessorsIdxs.length)
+        }
+    }
+
     return payouts
 }
 
-exports.generateRandomSetup = function(accounts, maxAssessors, maxScore, cost) {
+exports.generateRandomSetup = function(accounts, maxAssessors, maxScore, cost, dissentBonus=false) {
     size = utils.getRandomInt(5,maxAssessors)
     scores = []
     for (i=0; i<size; i++){
         scores.push(utils.getRandomInt(-maxScore, maxScore))
     }
-    return this.generateSetup(accounts, scores, cost)
+    return this.generateSetup(accounts, scores, cost, dissentBonus)
 }
 
-exports.generateSetup = function(accounts, scores, cost){
+exports.generateSetup = function(accounts, scores, cost, dissentBonus=false){
     size = scores.length
     assessors = accounts.slice(0, size)
     //generating the right results
@@ -90,6 +102,7 @@ exports.generateSetup = function(accounts, scores, cost){
             payouts: this.computePayouts(scores,
                                          resultInfo.score,
                                          resultInfo.mad,
-                                         cost)
+                                         cost,
+                                         dissentBonus)
            }
 }
