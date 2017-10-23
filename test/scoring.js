@@ -14,15 +14,16 @@ var nTests = 5;
 var setups = []
 var trueResults = []
 for (t=0; t<nTests; t++){
-    setup = jsAsses.generateRandomSetup(accounts, maxSize, maxScore, stake)
-    setups.push(setup)
+    setup = jsAsses.generateRandomSetup(accounts, maxSize, maxScore, stake, false)
+    // setups.push(setup)
 }
 // flag to generate output
 var verbose = false
 
 //add special edgecases here:
 // perfect agreement
-setups.push(jsAsses.generateSetup(accounts,[1000,1000,1000,1000, 1000], stake))
+// setups.push(jsAsses.generateSetup(accounts,[1000,1000,1000,1000, 1000], stake))
+setups.push(jsAsses.generateSetup(accounts,[0,1000,1000,1000, 1000], stake, false))
 
 //draw (should go for lower score)
 setups.push(jsAsses.generateSetup(accounts,[200, 200, 200, 1000, 1000, 1000], stake))
@@ -47,15 +48,15 @@ contract("Scoring Unit Tests", function(accounts) {
                     payout = await mathlib.getPayout.call(distance,
                                                           mad,
                                                           stake,
-                                                          inflationRate
-                                                         )
-                    payouts.push(payout.toNumber())
+                                                          inflationRate)
+                    payouts.push(payout[0].toNumber())
                 }
                 // save it for later comparisons
                 outcomes.push({scores: setup.scores,
                                finalScore: resultInfo[0].toNumber(),
                                largestClusterSize: resultInfo[1].toNumber(),
-                                payouts: payouts
+                               payouts: payouts,
+                               payoutsJs: setup.payouts
                               })
             }
             if (verbose) {
