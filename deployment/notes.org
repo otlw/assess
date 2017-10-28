@@ -1,0 +1,40 @@
+** deploy fathom to testnet
+*** deploy via a script in geth console 
+**** setup: 
+***** (always add --rinkeby flag)
+***** or --dev for testing on local chain
+**** export private key account 2 from metamask
+***** get account import path2key
+***** pw: fathom1
+**** compile bin and abi
+     solc --combined-json abi,bin contracts/Assessment.sol -o ABIs/ --overwrite
+**** put it in a script how to: https://github.com/ethereum/go-ethereum/wiki/Managing-your-accounts
+**** better: create web3deployscript by copying code from remix:
+**** unlock account
+     geth --unlock <YOUR_ACCOUNT_ADDRESS> --password
+     or later on:
+     personal.unlockAccount(address, "password")
+**** general Idea: run scriupt from whtin geth console:
+     - >loadScript(path)
+       -> copy the 2_deploy_contract as much as possible into that script
+**** link contracts to deployed Math contract:
+***** manually with solc:
+      solc --optimize --bin ConceptRegistry.sol | solc --link --libraries "Math.sol:Math:0x28d5671f5da5a87e30275bd9b18b5b576278c865"
+***** automatically with js:
+      -check code in web3deploy.js
+**** encountered trouble!!: 
+***** loading the combinedjsons into geth-console is failing
+      - geth --preload option fails, also I can not run a script in geth-console that requires other packages
+      - workaround: put monsterjson with all abi's and bin's at the beginning
+***** deploying the pure bytecode from geth-console fails
+      - just says 'fails'
+**** 2 try next:
+*** deployed contracs:
+**** math:
+     0x28d5671f5da5a87e30275bd9b18b5b576278c865
+     txAddress: 0xc866fc05593a3a7111910d0e29bf03f83023e22423cd3a96f5b5816f3278a14d
+**** 
+*** write script
+**** eth-deploy
+**** nick dodson, Eric Tu
+*** fix issue to call all from mew
