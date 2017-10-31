@@ -117,6 +117,17 @@ contract Assessment {
         }
         assessmentStage = State.Called;
     }
+    /*
+      Function to call all members of mew to be assessors. Will be removed after
+      the alpha-testing phase.
+    */
+    function callAllFromMew(uint _nMew, address _mew) onlyConcept() {
+        Concept mew = Concept(_mew);
+        for (uint i=0; i< _nMew; i++) {
+            addAssessorToPool(mew.members(i));
+        }
+        assessmentStage = State.Called;
+    }
 
     // called by an assessor to confirm and stake
     function confirmAssessor() onlyInStage(State.Called) {
