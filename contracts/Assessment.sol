@@ -5,10 +5,10 @@ import "./Concept.sol";
 import "./FathomToken.sol";
 
 contract Assessment {
-    address assessee;
+    address public assessee;
     address[] assessors;
 
-    mapping (address => State) assessorState;
+    mapping (address => State) public assessorState;
     State public assessmentStage;
     enum State {
         None,
@@ -27,7 +27,7 @@ contract Assessment {
     // 2) earliest time to reveal
     uint public checkpoint;
     uint public size;
-    uint cost;
+    uint public cost;
 
     mapping(address => bytes32) commits;
     uint public done; //counter how many assessors have committed/revealed their score
@@ -80,7 +80,7 @@ contract Assessment {
     }
 
     //adds a user to the pool eligible to accept an assessment
-    function addAssessorToPool(address assessor) onlyConcept() returns(bool) {
+    function addAssessorToPool(address assessor) public onlyConcept() returns(bool) {
         if (assessor != assessee && assessorState[assessor] == State.None) {
             FathomToken(fathomToken).notification(assessor, 1); //Called As A Potential Assessor
             assessorState[assessor] = State.Called;
@@ -98,7 +98,7 @@ contract Assessment {
       @param: address _concept = the concept being called from
       @param: uint num = the total number of assessors to be called
     */
-    function setAssessorPool(uint seed, address _concept, uint num) onlyConcept() {
+    function setAssessorPool(uint seed, address _concept, uint num) public onlyConcept() {
         uint numCalled = 0;
         uint membersOfConcept = Concept(_concept).getMemberLength();
         //we want to call at most half of the members of each concept
@@ -119,7 +119,7 @@ contract Assessment {
     }
 
     // called by an assessor to confirm and stake
-    function confirmAssessor() onlyInStage(State.Called) {
+    function confirmAssessor() public onlyInStage(State.Called) {
         // cancel if the assessment is past its startTime
         if (now > checkpoint){
             cancelAssessment();
@@ -140,7 +140,7 @@ contract Assessment {
         }
     }
     //called by an assessor to commit a hash of their score //TODO explain in more detail what's happening
-    function commit(bytes32 _hash) onlyInStage(State.Confirmed) {
+    function commit(bytes32 _hash) public onlyInStage(State.Confirmed) {
         if (now > endTime) {
             burnStakes(State.Confirmed);
         }
@@ -159,7 +159,7 @@ contract Assessment {
     }
 
 
-    function steal(int128 _score, string _salt, address assessor) {
+    function steal(int128 _score, string _salt, address assessor) public{
         if(assessorState[assessor] == State.Committed) {
             if(commits[assessor] == sha3(_score, _salt)) {
                 FathomToken(fathomToken).transfer(msg.sender, cost/2);
@@ -173,7 +173,7 @@ contract Assessment {
     // must be called between 12 hours after the latest commit and 24 hours after the
     // end of the assessment. If the last commit happens during at the last possible
     // point in time (right before endtime), this period will be 12hours
-    function reveal(int128 _score, string _salt) onlyInStage(State.Committed) {
+    function reveal(int128 _score, string _salt) public onlyInStage(State.Committed) {
         // scores can only be revealed after the challenge period has passed
         require(now > checkpoint);
         // If the time to reveal has passed, burn all unrevealed assessors
@@ -241,7 +241,7 @@ contract Assessment {
         FathomToken(fathomToken).notification(assessee, 7);
    }
 
-    function payout(uint mad, uint finalClusterLength) onlyInStage(State.Done) internal {
+    function payout(uint mad, uint finalClusterLength) onlyInStage(State.Done) public {
         uint q = 1; //INFLATION RATE
         uint dissentBonus = 0;
         bool[] memory inAssessor = new bool[] (assessors.length);
