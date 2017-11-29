@@ -145,6 +145,8 @@ contract Concept {
 
     /*
       @purpose: To make a new assessment
+      NOTE: While there are less than 200 members in network, all members of mew will
+      be called as assessors for any concept
       @param: uint cost = the cost per assessor
       @param: uint size = the number of assessors
     */
@@ -153,7 +155,14 @@ contract Concept {
             Assessment newAssessment = new Assessment(msg.sender, size, cost, _waitTime, _timeLimit);
             assessmentExists[address(newAssessment)] = true;
             FathomToken(fathomToken).takeBalance(msg.sender, address(newAssessment), cost*size, address(this));
-            newAssessment.setAssessorPool(block.number, address(this), size*5); //assemble the assessorPool by relevance
+            // get membernumber of mew to see whether there are more than 200 users in the system:
+            address mewAddress = ConceptRegistry(conceptRegistry).mewAddress();
+            uint nMemberInMew = Concept(mewAddress).getMemberLength();
+            if (nMemberInMew < size * 5) {
+                newAssessment.callAllFromMew(nMemberInMew, mewAddress);
+            } else {
+                newAssessment.setAssessorPool(block.number, address(this), size*5); //assemble the assessorPool by relevance
+            }
             return true;
         }
         else {
