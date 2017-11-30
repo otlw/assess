@@ -8,7 +8,7 @@ import "./Math.sol";
 //@purpose: To store concept data and create and manage assessments and members
 contract Concept {
     address[] public parents; //The concepts that this concept is child to (ie: Calculus is child to Math)
-    bytes data;
+    bytes public data;
     address public fathomToken;
     address conceptRegistry;
     uint public lifetime;
@@ -17,7 +17,7 @@ contract Concept {
     uint[] propagationRates;
 
     address[] public members;
-    mapping (address => MemberData) memberData;
+    mapping (address => MemberData) public memberData;
 
     struct MemberData {
         address recentAssessment;
@@ -52,18 +52,18 @@ contract Concept {
         fathomToken = ConceptRegistry(conceptRegistry).fathomToken();
     }
 
-    function getMemberLength() constant returns(uint) {
+    function getMemberLength() public constant returns(uint) {
         return members.length;
     }
 
-    function getParentsLength() constant returns(uint) {
+    function getParentsLength() public constant returns(uint) {
         return parents.length;
     }
 
     /*
       @purpose: To add the firstUser to Mew
     */
-    function addInitialMember(address _user, uint _weight) {
+    function addInitialMember(address _user, uint _weight) public {
         if (ConceptRegistry(conceptRegistry).distributorAddress() == msg.sender)
             {
                 this.addWeight(_user, _weight);
@@ -75,7 +75,7 @@ contract Concept {
       if they still have a weight in the concept
       @returns true if they are available as assessor
     */
-    function setAvailability() returns(bool success){
+    function setAvailability() public returns(bool success){
         if (getWeight(msg.sender) > 0) {
             if (memberData[msg.sender].index == 0) {
                 members.push(msg.sender);
@@ -93,7 +93,7 @@ contract Concept {
       //Users with high weights are more likely to be called
       //@returns the address of the member (0x0 if there is no member)
     */
-    function getWeightedRandomMember(uint seed) returns(address){
+    function getWeightedRandomMember(uint seed) public returns(address){
         uint weight1;
         uint weight2;
         address randomMember1;
@@ -118,7 +118,7 @@ contract Concept {
       @purpose: get the weight of a given member, also removes that member from the array
       if there legitimating assessment is expired
     */
-    function getWeight(address _member) returns(uint weight){
+    function getWeight(address _member) public returns(uint weight){
         for (uint i=0; i < memberData[_member].weights.length; i++) {
             if (memberData[_member].weights[i].date > now){
                 weight += memberData[_member].weights[i].weight;
@@ -145,15 +145,24 @@ contract Concept {
 
     /*
       @purpose: To make a new assessment
+      NOTE: While there are less than 200 members in network, all members of mew will
+      be called as assessors for any concept
       @param: uint cost = the cost per assessor
       @param: uint size = the number of assessors
     */
-    function makeAssessment(uint cost, uint size, uint _waitTime, uint _timeLimit) returns(bool) {
+    function makeAssessment(uint cost, uint size, uint _waitTime, uint _timeLimit) public returns(bool) {
         if (size >= 5 && FathomToken(fathomToken).balanceOf(msg.sender)>= cost*size) {
             Assessment newAssessment = new Assessment(msg.sender, size, cost, _waitTime, _timeLimit);
             assessmentExists[address(newAssessment)] = true;
             FathomToken(fathomToken).takeBalance(msg.sender, address(newAssessment), cost*size, address(this));
-            newAssessment.setAssessorPool(block.number, address(this), size*5); //assemble the assessorPool by relevance
+            // get membernumber of mew to see whether there are more than 200 users in the system:
+            address mewAddress = ConceptRegistry(conceptRegistry).mewAddress();
+            uint nMemberInMew = Concept(mewAddress).getMemberLength();
+            if (nMemberInMew < size * 5) {
+                newAssessment.callAllFromMew(nMemberInMew, mewAddress);
+            } else {
+                newAssessment.setAssessorPool(block.number, address(this), size*5); //assemble the assessorPool by relevance
+            }
             return true;
         }
         else {
@@ -167,14 +176,15 @@ contract Concept {
       @param: uint weight = the weight for the member
       @returns: nothing
     */
-    function addMember(address _assessee, uint _weight) {
+    function addMember(address _assessee, uint _weight) public {
         if (assessmentExists[msg.sender]) {
             memberData[_assessee].recentAssessment = msg.sender;
             memberData[_assessee].index = 0;
             this.addWeight(_assessee, _weight);
         }
     }
-    function addWeight(address _assessee, uint _weight) onlyConcept() {
+
+    function addWeight(address _assessee, uint _weight) public onlyConcept() {
         if (memberData[_assessee].index == 0) {
             members.push(_assessee);
             memberData[_assessee].index = members.length;

@@ -13,7 +13,7 @@ library Math {
       @param: uint max = the max for the range of random numbers that can be made
       @returns: The random number
     */
-    function getRandom(uint seed, uint max) constant returns(uint) { //Based on the function by alexvandesande
+    function getRandom(uint seed, uint max) public constant returns(uint) { //Based on the function by alexvandesande
         return(uint(sha3(block.blockhash(block.number-1), seed))%(max+1)); //Hashes the seed number with the last blockhash to generate a random number and shifts it into the desired range by using a modulus
     }
 
@@ -22,7 +22,7 @@ library Math {
     @param: int[] data = the array of datapoints
     @param: length = the position of the array that should be not considered any more
   */
-  function calculateMAD(int[] data, uint length ) returns(uint meanAbsoluteDeviation) {
+  function calculateMAD(int[] data, uint length ) public returns(uint meanAbsoluteDeviation) {
       assert(length <= data.length);
       int mean;
       for(uint j = 0; j < length; j++) {
@@ -34,9 +34,10 @@ library Math {
       }
       meanAbsoluteDeviation /= length;
   }
-
-  function getFinalScore(int[] data, uint MAD) returns(int largestClusterScore, uint largestClusterSize) {
-      //get largest Cluster and its score
+  /*
+    computes the score of the largest cluster, (using lower mad and lower score as tiebrakers)
+  */
+  function getFinalScore(int[] data, uint MAD) public returns(int largestClusterScore, uint largestClusterSize) {
       uint largestClusterMAD;
       for(uint i=0; i < data.length; i++) {
             uint clusterSize = 0;
@@ -72,7 +73,7 @@ library Math {
     or not the remained should be distributed to the others or not (iff they are not in
     the biggest cluster)
   */
-  function getPayout(uint distance, uint mad, uint stake, uint q) returns(uint payout, bool dissenting){
+  function getPayout(uint distance, uint mad, uint stake, uint q) public returns(uint payout, bool dissenting){
       uint xOfMad = mad > 0 ? (distance*10000) / mad : 0;
       //if in rewardCluster
       if ((distance < mad) || (mad == 0 && distance == 0)) {
@@ -87,7 +88,7 @@ library Math {
   }
 
 
-  function abs(int x) returns (uint){
+  function abs(int x) public returns(uint){
       if( x < 0 ) { return uint(-1*x); }
       else { return uint(x);}
   }
