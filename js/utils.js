@@ -55,13 +55,6 @@ exports.getCalledAssessors = function(receiptFromMakeAssessment){
     return calledAssessors
 }
 
-exports.getAssessment  = function(receiptFromMakeAssessment){
-    logs = this.getNotificationArgsFromReceipt(receiptFromMakeAssessment, 0)
-    assessmentAddress = logs[0].sender
-    assessmentContract = Assessment.at(assessmentAddress)
-    return assessmentContract
-}
-
 exports.getBalances = async function(_accounts, _userRegistryInstance){
     balances = []
     for (i=0; i<_accounts.length; i++){
