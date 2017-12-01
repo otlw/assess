@@ -15,7 +15,7 @@ contract("Steal Stake:", function(accounts){
     let conceptReg;
     let aha;
 
-    let assessedConceptID = 2;
+    let assessedConceptID = 1;
     let assessedConcept;
     let assessmentContract;
 

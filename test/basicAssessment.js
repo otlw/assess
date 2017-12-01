@@ -18,7 +18,7 @@ contract('Assessment', function(accounts) {
     let conceptReg;
     let distributor;
 
-    let assessedConceptID = 4;
+    let assessedConceptID = 1;
     let assessedConcept;
     let ConceptInstance;
     let assessmentContract;

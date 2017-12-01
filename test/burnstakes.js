@@ -15,7 +15,7 @@ contract("Burning Stakes:", function(accounts){
     let conceptReg;
     let aha;
     let distributor;
-    let assessedConceptID = 2;
+    let assessedConceptID = 1;
     let assessedConcept;
     let assessmentContract;
 

@@ -7,7 +7,7 @@ var Distributor = artifacts.require("./Distributor.sol");
 var accounts = web3.eth.accounts
 
 // setup = getUniformSetup(100, 10, accounts)
-setup = defaultSetup()
+var setup = defaultSetup(accounts.slice(0,6))
 var nInitialUsers = setup.n
 
 module.exports = function(deployer) {
@@ -97,26 +97,30 @@ function getUniformSetup(n, bins, accounts) {
     return {tree: setup, n: nInitialUsers}
 }
 
-function defaultSetup(){
-    // create five groups of initial Users and five sets of different weights
-    nInitialUserGroups = 5
-    groupSize = 8
-    nInitialUsers = nInitialUserGroups * groupSize
-    users = []
-    initialWeights = []
-    lifetime = 60*60*24*365;
-    for (i=0; i<nInitialUserGroups; i++) {
-        users.push(accounts.slice(i*groupSize, (i+1) * groupSize))
-        initialWeights.push(Array(groupSize).fill(10*(i+1)))
-    }
+// default minimal Setup:
+//       0 (users 1-3 = [100,200,300])
+//     /
+// mew
+//     \
+//      1 (rest, weight=100)
+// note: 5 accounts are needed for the mininal valid assessment, +1 for burnStakes-test
+function defaultSetup(accounts){
+    console.log(accounts)
+    var lifetime = 60*60*24*365; //1 year
+    let nInitialUsers = accounts.length
+    var users = [
+        accounts.slice(0,3),
+        accounts.slice(3)
+    ]
+    var initialWeights = [
+        [100,200,300],
+        Array(accounts.length -3).fill(100)
+    ]
     //setup syntax:
     // id, data, parentIds, propagationRates,lifetime, memberAddresses, memberWeights
     var setup = [
-        [0, "", [0], [500], lifetime, users[0], initialWeights[3]],
-        [1, "", [0], [500], lifetime, users[1], initialWeights[3]],
-        [2, "", [1], [500], lifetime, users[2], initialWeights[1]],
-        [3, "", [1], [500], lifetime, users[3], initialWeights[2]],
-        [4, "", [2], [500], lifetime, users[4], initialWeights[3]]
+        [0, "", [0], [500], lifetime, users[0],initialWeights[0]],
+        [1, "", [0], [500], lifetime, users[1],initialWeights[0]]
     ]
     return {tree: setup, n: nInitialUsers}
 }
@@ -126,3 +130,28 @@ module.exports.nInitialUsers = setup.n
 module.exports.etherPrice = 217 //as of 07/07/2017
 module.exports.gasPrice = 1000000000 //safe low cost of 07/07/17 WATCHOUT: if you change this value you must change it in ./truffle.js!!
 
+//function to generate the defualt setup as a more elaborate tree with 50
+//initial users in 5 different concepts
+// function defaultSetup(initialUsers){
+//     // create five groups of initial Users and five sets of different weights
+//     nInitialUserGroups = 5
+//     groupSize = 8
+//     nInitialUsers = nInitialUserGroups * groupSize
+//     users = []
+//     initialWeights = []
+//     lifetime = 60*60*24*365;
+//     for (i=0; i<nInitialUserGroups; i++) {
+//         users.push(accounts.slice(i*groupSize, (i+1) * groupSize))
+//         initialWeights.push(Array(groupSize).fill(10*(i+1)))
+//     }
+//     //setup syntax:
+//     // id, data, parentIds, propagationRates,lifetime, memberAddresses, memberWeights
+//     var setup = [
+//         [0, "", [0], [500], lifetime, users[0], initialWeights[3]],
+//         [1, "", [0], [500], lifetime, users[1], initialWeights[3]],
+//         [2, "", [1], [500], lifetime, users[2], initialWeights[1]],
+//         [3, "", [1], [500], lifetime, users[3], initialWeights[2]],
+//         [4, "", [2], [500], lifetime, users[4], initialWeights[3]]
+//     ]
+//     return {tree: setup, n: nInitialUsers}
+// }
