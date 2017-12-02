@@ -71,7 +71,7 @@ contract Distributor{
         setup[_id].initialMembersToBeAdded--;
     }
 
-    function conceptLookup(uint _id) publi returns(address) {
+    function conceptLookup(uint _id) public returns(address) {
         return setup[_id].livesAt;
     }
 

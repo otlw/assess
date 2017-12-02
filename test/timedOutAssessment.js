@@ -25,7 +25,7 @@ contract("An assessment where not enough asssessors confirm", (accounts) => {
         aha = await FathomToken.deployed()
         const DistributorInstance = await Distributor.deployed()
 
-        assessmentData = await chain.makeAssessment((await DistributorInstance.conceptLookup(2)), assessee.address, cost, size, waitTime, timeLimit)
+        assessmentData = await chain.makeAssessment((await DistributorInstance.conceptLookup.call(2)), assessee.address, cost, size, waitTime, timeLimit)
         assessment = Assessment.at(assessmentData.address)
         assessors = assessmentData.assessors
 
@@ -87,7 +87,7 @@ contract ("An assessment where assessors fail to reveal", (accounts) => {
         const DistributorInstance = await Distributor.deployed()
 
 
-        assessmentData = await chain.makeAssessment((await DistributorInstance.conceptLookup(2)), assessee.address, cost, size, 1000, 2000)
+        assessmentData = await chain.makeAssessment((await DistributorInstance.conceptLookup.call(2)), assessee.address, cost, size, 1000, 2000)
         assessment = Assessment.at(assessmentData.address)
         assessors = assessmentData.assessors
         assessee.balance = await aha.balances.call(assessee.address)

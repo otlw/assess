@@ -31,16 +31,11 @@ contract ("Minimum size violations will cancel assessments", (accounts) => {
             aha = await FathomToken.deployed()
             const DistributorInstance = await Distributor.deployed()
 
-<<<<<<< HEAD
-            assessee.balance = await aha.balances.call(assessee.address)
-            const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup.call(2)).makeAssessment(cost, size, 1000, timelimit, {from: assessee.address})
-=======
-            assessmentData = await chain.makeAssessment((await DistributorInstance.conceptLookup(2)), assessee.address, cost, size, 1000, timelimit)
+            assessmentData = await chain.makeAssessment((await DistributorInstance.conceptLookup.call(2)), assessee.address, cost, size, 1000, timelimit)
             assessment = Assessment.at(assessmentData.address)
             assessors = assessmentData.assessors
             // save the assessee's balance before the last makeAssessment() call
             assessee.balance = (await aha.balances.call(assessee.address)).toNumber() + cost * size
->>>>>>> 31d2523be29be25765de8a0df7494d198f4be3a7
 
             initialBalances = await utils.getBalances(assessors, aha)
             assert.isAbove(assessors.length, size-1, "not enough assessors were called")
