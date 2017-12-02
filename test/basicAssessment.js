@@ -87,7 +87,7 @@ contract('Assessment', function(accounts) {
 
         it("should charge the assessee", async() => {
             const balance = await aha.balances.call(assessee)
-            assert.equal(balance.toNumber(), assesseeInitialBalance - cost*size*assessmentData.tries, "the assessee did not get charged correctly")
+            assert.equal(balance.toNumber(), assesseeInitialBalance - cost*size*assessmentData, "the assessee did not get charged correctly")
             })
         })
 
