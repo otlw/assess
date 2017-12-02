@@ -18,6 +18,7 @@ let firstConcept = {
 let initialMewMembers = accounts.slice(0,6)
 let initialWeights = Array(initialMewMembers.length).fill(100)
 
+var mew;
 
 module.exports.nInitialUsers = initialMewMembers.length;
 module.exports.etherPrice = 460 //as of 11/2017
@@ -41,21 +42,26 @@ module.exports = function(deployer) {
   }).then(function(){
       // get mew-concept
       return conceptRegistryInstance.mewAddress.call()
-  }).then(function(mewAddress) {
+  }).then(function(mew) {
+      mewAddress = mew
       //add initialConcept as child
-      return conceptRegistryInstance.makeConcept(
-          [mewAddress],
-          [firstConcept.propRate],
-          firstConcept.lifetime,
-          firstConcept.data)
   }).then(function(){
       return Distributor.deployed()
   }).then(function(instance){
-      // add initial members to mew
       distributor = instance
+      return distributor.addConcept(
+          [mewAddress],
+          [firstConcept.propRate],
+          firstConcept.lifetime,
+          firstConcept.data
+      )
+      // add initial members to mew
+  }).then(function(){
       return addInitialMembers(distributor, initialMewMembers, initialWeights)
   })
 };
+
+module.exports.mew = mew;
 
 // function to repeatedly call addInitialMember of the distributor
 function addInitialMembers (distributorInstance, _members, _weights) {

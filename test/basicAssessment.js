@@ -8,7 +8,6 @@ utils = require("../js/utils.js")
 chain = require("../js/assessmentFunctions.js")
 
 var deploymentScript = require("../migrations/2_deploy_contracts.js")
-var setup = deploymentScript.setupVariable
 var nInitialUsers = deploymentScript.nInitialUsers
 var gasPrice = deploymentScript.gasPrice
 var etherPrice = deploymentScript.etherPrice
