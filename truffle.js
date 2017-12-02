@@ -14,5 +14,12 @@ module.exports = {
                 //from: accounts[accounts.length - 1]
             }
         }
+    },
+    solc: {
+        optimizer: {
+            enabled: true,
+            runs: 200
+        }
     }
+
 };
