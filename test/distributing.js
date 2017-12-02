@@ -3,7 +3,6 @@ var Concept = artifacts.require("Concept");
 var Distributor = artifacts.require("Distributor");
 
 utils = require("../js/utils.js")
-// var deploymentScript = require("../migrations/2_deploy_contracts.js")
 
 contract("Distributor", function(accounts) {
 

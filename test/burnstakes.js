@@ -4,12 +4,11 @@ var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
 var Distributor = artifacts.require("Distributor");
 
-utils = require("../js/utils.js")
-chain = require("../js/assessmentFunctions.js")
+var utils = require("../js/utils.js")
+var chain = require("../js/assessmentFunctions.js")
+var setup = require("../setup.json")
 
-var deploymentScript = require("../migrations/2_deploy_contracts.js")
-var setup = deploymentScript.setupVariable
-var nInitialUsers = deploymentScript.nInitialUsers
+var nInitialUsers = setup.N
 
 contract("Burning Stakes:", function(accounts){
     let conceptReg;

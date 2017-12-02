@@ -4,14 +4,13 @@ var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
 var Distributor = artifacts.require("Distributor");
 
-utils = require("../js/utils.js")
-chain = require("../js/assessmentFunctions.js")
+var utils = require("../js/utils.js")
+var chain = require("../js/assessmentFunctions.js")
+var setup = require("../setup.json")
 
-var deploymentScript = require("../migrations/2_deploy_contracts.js")
-var nInitialUsers = deploymentScript.nInitialUsers
-console.log("nInitialUsers ",nInitialUsers )
-var gasPrice = deploymentScript.gasPrice
-var etherPrice = deploymentScript.etherPrice
+var nInitialUsers = setup.N
+var gasPrice = setup.gasPrice
+var etherPrice = setup.etherPrice
 
 contract('Assessment', function(accounts) {
     let aha;
@@ -87,7 +86,7 @@ contract('Assessment', function(accounts) {
 
         it("should charge the assessee", async() => {
             const balance = await aha.balances.call(assessee)
-            assert.equal(balance.toNumber(), assesseeInitialBalance - cost*size*assessmentData, "the assessee did not get charged correctly")
+            assert.equal(balance.toNumber(), assesseeInitialBalance - cost*size, "the assessee did not get charged correctly")
             })
         })
 
