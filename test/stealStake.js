@@ -77,10 +77,10 @@ contract("Steal Stake:", function(accounts){
             try {
                 await assessmentContract.reveal(scores[0], salts[0], {from:confirmedAssessors[0]})
             } catch (e) {
-                if (e.toString().indexOf('invalid opcode') > 0) {
-                    assert(true, "an 'invalid-opcode' is thrown")
+                if (e.toString().indexOf('revert') > 0) {
+                    assert(true, "a 'revert' is thrown")
                 } else {
-                    assert(false, e.toString(), "execution should have failed with an invalid opcode error")
+                    assert(false, e.toString(), "execution should have failed with a revert")
                 }
             }
         })
