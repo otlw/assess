@@ -161,7 +161,7 @@ contract Concept {
             if (nMemberInMew < size * 5) {
                 newAssessment.callAllFromMew(nMemberInMew, mewAddress);
             } else {
-                newAssessment.setAssessorPool(block.number, address(this), size*5); //assemble the assessorPool by relevance
+                newAssessment.setAssessorPool(block.number, address(this), size*5);
             }
             return true;
         }
@@ -179,7 +179,6 @@ contract Concept {
     function addMember(address _assessee, uint _weight) public {
         if (assessmentExists[msg.sender]) {
             memberData[_assessee].recentAssessment = msg.sender;
-            memberData[_assessee].index = 0;
             this.addWeight(_assessee, _weight);
         }
     }

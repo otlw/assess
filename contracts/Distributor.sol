@@ -4,77 +4,79 @@ import "./Concept.sol";
 import "./ConceptRegistry.sol";
 
 contract Distributor{
-    mapping (uint => address) public conceptLookup;
-    uint NInitialConcepts;
-    uint public conceptIndex;
-    ConceptInfo[] setup;
+
+    // specify many concepts can be added below the mew-concept
+    uint nInitialConcepts;
+
+    // counter to keep track of how many concepts have been added
+    // mew will be created while initialization so it will start at 1
+    uint public nextConceptIndex;
+
+    mapping (uint => ConceptInfo) setup;
     address conceptRegistry;
-
-    bool initialized;
-
-    struct Member {
-        address memberAddress;
-        uint weight;
-    }
+    bool public initialized;
 
     struct ConceptInfo {
-        uint id;
         bytes data;
         uint[] parents;
         uint lifetime;
         uint initialMembersToBeAdded;
         address[] memberAddresses;
         uint[] memberWeights;
+        address livesAt;
     }
 
-    function Distributor(uint _NInitialConcepts, address _conceptRegistry){
-        NInitialConcepts = _NInitialConcepts + 1;
+    function Distributor(uint _nInitialConcepts, address _conceptRegistry){
+        nInitialConcepts = _nInitialConcepts;
         conceptRegistry = _conceptRegistry;
     }
 
     function init() public {
         require(!initialized);
-        conceptLookup[0] = ConceptRegistry(conceptRegistry).mewAddress();
-        conceptIndex = 1;
-        initialized = false;
+        // creating mew
+        setup[0] = ConceptInfo("", new uint[](0), 0, 0, new address[](0), new uint[](0), ConceptRegistry(conceptRegistry).mewAddress());
+        nextConceptIndex = 1;
+        initialized = true;
     }
-
-    function addNextConcept(uint _id,
-                            bytes _data,
+    function addNextConcept(bytes _data,
                             uint[] _parents,
                             uint[] _propagationRates,
                             uint _lifetime,
                             uint _nInitialMembers) public {
-        require(conceptIndex < NInitialConcepts);
-        ConceptInfo memory conceptToAdd = ConceptInfo( _id, _data, _parents, _lifetime, _nInitialMembers, new address[](0), new uint[](0));
-        setup.push(conceptToAdd);
-
+        require(initialized && nextConceptIndex <= nInitialConcepts);
         address[] memory conceptParents = new address[] (_parents.length);
-        for (uint i=0; i < conceptToAdd.parents.length; i++){
-            conceptParents[i] = conceptLookup[conceptToAdd.parents[i]];
+        for (uint i=0; i < _parents.length; i++){
+            address parentAddress = setup[_parents[i]].livesAt;
+            require(parentAddress != address(0x0));
+            conceptParents[i] = parentAddress;
         }
         address createdConceptAddress = ConceptRegistry(conceptRegistry).makeConcept(conceptParents,
                                                                                      _propagationRates,
                                                                                      _lifetime,
                                                                                      _data);
-        conceptLookup[conceptIndex] = createdConceptAddress;
-        conceptIndex++;
+        setup[nextConceptIndex] = ConceptInfo(_data, _parents, _lifetime, _nInitialMembers, new address[](0), new uint[](0), createdConceptAddress);
+        nextConceptIndex++;
     }
 
     function addInitialMember(uint _id, address _memberAddress, uint _memberWeight) public {
-        ConceptInfo conceptToAddTo = setup[_id];
-        require(_id < conceptIndex && conceptToAddTo.id == _id);// prevent calls to nonexistsing concepts
-        if (conceptToAddTo.initialMembersToBeAdded > 0){
-            address createdConceptAddress = conceptLookup[_id];
-            Concept(createdConceptAddress).addInitialMember(_memberAddress, _memberWeight);
-            conceptToAddTo.memberAddresses.push(_memberAddress);
-            conceptToAddTo.memberWeights.push(_memberWeight);
-            conceptToAddTo.initialMembersToBeAdded--;
-        }
+        // before adding members we require that
+        // - the distributor has been initialized,
+        // - the concept already exists and
+        // - it still has space for members
+        require(initialized && setup[_id].livesAt != address(0x0) && setup[_id].initialMembersToBeAdded > 0 );
+        address createdConceptAddress = setup[_id].livesAt;
+        Concept(createdConceptAddress).addInitialMember(_memberAddress, _memberWeight);
+        setup[_id].memberAddresses.push(_memberAddress);
+        setup[_id].memberWeights.push(_memberWeight);
+        setup[_id].initialMembersToBeAdded--;
+    }
+
+    function conceptLookup(uint _id) public returns(address) {
+        return setup[_id].livesAt;
     }
 
     function addedConceptsLength() public returns(uint){
-        return setup.length;
+        return nextConceptIndex -1 ; //excluding mew
     }
 
     function addedConceptParentsLength(uint id) public returns(uint){
