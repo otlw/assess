@@ -76,7 +76,7 @@ contract("Distributor", function(accounts) {
                 try {
                     await distributorInstance.addInitialMember(i, accounts[0], 10)
                 } catch (e) {
-                    if (e.toString().indexOf('invalid opcode') > 0) {
+                    if (e.toString().indexOf('revert') > 0) {
                         assert(true, "an 'invalid-opcode' is thrown")
                     } else {
                         assert(false, e.toString(), "execution should have failed with an invalid opcode error")
