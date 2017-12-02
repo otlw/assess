@@ -15,14 +15,11 @@ let firstConcept = {
     propRate: 500,
     lifetime: 60*60*24*365
 }
-let initialMewMembers = accounts.slice(0,6)
-let initialWeights = Array(initialMewMembers.length).fill(100)
+let nInitialUsers = 6
+let initialMewMembers = accounts.slice(0,nInitialUsers)
+let initialWeights = new Array(initialMewMembers.length).fill(100)
 
 var mew;
-
-module.exports.nInitialUsers = initialMewMembers.length;
-module.exports.etherPrice = 460 //as of 11/2017
-module.exports.gasPrice = 1000000000 //safe low cost of 07/07/17
 
 module.exports = function(deployer) {
   var distributor;
@@ -61,7 +58,10 @@ module.exports = function(deployer) {
   })
 };
 
-module.exports.mew = mew;
+module.exports.nInitialUsers = nInitialUsers;
+module.exports.etherPrice = 460 //as of 11/2017
+module.exports.gasPrice = 1000000000 //safe low cost of 07/07/17
+
 
 // function to repeatedly call addInitialMember of the distributor
 function addInitialMembers (distributorInstance, _members, _weights) {

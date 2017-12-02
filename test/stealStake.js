@@ -15,7 +15,6 @@ contract("Steal Stake:", function(accounts){
     let conceptReg;
     let aha;
 
-    let assessedConceptID = 2;
     let assessedConcept;
     let assessmentContract;
 
@@ -39,7 +38,7 @@ contract("Steal Stake:", function(accounts){
     }
 
     it("An assessment is created and users are called to be assessors.", async () =>{
-        assessedConceptAddress = await (await Distributor.deployed()).conceptLookup.call(assessedConceptID)
+        assessedConceptAddress = await (await Distributor.deployed()).lastCreatedConcept.call()
         assessedConcept = Concept.at(assessedConceptAddress)
         aha = await FathomToken.deployed()
 

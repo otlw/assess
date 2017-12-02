@@ -33,7 +33,7 @@ contract ("Dissenting assessors:", (accounts) => {
         const DistributorInstance = await Distributor.deployed()
 
         assessee.balance = await aha.balances.call(assessee.address)
-        assessmentData = await chain.makeAssessment((await DistributorInstance.conceptLookup.call(2)), assessee.address, cost, size, 1000, 2000)
+        assessmentData = await chain.makeAssessment((await DistributorInstance.lastCreatedConcept.call()), assessee.address, cost, size, 1000, 2000)
         assessment = Assessment.at(assessmentData.address)
         assessors = assessmentData.assessors
 

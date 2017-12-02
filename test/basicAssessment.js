@@ -9,6 +9,7 @@ chain = require("../js/assessmentFunctions.js")
 
 var deploymentScript = require("../migrations/2_deploy_contracts.js")
 var nInitialUsers = deploymentScript.nInitialUsers
+console.log("nInitialUsers ",nInitialUsers )
 var gasPrice = deploymentScript.gasPrice
 var etherPrice = deploymentScript.etherPrice
 
@@ -17,7 +18,6 @@ contract('Assessment', function(accounts) {
     let conceptReg;
     let distributor;
 
-    let assessedConceptID = 4;
     let assessedConcept;
     let ConceptInstance;
     let assessmentContract;
@@ -54,7 +54,7 @@ contract('Assessment', function(accounts) {
         it('A concept should be registered', async () => {
             distributor = await Distributor.deployed()
             conceptReg = await ConceptRegistry.deployed()
-            assessedConcept = await Concept.at(await distributor.conceptLookup.call(assessedConceptID))
+            assessedConcept = await Concept.at(await distributor.lastCreatedConcept.call())
 
             assert.isTrue( await conceptReg.conceptExists.call(assessedConcept.address))
         })
