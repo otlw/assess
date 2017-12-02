@@ -31,7 +31,7 @@ contract Distributor{
         conceptRegistry = _conceptRegistry;
     }
 
-    function init () {
+    function init() public {
         require(!initialized);
         // creating mew
         setup[0] = ConceptInfo("", new uint[](0), 0, 0, new address[](0), new uint[](0), ConceptRegistry(conceptRegistry).mewAddress());
@@ -42,9 +42,8 @@ contract Distributor{
                             uint[] _parents,
                             uint[] _propagationRates,
                             uint _lifetime,
-                            uint _nInitialMembers) {
+                            uint _nInitialMembers) public {
         require(initialized && nextConceptIndex <= nInitialConcepts);
-
         address[] memory conceptParents = new address[] (_parents.length);
         for (uint i=0; i < _parents.length; i++){
             address parentAddress = setup[_parents[i]].livesAt;
@@ -59,7 +58,7 @@ contract Distributor{
         nextConceptIndex++;
     }
 
-    function addInitialMember(uint _id, address _memberAddress, uint _memberWeight) {
+    function addInitialMember(uint _id, address _memberAddress, uint _memberWeight) public {
         // before adding members we require that
         // - the distributor has been initialized,
         // - the concept already exists and
@@ -72,41 +71,41 @@ contract Distributor{
         setup[_id].initialMembersToBeAdded--;
     }
 
-    function conceptLookup(uint _id) returns(address) {
+    function conceptLookup(uint _id) publi returns(address) {
         return setup[_id].livesAt;
     }
 
-    function addedConceptsLength() returns(uint){
+    function addedConceptsLength() public returns(uint){
         return nextConceptIndex -1 ; //excluding mew
     }
 
-    function addedConceptParentsLength(uint id) returns(uint){
+    function addedConceptParentsLength(uint id) public returns(uint){
         return setup[id].parents.length;
     }
 
-    function addedConceptParent(uint id, uint _pIdx) returns(uint){
+    function addedConceptParent(uint id, uint _pIdx) public returns(uint){
         require(_pIdx < setup[id].parents.length);
         return setup[id].parents[_pIdx];
     }
 
-    function addedConceptMembersLength(uint id) returns(uint){
+    function addedConceptMembersLength(uint id) public returns(uint){
         return setup[id].memberAddresses.length;
     }
 
-    function addedConceptAddableMembers(uint id) returns(uint){
+    function addedConceptAddableMembers(uint id) public returns(uint){
         return setup[id].initialMembersToBeAdded;
     }
 
-    function addedConceptMemberAddress(uint id, uint _mIdx) returns(address){
+    function addedConceptMemberAddress(uint id, uint _mIdx) public returns(address){
         require(_mIdx < setup[id].memberAddresses.length);
         return setup[id].memberAddresses[_mIdx];
     }
 
-    function addedConceptWeightsLength(uint id) returns(uint){
+    function addedConceptWeightsLength(uint id) public returns(uint){
         return setup[id].memberWeights.length;
     }
 
-    function addedConceptMemberWeight(uint id, uint _mIdx) returns(uint){
+    function addedConceptMemberWeight(uint id, uint _mIdx) public returns(uint){
         require(_mIdx < setup[id].memberWeights.length);
         return setup[id].memberWeights[_mIdx];
     }
