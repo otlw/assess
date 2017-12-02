@@ -37,44 +37,44 @@ contract("Distributor", function(accounts) {
         })
 
         it("such that they are linked to their parents", async () => {
-            for (i=0; i<setup.length; i++) {
+            for (i=1; i<setup.length+1; i++) {
                 // Note: concept 0 in setup will have id=1 in the distributor because mew is 0
                 // but ommitted from the setup array
-                nParents = await distributorInstance.addedConceptParentsLength.call(i+1)
+                nParents = await distributorInstance.addedConceptParentsLength.call(i)
                 for (j=0; j < nParents.toNumber(); j++) {
-                    let conceptParent = await distributorInstance.addedConceptParent.call(i+1,j)
-                    assert.equal(conceptParent.toNumber(), setup[i][1][j], "parent "+ j + " of concept " + i + " did not get added")
+                    let conceptParent = await distributorInstance.addedConceptParent.call(i,j)
+                    assert.equal(conceptParent.toNumber(), setup[i-1][1][j], "parent "+ j + " of concept " + i-1 + " did not get added")
                 }
             }
         })
 
         it("should add the initial users as members with their respective weight", async () => {
-            for( i=0; i<setup.length; i++) {
-                let conceptInstance = await Concept.at(await distributorInstance.conceptLookup.call(i+1))
-                conceptMemberLength = (await distributorInstance.addedConceptMembersLength.call(i+1)).toNumber()
+            for( i=1; i<setup.length+1; i++) {
+                let conceptInstance = await Concept.at(await distributorInstance.conceptLookup.call(i))
+                conceptMemberLength = (await distributorInstance.addedConceptMembersLength.call(i)).toNumber()
                 assert.isAtLeast((await conceptInstance.getMemberLength.call()).toNumber(),
                                  conceptMemberLength,
                                  "less members in the concept than in mentioned in the distributor")
 
-                emptySpots = (await distributorInstance.addedConceptAddableMembers.call(i+1)).toNumber()
+                emptySpots = (await distributorInstance.addedConceptAddableMembers.call(i)).toNumber()
                 assert.equal(emptySpots, 0, "the distributor does not remember all added members members")
 
                 for(j=0; j<conceptMemberLength; j++) {
-                    let memberAddress = await distributorInstance.addedConceptMemberAddress.call(i+1,j)
+                    let memberAddress = await distributorInstance.addedConceptMemberAddress.call(i,j)
                     weight =  await conceptInstance.getWeight.call(memberAddress)
-                    assert.isAtLeast(weight.toNumber(), setup[i][5][j], "Member " + j + "of concept " + i + " is off:")
+                    assert.isAtLeast(weight.toNumber(), setup[i-1][5][j], "Member " + j + "of concept " + i-1 + " is off:")
                 }
             }
         })
 
         it("should not allow the addition of more members than specified", async () => {
-            for( i=0; i<setup.length; i++) {
-                conceptMemberLengthBefore = (await distributorInstance.addedConceptMembersLength.call(i+1)).toNumber()
-                assert.equal(conceptMemberLengthBefore, setup[i][4].length, "not all members were added beforehand")
+            for( i=1; i<setup.length+1; i++) {
+                conceptMemberLengthBefore = (await distributorInstance.addedConceptMembersLength.call(i)).toNumber()
+                assert.equal(conceptMemberLengthBefore, setup[i-1][4].length, "not all members were added beforehand")
 
-                let conceptInstance = await Concept.at(await distributorInstance.conceptLookup.call(i+1))
+                let conceptInstance = await Concept.at(await distributorInstance.conceptLookup.call(i))
                 try {
-                    await distributorInstance.addInitialMember(i+1, accounts[0], 10)
+                    await distributorInstance.addInitialMember(i, accounts[0], 10)
                 } catch (e) {
                     if (e.toString().indexOf('invalid opcode') > 0) {
                         assert(true, "an 'invalid-opcode' is thrown")

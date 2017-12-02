@@ -32,7 +32,7 @@ contract ("Minimum size violations will cancel assessments", (accounts) => {
             const DistributorInstance = await Distributor.deployed()
 
             assessee.balance = await aha.balances.call(assessee.address)
-            const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(2)).makeAssessment(cost, size, 1000, timelimit, {from: assessee.address})
+            const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup.call(2)).makeAssessment(cost, size, 1000, timelimit, {from: assessee.address})
 
             assessment = Assessment.at(utils.getNotificationArgsFromReceipt(assessmentResult.receipt, 1)[0].sender)
 
@@ -81,7 +81,7 @@ contract ("Minimum size violations will cancel assessments", (accounts) => {
             const DistributorInstance = await Distributor.deployed()
 
             assessee.balance = await aha.balances.call(assessee.address)
-            const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup(2)).makeAssessment(cost, size, 1000, timelimit, {from: assessee.address})
+            const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup.call(2)).makeAssessment(cost, size, 1000, timelimit, {from: assessee.address})
 
             assessment = Assessment.at(utils.getNotificationArgsFromReceipt(assessmentResult.receipt, 1)[0].sender)
 
