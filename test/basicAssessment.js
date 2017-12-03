@@ -5,7 +5,6 @@ var Assessment = artifacts.require("Assessment");
 
 var utils = require("../js/utils.js")
 var chain = require("../js/assessmentFunctions.js")
-var setup = require("../setup.json")
 
 var nInitialUsers = 6
 var gasPrice = 1000000000; //safe low cost

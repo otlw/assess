@@ -6,7 +6,6 @@ var FathomToken = artifacts.require("./FathomToken.sol");
 var Distributor = artifacts.require("./Distributor.sol");
 var accounts = web3.eth.accounts
 
-var setup = require("../setup.json")
 var nInitialUsers = 6;
 
 module.exports = function(deployer) {
