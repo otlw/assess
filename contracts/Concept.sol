@@ -165,9 +165,6 @@ contract Concept {
             }
             return true;
         }
-        else {
-            return false;
-        }
     }
 
     /*
