@@ -7,7 +7,7 @@ var Distributor = artifacts.require("./Distributor.sol");
 var accounts = web3.eth.accounts
 
 var setup = require("../setup.json")
-var nInitialUsers = setup.initialMembersInMew;
+var nInitialUsers = 6;
 
 module.exports = function(deployer) {
   var distributor;

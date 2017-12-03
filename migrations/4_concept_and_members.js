@@ -2,12 +2,9 @@ var ConceptRegistry = artifacts.require("./ConceptRegistry.sol");
 var Distributor = artifacts.require("./Distributor.sol");
 var accounts = web3.eth.accounts
 
-// minimal Setup:
-// mew + one child, 6 members in mew with weight 100
+// minimal Setup: 6 members in mew with weight 100
 // note: 5 accounts are needed for the mininal valid assessment, +1 for burnStakes-test
-var setup = require("../setup.json")
-var firstConcept = setup.firstConcepts[0];
-var nInitialUsers = setup.initialMembersInMew;
+var nInitialUsers = 6
 
 let initialMewMembers = accounts.slice(0,nInitialUsers)
 let initialWeights = new Array(initialMewMembers.length).fill(100)
@@ -25,14 +22,8 @@ module.exports = function(deployer) {
   }).then(function(){
       return Distributor.deployed()
   }).then(function(instance){
-      distributor = instance
-      return distributor.addConcept(
-          [mewAddress],
-          [firstConcept.propRate],
-          firstConcept.lifetime,
-          firstConcept.data
-      )
       // add initial members to mew
+      distributor = instance
   }).then(function(){
       return addInitialMembers(distributor, initialMewMembers, initialWeights)
   })
