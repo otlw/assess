@@ -10,7 +10,8 @@ import "./lib/StandardToken.sol";
 @purpose: To store data about users for easy, secure access and manage token balances
 */
 contract FathomToken is StandardToken{
-    address public conceptRegistry;
+    // address public conceptRegistry;
+    ConceptRegistry conceptRegistry;
     string public constant name = "Aha";
 
     event Notification(address user, address sender, uint topic);
@@ -26,7 +27,7 @@ contract FathomToken is StandardToken{
     */
 
     function FathomToken(address _conceptRegistry, address _initialUser, uint _initialBalance) {
-        conceptRegistry = _conceptRegistry;
+        conceptRegistry = ConceptRegistry(_conceptRegistry);
         totalSupply = _initialBalance;
         balances[_initialUser] = _initialBalance;
     }
@@ -37,7 +38,7 @@ contract FathomToken is StandardToken{
 
     //@purpose: To perform payments and staking for assessments
     function takeBalance(address _from,  address _to, uint _amount, address _concept) returns(bool) {
-        require(ConceptRegistry(conceptRegistry).conceptExists(_concept));
+        require(conceptRegistry.conceptExists(_concept));
         if(msg.sender != _concept) require(Concept(_concept).assessmentExists(msg.sender));
 
         require(balances[_from] >= _amount

@@ -13,7 +13,8 @@ contract Distributor{
     uint public nextConceptIndex;
 
     mapping (uint => ConceptInfo) setup;
-    address conceptRegistry;
+    ConceptRegistry conceptRegistry;
+    // address conceptRegistry;
     bool public initialized;
 
     struct ConceptInfo {
@@ -28,13 +29,13 @@ contract Distributor{
 
     function Distributor(uint _nInitialConcepts, address _conceptRegistry){
         nInitialConcepts = _nInitialConcepts;
-        conceptRegistry = _conceptRegistry;
+        conceptRegistry = ConceptRegistry(_conceptRegistry);
     }
 
     function init() public {
         require(!initialized);
         // creating mew
-        setup[0] = ConceptInfo("", new uint[](0), 0, 0, new address[](0), new uint[](0), ConceptRegistry(conceptRegistry).mewAddress());
+        setup[0] = ConceptInfo("", new uint[](0), 0, 0, new address[](0), new uint[](0), conceptRegistry.mewAddress());
         nextConceptIndex = 1;
         initialized = true;
     }
@@ -50,7 +51,7 @@ contract Distributor{
             require(parentAddress != address(0x0));
             conceptParents[i] = parentAddress;
         }
-        address createdConceptAddress = ConceptRegistry(conceptRegistry).makeConcept(conceptParents,
+        address createdConceptAddress = conceptRegistry.makeConcept(conceptParents,
                                                                                      _propagationRates,
                                                                                      _lifetime,
                                                                                      _data);
