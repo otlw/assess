@@ -2,25 +2,19 @@ var ConceptRegistry = artifacts.require("ConceptRegistry");
 var FathomToken = artifacts.require("FathomToken");
 var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
-var Distributor = artifacts.require("Distributor");
 
-utils = require("../js/utils.js")
-chain = require("../js/assessmentFunctions.js")
+var utils = require("../js/utils.js")
+var chain = require("../js/assessmentFunctions.js")
 
-var deploymentScript = require("../migrations/2_deploy_contracts.js")
-var setup = deploymentScript.setupVariable
-var nInitialUsers = deploymentScript.nInitialUsers
-var gasPrice = deploymentScript.gasPrice
-var etherPrice = deploymentScript.etherPrice
+var nInitialUsers = 6
+var gasPrice = 1000000000; //safe low cost
+var etherPrice = 460 // as of 11/17
 
 contract('Assessment', function(accounts) {
     let aha;
     let conceptReg;
-    let distributor;
 
-    let assessedConceptID = 4;
     let assessedConcept;
-    let ConceptInstance;
     let assessmentContract;
     let assessmentData;
 
@@ -52,10 +46,10 @@ contract('Assessment', function(accounts) {
     var gasCosts = [];
 
     describe('Before the assessment', function(){
-        it('A concept should be registered', async () => {
-            distributor = await Distributor.deployed()
+        it('A concept is created', async () => {
             conceptReg = await ConceptRegistry.deployed()
-            assessedConcept = await Concept.at(await distributor.conceptLookup.call(assessedConceptID))
+            let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+            assessedConcept = await Concept.at(txResult.logs[0].args["_concept"])
 
             assert.isTrue( await conceptReg.conceptExists.call(assessedConcept.address))
         })
@@ -88,7 +82,7 @@ contract('Assessment', function(accounts) {
 
         it("should charge the assessee", async() => {
             const balance = await aha.balances.call(assessee)
-            assert.equal(balance.toNumber(), assesseeInitialBalance - cost*size*assessmentData.tries, "the assessee did not get charged correctly")
+            assert.equal(balance.toNumber(), assesseeInitialBalance - cost*size, "the assessee did not get charged correctly")
             })
         })
 

@@ -2,7 +2,6 @@ var ConceptRegistry = artifacts.require("ConceptRegistry");
 var FathomToken = artifacts.require("FathomToken");
 var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
-var Distributor = artifacts.require("Distributor")
 
 var utils = require("../js/utils.js")
 var chain = require("../js/assessmentFunctions.js")
@@ -29,13 +28,16 @@ contract ("Minimum size violations will cancel assessments", (accounts) => {
 
         it ("An assessment of size 5 is created and assessors are called", async () => {
             aha = await FathomToken.deployed()
-            const DistributorInstance = await Distributor.deployed()
+            let conceptReg = await ConceptRegistry.deployed()
+            let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+            let assessedConceptAddress = txResult.logs[0].args["_concept"]
 
-            assessmentData = await chain.makeAssessment((await DistributorInstance.conceptLookup.call(2)), assessee.address, cost, size, 1000, timelimit)
+            // save the assessee's balance before the makeAssessment() call
+            assessee.balance = (await aha.balances.call(assessee.address)).toNumber()
+
+            let assessmentData = await chain.makeAssessment(assessedConceptAddress, assessee.address, cost, size, 1000, timelimit)
             assessment = Assessment.at(assessmentData.address)
             assessors = assessmentData.assessors
-            // save the assessee's balance before the last makeAssessment() call
-            assessee.balance = (await aha.balances.call(assessee.address)).toNumber() + cost * size
 
             initialBalances = await utils.getBalances(assessors, aha)
             assert.isAbove(assessors.length, size-1, "not enough assessors were called")
@@ -78,12 +80,11 @@ contract ("Minimum size violations will cancel assessments", (accounts) => {
         let assessee = {address: accounts[size+1]}
         it ("An assessment of size 5 is created and assessors are called", async () => {
             aha = await FathomToken.deployed()
-            const DistributorInstance = await Distributor.deployed()
+            let conceptReg = await ConceptRegistry.deployed()
+            let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
 
             assessee.balance = await aha.balances.call(assessee.address)
-            const assessmentResult = await Concept.at(await DistributorInstance.conceptLookup.call(2)).makeAssessment(cost, size, 1000, timelimit, {from: assessee.address})
-
-            assessmentData = await chain.makeAssessment((await DistributorInstance.conceptLookup.call(2)), assessee.address, cost, size, 1000, timelimit)
+            assessmentData = await chain.makeAssessment(txResult.logs[0].args["_concept"], assessee.address, cost, size, 1000, timelimit)
             assessment = Assessment.at(assessmentData.address)
             assessors = assessmentData.assessors
 
