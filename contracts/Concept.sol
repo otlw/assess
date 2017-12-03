@@ -12,8 +12,6 @@ contract Concept {
     
     FathomToken public fathomToken;
     ConceptRegistry conceptRegistry;
-    // address public fathomToken;
-    // address conceptRegistry;
     uint public lifetime;
     mapping (address => bool) public assessmentExists;
 

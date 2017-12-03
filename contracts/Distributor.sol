@@ -14,7 +14,6 @@ contract Distributor{
 
     mapping (uint => ConceptInfo) setup;
     ConceptRegistry conceptRegistry;
-    // address conceptRegistry;
     bool public initialized;
 
     struct ConceptInfo {

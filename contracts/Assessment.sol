@@ -21,8 +21,6 @@ contract Assessment {
 
     Concept concept;
     FathomToken fathomToken;
-    // address concept;
-    // address fathomToken;
 
     uint public endTime;
     // will keep track of timelimits for 1) latest possible time to confirm and
@@ -54,7 +52,6 @@ contract Assessment {
         assessee = _assessee;
         concept = Concept(msg.sender);
         fathomToken = concept.fathomToken();
-        // FathomToken(concept.fathomToken());
 
         endTime = now + _timeLimit;
         // set checkpoint to latest possible time to confirm
@@ -79,7 +76,7 @@ contract Assessment {
                 fathomToken.notification(assessors[i], 3); //Assessment Cancelled and you have been refunded
             }
         }
-        suicide(address(concept));
+        selfdestruct(address(concept));
     }
 
     //adds a user to the pool eligible to accept an assessment
