@@ -2,7 +2,6 @@ var ConceptRegistry = artifacts.require("ConceptRegistry");
 var FathomToken = artifacts.require("FathomToken");
 var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
-var Distributor = artifacts.require("Distributor");
 
 var utils = require("../js/utils.js")
 var chain = require("../js/assessmentFunctions.js")
@@ -15,10 +14,8 @@ var etherPrice = setup.etherPrice
 contract('Assessment', function(accounts) {
     let aha;
     let conceptReg;
-    let distributor;
 
     let assessedConcept;
-    let ConceptInstance;
     let assessmentContract;
     let assessmentData;
 
@@ -50,10 +47,10 @@ contract('Assessment', function(accounts) {
     var gasCosts = [];
 
     describe('Before the assessment', function(){
-        it('A concept should be registered', async () => {
-            distributor = await Distributor.deployed()
+        it('A concept is created', async () => {
             conceptReg = await ConceptRegistry.deployed()
-            assessedConcept = await Concept.at(await distributor.lastCreatedConcept.call())
+            let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+            assessedConcept = await Concept.at(txResult.logs[0].args["_concept"])
 
             assert.isTrue( await conceptReg.conceptExists.call(assessedConcept.address))
         })

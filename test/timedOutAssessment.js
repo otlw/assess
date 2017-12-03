@@ -2,7 +2,6 @@ var ConceptRegistry = artifacts.require("ConceptRegistry");
 var FathomToken = artifacts.require("FathomToken");
 var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
-var Distributor = artifacts.require("Distributor")
 
 var utils = require("../js/utils.js")
 var chain = require("../js/assessmentFunctions.js")
@@ -23,9 +22,11 @@ contract("An assessment where not enough asssessors confirm", (accounts) => {
 
     it ("should be created with at least "+size+" assessors", async () => {
         aha = await FathomToken.deployed()
-        const DistributorInstance = await Distributor.deployed()
+        let conceptReg = await ConceptRegistry.deployed()
+        const txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+        let assessedConceptAddress = txResult.logs[0].args["_concept"]
 
-        assessmentData = await chain.makeAssessment((await DistributorInstance.lastCreatedConcept.call()), assessee.address, cost, size, waitTime, timeLimit)
+        let assessmentData = await chain.makeAssessment(assessedConceptAddress, assessee.address, cost, size, waitTime, timeLimit)
         assessment = Assessment.at(assessmentData.address)
         assessors = assessmentData.assessors
 
@@ -84,10 +85,10 @@ contract ("An assessment where assessors fail to reveal", (accounts) => {
 
     it ("should run until the reveal stage", async () => {
         aha = await FathomToken.deployed()
-        const DistributorInstance = await Distributor.deployed()
-
-
-        assessmentData = await chain.makeAssessment((await DistributorInstance.lastCreatedConcept.call()), assessee.address, cost, size, 1000, 2000)
+        let conceptReg = await ConceptRegistry.deployed()
+        const txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+        let assessedConceptAddress = txResult.logs[0].args["_concept"]
+        let assessmentData = await chain.makeAssessment(assessedConceptAddress, assessee.address, cost, size, 1000, 2000)
         assessment = Assessment.at(assessmentData.address)
         assessors = assessmentData.assessors
         assessee.balance = await aha.balances.call(assessee.address)

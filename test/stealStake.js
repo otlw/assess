@@ -2,7 +2,6 @@ var ConceptRegistry = artifacts.require("ConceptRegistry");
 var FathomToken = artifacts.require("FathomToken");
 var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
-var Distributor = artifacts.require("Distributor");
 
 var utils = require("../js/utils.js")
 var chain = require("../js/assessmentFunctions.js")
@@ -11,7 +10,6 @@ var setup = require("../setup.json")
 var nInitialUsers = setup.initialMembersInMew;
 
 contract("Steal Stake:", function(accounts){
-    let conceptReg;
     let aha;
 
     let assessedConcept;
@@ -37,7 +35,9 @@ contract("Steal Stake:", function(accounts){
     }
 
     it("An assessment is created and users are called to be assessors.", async () =>{
-        assessedConceptAddress = await (await Distributor.deployed()).lastCreatedConcept.call()
+        let conceptReg = await ConceptRegistry.deployed()
+        let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+        let assessedConceptAddress = txResult.logs[0].args["_concept"]
         assessedConcept = Concept.at(assessedConceptAddress)
         aha = await FathomToken.deployed()
 

@@ -2,7 +2,6 @@ var ConceptRegistry = artifacts.require("ConceptRegistry");
 var FathomToken = artifacts.require("FathomToken");
 var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
-var Distributor = artifacts.require("Distributor");
 
 var utils = require("../js/utils.js")
 var chain = require("../js/assessmentFunctions.js")
@@ -13,7 +12,6 @@ var nInitialUsers = setup.initialMembersInMew
 contract("Burning Stakes:", function(accounts){
     let conceptReg;
     let aha;
-    let distributor;
     let assessedConcept;
     let assessmentContract;
 
@@ -42,9 +40,11 @@ contract("Burning Stakes:", function(accounts){
     let timeUntilHalfCommits = 1*60*60 //1hour
     describe("Initially", function(){
         it("an assessment is created and user are called to be assessors.", async () =>{
-            distributor  = await Distributor.deployed()
-            assessedConceptAddress = await distributor.lastCreatedConcept.call()
-            assessedConcept = Concept.at(assessedConceptAddress)
+            conceptReg = await ConceptRegistry.deployed()
+            let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+            let assessedConceptAddress = txResult.logs[0].args["_concept"]
+            assessedConcept = await Concept.at(assessedConceptAddress)
+
             aha = await FathomToken.deployed()
 
             //initiate assessment, save assessors and their initial balance
