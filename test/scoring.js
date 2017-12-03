@@ -15,9 +15,9 @@ var setups = []
 var trueResults = []
 for (t=0; t<nTests; t++){
     setup = jsAsses.generateRandomSetup(accounts, maxSize, maxScore, stake, false)
-    // setups.push(setup)
+    setups.push(setup)
 }
-verbose = true
+verbose = false
 
 //add special edgecases here:
 // perfect agreement

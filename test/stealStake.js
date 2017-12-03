@@ -2,20 +2,15 @@ var ConceptRegistry = artifacts.require("ConceptRegistry");
 var FathomToken = artifacts.require("FathomToken");
 var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
-var Distributor = artifacts.require("Distributor");
 
-utils = require("../js/utils.js")
-chain = require("../js/assessmentFunctions.js")
+var utils = require("../js/utils.js")
+var chain = require("../js/assessmentFunctions.js")
 
-var deploymentScript = require("../migrations/2_deploy_contracts.js")
-var setup = deploymentScript.setupVariable
-var nInitialUsers = deploymentScript.nInitialUsers
+var nInitialUsers = 6
 
 contract("Steal Stake:", function(accounts){
-    let conceptReg;
     let aha;
 
-    let assessedConceptID = 2;
     let assessedConcept;
     let assessmentContract;
 
@@ -39,7 +34,9 @@ contract("Steal Stake:", function(accounts){
     }
 
     it("An assessment is created and users are called to be assessors.", async () =>{
-        assessedConceptAddress = await (await Distributor.deployed()).conceptLookup.call(assessedConceptID)
+        let conceptReg = await ConceptRegistry.deployed()
+        let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+        let assessedConceptAddress = txResult.logs[0].args["_concept"]
         assessedConcept = Concept.at(assessedConceptAddress)
         aha = await FathomToken.deployed()
 
