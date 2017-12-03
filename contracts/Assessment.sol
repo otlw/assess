@@ -80,7 +80,6 @@ contract Assessment {
     }
 
     //adds a user to the pool eligible to accept an assessment
-    // function addAssessorToPool(address assessor) public onlyConcept() returns(bool) {
     function addAssessorToPool(address assessor) internal returns(bool) {
         if (assessor != assessee && assessorState[assessor] == State.None) {
             FathomToken(fathomToken).notification(assessor, 1); //Called As A Potential Assessor
