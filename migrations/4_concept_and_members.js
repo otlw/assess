@@ -6,8 +6,8 @@ var accounts = web3.eth.accounts
 // mew + one child, 6 members in mew with weight 100
 // note: 5 accounts are needed for the mininal valid assessment, +1 for burnStakes-test
 var setup = require("../setup.json")
-var firstConcept = setup.firstConcept;
-var nInitialUsers = setup.N;
+var firstConcept = setup.firstConcepts[0];
+var nInitialUsers = setup.initialMembersInMew;
 
 let initialMewMembers = accounts.slice(0,nInitialUsers)
 let initialWeights = new Array(initialMewMembers.length).fill(100)

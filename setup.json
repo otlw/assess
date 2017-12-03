@@ -1,10 +1,12 @@
 {
-    "N": 6,
-    "firstConcept" :  {
-        "propRate": 500,
-        "lifetime" : 31536000,
-        "data": "banana"
-    },
+    "initialMembersInMew": 6,
+    "firstConcepts" :  [
+        {
+            "propRate": 500,
+            "lifetime" : 31536000,
+            "data": "banana"
+        }
+    ],
     "etherPrice": 460,
     "gasPrice" : 1000000000
 }

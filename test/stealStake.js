@@ -8,7 +8,7 @@ var utils = require("../js/utils.js")
 var chain = require("../js/assessmentFunctions.js")
 var setup = require("../setup.json")
 
-var nInitialUsers = setup.N;
+var nInitialUsers = setup.initialMembersInMew;
 
 contract("Steal Stake:", function(accounts){
     let conceptReg;

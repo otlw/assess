@@ -25,7 +25,7 @@ contract Distributor{
     }
 
     function addConcept(address[] _parents, uint[] _propagationRates, uint _expirationDate, bytes _data) public {
-        lastCreatedConcept = (ConceptRegistry(conceptRegistry)).makeConcept(_parents, _propagationRates, _expirationDate, "");// _data);
+        lastCreatedConcept = (ConceptRegistry(conceptRegistry)).makeConcept(_parents, _propagationRates, _expirationDate, _data);
     }
 
 }
