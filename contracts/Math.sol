@@ -21,7 +21,7 @@ library Math {
     @purpose: To calculate the mean average distance of an array of datapoints
     @param: int[] data = the array of datapoints
   */
-  function calculateMAD(int[] data) public returns(uint meanAbsoluteDeviation) {
+  function calculateMAD(int[] data) public pure returns(uint meanAbsoluteDeviation) {
       int mean;
       for(uint j = 0; j < data.length; j++) {
           mean += data[j];
@@ -33,9 +33,9 @@ library Math {
       meanAbsoluteDeviation /= data.length;
   }
 
-  function getFinalScore(int[] data, uint MAD) public returns(int finalScore, uint largestClusterSize) {
+  function getFinalScore(int[] data, uint MAD) public pure returns(int finalScore, uint largestClusterSize) {
         //get largest Cluster and its score
-        for(uint i=0; i < data.length; i++) {
+        for(uint i = 0; i < data.length; i++) {
             uint clusterSize = 0;
             int clusterScore = 0;
             for (uint j = 0; j < data.length; j++){
@@ -56,7 +56,7 @@ library Math {
     or not the remained should be distributed to the others or not (iff they are not in
     the biggest cluster)
   */
-  function getPayout(uint distance, uint mad, uint stake, uint q) public returns(uint payout, bool dissenting){
+  function getPayout(uint distance, uint mad, uint stake, uint q) public pure returns(uint payout, bool dissenting){
       uint xOfMad = mad > 0 ? (distance*10000) / mad : 0;
       //if in rewardCluster
       if ((distance < mad) || (mad == 0 && distance == 0)) {
@@ -71,7 +71,7 @@ library Math {
   }
 
 
-  function abs(int x) public returns(uint){
+  function abs(int x) public pure returns(uint){
       if( x < 0 ) { return uint(-1*x); }
       else { return uint(x);}
   }
