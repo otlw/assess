@@ -31,8 +31,8 @@ contract("An assessment where not enough asssessors confirm", (accounts) => {
         assessors = assessmentData.assessors
 
         // save the assessee's balance before the last makeAssessment() call
-        assessee.balance = (await aha.balances.call(assessee.address)).toNumber() + cost * size
-        assessorInitialBalance = await aha.balances.call(assessors[0])
+        assessee.balance = (await aha.balanceOf.call(assessee.address)).toNumber() + cost * size
+        assessorInitialBalance = await aha.balanceOf.call(assessors[0])
         assert.isAtLeast(assessors.length, size, "the minimum of at least" + size + " assessors was not called")
     })
 
@@ -55,12 +55,12 @@ contract("An assessment where not enough asssessors confirm", (accounts) => {
         })
 
         it("should return the payment to the assessee", async () => {
-            const balance = await aha.balances.call(assessee.address)
+            const balance = await aha.balanceOf.call(assessee.address)
             assert.equal(balance.toNumber(), assessee.balance, "payment wasn't returned")
         })
 
         it("should return payment to the assessors", async () => {
-            const assessorBalance = await aha.balances.call(assessors[0])
+            const assessorBalance = await aha.balanceOf.call(assessors[0])
             assert.equal(assessorInitialBalance.toNumber(), assessorBalance.toNumber(), "stake wasn't returned")
         })
     })
@@ -91,7 +91,7 @@ contract ("An assessment where assessors fail to reveal", (accounts) => {
         let assessmentData = await chain.makeAssessment(assessedConceptAddress, assessee.address, cost, size, 1000, 2000)
         assessment = Assessment.at(assessmentData.address)
         assessors = assessmentData.assessors
-        assessee.balance = await aha.balances.call(assessee.address)
+        assessee.balance = await aha.balanceOf.call(assessee.address)
 
         initialBalances = await utils.getBalances(assessors, aha)
 

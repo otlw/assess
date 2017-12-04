@@ -58,7 +58,7 @@ exports.getCalledAssessors = function(receiptFromMakeAssessment){
 exports.getBalances = async function(_accounts, _userRegistryInstance){
     balances = []
     for (i=0; i<_accounts.length; i++){
-        tmp = await _userRegistryInstance.balances.call(_accounts[i])
+        tmp = await _userRegistryInstance.balanceOf.call(_accounts[i])
         balances.push(tmp.toNumber())
     }
     return balances
