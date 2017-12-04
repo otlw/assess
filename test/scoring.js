@@ -51,7 +51,7 @@ contract("Scoring Unit Tests", function(accounts) {
                               })
             }
             if (verbose) {
-                console.log(outcomes)
+                console.log('outcomes: ', outcomes);
             }
         })
 
