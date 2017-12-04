@@ -2,18 +2,17 @@ import numpy as np
 import sys
 
 # simulates the scoring process of an assessment. Can be used to
-# a) to test different clustering functions with testCalculateResults()
-#    -> usage: comment/uncomment in main() and execute without arguments
-#
-# b) to compute the finalScore and the winningAsssossors for a given series of scores
+# to compute the finalScore and the winningAsssossors for a given series of scores
+# with different scoring ranges and widths for the agreement-cluster
 #   usage: pass scores as a comma separated string to the command line, e.g.
-#  > python assessment.py 0,1,0,0,1
+# optionally, a range can be specified by passing: r=<lowerLimit>,<upperLimit>
+# optionally, the radius of the consensus cluster can be specified as
+# percentage of the range of scores by passing c=<radiusIn%>
+#  python assessment.py 0,1,0,0,1 r=0,100 c=10
 
-# c) some edge cases with more complicated scores that are interesting to look at
-# usage: umcomment main() and set edge=True
-
+#note: if both options are specified, range must be specified before radius
+# some examples can be shown by running assessSim without arguments
 # ============== scoring and clustering functions ===================
-
 
 def MAD(scores):
     return np.mean(np.abs(scores - np.mean(scores)))
@@ -23,92 +22,58 @@ def MMD(scores):
     return np.median(np.abs(scores - np.median(scores)))
 
 
-def printClusters(cs, dist, usedMAD):
-    if usedMAD:
-        print "clusterRadius (MAD): ", dist
-    else:
-        print "clusterRadius (MMD): ", dist
+def printClusters(cs, radius):
+    print "clusterRadius : ", radius
     for idx, c in enumerate(cs):
         print "Cluster ", idx, ": ", c
     print "Clusterlengths: ", [len(c) for c in cs]
-    print "winning Cluster: ", max(cs, key=len)
+    print "biggest Cluster: ", max(cs, key=lambda x: (len(x))) #, -1*MAD(x), 1-np.mean(x)))
 
-
-def clusterSOL(scores, distanceFunction=MAD, verbose=False):
-    dist = distanceFunction(scores)
-    n = len(scores)
-    clusters = [[] for i in range(n)]
-    for l in range(n):
-        for m in range(n):
-            if scores[l] - scores[m] <= dist:  # shouldnt this be abs()?->no still works? why?
-                clusters[l].append(scores[m])
-    if verbose:
-        printClusters(clusters, dist, distanceFunction == MAD)
-    return clusters
-
-
-def clusterSOL(scores, distanceFunction=MAD, verbose=False):
-    """ 
-    clustering as currently implemented in assessment.sol
-    corrected for the fact that python does not underflow
-    """
-    dist = distanceFunction(scores)
-    n = len(scores)
-    clusters = [[] for i in range(n)]
-    for l in range(n):
-        for m in range(n):
-            if np.abs(scores[l] - scores[m]) <= dist:
-                clusters[l].append(scores[m])
-
-    if verbose:
-        printClusters(clusters, dist, distanceFunction == MAD)
-
-    return clusters
-
-def cluster1(scores, distanceFunction=MAD, verbose=False):
-    dist = distanceFunction(scores)
+# draw points around individual scores of radius R to create clusters
+# returns all possible clusters
+def cluster(scores, radius, verbose=False):
     n = len(scores)
     clusters = [[] for i in range(n)]
     for i in range(n):
-        for j in range(i,n):
-            if np.abs(scores[i] - scores[j]) <= dist:
-                clusters[j].append(scores[i])
-                clusters[i].append(scores[j])
-
-    if verbose:
-        printClusters(clusters, dist, distanceFunction == MAD)
-
-    return clusters
-
-def clusterMask(scores, distanceFunction=MAD, verbose=False):
-    n = len(scores)
-    dist = distanceFunction(scores)
-    bestMask = np.zeros(n)
-    for i in range(n):
-        currentMask = np.zeros(n)
         for j in range(n):
-            if np.abs(scores[i] - scores[j]) <= dist:
-                currentMask[j] = 1
-        if np.sum(currentMask) > np.sum(bestMask):
-            bestMask = currentMask
+            # if (i != j):
+                if np.abs(scores[i] - scores[j]) <= radius:
+                    clusters[i].append(scores[j])
 
-    clusters = [score for idx,score in enumerate(scores) if bestMask[idx] == 1 ]
     if verbose:
-        printClusters(clusters, dist, distanceFunction == MAD)
+        printClusters(clusters, radius)
+
     return clusters
 
-def calculateResult(
-        scores, clusterFunction=clusterSOL, distanceFunction=MAD, verbose=False
-):
-    clusters = clusterFunction(scores, distanceFunction, verbose)
-    winnerCluster = max(clusters, key=len)
+# calculates the final score and the winning assessors
+def calculateResult(scores, radius, threshold, verbose=False, clusterFunction=cluster):
+    clusters = clusterFunction(scores, radius, verbose)
+    #sort by size of cluster, then smaller innerMAD, then smaller value
+    biggestCluster = max(clusters, key=len)
+    winnerCluster = []
+    finalScore = -99999
+    if len(biggestCluster) > len(scores)/2:
+        winnerCluster = biggestCluster
+        finalScore = np.mean(winnerCluster)
     winnerAssessors = [i for i, score in enumerate(
-        scores) if score in winnerCluster]
-    finalScore = np.mean(winnerCluster)
+        scores) if (np.abs(finalScore - score)<radius)]
     return finalScore, winnerAssessors
 
-# ============== test-functions ====================
+# outdated
+def payout(score, finalScore, radius, cost, inRewardCluster = True):
+    """payout function as implented in assessment.sol"""
+    scoreDistance = int((np.abs(score - finalScore)*1000)/radius)
+    if inRewardCluster:
+        return (cost * max(1000 - scoreDistance, 0))/1000
+    else:
+        return (cost * max(2000 - scoreDistance, 0))/2000
 
+# outdated
+def getPayouts(scores, finalScore, cost, winningCluster):
+    # inCluster[score in winningCluster for score in scores]
+    return [payout(score, finalScore, cost, score in winningCluster) for score in scores]
+
+# ============== test-functions ====================
 
 def testMAD():
     scores1 = [1, 2, 3]
@@ -118,11 +83,7 @@ def testMAD():
     print "MAD works..."
 
 
-def testCalculateResults(
-        clusterFunction=clusterSOL,
-        distanceFunction=MAD,
-        verbose=False
-):
+def testCalculateResults(radius, threshold, verbose=False, clusterFunction=cluster):
     '''
     Tests calcualte results - currently only for 1/0 scores
     '''
@@ -130,102 +91,98 @@ def testCalculateResults(
     # testcases are triplets:
     # (scoringArray, expected finalScore, expected winningAssessors)
     cases = [
-        ([1, 1], 1, [0, 1]),
-        ([1, 1, -1], 1, [0, 1]),
-        ([0, 1, 1, 1], 1, [1, 2, 3]),
-        ([1, 1, 1, 0], 1, [0, 1, 2]),
-        #        ([1,1,0,0,], ??, [?,?]), #TODO what happens at a  draw?
-        ([1, 0, 0, 0, 1], 0, [1, 2, 3])
+        ([10, 10], 10, [0, 1]),
+        ([90, 90, 10], 90, [0, 1]),
+        ([0, 90, 90, 90], 90, [1, 2, 3]),
+        ([90, 90, 90, 0], 90, [0, 1, 2]),
+        ([90, 0, 0, 0, 90], 0, [1, 2, 3])
     ]
     for scores, true_finalScore, true_winningAssessors in cases:
         print "\n ======= test: ", scores, " ============="
         finalScore, winnerAssessors = calculateResult(
-            scores, cluster1, distanceFunction, verbose)
+            scores, radius, threshold, verbose, clusterFunction)
         if verbose:
             print "finalScore: ", finalScore, "\nwinning Assessors: ",  winnerAssessors
         assert finalScore == true_finalScore
         assert winnerAssessors == true_winningAssessors
     print "Results are correctly computed..."
     return True
-
-def payout(score, finalScore, mad, cost, inRewardCluster = True):
-    """payout function as implented in assessment.sol"""
-    scoreDistance = int((np.abs(score - finalScore)*1000)/mad)
-    if inRewardCluster:
-        return (cost * max(1000 - scoreDistance, 0))/1000
-    else:
-        return (cost * max(2000 - scoreDistance, 0))/2000
-
-def getPayouts(scores, finalScore, cost, winningCluster):
-    # inCluster[score in winningCluster for score in scores]
-    return [payout(score, finalScore, cost, score in winningCluster) for score in scores]
+# =================== default variables ==================
+# default max and min score (not enforced!)
+scoreLimits = [0,100]
+# percentage of distance within which the majority must reside
+consensusRangeInPercent = 10
 
 
 
 # ======== MAIN ============
-def main():
+def main(scoreLimits=[0,100], consensusRangeInPercent=10):
     if len(sys.argv) > 1:
         # ============== b) read scores from input ===================
         print "reading from CL..."
-        distanceFunction = MAD
-        clusterFunction = clusterSOL
         scores = np.asarray([float(s) for s in sys.argv[1].split(',')])
-        try:
-            if sys.argv[2] == "mad":
-                distanceFunction = MAD
-            if sys.argv[2] == "mmd":
-                distanceFunction = MMD
-            if sys.argv[3] == "0":
-                clusterFunction = clusterSOL
-            if sys.argv[3] == "1":
-                clusterFunction = cluster1
-            if sys.argv[3] == "2":
-                clusterFunction = cluster2
-        except:
-            print ""
-        print "cluster-Function: ", clusterFunction
+        scoreRange = (scoreLimits[1] - scoreLimits[0])
+
+        for args in sys.argv[2:]:
+            # check if range of scores is specified -> if so recompute Range
+            if args[:2] =='r=':
+                scoreLimits = np.asarray([int(s) for s in args[2:].split(',')])
+                scoreRange = (scoreLimits[1] - scoreLimits[0])
+
+            # check if consensus percentage was specified
+            elif args[:2]=='c=':
+               consensusRangeInPercent = int(args[2:])
+
+        radius = scoreRange * consensusRangeInPercent/200
+        threshold = int(scoreRange/2)
+
+        print 'using', scoreLimits[0], ' and ', scoreLimits[1], ' as min and max score'
+        passingThreshold = int(scoreLimits[1]-scoreLimits[0]) / 2
+        print 'using ', passingThreshold , ' as threshold (<= threshold -> fail)'
+        print 'using', radius, ' as consensusRadius'
         print "scores: ", scores
-        finalScore, winnerAssessors = calculateResult(
-            scores, clusterFunction, distanceFunction, verbose=True
-        )
-        print "winningScores: ", scores[winnerAssessors]
-        print "finalScore: ", finalScore, "\nwinning Assessors: ",  winnerAssessors
-        print "payouts(% of cost (without stake/burning)): ", getPayouts(scores, finalScore, 1, scores[winnerAssessors])
+        finalScore, agreeingAssessors = calculateResult(scores,radius, threshold, verbose=True)
+        if len(agreeingAssessors) > len(scores)/2 :
+            print "winningScores: ", scores[agreeingAssessors]
+            print "finalScore: ", finalScore, "\nwinning Assessors: ",  agreeingAssessors
+            # print "payouts(% of cost (without stake/burning)): ", getPayouts(scores, finalScore, 100, scores[agreeingAssessors])
+        else:
+            print "no consensus reached!!!"
     else:
         # ============== b) test clustering functions ===================
         print "testing the implemented functions..."
         testMAD()
         verbose = True
-        testCalculateResults(clusterSOL, MAD, verbose=verbose)
-
-        # testCalculateResults(cluster1, MAD, verbose=verbose)
+        testCalculateResults(radius, threshold, verbose=verbose)
 main()
+
 
 
 # ================= edge cases ========================
 # here I enter tricky cases that might break the system. one assessor going crazy high.
 # to see the effect on the score and the cluster
-edge = False
+# edge = False
 
-# compare-flag: true -> runs both clusterSOL and cluster1
-# and prints the results next to each other
-verbose = True
-if edge:
-    print "Looking at edge cases..."
-    cases = [
-        # this one looks bad for clusterSOL and good for cluster1?
-        np.asarray([1, 1, 1, 1, 0, 1000]),
-        # this one will have many three winning clusters, each with 3 scores -> DRAW?
-        np.asarray([1, 2, 3, 4, 5]),
-        # how to deal with a draw
-        np.asarray([1, 1, 1, 2, 2, 2])
+# # compare-flag: true -> runs both clusterSOL and cluster1
+# # and prints the results next to each other
+# verbose = True
+# if edge:
+#     print "Looking at edge cases..."
+#     cases = [
+#         # this one looks bad for clusterSOL and good for cluster1?
+#         np.asarray([1, 1, 1, 1, 0, 1000]),
+#         # this one will have many three winning clusters, each with 3 scores -> DRAW?
+#         np.asarray([1, 2, 3, 4, 5]),
+#         # how to deal with a draw
+#         np.asarray([1, 1, 1, 2, 2, 2])
 
-    ]
-    for scores in cases:
-        print "===== ", scores, " =========="
-        finalScore, winnerAssessors = calculateResult(
-            scores, cluster1, MMD, verbose  # <change here betwen clusterSOL/1
-        )
-        print "winningScores: ", scores[winnerAssessors]
-        print "finalScore: ", finalScore
-        print "winning Assessors: ",  winnerAssessors
+#     ]
+#     for scores in cases:
+#         print "===== ", scores, " =========="
+#         finalScore, winnerAssessors = calculateResult(
+#             scores, cluster1, MMD, verbose  # <change here betwen clusterSOL/1
+#         )
+#         print "winningScores: ", scores[winnerAssessors]
+#         print "finalScore: ", finalScore
+#         print "winning Assessors: ",  winnerAssessors
+
