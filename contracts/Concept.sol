@@ -37,7 +37,7 @@ contract Concept {
         _;
     }
 
-    function Concept(address[] _parents, uint[] _propagationRates, uint _lifetime, bytes _data) {
+    function Concept(address[] _parents, uint[] _propagationRates, uint _lifetime, bytes _data) public {
         require(_parents.length == _propagationRates.length);
         conceptRegistry = ConceptRegistry(msg.sender);
 
@@ -53,11 +53,11 @@ contract Concept {
         fathomToken = FathomToken(conceptRegistry.fathomToken());
     }
 
-    function getMemberLength() public constant returns(uint) {
+    function getMemberLength() public view returns(uint) {
         return members.length;
     }
 
-    function getParentsLength() public constant returns(uint) {
+    function getParentsLength() public view returns(uint) {
         return parents.length;
     }
 

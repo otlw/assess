@@ -26,18 +26,18 @@ contract FathomToken is StandardToken{
       7 = Assessment Finished
     */
 
-    function FathomToken(address _conceptRegistry, address _initialUser, uint _initialBalance) {
+    function FathomToken(address _conceptRegistry, address _initialUser, uint _initialBalance) public {
         conceptRegistry = ConceptRegistry(_conceptRegistry);
         totalSupply = _initialBalance;
         balances[_initialUser] = _initialBalance;
     }
 
-    function notification(address user, uint topic) {
+    function notification(address user, uint topic) public {
         Notification(user, msg.sender, topic);
     }
 
     //@purpose: To perform payments and staking for assessments
-    function takeBalance(address _from,  address _to, uint _amount, address _concept) returns(bool) {
+    function takeBalance(address _from,  address _to, uint _amount, address _concept) public returns(bool) {
         require(conceptRegistry.conceptExists(_concept));
         if(msg.sender != _concept) require(Concept(_concept).assessmentExists(msg.sender));
 

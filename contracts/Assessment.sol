@@ -48,7 +48,7 @@ contract Assessment {
                         uint _size,
                         uint _cost,
                         uint _confirmTime,
-                        uint _timeLimit) {
+                        uint _timeLimit) public {
         assessee = _assessee;
         concept = Concept(msg.sender);
         fathomToken = concept.fathomToken();
@@ -168,7 +168,7 @@ contract Assessment {
     }
 
 
-    function steal(int128 _score, string _salt, address assessor) public{
+    function steal(int128 _score, string _salt, address assessor) public {
         if(assessorState[assessor] == State.Committed) {
             if(commits[assessor] == sha3(_score, _salt)) {
                 fathomToken.transfer(msg.sender, cost/2);
