@@ -253,6 +253,7 @@ contract Assessment {
             finalScore = 0;
         }
         FathomToken(fathomToken).notification(assessee, 7);
+    }
 
     function payout(uint finalClusterLength) onlyInStage(State.Done) public {
         uint q = 1; //INFLATION RATE

@@ -7,7 +7,7 @@ pragma solidity ^0.4.11;
 */
 
 library Math {
-    uint consentRadius = 13; //13 is 5% of the total range of 256
+    uint constant public consentRadius = 13; //13 is 5% of the total range of 256
 
     /*
       @purpose: To generate a weak random number between 0 and the specified maximum
@@ -16,24 +16,8 @@ library Math {
       @returns: The random number
     */
     function getRandom(uint seed, uint max) public constant returns(uint) { //Based on the function by alexvandesande
-        return(uint(sha3(block.blockhash(block.number-1), seed))%(max+1)); //Hashes the seed number with the last blockhash to generate a random number and shifts it into the desired range by using a modulus
+        return(uint(keccak256(block.blockhash(block.number-1), seed))%(max+1)); //Hashes the seed number with the last blockhash to generate a random number and shifts it into the desired range by using a modulus
     }
-
-  /*
-    @purpose: To calculate the mean average distance of an array of datapoints
-    @param: int[] data = the array of datapoints
-  */
-  function calculateMAD(int[] data) public returns(uint meanAbsoluteDeviation) {
-      int mean;
-      for(uint j = 0; j < data.length; j++) {
-          mean += data[j];
-      }
-      mean /=  int(data.length);
-      for(uint k = 0; k < data.length; k++) {
-          meanAbsoluteDeviation += abs(data[k] - mean);
-      }
-      meanAbsoluteDeviation /= data.length;
-  }
 
   // calculates possible clusters around all scores and returns the average score
   // and size of the biggest one.
@@ -60,7 +44,7 @@ library Math {
     or not the remained should be distributed to the others or not (iff they are not in
     the biggest cluster)
   */
-  function getPayout(uint distance, uint stake, uint q) public returns(uint payout, bool dissenting){
+  function getPayout(uint distance, uint stake, uint q) pure public returns(uint payout, bool dissenting){
       uint xOfRadius = (distance*10000) / consentRadius;
       //if in rewardCluster
       if (distance <= consentRadius) {
@@ -68,14 +52,14 @@ library Math {
       }
       else {
           // cap it to 20000 to prevent underflow
-          uint xOf2MadCapped = xOfRadius > 20000 ? 20000 : xOfRadius;
+          uint xOf2RadiusCapped = xOfRadius > 20000 ? 20000 : xOfRadius;
           payout = (stake * (20000 - xOf2RadiusCapped)) / 20000;
           dissenting = true;
       }
   }
 
 
-  function abs(int x) public returns(uint){
+  function abs(int x) pure public returns(uint){
       if( x < 0 ) { return uint(-1*x); }
       else { return uint(x);}
   }
