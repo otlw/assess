@@ -56,7 +56,7 @@ contract('Assessment', function(accounts) {
 
         it("users should have enough tokens", async() => {
             aha = await FathomToken.deployed()
-            assesseeInitialBalance =  await aha.balances.call(assessee)
+            assesseeInitialBalance =  await aha.balanceOf.call(assessee)
 
             assert.isAbove(assesseeInitialBalance.toNumber(), cost*size)
         })
@@ -81,7 +81,7 @@ contract('Assessment', function(accounts) {
         })
 
         it("should charge the assessee", async() => {
-            const balance = await aha.balances.call(assessee)
+            const balance = await aha.balanceOf.call(assessee)
             assert.equal(balance.toNumber(), assesseeInitialBalance - cost*size, "the assessee did not get charged correctly")
             })
         })
@@ -98,18 +98,18 @@ contract('Assessment', function(accounts) {
             describe("When assessors confirm", async () => {
                 let receiptFromConfirm;
                 it("they should be rejected if they have not been called", async() => {
-                    balanceBefore = await aha.balances.call(outsideUser)
+                    balanceBefore = await aha.balanceOf.call(outsideUser)
                     await assessmentContract.confirmAssessor({from: outsideUser})
-                    balanceAfter = await aha.balances.call(outsideUser)
+                    balanceAfter = await aha.balanceOf.call(outsideUser)
 
                     assert.equal(balanceBefore.toNumber(), balanceAfter.toNumber(), "an uncalled assessor could stake")
                 })
 
                 it("they should be charged", async () => {
                     confirmedAssessors = calledAssessors.slice(0, size)
-                    assessorInitialBalance = await aha.balances.call(confirmedAssessors[0])
+                    assessorInitialBalance = await aha.balanceOf.call(confirmedAssessors[0])
                     await chain.confirmAssessors(confirmedAssessors, assessmentContract)
-                    balanceAfter = await aha.balances.call(confirmedAssessors[0])
+                    balanceAfter = await aha.balanceOf.call(confirmedAssessors[0])
 
                     assert.equal(balanceAfter, assessorInitialBalance - cost)
                 })
@@ -219,7 +219,7 @@ contract('Assessment', function(accounts) {
 
             describe("The Assessor", function(){
                 it("should be paid", async () => {
-                    balanceAfter = await aha.balances.call(confirmedAssessors[0])
+                    balanceAfter = await aha.balanceOf.call(confirmedAssessors[0])
                     assert.equal(balanceAfter.toNumber(), assessorInitialBalance.toNumber() + cost, "assessor didn't get paid")
                 })
             })
