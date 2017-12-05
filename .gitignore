@@ -1,3 +1,10 @@
 **/chain_db/
 /build/
 node_modules
+
+
+# Other
+.notes
+.ideas
+.todos
+temp
