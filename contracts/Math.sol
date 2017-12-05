@@ -14,7 +14,7 @@ library Math {
       @returns: The random number
     */
     function getRandom(uint seed, uint max) public constant returns(uint) { //Based on the function by alexvandesande
-        return(uint(sha3(block.blockhash(block.number-1), seed))%(max+1)); //Hashes the seed number with the last blockhash to generate a random number and shifts it into the desired range by using a modulus
+        return(uint(keccak256(block.blockhash(block.number-1), seed))%(max+1)); //Hashes the seed number with the last blockhash to generate a random number and shifts it into the desired range by using a modulus
     }
 
   /*
