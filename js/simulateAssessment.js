@@ -1,41 +1,23 @@
-exports.getMAD = function(data){
-    mean = 0;
-    mean = data.reduce((previous, current) => current += previous)
-    mean =  solidityRound(mean/data.length);
-
-    totalRelativeDistance = 0;
-    for(k = 0; k < data.length; k++) {
-        totalRelativeDistance += Math.abs(data[k] - mean);
-    }
-    meanAbsoluteDeviation = Math.floor(totalRelativeDistance/data.length);
-    return meanAbsoluteDeviation;
-}
-
-exports.getFinalScore = function(scores){
+// this tests the Math-Library function getFinalScore, therefore assessments without consensus
+// will not produce a zero score, but the average of the biggest cluster
+exports.getFinalScore = function(scores, radius) {
     largestCluster = []
-    largestClusterSize = 0;
     finalScore = 0;
-    MAD = this.getMAD(scores)
-    for (j=0; j<scores.length; j++){
-        clusterSize = 0
+    for (var j=0; j<scores.length; j++) {
         cluster = []
         clusterScore = 0;
-        for (i=0; i<scores.length; i++){
-            if (Math.abs(scores[j] - scores[i]) <= MAD ) {
-                cluster.push(true)
-                clusterSize++
+        for (var i=0; i<scores.length; i++){
+            if (Math.abs(scores[j] - scores[i]) <= radius ) {
+                cluster.push(scores[i])
                 clusterScore += scores[i]
-            } else {
-                cluster.push(false)
             }
         }
-        if(clusterSize > largestClusterSize) {
+        if(cluster.length > largestCluster.length) {
             largestCluster = cluster;
-            largestClusterSize = clusterSize;
-            finalScore = solidityRound(clusterScore/largestClusterSize);
+            finalScore = solidityRound(clusterScore/largestCluster.length);
         }
     }
-    return {score: finalScore, mad:MAD, clusterMask:largestCluster, size:largestClusterSize}
+    return {score: finalScore, clusterMask:largestCluster, size:largestCluster.length}
 }
 
 //do weird rounding to account for solidity behavior -1/2 = -1 in js but -1/2 = 0 in solidity
@@ -46,24 +28,22 @@ function solidityRound(x){
     else { return Math.floor(x) }
 }
 
-exports.computePayouts = function(scores, finalScore, mad, cost, dissentBonus=false) {
+//emulating the funcionality of the getPayout function of Math.sol
+exports.computePayouts = function(scores, finalScore, radius, cost, dissentBonus=false) {
     payouts = []
     dissentBonus = 0
     inAssessorsIdxs = []
     q = 1  //INFLATION RATE
     for (key in scores) {
         distance = Math.abs(scores[key] - finalScore)
-        let xOfMad = 0;
-        if (mad > 0){
-            xOfMad = Math.floor((distance*10000) / mad);
-        }
+        let xOfRadius = Math.floor((distance*10000) / radius);
         // console.log("scoreDinstance(JS) for assessor " + key + " : " + scoreDistance)
-        if ((distance < mad) || (mad==0 && distance==0)) { //in RewardCluster?
-            payouts.push(Math.floor((q*cost * Math.max(10000 - xOfMad, 0))/10000) + cost);
+        if (distance <= radius) { //in RewardCluster?
+            payouts.push(Math.floor((q*cost * Math.max(10000 - xOfRadius, 0))/10000) + cost);
             inAssessorsIdxs.push(key)
         }
         else {
-            payoutValue = Math.floor((cost * Math.max(20000 - xOfMad, 0)) / 20000)
+            payoutValue = Math.floor((cost * Math.max(20000 - xOfRadius, 0)) / 20000)
             payouts.push(payoutValue)
             dissentBonus += cost - payoutValue
         }
@@ -78,20 +58,20 @@ exports.computePayouts = function(scores, finalScore, mad, cost, dissentBonus=fa
     return payouts
 }
 
-exports.generateRandomSetup = function(accounts, maxAssessors, maxScore, cost, dissentBonus=false) {
+exports.generateAssessmentDataAtRandom = function(accounts, maxAssessors, maxScore, radius, cost, dissentBonus=false) {
     size = utils.getRandomInt(5,maxAssessors)
     scores = []
     for (i=0; i<size; i++){
         scores.push(utils.getRandomInt(-maxScore, maxScore))
     }
-    return this.generateSetup(accounts, scores, cost, dissentBonus)
+    return this.generateAssessmentData(accounts, scores, radius, cost, dissentBonus)
 }
 
-exports.generateSetup = function(accounts, scores, cost, dissentBonus=false){
+exports.generateAssessmentData = function(accounts, scores, radius, cost, dissentBonus=false){
     size = scores.length
     assessors = accounts.slice(0, size)
     //generating the right results
-    resultInfo = this.getFinalScore(scores)
+    resultInfo = this.getFinalScore(scores, radius)
     return {assessors: assessors,
             scores: scores,
             stake: cost,
@@ -101,7 +81,7 @@ exports.generateSetup = function(accounts, scores, cost, dissentBonus=false){
             finalScore: resultInfo.score,
             payouts: this.computePayouts(scores,
                                          resultInfo.score,
-                                         resultInfo.mad,
+                                         radius,
                                          cost,
                                          dissentBonus)
            }

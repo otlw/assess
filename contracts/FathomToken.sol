@@ -10,7 +10,8 @@ import "./lib/StandardToken.sol";
 @purpose: To store data about users for easy, secure access and manage token balances
 */
 contract FathomToken is StandardToken{
-    address public conceptRegistry;
+    // address public conceptRegistry;
+    ConceptRegistry conceptRegistry;
     string public constant name = "Aha";
 
     event Notification(address user, address sender, uint topic);
@@ -21,23 +22,23 @@ contract FathomToken is StandardToken{
       3 = Assessment Cancelled and you have been refunded
       4 = Assessment Has Started
       5 = All have commited; Reveal score
-      6 = All have revealed; Tokens paid out
-      7 = Assessment Finished
+      6 = Consenus was reached; Tokens paid out
+      7 = Assessment Finished,
     */
 
-    function FathomToken(address _conceptRegistry, address _initialUser, uint _initialBalance) {
-        conceptRegistry = _conceptRegistry;
+    function FathomToken(address _conceptRegistry, address _initialUser, uint _initialBalance) public {
+        conceptRegistry = ConceptRegistry(_conceptRegistry);
         totalSupply = _initialBalance;
         balances[_initialUser] = _initialBalance;
     }
 
-    function notification(address user, uint topic) {
+    function notification(address user, uint topic) public {
         Notification(user, msg.sender, topic);
     }
 
     //@purpose: To perform payments and staking for assessments
-    function takeBalance(address _from,  address _to, uint _amount, address _concept) returns(bool) {
-        require(ConceptRegistry(conceptRegistry).conceptExists(_concept));
+    function takeBalance(address _from,  address _to, uint _amount, address _concept) public returns(bool) {
+        require(conceptRegistry.conceptExists(_concept));
         if(msg.sender != _concept) require(Concept(_concept).assessmentExists(msg.sender));
 
         require(balances[_from] >= _amount

@@ -95,7 +95,7 @@ contract("Steal Stake:", function(accounts){
     describe("If someone else steals an assessor's score", function() {
         var balanceBeforeSteal;
         it("the assessor is burned and the size of the assessment reduced.", async () => {
-            balanceBeforeSteal = await aha.balances.call(outsideUser)
+            balanceBeforeSteal = await aha.balanceOf.call(outsideUser)
 
             sizeBeforeSteal = await assessmentContract.size.call()
             await  assessmentContract.steal(scores[1], salts[1], confirmedAssessors[1], {from:outsideUser})
@@ -113,7 +113,7 @@ contract("Steal Stake:", function(accounts){
         })
 
         it("and his stake is given to the account who revealed it.",async () => {
-            balance = await aha.balances.call(outsideUser)
+            balance = await aha.balanceOf.call(outsideUser)
             assert.equal(balance.toNumber(),
                         balanceBeforeSteal.toNumber() + cost/2,
                          "stake was not given to the stealer")

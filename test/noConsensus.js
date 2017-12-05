@@ -7,7 +7,7 @@ var utils = require("../js/utils.js")
 var chain = require("../js/assessmentFunctions.js")
 
 
-contract ("Dissenting assessors:", (accounts) => {
+contract ("Assessment without consensus assessors:", (accounts) => {
     let assessee = {address: accounts[5]}
     let assessors;
 
@@ -19,7 +19,7 @@ contract ("Dissenting assessors:", (accounts) => {
     let assessment
     let aha
 
-    let scores = [0,200,200,200,200]
+    let scores = [0,10,50,80,-20]
     let salts = Array(5).fill("hihihi")
 
     let hashes = []
@@ -49,11 +49,13 @@ contract ("Dissenting assessors:", (accounts) => {
         assert.equal(stage.toNumber(), 4, "did not reach Committed stage")
     })
 
-    it("the dissenting assessors stake is redistributed amongst the other assessors", async () => {
+    it("no Assessor is being paid out anything", async () => {
         finalBalances = await utils.getBalances(assessors, aha)
-        assert.equal(finalBalances[1], initialBalances[1] + cost + cost/4, "inAssessors did not get more")
-        assert.equal(finalBalances[0], initialBalances[0] - cost, "dissenting assessor was not charged")
+        for (var i in finalBalances) {
+            assert.equal(finalBalances[i], initialBalances[i] - cost, "assessors did not loose all their money")
+        }
     })
-
+    it("and the final Score of the assessment is zero", async () => {
+        assert.equal(0, (await assessment.finalScore.call()).toNumber(), "assessment not marked as zero-score") 
+    })
 })
-

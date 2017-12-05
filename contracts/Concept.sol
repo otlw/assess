@@ -10,8 +10,8 @@ contract Concept {
     address[] public parents; //The concepts that this concept is child to (ie: Calculus is child to Math)
     bytes public data;
     address public owner;
-    address public fathomToken;
-    address conceptRegistry;
+    FathomToken public fathomToken;
+    ConceptRegistry conceptRegistry;
     uint public lifetime;
     mapping (address => bool) public assessmentExists;
 
@@ -33,16 +33,16 @@ contract Concept {
     }
 
     modifier onlyConcept() {
-        require(ConceptRegistry(conceptRegistry).conceptExists(msg.sender));
+        require(conceptRegistry.conceptExists(msg.sender));
         _;
     }
 
-    function Concept(address[] _parents, uint[] _propagationRates, uint _lifetime, bytes _data, address _owner) {
+    function Concept(address[] _parents, uint[] _propagationRates, uint _lifetime, bytes _data, address _owner) public {
         require(_parents.length == _propagationRates.length);
-        conceptRegistry = msg.sender;
+        conceptRegistry = ConceptRegistry(msg.sender);
 
         for (uint j=0; j < _parents.length; j++) {
-            require(ConceptRegistry(conceptRegistry).conceptExists(_parents[j]));
+            require(conceptRegistry.conceptExists(_parents[j]));
             require(_propagationRates[j] <= 1000);
         }
 
@@ -51,7 +51,7 @@ contract Concept {
         data = _data;
         lifetime = _lifetime;
         owner = _owner;
-        fathomToken = ConceptRegistry(conceptRegistry).fathomToken();
+        fathomToken = FathomToken(conceptRegistry.fathomToken());
     }
 
     modifier onlyOwner(){
@@ -75,7 +75,7 @@ contract Concept {
         return members.length;
     }
 
-    function getParentsLength() public constant returns(uint) {
+    function getParentsLength() public view returns(uint) {
         return parents.length;
     }
 
@@ -83,7 +83,7 @@ contract Concept {
       @purpose: To add the firstUser to Mew
     */
     function addInitialMember(address _user, uint _weight) public {
-        if (ConceptRegistry(conceptRegistry).distributorAddress() == msg.sender)
+        if (conceptRegistry.distributorAddress() == msg.sender)
             {
                 this.addWeight(_user, _weight);
             }
@@ -152,7 +152,7 @@ contract Concept {
       the last member and then decreasing the size of the members array
       @returns the updated number of members in the concept
     */
-    function removeMember(address _member) internal returns(uint){
+    function removeMember(address _member) private returns(uint){
         uint index = memberData[_member].index;
         if (index > 0){
             members[index] = members[members.length - 1]; //THIS NEEDS TO BE TESTED!
@@ -170,12 +170,12 @@ contract Concept {
       @param: uint size = the number of assessors
     */
     function makeAssessment(uint cost, uint size, uint _waitTime, uint _timeLimit) public returns(bool) {
-        if (size >= 5 && FathomToken(fathomToken).balanceOf(msg.sender)>= cost*size) {
+        if (size >= 5 && fathomToken.balanceOf(msg.sender)>= cost*size) {
             Assessment newAssessment = new Assessment(msg.sender, size, cost, _waitTime, _timeLimit);
             assessmentExists[address(newAssessment)] = true;
-            FathomToken(fathomToken).takeBalance(msg.sender, address(newAssessment), cost*size, address(this));
+            fathomToken.takeBalance(msg.sender, address(newAssessment), cost*size, address(this));
             // get membernumber of mew to see whether there are more than 200 users in the system:
-            address mewAddress = ConceptRegistry(conceptRegistry).mewAddress();
+            address mewAddress = conceptRegistry.mewAddress();
             uint nMemberInMew = Concept(mewAddress).getMemberLength();
             if (nMemberInMew < size * 5) {
                 newAssessment.callAllFromMew(nMemberInMew, mewAddress);
