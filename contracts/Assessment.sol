@@ -252,7 +252,7 @@ contract Assessment {
             // set final Score to zero to signal no consensus
             finalScore = 0;
         }
-        FathomToken(fathomToken).notification(assessee, 7);
+        fathomToken.notification(assessee, 7);
     }
 
     function payout(uint finalClusterLength) onlyInStage(State.Done) public {
