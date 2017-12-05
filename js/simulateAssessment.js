@@ -2,6 +2,7 @@
 // will not produce a zero score, but the average of the biggest cluster
 exports.getFinalScore = function(scores, radius) {
     largestCluster = []
+    largestClusterScore = 0;
     finalScore = 0;
     for (var j=0; j<scores.length; j++) {
         cluster = []
@@ -12,11 +13,12 @@ exports.getFinalScore = function(scores, radius) {
                 clusterScore += scores[i]
             }
         }
-        if(cluster.length > largestCluster.length) {
+        if(cluster.length > largestCluster.length || (cluster.length == largestCluster.length && clusterScore < largestClusterScore)) {
             largestCluster = cluster;
-            finalScore = solidityRound(clusterScore/largestCluster.length);
+            largestClusterScore = clusterScore;
         }
     }
+    finalScore = solidityRound(largestClusterScore/largestCluster.length);
     return {score: finalScore, clusterMask:largestCluster, size:largestCluster.length}
 }
 
