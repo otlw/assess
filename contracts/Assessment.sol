@@ -240,17 +240,22 @@ contract Assessment {
                 idx++;
             }
         }
-        uint mad = Math.calculateMAD(finalScores);
         uint finalClusterLength;
-        (finalScore, finalClusterLength) = Math.getFinalScore(finalScores, mad);
-        payout(mad, finalClusterLength);
-        if (finalScore > 0) {
-            concept.addMember(assessee, uint(finalScore) * finalClusterLength);
+        (finalScore, finalClusterLength) = Math.getFinalScore(finalScores);
+        // check if a majority of assessors found a point of consensus
+        if (finalClusterLength > done/2) {
+            payout(finalClusterLength);
+            if (finalScore > 0) {
+                concept.addMember(assessee, uint(finalScore) * finalClusterLength);
+            }
+        } else {
+            // set final Score to zero to signal no consensus
+            finalScore = 0;
         }
         fathomToken.notification(assessee, 7);
-   }
+    }
 
-    function payout(uint mad, uint finalClusterLength) onlyInStage(State.Done) public {
+    function payout(uint finalClusterLength) onlyInStage(State.Done) public {
         uint q = 1; //INFLATION RATE
         uint dissentBonus = 0;
         bool[] memory inAssessor = new bool[] (assessors.length);
@@ -260,13 +265,13 @@ contract Assessment {
             if (assessorState[assessors[i]] == State.Done) {
                 uint payoutValue;
                 bool dissenting;
-                (payoutValue, dissenting) = Math.getPayout(Math.abs(scores[assessors[i]] - finalScore), mad, cost, q);
+                (payoutValue, dissenting) = Math.getPayout(Math.abs(scores[assessors[i]] - finalScore), cost, q);
                 if (dissenting) {
                     dissentBonus += cost - payoutValue;
                     if (payoutValue > 0) {
                         fathomToken.transfer(assessors[i], payoutValue);
                     }
-                    fathomToken.notification(assessors[i], 6); //All have revealed; Tokens paid out
+                    fathomToken.notification(assessors[i], 6); //Consensus reached; Tokens paid out
                 } else {
                     inAssessor[i] = true;
                     inAssessorPayout[i] = payoutValue;
@@ -278,7 +283,7 @@ contract Assessment {
             if (inAssessor[j]) {
                 fathomToken.transfer(assessors[j],
                                                     inAssessorPayout[j] + dissentBonus/finalClusterLength);
-                fathomToken.notification(assessors[j], 6); //All have revealed; Tokens paid out
+                fathomToken.notification(assessors[j], 6); //Consensus reached; Tokens paid out
             }
         }
     }

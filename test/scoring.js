@@ -9,20 +9,25 @@ var maxSize = 9 //the number of accounts created by testrpc
 var stake = 10000
 var inflationRate = 1;
 //setting random scores
-var maxScore = 1000;// 2**64;
-var nTests = 5;
+var maxScore = 127;
+// radius within two assessors agree
+// needs to be the same as Math.sol/consensusRadius
+var radius = 13; // 5% of 256
+var nTests = 3;
 var setups = []
 var trueResults = []
 for (t=0; t<nTests; t++){
-    setup = jsAsses.generateRandomSetup(accounts, maxSize, maxScore, stake, false)
+    setup = jsAsses.generateAssessmentDataAtRandom(accounts, maxSize, maxScore, radius, stake, false)
     setups.push(setup)
 }
-verbose = false
+verbose = true
 
-//add special edgecases here:
+//add custom cases here:
 // perfect agreement
-// setups.push(jsAsses.generateSetup(accounts,[1000,1000,1000,1000, 1000], stake))
-setups.push(jsAsses.generateSetup(accounts,[0,1000,1000,1000, 1000], stake, false))
+setups.push(jsAsses.generateAssessmentData(accounts,[100,100,100,100, 100],radius, stake))
+setups.push(jsAsses.generateAssessmentData(accounts,[-7,-6,8,8,9], radius, stake, false))
+setups.push(jsAsses.generateAssessmentData(accounts,[0,10,10,10, 10], radius, stake, false))
+setups.push(jsAsses.generateAssessmentData(accounts,[10,10,10,60,60,60], radius, stake, false))
 
 contract("Scoring Unit Tests", function(accounts) {
     describe(setups.length + " virtual assessments with random scores and varying sizes are ", async () => {
@@ -32,19 +37,18 @@ contract("Scoring Unit Tests", function(accounts) {
             for (setup of setups) {
                 var payouts = []
                 //run assessment
-                mad = (await mathlib.calculateMAD.call(setup.scores)).toNumber()
-                resultInfo = await mathlib.getFinalScore.call(setup.scores, mad)
+                resultInfo = await mathlib.getFinalScore.call(setup.scores)
                 // fetch its outcome
                 for (var key in setup.assessors) {
                     distance = Math.abs(setup.scores[key] - resultInfo[0].toNumber())
                     payout = await mathlib.getPayout.call(distance,
-                                                          mad,
                                                           stake,
                                                           inflationRate)
                     payouts.push(payout[0].toNumber())
                 }
                 // save it for later comparisons
-                outcomes.push({finalScore: resultInfo[0].toNumber(),
+                outcomes.push({scores: setup.scores,
+                               finalScore: resultInfo[0].toNumber(),
                                largestClusterSize: resultInfo[1].toNumber(),
                                payouts: payouts,
                                payoutsJs: setup.payouts

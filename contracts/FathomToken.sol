@@ -22,8 +22,8 @@ contract FathomToken is StandardToken{
       3 = Assessment Cancelled and you have been refunded
       4 = Assessment Has Started
       5 = All have commited; Reveal score
-      6 = All have revealed; Tokens paid out
-      7 = Assessment Finished
+      6 = Consenus was reached; Tokens paid out
+      7 = Assessment Finished,
     */
 
     function FathomToken(address _conceptRegistry, address _initialUser, uint _initialBalance) public {
