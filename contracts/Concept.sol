@@ -9,6 +9,7 @@ import "./Math.sol";
 contract Concept {
     address[] public parents; //The concepts that this concept is child to (ie: Calculus is child to Math)
     bytes public data;
+    address public owner;
     address public fathomToken;
     address conceptRegistry;
     uint public lifetime;
@@ -36,7 +37,7 @@ contract Concept {
         _;
     }
 
-    function Concept(address[] _parents, uint[] _propagationRates, uint _lifetime, bytes _data) {
+    function Concept(address[] _parents, uint[] _propagationRates, uint _lifetime, bytes _data, address _owner) {
         require(_parents.length == _propagationRates.length);
         conceptRegistry = msg.sender;
 
@@ -49,7 +50,25 @@ contract Concept {
         parents = _parents;
         data = _data;
         lifetime = _lifetime;
+        owner = _owner;
         fathomToken = ConceptRegistry(conceptRegistry).fathomToken();
+    }
+
+    modifier onlyOwner(){
+        require(msg.sender == owner);
+        _;
+    }
+
+    function transferOwnership(address _newOwner) onlyOwner() public {
+        owner = _newOwner;
+    }
+
+    function changeLifetime(uint _newLifetime) onlyOwner() public {
+        lifetime = _newLifetime;
+    }
+
+    function changeData(bytes _newData) onlyOwner() public {
+        data = _newData;
     }
 
     function getMemberLength() public constant returns(uint) {

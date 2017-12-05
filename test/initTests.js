@@ -16,7 +16,7 @@ contract("ConceptRegistry", function() {
         assert.isTrue(await conReg.conceptExists.call(mewAddress), "mew doesn't exist")
     })
     it("should allow mew as the parent when specified", async () => {
-        let txReciept = await conReg.makeConcept([mewAddress], [500], 60*60*24, "")
+        let txReciept = await conReg.makeConcept([mewAddress], [500], 60*60*24, "","0x0")
         createdConceptAddress = txReciept.logs[0].args["_concept"]
 
         let createdConcept = await Concept.at(createdConceptAddress)
@@ -25,7 +25,7 @@ contract("ConceptRegistry", function() {
     });
 
     it("should set the parents if specified", async () => {
-        let txReceipt = await conReg.makeConcept([createdConceptAddress], [500], 60*60*24, "")
+        let txReceipt = await conReg.makeConcept([createdConceptAddress], [500], 60*60*24, "","0x0")
 
         let childConcept = await Concept.at(txReceipt.logs[0].args["_concept"])
         assert.equal(await childConcept.parents.call(0), createdConceptAddress, "Child concept doesn't know supplied parent")
@@ -33,7 +33,7 @@ contract("ConceptRegistry", function() {
 
     it("should throw if parent doesn't exist", async () => {
         try {
-            await conReg.makeConcept(["0x123"], [500], 60*60*24, "")
+            await conReg.makeConcept(["0x123"], [500], 60*60*24, "","0x0")
         } catch (e) {
             if(e.toString().indexOf('revert') > 0) {
                 assert(true)
