@@ -19,8 +19,8 @@ contract Assessment {
         Burned
     }
 
-    address concept;
-    address fathomToken;
+    Concept concept;
+    FathomToken fathomToken;
 
     uint public endTime;
     // will keep track of timelimits for 1) latest possible time to confirm and
@@ -35,7 +35,7 @@ contract Assessment {
     int public finalScore;
 
     modifier onlyConcept() {
-        require(msg.sender == concept);
+        require(msg.sender == address(concept));
         _;
     }
 
@@ -48,10 +48,10 @@ contract Assessment {
                         uint _size,
                         uint _cost,
                         uint _confirmTime,
-                        uint _timeLimit) {
+                        uint _timeLimit) public {
         assessee = _assessee;
-        concept = msg.sender;
-        fathomToken = Concept(concept).fathomToken();
+        concept = Concept(msg.sender);
+        fathomToken = concept.fathomToken();
 
         endTime = now + _timeLimit;
         // set checkpoint to latest possible time to confirm
@@ -61,28 +61,28 @@ contract Assessment {
         size = _size;
         cost = _cost;
 
-        FathomToken(fathomToken).notification(assessee, 0); // assesse has started an assessment
+        fathomToken.notification(assessee, 0); // assessee has started an assessment
         done = 0;
     }
 
     // ends the assessment, refunds the assessee and all assessors who have not been burned
     function cancelAssessment() private {
         uint assesseeRefund = assessmentStage == State.Called ? cost * size : cost * assessors.length; //in later stages size can be reduced by burned assessors
-        FathomToken(fathomToken).transfer(assessee, assesseeRefund);
-        FathomToken(fathomToken).notification(assessee, 3); //Assessment Cancelled and you have been refunded
+        fathomToken.transfer(assessee, assesseeRefund);
+        fathomToken.notification(assessee, 3); //Assessment Cancelled and you have been refunded
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] != State.Burned) {
-                FathomToken(fathomToken).transfer(assessors[i], cost);
-                FathomToken(fathomToken).notification(assessors[i], 3); //Assessment Cancelled and you have been refunded
+                fathomToken.transfer(assessors[i], cost);
+                fathomToken.notification(assessors[i], 3); //Assessment Cancelled and you have been refunded
             }
         }
-        suicide(concept);
+        selfdestruct(address(concept));
     }
 
     //adds a user to the pool eligible to accept an assessment
-    function addAssessorToPool(address assessor) internal returns(bool) {
+    function addAssessorToPool(address assessor) private returns(bool) {
         if (assessor != assessee && assessorState[assessor] == State.None) {
-            FathomToken(fathomToken).notification(assessor, 1); //Called As A Potential Assessor
+            fathomToken.notification(assessor, 1); //Called As A Potential Assessor
             assessorState[assessor] = State.Called;
             return true;
         }
@@ -136,15 +136,15 @@ contract Assessment {
         }
         if (assessorState[msg.sender] == State.Called &&
             assessors.length < size &&
-            FathomToken(fathomToken).takeBalance(msg.sender, address(this), cost, concept)
+            fathomToken.takeBalance(msg.sender, address(this), cost, concept)
             ) {
             assessors.push(msg.sender);
             assessorState[msg.sender] = State.Confirmed;
-            FathomToken(fathomToken).notification(msg.sender, 2); //Confirmed for assessing, stake has been taken
+            fathomToken.notification(msg.sender, 2); //Confirmed for assessing, stake has been taken
         }
         if (assessors.length == size) {
             notifyAssessors(uint(State.Confirmed), 4);
-            FathomToken(fathomToken).notification(assessee, 4);
+            fathomToken.notification(assessee, 4);
             assessmentStage = State.Confirmed;
         }
     }
@@ -168,10 +168,10 @@ contract Assessment {
     }
 
 
-    function steal(int128 _score, string _salt, address assessor) public{
+    function steal(int128 _score, string _salt, address assessor) public {
         if(assessorState[assessor] == State.Committed) {
-            if(commits[assessor] == sha3(_score, _salt)) {
-                FathomToken(fathomToken).transfer(msg.sender, cost/2);
+            if(commits[assessor] == keccak256(_score, _salt)) {
+                fathomToken.transfer(msg.sender, cost/2);
                 assessorState[assessor] = State.Burned;
                 size--;
             }
@@ -191,7 +191,7 @@ contract Assessment {
         }
 
         if(assessorState[msg.sender] == State.Committed &&
-           commits[msg.sender] == sha3(_score, _salt)) {
+           commits[msg.sender] == keccak256(_score, _salt)) {
                     scores[msg.sender] = _score;
                     assessorState[msg.sender] = State.Done;
                     done++;
@@ -226,7 +226,7 @@ contract Assessment {
     function notifyAssessors(uint _state, uint _topic) private {
         for (uint i=0; i < assessors.length; i++) {
             if (uint(assessorState[assessors[i]]) == _state) {
-                FathomToken(fathomToken).notification(assessors[i], _topic);
+                fathomToken.notification(assessors[i], _topic);
             }
         }
     }
@@ -246,7 +246,7 @@ contract Assessment {
         if (finalClusterLength > done/2) {
             payout(finalClusterLength);
             if (finalScore > 0) {
-                Concept(concept).addMember(assessee, uint(finalScore) * finalClusterLength);
+                concept.addMember(assessee, uint(finalScore) * finalClusterLength);
             }
         } else {
             // set final Score to zero to signal no consensus
@@ -269,9 +269,9 @@ contract Assessment {
                 if (dissenting) {
                     dissentBonus += cost - payoutValue;
                     if (payoutValue > 0) {
-                        FathomToken(fathomToken).transfer(assessors[i], payoutValue);
+                        fathomToken.transfer(assessors[i], payoutValue);
                     }
-                    FathomToken(fathomToken).notification(assessors[i], 6); //Consensus reached; Tokens paid out
+                    fathomToken.notification(assessors[i], 6); //Consensus reached; Tokens paid out
                 } else {
                     inAssessor[i] = true;
                     inAssessorPayout[i] = payoutValue;
@@ -281,9 +281,9 @@ contract Assessment {
         // pay out the majority-assessors their share of stake + the remainders of any dissenting assessors
         for (uint j = 0; j < inAssessorPayout.length; j++) {
             if (inAssessor[j]) {
-                FathomToken(fathomToken).transfer(assessors[j],
+                fathomToken.transfer(assessors[j],
                                                     inAssessorPayout[j] + dissentBonus/finalClusterLength);
-                FathomToken(fathomToken).notification(assessors[j], 6); //Consensus reached; Tokens paid out
+                fathomToken.notification(assessors[j], 6); //Consensus reached; Tokens paid out
             }
         }
     }

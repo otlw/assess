@@ -13,7 +13,7 @@ contract ConceptRegistry {
     event ConceptCreation (address _concept);
 
     //@purpose: give this contract the address of a UserRegistry and mew Concept
-    function init(address _token, address _distributor){
+    function init(address _token, address _distributor) public {
         if (initialized == false) {
             fathomToken = _token;
             distributorAddress = _distributor;
@@ -28,7 +28,7 @@ contract ConceptRegistry {
       @purpose: To make a concept
       @param: address[] parentList = an array of addresses containing the addresses of the concepts parents
     */
-    function makeConcept(address[] parentList, uint[] _propagationRates, uint _lifetime, bytes _data) returns (address){
+    function makeConcept(address[] parentList, uint[] _propagationRates, uint _lifetime, bytes _data) public returns (address){
         Concept newConcept = new Concept(parentList, _propagationRates, _lifetime, _data);
 
         conceptExists[address(newConcept)] = true;

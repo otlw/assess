@@ -23,7 +23,7 @@ library Math {
   // and size of the biggest one.
   function getFinalScore(int[] data) public returns(int finalScore, uint largestClusterSize) {
         //get largest Cluster and its score
-        for(uint i=0; i < data.length; i++) {
+        for(uint i = 0; i < data.length; i++) {
             uint clusterSize = 0;
             int clusterScore = 0;
             for (uint j = 0; j < data.length; j++){
@@ -59,7 +59,7 @@ library Math {
   }
 
 
-  function abs(int x) pure public returns(uint){
+  function abs(int x) public pure returns(uint){
       if( x < 0 ) { return uint(-1*x); }
       else { return uint(x);}
   }
