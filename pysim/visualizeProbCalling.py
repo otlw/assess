@@ -3,7 +3,6 @@ import numpy as np
 import csv
 import sys
 
-
 # script to plot the effect of an assessors weight on the likelyhood of being called
 # usage: python visualize.py pathToCSVFile
 

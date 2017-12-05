@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+#generates the payout graphs of the whitepaper
 
 def MAD(scores):
     return np.mean(np.abs(scores - np.mean(scores)))
