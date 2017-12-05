@@ -134,7 +134,7 @@ contract Concept {
       the last member and then decreasing the size of the members array
       @returns the updated number of members in the concept
     */
-    function removeMember(address _member) internal returns(uint){
+    function removeMember(address _member) private returns(uint){
         uint index = memberData[_member].index;
         if (index > 0){
             members[index] = members[members.length - 1]; //THIS NEEDS TO BE TESTED!
