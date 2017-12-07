@@ -76,7 +76,7 @@ contract Concept {
       if they still have a weight in the concept
       @returns true if they are available as assessor
     */
-    function setAvailability() public returns(bool success){
+    function toggleAvailability() public returns(bool success){
         if (getWeightAndUpdate(msg.sender) > 0) {
             if (memberData[msg.sender].index == 0) {
                 members.push(msg.sender);
