@@ -21,8 +21,9 @@ library Math {
 
   // calculates possible clusters around all scores and returns the average score
   // and size of the biggest one.
-  function getFinalScore(int[] data) public returns(int finalScore, uint largestClusterSize) {
-        //get largest Cluster and its score
+  function getFinalScore(int[] data) public pure returns(int finalScore, uint largestClusterSize) {
+      //get largest Cluster and its score
+      int largestClusterScore;
         for(uint i = 0; i < data.length; i++) {
             uint clusterSize = 0;
             int clusterScore = 0;
@@ -32,11 +33,14 @@ library Math {
                     clusterSize++;
                 }
             }
-            if(clusterSize > largestClusterSize) {
+            if( clusterSize > largestClusterSize ||
+               (clusterSize == largestClusterSize && clusterScore < largestClusterScore)) {
                 largestClusterSize = clusterSize;
-                finalScore = clusterScore/int(clusterSize);
+                largestClusterScore = clusterScore;
+
             }
         }
+        finalScore = largestClusterScore/int(largestClusterSize);
    }
 
   /*

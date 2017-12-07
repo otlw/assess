@@ -18,16 +18,18 @@ var setups = []
 var trueResults = []
 for (t=0; t<nTests; t++){
     setup = jsAsses.generateAssessmentDataAtRandom(accounts, maxSize, maxScore, radius, stake, false)
-    setups.push(setup)
+    // setups.push(setup)
 }
 verbose = true
 
 //add custom cases here:
 // perfect agreement
-setups.push(jsAsses.generateAssessmentData(accounts,[100,100,100,100, 100],radius, stake))
-setups.push(jsAsses.generateAssessmentData(accounts,[-7,-6,8,8,9], radius, stake, false))
-setups.push(jsAsses.generateAssessmentData(accounts,[0,10,10,10, 10], radius, stake, false))
-setups.push(jsAsses.generateAssessmentData(accounts,[10,10,10,60,60,60], radius, stake, false))
+// setups.push(jsAsses.generateAssessmentData(accounts,[100,100,100,100, 100],radius, stake))
+// setups.push(jsAsses.generateAssessmentData(accounts,[-7,-6,8,8,9], radius, stake, false))
+// setups.push(jsAsses.generateAssessmentData(accounts,[0,10,10,10, 10], radius, stake, false))
+// setups.push(jsAsses.generateAssessmentData(accounts,[10,10,10,60,60,60], radius, stake, false))
+//draw:
+setups.push(jsAsses.generateAssessmentData(accounts,[36,45,47,53,53,64], radius, stake, false))
 
 contract("Scoring Unit Tests", function(accounts) {
     describe(setups.length + " virtual assessments with random scores and varying sizes are ", async () => {
