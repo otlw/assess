@@ -1,4 +1,6 @@
 var FathomToken = artifacts.require("./FathomToken.sol");
+var deploymentSetup = require("../deployment/deploymentSetup.js")
+// var accounts = deploymentSetup.setup.accounts
 
 module.exports = function(deployer) {
     accounts = web3.eth.accounts

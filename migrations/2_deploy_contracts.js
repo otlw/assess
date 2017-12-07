@@ -4,8 +4,9 @@ var Assessment = artifacts.require("./Assessment.sol");
 var ConceptRegistry = artifacts.require("./ConceptRegistry.sol");
 var FathomToken = artifacts.require("./FathomToken.sol");
 var Distributor = artifacts.require("./Distributor.sol");
-var accounts = web3.eth.accounts
+var deploymentSetup = require("../deployment/deploymentSetup.js")
 
+var accounts = web3.eth.accounts
 var nInitialUsers = 6;
 
 module.exports = function(deployer) {

@@ -8,7 +8,7 @@
   },
   "scripts": {
     "compile": "truffle compile",
-    "test": "ganache-cli -a 50 > /dev/null 2>&1 & truffle test"
+    "test": "ganache-cli > /dev/null 2>&1 & truffle test"
   },
   "author": "Jared Pereira",
   "license": "ISC",
@@ -18,6 +18,7 @@
     "truffle": "4.0.1"
   },
   "dependencies": {
-    "ethereumjs-abi": "^0.6.4"
+    "ethereumjs-abi": "^0.6.4",
+    "truffle-hdwallet-provider": "0.0.3"
   }
 }
