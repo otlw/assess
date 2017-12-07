@@ -76,8 +76,8 @@ contract Concept {
       if they still have a weight in the concept
       @returns true if they are available as assessor
     */
-    function setAvailability() public returns(bool success){
-        if (getWeight(msg.sender) > 0) {
+    function toggleAvailability() public returns(bool success){
+        if (getWeightAndUpdate(msg.sender) > 0) {
             if (memberData[msg.sender].index == 0) {
                 members.push(msg.sender);
                 memberData[msg.sender].index = members.length;
@@ -101,13 +101,13 @@ contract Concept {
         while (members.length > 1 && weight1 == 0) {
             uint index1 = Math.getRandom(seed, members.length - 1);
             randomMember1 = members[index1];
-            weight1 = getWeight(randomMember1);
+            weight1 = getWeightAndUpdate(randomMember1);
             seed++;
         }
         while (members.length > 1 && weight2 == 0) {
                 uint index2 = Math.getRandom(seed * 2, members.length - 1);
                 address randomMember2 = members[index2];
-                weight2 = getWeight(randomMember2);
+                weight2 = getWeightAndUpdate(randomMember2);
                 seed += 10;
         }
         if (weight1 > weight2) {
@@ -119,16 +119,22 @@ contract Concept {
       @purpose: get the weight of a given member, also removes that member from the array
       if there legitimating assessment is expired
     */
-    function getWeight(address _member) public returns(uint weight){
+    function getWeight(address _member) view public returns(uint weight){
         for (uint i=0; i < memberData[_member].weights.length; i++) {
             if (memberData[_member].weights[i].date > now){
                 weight += memberData[_member].weights[i].weight;
             }
         }
+    }
+
+    //@purpose: check weight and update members array
+    function getWeightAndUpdate(address _member) public returns(uint weight) {
+        weight = getWeight(_member);
         if (weight == 0) {
             removeMember(_member);
         }
     }
+
     /*
       @purpose: removes member at a given index from the members array by substituting they with
       the last member and then decreasing the size of the members array
