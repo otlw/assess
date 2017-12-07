@@ -6,6 +6,12 @@ var FathomToken = artifacts.require("./FathomToken.sol");
 var Distributor = artifacts.require("./Distributor.sol");
 var deploymentSetup = require("../deployment/deploymentSetup.js")
 
+// uncomment this to deploy to rinkeby with specific users
+// var setup = require("./../initialMembers.json")
+// var accounts = setup.accounts
+// var nInitialUsers = accounts.length;
+
+// deploy to development-network
 var accounts = web3.eth.accounts
 var nInitialUsers = 6;
 

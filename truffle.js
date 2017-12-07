@@ -1,5 +1,5 @@
 var HDWalletProvider = require("truffle-hdwallet-provider");
-let mnemonic = "vessel caught idle sphere summer aunt motion chat once average eight seat"
+let mnemonic = require("./secrets.json");
 
 module.exports = {
     networks: {
@@ -13,8 +13,8 @@ module.exports = {
             }
         },
         rinkeby: {
-            provider: new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/2FBsjXKlWVXGLhKn7PF7"),
-            network_id: 4,
+            provider: new HDWalletProvider(mnemonic.seed, "https://rinkeby.infura.io/2FBsjXKlWVXGLhKn7PF7"),
+            network_id: 4
         }
     },
     solc: {
