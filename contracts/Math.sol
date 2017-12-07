@@ -21,7 +21,7 @@ library Math {
 
   // calculates possible clusters around all scores and returns the average score
   // and size of the biggest one.
-  function getFinalScore(int[] data) public returns(int finalScore, uint largestClusterSize) {
+  function getFinalScore(int[] data) public pure returns(int finalScore, uint largestClusterSize) {
         //get largest Cluster and its score
         for(uint i = 0; i < data.length; i++) {
             uint clusterSize = 0;
