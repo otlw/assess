@@ -4,7 +4,6 @@ var Assessment = artifacts.require("./Assessment.sol");
 var ConceptRegistry = artifacts.require("./ConceptRegistry.sol");
 var FathomToken = artifacts.require("./FathomToken.sol");
 var Distributor = artifacts.require("./Distributor.sol");
-var deploymentSetup = require("../deployment/deploymentSetup.js")
 
 // uncomment this to deploy to rinkeby with specific users
 // var setup = require("./../initialMembers.json")

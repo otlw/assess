@@ -1,5 +1,4 @@
 var FathomToken = artifacts.require("./FathomToken.sol");
-var deploymentSetup = require("../deployment/deploymentSetup.js")
 
 // uncomment this when you deploying to rinkeby and wanting to fund specific addresses
 // also comment out line 11

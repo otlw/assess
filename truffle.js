@@ -1,5 +1,6 @@
 var HDWalletProvider = require("truffle-hdwallet-provider");
-let mnemonic = require("./secrets.json");
+// let mnemonic = require("./secrets.json");
+let mnemonic = {seed: "put your seed words here or in a file called secret. json"}
 
 module.exports = {
     networks: {
