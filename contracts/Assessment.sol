@@ -19,7 +19,7 @@ contract Assessment {
         Burned
     }
 
-    Concept concept;
+    Concept public concept;
     FathomToken fathomToken;
 
     uint public endTime;
