@@ -14,6 +14,9 @@ contract FathomToken is StandardToken{
     ConceptRegistry conceptRegistry;
     string public constant name = "Aha";
 
+    address minter;
+    address owner;
+
     event Notification(address user, address sender, uint topic);
     /*
       0 = You've started an assessment
@@ -27,6 +30,7 @@ contract FathomToken is StandardToken{
     */
 
     function FathomToken(address _conceptRegistry, address _initialUser, uint _initialBalance) public {
+        owner = msg.sender;
         conceptRegistry = ConceptRegistry(_conceptRegistry);
         totalSupply = _initialBalance;
         balances[_initialUser] = _initialBalance;
@@ -47,5 +51,25 @@ contract FathomToken is StandardToken{
         balances[_to] += _amount;
         Transfer(_from, _to, _amount);
         return true;
+    }
+
+    function mint(address _to, uint _amount) public returns(bool){
+        require(msg.sender == minter);
+        require(totalSupply + _amount > totalSupply);
+
+        totalSupply += _amount;
+        balances[_to] += _amount;
+        Transfer(address(0), _to, _amount);
+        return true;
+    }
+
+    function setMinter(address _minter) public {
+        require(msg.sender == owner);
+        minter = _minter;
+    }
+
+    function setOwner(address _owner) public {
+        require(msg.sender == owner);
+        owner = _owner;
     }
 }
