@@ -3,6 +3,7 @@ pragma solidity ^0.4.11;
 import "./Concept.sol";
 import "./ConceptRegistry.sol";
 import "./lib/StandardToken.sol";
+import "./Minter.sol";
 
 /*
 @type: contract
@@ -14,7 +15,7 @@ contract FathomToken is StandardToken{
     ConceptRegistry conceptRegistry;
     string public constant name = "Aha";
 
-    address minter;
+    address public minter;
     address owner;
 
     event Notification(address user, address sender, uint topic);
@@ -29,9 +30,10 @@ contract FathomToken is StandardToken{
       7 = Assessment Finished,
     */
 
-    function FathomToken(address _conceptRegistry, address _initialUser, uint _initialBalance) public {
+    function FathomToken(address _conceptRegistry, address _initialUser, uint _initialBalance, uint _epochLength, uint _reward) public {
         owner = msg.sender;
         conceptRegistry = ConceptRegistry(_conceptRegistry);
+        minter = address(new Minter(msg.sender, _conceptRegistry, _epochLength, _reward));
         totalSupply = _initialBalance;
         balances[_initialUser] = _initialBalance;
     }
@@ -61,15 +63,5 @@ contract FathomToken is StandardToken{
         balances[_to] += _amount;
         Transfer(address(0), _to, _amount);
         return true;
-    }
-
-    function setMinter(address _minter) public {
-        require(msg.sender == owner);
-        minter = _minter;
-    }
-
-    function setOwner(address _owner) public {
-        require(msg.sender == owner);
-        owner = _owner;
     }
 }

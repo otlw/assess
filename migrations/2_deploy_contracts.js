@@ -4,6 +4,7 @@ var Assessment = artifacts.require("./Assessment.sol");
 var ConceptRegistry = artifacts.require("./ConceptRegistry.sol");
 var FathomToken = artifacts.require("./FathomToken.sol");
 var Distributor = artifacts.require("./Distributor.sol");
+var Minter = artifacts.require("./Minter.sol")
 
 // uncomment this to deploy to rinkeby with specific users
 // var setup = require("./../initialMembers.json")
@@ -14,6 +15,9 @@ var Distributor = artifacts.require("./Distributor.sol");
 var accounts = web3.eth.accounts
 var nInitialUsers = 6;
 
+var epochLength = 60000
+var tokenReward = 100
+
 module.exports = function(deployer) {
   var distributor;
   deployer.deploy(Math);
@@ -23,7 +27,7 @@ module.exports = function(deployer) {
   }).then(function(){
       return deployer.deploy(Distributor, nInitialUsers, ConceptRegistry.address)
   }).then(function(){
-    return deployer.deploy(FathomToken, ConceptRegistry.address, accounts[0], accounts.length*10000000000)
+    return deployer.deploy(FathomToken, ConceptRegistry.address, accounts[0], accounts.length*10000000000, epochLength, tokenReward)
   }).then(function(){
       return ConceptRegistry.deployed()
   }).then(function(instance){
