@@ -5,17 +5,17 @@ import "./Assessment.sol";
 import "./FathomToken.sol";
 
 contract Minter {
-    uint reward;
+    uint public reward;
 
-    uint epochTime;
-    bytes32 epochHash;
-    uint epochLength;
+    uint public epochTime;
+    bytes32 public epochHash;
+    uint public epochLength;
 
-    FathomToken fathomToken;
-    ConceptRegistry conceptRegistry;
+    FathomToken public fathomToken;
+    ConceptRegistry public conceptRegistry;
 
-    address winner;
-    uint closestDistance;
+    address public winner;
+    uint public closestDistance;
 
     address owner;
 
