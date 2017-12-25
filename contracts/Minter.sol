@@ -15,7 +15,7 @@ contract Minter {
     ConceptRegistry public conceptRegistry;
 
     address public winner;
-    uint public closestDistance;
+    uint public closestDistance = 2**256 - 1;
 
     address owner;
 
@@ -55,6 +55,7 @@ contract Minter {
             if(fathomToken.mint(winner, reward)){
                 epochTime = now;
                 epochHash = block.blockhash(block.number -1);
+                closestDistance = 2**256 -1;
             }
         }
     }
