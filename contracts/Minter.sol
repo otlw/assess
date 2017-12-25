@@ -55,6 +55,7 @@ contract Minter {
             if(fathomToken.mint(winner, reward)){
                 epochTime = now;
                 epochHash = block.blockhash(block.number -1);
+                closestDistance = 0;
             }
         }
     }
