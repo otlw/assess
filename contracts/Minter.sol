@@ -44,7 +44,7 @@ contract Minter {
                 _tokenSalt <= assessment.cost());
 
         bytes32 hash = keccak256(_assessor, assessment, _tokenSalt, assessment.salt());
-        if(uint(epochHash) - uint(hash) < closestDistance){
+        if(uint(epochHash) - uint(hash) < closestDistance || uint(hash) - uint(epochHash) < closestDistance ){
             closestDistance = uint(epochHash) - uint(hash);
             winner = _assessor;
         }
