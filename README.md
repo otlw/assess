@@ -19,14 +19,16 @@ To deploy to the rinkeby-testnet:
 Create a file secrets.json in where you save a seed-phrase that will be used
 to pay for the deployment. (Make sure that the first account holds some ether).
 like this: 
-{seed: "baseball poet vague session shrimp humus embrace glare monkey donkey balony bread"}
+>'{seed: "baseball poet vague session shrimp humus embrace glare monkey donkey balony bread"}'
 
-If you just want to deploy the contracts, temporariliy remove the third and
-fourth migration file. If you want to distribute the token and and add users to
-the mew-concept, leave them in and create a specific list of accounts, which you
-save it as './intitialMembers.json'. Then uncomment the respective lines in the
-migration files.
-{accounts: ['0x...', 0x...', ... ]}
+If you just want to deploy the contracts, temporarily remove the third and fourth migration file. 
+
+If you want to distribute the token and and add users to the mew-concept, leave them in and create a specific list of accounts, which you save it as './intitialMembers.json'. 
+
+like this:
+>'{accounts: ['0xaccount1...', 0xaccount2...', ... ]}'
+
+Then uncomment the respective lines in the migration files.
 
 Then run 
 >'truffle migrate --rinkeby'
