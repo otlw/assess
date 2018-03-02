@@ -55,17 +55,19 @@ that pays for the deployment. (Metamask -> Settings -> Reveal Seed Words)
 Your secrets.json-file should look like this: 
 >'{seed: "baseball poet vague session shrimp humus embrace glare monkey donkey balony bread"}'
 
-If you want to deploy the minimal version of a fathom network, temporarily
+- If you want to deploy the minimal version of a fathom network, temporarily
 remove the third and fourth migration file (./migrations/3_... & 4...).
 
-If you also want to seed the network with some initial users in the mew-concept
+- If you also want to seed the network with some initial users in the mew-concept
 and distribute the token to them, create a specific list of accounts, which you
 save it as `./intitialMembers.json` in the root-folder of the project.
 
 Its content should look like this:
 >'{accounts: ['0xaccount1...', 0xaccount2...', ... ]}'
 
-Then uncomment the respective lines in the migration files.
+Next, you need make initial user list available in the 3rd and 4th
+migration-file: Open them and follow the instructions in the comments telling
+you do comment and un-comment the relevant lines.
 
 Lastly, run 
 >'truffle migrate --rinkeby'

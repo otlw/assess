@@ -1,9 +1,9 @@
 var FathomToken = artifacts.require("./FathomToken.sol");
 
 // uncomment this when you deploying to rinkeby and wanting to fund specific addresses
-// also comment out line 11
 // var setup = require("./../initialMembers.json")
 // var accounts = setup.accounts
+// also comment out line 11
 
 module.exports = function(deployer) {
     accounts = web3.eth.accounts

@@ -1,14 +1,15 @@
 var ConceptRegistry = artifacts.require("./ConceptRegistry.sol");
 var Distributor = artifacts.require("./Distributor.sol");
 
-// development-network:
+// deploying to the development-network:
 // minimal Setup: 6 members in mew with weight 100
 // note: 5 accounts are needed for the mininal valid assessment, +1 for burnStakes-test
 var accounts = web3.eth.accounts
 var nInitialUsers = 6
 let initialMewMembers = accounts.slice(0,nInitialUsers)
 
-// rinkeby: addresses to be in mew
+// deploying to rinkeby:
+// uncomment the two lines below and comment out their respective counterparts above.
 // var setup = require("./../initialMembers.json")
 // var initialMewMembers = setup.accounts;
 
