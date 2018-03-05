@@ -10,14 +10,14 @@ try {
 }
 catch(e) {
     var nInitialUsers = 6
-    accounts = web3.eth.accounts.slice(6)
+    accounts = web3.eth.accounts.slice(0,6)
 }
 
 module.exports = function(deployer) {
     deployer.then(function(){
         return FathomToken.deployed()
     }).then(function(instance){
-        fundInitialMembers(instance, accounts, 10000000000)
+        return fundInitialMembers(instance, accounts, 10000000000)
     })
 }
 
