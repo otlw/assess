@@ -79,7 +79,7 @@ Its content should look like this:
 >'{accounts: ['0xaccount1...', 0xaccount2...', ... ]}'
 
 _OPTIONAL_: If you want to be able to add more members than specified in the
-list, adjust the `nInitialUsers`-variable in `/migrations/2_deploy_contracts.js`
+list, adjust the `nInitialMewMembers`-variable in `/migrations/2_deploy_contracts.js`
 to that end.
 
 #### 2) Specify the initial AHA-Owner(s)
@@ -87,16 +87,11 @@ to that end.
 Next, you need to specify which account should get all created AHA-tokens.
 
 Open `/migrations/2_deploy_contracts.js` and set the variable
-_initialAhaAccount_ to the desired address. 
+`initialAhaAccount` to the desired address. 
 
 If you have provided an inital set of users, this will automatically be set for
 you to the first address in the list. Optionally, you can also change how many
 tokens will be created. 
-
-
-This should be the address you will be deploying from (account 0 from MetaMask)
-, OR, if you specify a list of initial users to be in mew the first account in
-that list.
 
 #### 3) Configure token & member distribution
 
@@ -105,8 +100,8 @@ initial-member list and all addresses will be added to MEW. If you want to
 change that play around with the parameters in `/migrations/3_fund_users.js` and
 `/migrations/4_add_members_to_mew.js` respectively.
 
-If you just want to deploy the network, temporarily remove these two files from
-the migrations-folder.
+If you don't want to distribute tokens or add initial members, temporarily
+remove the respective migrations-file from the folder.
 
 #### 3) Deploy
 

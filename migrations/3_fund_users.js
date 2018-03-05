@@ -4,13 +4,13 @@ var accounts, setup;
 try {
     //NOTE: this should only be used when deploying to the rinkeby-testnet.
     // For development please use the accounts from the web3-object
-    console.log("using provided list of initial members.")
     setup = require("./../initialMembers.json")
+    console.log("using provided list of initial members.")
     accounts = setup.accounts
 }
 catch(e) {
-    var nInitialUsers = 6
-    accounts = web3.eth.accounts.slice(0,6)
+    var nInitialUsersWithFunds = 8
+    accounts = web3.eth.accounts.slice(0,nInitialUsersWithFunds)
 }
 
 module.exports = function(deployer) {

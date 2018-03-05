@@ -6,8 +6,8 @@ var initialMewMembers;
 try {
     //NOTE: this should only be used when deploying to the rinkeby-testnet.
     // For development please use the accounts from the web3-object
-    console.log("using provided list of initial members")
     var setup = require("./../initialMembers.json")
+    console.log("using provided list of initial members")
     initialMewMembers = setup.accounts;
 }
 catch(e) {
