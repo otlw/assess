@@ -3,8 +3,8 @@ let mnemonic;
 try {
     mnemonic = require("./secrets.json");
 } catch(e) {
+    mnemonic = {seed: "put your seed words here or in a file called secret. json"}
     console.log("no mnemonic found. Deploying to rinkeby will not work.")
-    let mnemonic = {seed: "put your seed words here or in a file called secret. json"}
 }
 
 module.exports = {
