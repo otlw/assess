@@ -108,7 +108,14 @@ remove the respective migrations-file from the folder.
 Lastly, run 
 >'truffle migrate --network rinkeby'
 
-_(NOTE: If you get any issues feel free to open an issue or add to an existing
+
+#### 4) Troubleshooting
+
+- If you encounter an error-message saying 'Unknown number of arguments to
+  solidity-function' it sometimes helps to recompile everything: 
+  > rm -rf ./build
+
+- If you get any other issues feel free to open an issue or add to an existing
 one (e.g. [this]() one on 'Unhandled Promise Rejections'))._
 
 Contributing
