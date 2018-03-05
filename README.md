@@ -41,6 +41,10 @@ Next, open a console and run your private testnet:
 In another console, run the migration: 
 >'truffle migrate'
 
+_NOTE: If you have deployed to rinkeby before, make sure to remove/rename the
+`initialMembers.json` file. Otherwise signing transactions will not work and all
+tests will fail._
+
 ### To rinkeby-testnet
 
 #### Set up key-management

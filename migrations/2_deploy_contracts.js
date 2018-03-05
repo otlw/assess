@@ -10,11 +10,13 @@ var accounts, nInitialUsers;
 try {
     //NOTE: this should only be used when deploying to the rinkeby-testnet.
     // For development please use the accounts from the web3-object
+    // Using lis
+    console.log("Using provided list of initial members. NOTE: Deploying to testnet won't work!")
     var setup = require("./../initialMembers.json")
     accounts = setup.accounts
     nInitialUsers = accounts.length;
 } catch(e) {
-    console.log("no list of initial members provided. Using web3-accounts.")
+    console.log("No list of initial members provided. Using web3-accounts.")
     accounts = web3.eth.accounts
     nInitialUsers = 6;
 }
