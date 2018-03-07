@@ -8,9 +8,9 @@ var Distributor = artifacts.require("./Distributor.sol");
 var accounts, nInitialMewMembers;
 
 try {
-    //NOTE: this should only be used when deploying to the rinkeby-testnet.
-    // For development please use the accounts from the web3-object
-    // Using lis
+    //NOTE: a list of initial Members should only be used when deploying to the rinkeby-testnet.
+    // When deploying to the local testnet, you want to use the accounts provided
+    // by the web3-object, which will only be loaded if no list has been found.
     var setup = require("./../initialMembers.json")
     console.log("Using provided list of initial members. NOTE: Deploying to testnet won't work!")
     accounts = setup.accounts
@@ -26,7 +26,7 @@ let initialAmount = 10000000000 * (nInitialMewMembers+2)
 
 // nInitialUsers = x; // x many members can be directly added to MEW
 // If you want to disable the distributor, you can also comment out its deployment
-// (line 34) or pass a 'address(0)' to the Conceptregistry (line 41)
+// (second call of 'deploy()') or pass a 'address(0)' to the Conceptregistry (last line)
 
 module.exports = function(deployer) {
   var distributor;

@@ -25,7 +25,7 @@ Deploying a fathom-network-instance will lead the following contracts being on-c
 
 - ConceptRegistry.sol, to manage creation of new concepts
 - FathomToken.sol, to manage payments
-- one instance of Concept.sol, being the at the root of the concept-tree (the _mew-concept_)
+- One instance of Concept.sol, being the root of the concept-tree (the _MEW-concept_)
 - Math.sol, a library to do scoring and clustering
 
 ### To a private testnet
@@ -33,7 +33,7 @@ Deploying a fathom-network-instance will lead the following contracts being on-c
 If you do not already have it, you will need to install
 [ganache-cli](https://github.com/trufflesuite/ganache-cli) (formerly named testrpc) to
 run a testnet. 
-> npm install ganache-cli
+> npm install -g ganache-cli
 
 Next, open a console and run your private testnet:
 > ganache-cli
@@ -42,8 +42,8 @@ In another console, run the migration:
 >'truffle migrate'
 
 _NOTE: If you have deployed to rinkeby before, make sure to remove/rename the
-`initialMembers.json` file. Otherwise signing transactions will not work and all
-tests will fail._
+`initialMembers.json` file. Otherwise signing transactions on the testnet will
+not work and all tests will fail._
 
 ### To rinkeby-testnet
 
@@ -63,20 +63,19 @@ project folder ('./'), where you save the seed-phrase that underlies the account
 that pays for the deployment. (Metamask -> Settings -> Reveal Seed Words) 
 
 Your secrets.json-file should look like this: 
->'{seed: "baseball poet vague session shrimp humus embrace glare monkey donkey balony bread"}'
+>'{"seed": "baseball poet vague session shrimp humus embrace glare monkey donkey balony bread"}'
 
 #### 1) Specify an initial set of users
 
 NOTE: If you *DON'T* want to add initial users to mew nor distribute tokens to
-them, follow the instructions in the comments of
-`migrations/2_deploy_contracts.js` and continue at step 2).
+them continue at step 2).
 
 If you *DO* want to seed the network with some initial users in the mew-concept
 create a specific list of accounts, which you save it as
 `./intitialMembers.json` in the root-folder of the project.
 
 Its content should look like this:
->'{accounts: ['0xaccount1...', 0xaccount2...', ... ]}'
+>'{"accounts": ["0xaccount1...", "0xaccount2...", ... ]}'
 
 _OPTIONAL_: If you want to be able to add more members than specified in the
 list, adjust the `nInitialMewMembers`-variable in `/migrations/2_deploy_contracts.js`
