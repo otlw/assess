@@ -18,6 +18,18 @@ creation and storage of `assessments`. Assessments are paid for in the native
 token of the network, defined in `FathomToken`.
 
 
+Dependencies
+========
+
+Install all dependencies by running 
+
+> npm i
+
+This will install 
+- [ganache-cli](https://github.com/trufflesuite/ganache-cli) (formerly named testrpc), to run your private testnet,
+- [truffle-hd-walletprovider](https://github.com/trufflesuite/truffle-hdwallet-provider) to manage keys when deploying to rinkeby and
+- [ethjs-abi](https://github.com/ethjs/ethjs-abi) and [ethereumjs-abi](https://github.com/ethereumjs/ethereumjs-abi), to be able to run all our tests.
+
 Deployment
 ========
 
@@ -29,11 +41,6 @@ Deploying a fathom-network-instance will lead the following contracts being on-c
 - Math.sol, a library to do scoring and clustering
 
 ### To a private testnet
-
-If you do not already have it, you will need to install
-[ganache-cli](https://github.com/trufflesuite/ganache-cli) (formerly named testrpc) to
-run a testnet. 
-> npm install -g ganache-cli
 
 Next, open a console and run your private testnet:
 > ganache-cli
@@ -47,15 +54,6 @@ not work and all tests will fail._
 
 ### To rinkeby-testnet
 
-#### Set up key-management
-Make sure to have the key-managing library
-[truffle-hd-walletprovider](https://github.com/trufflesuite/truffle-hdwallet-provider)
-installed: 
-
-> npm i 
-or
-> npm install truffle-hd-walletprovider
-
 As you want to deploy to a real testnet, you need to have
 [Metamask](https://metamask.io/) installed and some rinkeby-ether on its first
 account. To generate your keys, create a file `secrets.json` in the uppermost
@@ -65,32 +63,34 @@ that pays for the deployment. (Metamask -> Settings -> Reveal Seed Words)
 Your secrets.json-file should look like this: 
 >'{"seed": "baseball poet vague session shrimp humus embrace glare monkey donkey balony bread"}'
 
-#### 1) Specify an initial set of users
+#### 1) Specify the initial AHA-Owner
 
-NOTE: If you *DON'T* want to add initial users to mew nor distribute tokens to
-them continue at step 2).
-
-If you *DO* want to seed the network with some initial users in the mew-concept
-create a specific list of accounts, which you save it as
-`./intitialMembers.json` in the root-folder of the project.
+You need to provide at least one address to which all the initial tokens will be
+distributed. 
+To do so, create a file `./intitialMembers.json` in the root-folder of the
+project.
 
 Its content should look like this:
 >'{"accounts": ["0xaccount1...", "0xaccount2...", ... ]}'
 
+It must hold at least one account, which will the one that will receive all the
+AHA-tokens. To modify the amount, open `/migrations/2_deploy_contracts.js` and
+set the variable `initialAmount` to the desired value.
+
+#### 2) Specify an initial set of users and distribute tokens to them
+
+_*NOTE*: If you *DON'T* want to the MEW-concept to have any initial members nor
+distribute tokens to them, remove the third and fourth migration-file and
+continue at step 3). (Be aware that this you'll have to manually call the
+distributor and add the first member to the MEW-concept before any assessment
+can be run in your system.)_
+
+If you *DO* want to seed the network with some initial users in the mew-concept
+add them to the list of initial accounts.
+
 _OPTIONAL_: If you want to be able to add more members than specified in the
 list, adjust the `nInitialMewMembers`-variable in `/migrations/2_deploy_contracts.js`
 to that end.
-
-#### 2) Specify the initial AHA-Owner(s)
-
-Next, you need to specify which account should get all created AHA-tokens.
-
-Open `/migrations/2_deploy_contracts.js` and set the variable
-`initialAhaAccount` to the desired address. 
-
-If you have provided an inital set of users, this will automatically be set for
-you to the first address in the list. Optionally, you can also change how many
-tokens will be created. 
 
 #### 3) Configure token & member distribution
 
@@ -99,23 +99,20 @@ initial-member list and all addresses will be added to MEW. If you want to
 change that play around with the parameters in `/migrations/3_fund_users.js` and
 `/migrations/4_add_members_to_mew.js` respectively.
 
-If you don't want to distribute tokens or add initial members, temporarily
-remove the respective migrations-file from the folder.
-
-#### 3) Deploy
+#### 4) Deploy
 
 Lastly, run 
 >'truffle migrate --network rinkeby'
 
 
-#### 4) Troubleshooting
+#### 5) Troubleshooting
 
 - If you encounter an error-message saying 'Unknown number of arguments to
   solidity-function' it sometimes helps to recompile everything: 
   > rm -rf ./build
 
 - If you get any other issues feel free to open an issue or add to an existing
-one (e.g. [this]() one on 'Unhandled Promise Rejections'))._
+one.
 
 Contributing
 =========
