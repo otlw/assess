@@ -40,9 +40,9 @@ Deploying a fathom-network-instance will lead the following contracts being on-c
 - One instance of Concept.sol, being the root of the concept-tree (the _MEW-concept_)
 - Math.sol, a library to do scoring and clustering
 
-### To a private testnet
+### ...to a private testnet
 
-Next, open a console and run your private testnet:
+Open a console and run your private testnet:
 > ganache-cli
 
 In another console, run the migration: 
@@ -52,7 +52,7 @@ _NOTE: If you have deployed to rinkeby before, make sure to remove/rename the
 `initialMembers.json` file. Otherwise signing transactions on the testnet will
 not work and all tests will fail._
 
-### To rinkeby-testnet
+### ...to the rinkeby-testnet
 
 As you want to deploy to a real testnet, you need to have
 [Metamask](https://metamask.io/) installed and some rinkeby-ether on its first
