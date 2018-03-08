@@ -45,3 +45,22 @@ exports.makeAssessment = async function(conceptAddress, assesseeAddress, cost, s
     assessmentData.txResult = assessmentResult
     return assessmentData
 }
+
+/*
+  runs an entire assessment
+  @param assessmentInstance the artifact of the assessment-contract
+  @param list of assessors (must have been called)
+  @param list of scores to be submitted by the assessors
+  */
+exports.runAssessment = async function(assessmentInstance, assessors, scores) {
+    await this.confirmAssessors(assessors, assessmentInstance)
+    let salts = []
+    let hashes = []
+    for (let i=0; i<assessors.length; i++){
+        salts.push(i.toString())
+        hashes.push(utils.hashScoreAndSalt(scores[i], salts[i]))
+    }
+    await this.commitAssessors(assessors, hashes, assessmentInstance)
+    //do we need to wait in between these steps
+    await this.revealAssessors(assessors, scores, salts, assessmentInstance)
+}
