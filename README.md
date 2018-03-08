@@ -116,4 +116,35 @@ one.
 
 Contributing
 =========
-Feel free to submit a pull request or send an email at <contact@fathom.network> if you would like to get in contact.
+
+To contribute to this project...
+- check out our [contribution guide](https://gitlab.com/fathom/org) to see how
+  you we work together,
+- talk to us on [gitter](https://gitter.im/fathom-network/Lobby) or
+- send an email to <contact@fathom.network> if you would like to get in contact.
+
+Styleguide
+==========
+
+#### Solidity
+
+We follow the [solidity-style
+guide](https://solidity.readthedocs.io/en/develop/style-guide.html) and have
+recently committed to using the
+[solhint](https://protofire.github.io/solhint/rules.html)-linter to enforce it.
+
+After installing it, simply run 
+> solhint ./contracts/xxx.sol
+
+until _your_ code does not generate any errors or warnings.
+
+_NOTE:_ Due to our recent adoption of the linter, our codebase is not 100%
+compliant with it yet. If you lint your merge-request, make sure to only heed
+warnings and errors that are relevant to your new code. If you want to fix other
+code too, please do so in the context of a separate issue.
+
+#### Javascript
+
+TBD.
+
+
