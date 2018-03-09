@@ -14,7 +14,7 @@ contract FathomToken is StandardToken{
     ConceptRegistry conceptRegistry;
     string public constant name = "Aha";
 
-    event Notification(address user, address sender, uint topic);
+    event Notification(address indexed user, address indexed sender, uint indexed topic);
     /*
       0 = You've started an assessment
       1 = Called As A Potential Assessor
