@@ -28,6 +28,7 @@ contract Assessment {
     uint public checkpoint;
     uint public size;
     uint public cost;
+    uint public salt;
 
     mapping(address => bytes32) commits;
     uint public done; //counter how many assessors have committed/revealed their score

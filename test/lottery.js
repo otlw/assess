@@ -18,7 +18,7 @@ contract("Lottery:", function(accounts){
     let assessments = []
     let assessees = accounts.slice(6,6+nAssessments)
 
-    let cost = 150000;
+    let cost = 50;
     let size = 5;
     let timeLimit = 10000;
     let waitTime = 100;
@@ -40,6 +40,7 @@ contract("Lottery:", function(accounts){
                 let stage = await assessments[i].assessmentContract.assessmentStage.call()
                 assert.equal(stage.toNumber(), 4, "assessment did not move to stage done")
             }
+            // assert(false) //displays all events fired
         })
     })
 
@@ -49,14 +50,14 @@ contract("Lottery:", function(accounts){
             let block0 = (await web3.eth.getBlock('earliest'))
             let blockZ = (await web3.eth.getBlock('latest'))
 
-            let epochLength = blockZ.number - block0.number + 1
+            let epochLength = blockZ.number + 1
 
-            lotta.getAllAssessments(web3, block0.number, epochLength, fathomToken.address, function(err, assessments) {
-                if (!err) {
-                    console.log("found assessments", assessments)
-                } else {
-                    console.log("err", err)
-                }
+            // lotta.getAllAssessments(web3, 0, 1000000000, fathomToken.address, function(assessments) {
+            // lotta.getAllAssessments(web3, block0.number, epochLength, fathomToken.address, function(assessments) {
+            //         console.log("found assessments", assessments)
+            // })
+            lotta.runLottery(web3, block0.number, epochLength, fathomToken.address, function(result) {
+                console.log("result", result)
             })
         })
     })

@@ -9,8 +9,6 @@ exports.confirmAssessors = async function(_assessors, _assessmentInstance) {
             await _assessmentInstance.confirmAssessor({from: _assessors[i]})
         }
         else{
-
-            console.log("stage",stage)
             console.log("wrong stage! " + i + "'-th assessor should not confirm")
         }
     }
