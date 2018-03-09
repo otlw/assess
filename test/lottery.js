@@ -3,7 +3,7 @@ var FathomToken = artifacts.require("FathomToken");
 var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
 
-var lotta = require("../js/lotterySim.js")
+// var lotta = require("../js/lotterySim.js")
 var assess = require("../js/assessmentFunctions.js")
 
 var accounts = web3.eth.accounts
@@ -13,18 +13,20 @@ contract("Lottery:", function(accounts){
     let fathomToken;
     let conceptReg;
     let assessedConcept
-    let assessmentData
-    let assessmentContract
-    let calledAssessors;
-    let assessee = accounts[6]
+
+    let nAssessments = 2
+    let assessments = []
+    let assessees = accounts.slice(6,6+nAssessments)
 
     let cost = 150000;
-    let size = 6;
+    let size = 5;
     let timeLimit = 10000;
     let waitTime = 100;
+    let scores = Array(size).fill(100)
 
-    describe('First, ', function() {
-        it("an assessment is created and user are called to be assessors.", async () =>{
+    describe('First, ' + nAssessments + " assessment(s)...", function() {
+        it("... are run until the end", async () => {
+            // creating a concept to be assessed in
             conceptReg = await ConceptRegistry.deployed()
             let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
             let assessedConceptAddress = txResult.logs[0].args["_concept"]
@@ -32,17 +34,12 @@ contract("Lottery:", function(accounts){
 
             fathomToken = await FathomToken.deployed()
 
-            //initiate assessment, save assessors and their initial balance
-            assessmentData = await assess.makeAssessment(assessedConceptAddress, assessee, cost, size, waitTime, timeLimit)
-            assessmentContract = Assessment.at(assessmentData.address)
-            calledAssessors = assessmentData.assessors
-
-            assert.isAbove(calledAssessors.length, size -1, "not enough assessors were called")
+            //run assessments, save related data
+            for (let i=0; i<nAssessments; i++) {
+                assessments.push(await assess.createAndRunAssessment(assessedConceptAddress, assessees[i], cost, size, waitTime, timeLimit, scores))
+                let stage = await assessments[i].assessmentContract.assessmentStage.call()
+                assert.equal(stage.toNumber(), 4, "assessment did not move to stage done")
+            }
         })
-
-       it("an assessment is run until the end", () => {
-
-       })
-
     })
 })
