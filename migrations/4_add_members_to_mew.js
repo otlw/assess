@@ -42,12 +42,11 @@ module.exports = function(deployer) {
 
 // function to repeatedly call addInitialMember of the distributor
 function addInitialMembers (distributorInstance, _members, _weights) {
-    console.log("adding initial members...")
+    console.log("adding initial members to MEW...")
     var chain = new Promise((resolve, reject)=> resolve(0))
     for(i=0; i < _members.length; i++) {
         chain = chain.then(function(index) {
             distributorInstance.addInitialMember(_members[index], _weights[index])
-            console.log("added ", _members[index], "to MEW")
             return index += 1
         })
     }

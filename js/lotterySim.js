@@ -40,15 +40,17 @@ hashTicket = function(_assessment, _assessor, _tokenSalt, _assessmentSalt) {
    @param fathomTokenAddress: address of the fathomToken from which all events are fired.
 
  */
-getAllAssessments = async (w3, firstEpochBlock, epochLength, fathomTokenAddress, callback) => {
+exports.getAllAssessments = async function (w3, firstEpochBlock, epochLength, fathomTokenAddress, callback) {
     var fathomTokenInstance = w3.eth.contract(ABI.fathomToken).at(fathomTokenAddress)
+    console.log("fathomTokenInstance ", fathomTokenInstance.notification )
     // get all events with topic 6: 'consensus-reached, you got paid'
-    let event = fathomTokenInstance.notification([{topic: 6}, {fromBlock: firstEpochBlock, toBlock: firstEpochBlock + epochLength}])
+    let event = fathomTokenInstance.Notification([{topic: 6}, {fromBlock: firstEpochBlock, toBlock: firstEpochBlock + epochLength}])
+    console.log("event ", event )
     let ret = await event.get(function(err, logs) {
         if (err) {
-            console.log(err)
+            console.log("err", err)
         } else {
-            console.log(logs)
+            console.log("logs", logs)
             let assessments = {}
             // loop over all assessors, sort them by assessment and get the relevant assessment-params
             for (let i=0; i< logs.length; i++) {
@@ -57,7 +59,7 @@ getAllAssessments = async (w3, firstEpochBlock, epochLength, fathomTokenAddress,
                     assessments[assessmentAddress].assessors.push(logs[i].args["user"])
                 } else {
                     // initialize assessment data with empy list and assessment-params
-                    assessments[assessmentAddress] = {assessors: [], address: assessmentAddress, salt: -1, cost: -1} 
+                    assessments[assessmentAddress] = {assessors: [], address: assessmentAddress, salt: -1, cost: -1}
                     //TODO get the actual salt and cost
                     // let assessmentInstance = w3.eth.contract(ABI.assessment).at(assessmentAddress)
                     // let salt = (await assessmentInstance.salt.call()).toNumber() // how to do that?
@@ -68,6 +70,7 @@ getAllAssessments = async (w3, firstEpochBlock, epochLength, fathomTokenAddress,
         }
     })
 }
+
 /*
   Runs the lottery by generating tickets for all salts from all assessors who finished an assessment
   during the epoch.
