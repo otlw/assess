@@ -8,14 +8,14 @@ contract Minter {
     uint public reward;
 
     uint public epochTime;
-    bytes32 public epochHash;
+    uint public epochHash;
     uint public epochLength;
 
     FathomToken public fathomToken;
     ConceptRegistry public conceptRegistry;
 
     address public winner;
-    uint public closestDistance;
+    uint public closestDistance = 2**256 - 1;
 
     address owner;
 
@@ -29,7 +29,7 @@ contract Minter {
         conceptRegistry = ConceptRegistry(_conceptRegistry);
         epochLength = _epochLength;
         epochTime = now;
-        epochHash = block.blockhash(block.number - 1);
+        epochHash = uint(block.blockhash(block.number - 1));
         reward = _reward;
         owner = msg.sender;
     }
@@ -43,9 +43,11 @@ contract Minter {
                 uint(assessment.assessorState(_assessor)) == 4 &&
                 _tokenSalt <= assessment.cost());
 
-        bytes32 hash = keccak256(_assessor, assessment, _tokenSalt, assessment.salt());
-        if(uint(epochHash) - uint(hash) < closestDistance || uint(hash) - uint(epochHash) < closestDistance ){
-            closestDistance = uint(epochHash) - uint(hash);
+        uint hash = uint(keccak256(_assessor, assessment, _tokenSalt, assessment.salt()));
+
+        uint distance = epochHash>hash ? epochHash - hash : hash - epochHash;
+        if( distance < closestDistance ){
+            closestDistance = distance;
             winner = _assessor;
         }
     }
@@ -54,8 +56,8 @@ contract Minter {
         if(now > (epochTime + epochLength)){
             if(fathomToken.mint(winner, reward)){
                 epochTime = now;
-                epochHash = block.blockhash(block.number -1);
-                closestDistance = 0;
+                epochHash = uint(block.blockhash(block.number -1));
+                closestDistance = 2**256 -1;
             }
         }
     }
