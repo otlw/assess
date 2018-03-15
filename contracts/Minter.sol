@@ -56,14 +56,14 @@ contract Minter {
       @param _assessment: address of the assessment
       @param _tokenSalt: a number smaller or equal to amount of tokens the assessor staked in the assessment
     */
-
     function submitBid (address _assessor, address _assessment, uint _tokenSalt) public {
         Assessment assessment = Assessment(_assessment);
-        require(conceptRegistry.conceptExists(assessment.concept()) &&
+        require(conceptRegistry.conceptExists(address(assessment.concept())) &&
                 Concept(assessment.concept()).assessmentExists(_assessment) &&
                 assessment.endTime() < epochStart + epochLength &&
                 uint(assessment.assessorState(_assessor)) == 4 &&
-                _tokenSalt <= assessment.cost());
+                _tokenSalt <= assessment.cost() &&
+                true);
 
         uint distance = getTicketDistance(_assessor, assessment, _tokenSalt, assessment.salt());
         if (distance < closestDistance) {

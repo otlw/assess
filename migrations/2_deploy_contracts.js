@@ -15,7 +15,7 @@ var Minter = artifacts.require("./Minter.sol")
 var accounts = web3.eth.accounts
 var nInitialUsers = 6;
 
-var epochLength = 60000
+var epochLength = 60*60*24*7
 var tokenReward = 100
 
 module.exports = function(deployer) {
@@ -27,7 +27,7 @@ module.exports = function(deployer) {
   }).then(function(){
       return deployer.deploy(Distributor, nInitialUsers, ConceptRegistry.address)
   }).then(function(){
-      return deployer.deploy(Minter, epochLength, tokenReward)
+      return deployer.deploy(Minter, ConceptRegistry.address, epochLength, tokenReward)
   }).then(function(){
       return deployer.deploy(FathomToken, ConceptRegistry.address, accounts[0], accounts.length*10000000000, Minter.address)
   }).then(function(){
