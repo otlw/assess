@@ -55,13 +55,16 @@ contract Minter {
                 uint(assessment.assessorState(_assessor)) == 4 &&
                 _tokenSalt <= assessment.cost());
 
-        uint hash = uint(keccak256(_assessor, assessment, _tokenSalt, assessment.salt()));
-
-        uint distance = epochHash > hash ? epochHash - hash : hash - epochHash;
+        uint distance = getTicketDistance(_assessor, assessment, _tokenSalt, assessment.salt());
         if( distance < closestDistance ){
             closestDistance = distance;
             winner = _assessor;
         }
+    }
+
+    function getTicketDistance(address _assessor, address _assessment, uint _tokenSalt, bytes32 _assessmentSalt) public  returns(uint distance) {
+        uint hash = uint(keccak256(_assessor, assessment, _tokenSalt, assessmentSalt));
+        distance = epochHash > hash ? epochHash - hash : hash - epochHash;
     }
 
     function endEpoch() public {
