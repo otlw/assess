@@ -27,7 +27,13 @@ module.exports = function(deployer) {
   }).then(function(){
       return deployer.deploy(Distributor, nInitialUsers, ConceptRegistry.address)
   }).then(function(){
-    return deployer.deploy(FathomToken, ConceptRegistry.address, accounts[0], accounts.length*10000000000, epochLength, tokenReward)
+      return deployer.deploy(Minter, epochLength, tokenReward)
+  }).then(function(){
+      return deployer.deploy(FathomToken, ConceptRegistry.address, accounts[0], accounts.length*10000000000, Minter.address)
+  }).then(function(){
+      return Minter.deployed()
+  }).then(function(minter){
+      return minter.init(FathomToken.address)
   }).then(function(){
       return ConceptRegistry.deployed()
   }).then(function(instance){

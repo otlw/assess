@@ -30,10 +30,9 @@ contract FathomToken is StandardToken{
       7 = Assessment Finished,
     */
 
-    function FathomToken(address _conceptRegistry, address _initialUser, uint _initialBalance, uint _epochLength, uint _reward) public {
-        owner = msg.sender;
+    function FathomToken(address _conceptRegistry, address _initialUser, uint _initialBalance, address _minter) public {
         conceptRegistry = ConceptRegistry(_conceptRegistry);
-        minter = address(new Minter(msg.sender, _conceptRegistry, _epochLength, _reward));
+        minter = _minter;
         totalSupply = _initialBalance;
         balances[_initialUser] = _initialBalance;
     }

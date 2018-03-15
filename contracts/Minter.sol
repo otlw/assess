@@ -5,6 +5,7 @@ import "./Assessment.sol";
 import "./FathomToken.sol";
 
 contract Minter {
+    bool initialized;
     uint public reward;
 
     uint public epochTime;
@@ -24,14 +25,25 @@ contract Minter {
         _;
     }
 
-    function Minter(address _fathomToken, address _conceptRegistry, uint _epochLength, uint _reward) public {
-        fathomToken = FathomToken(_fathomToken);
+    event NewOwner(address oldOwner, address newOwner);
+    event NewReward(uint oldReward, uint newReward);
+    event NewEpochLength(uint oldLength, uint newLength);
+    event TokensMinted(address recipient, uint amount);
+
+    function Minter(address _conceptRegistry, uint _epochLength, uint _reward) public {
         conceptRegistry = ConceptRegistry(_conceptRegistry);
         epochLength = _epochLength;
         epochTime = now;
         epochHash = uint(block.blockhash(block.number - 1));
         reward = _reward;
         owner = msg.sender;
+    }
+
+    function init(address _fathomToken) public {
+        if (!initialized) {
+            fathomToken = FathomToken(_fathomToken);
+            initialized = true;
+        }
     }
 
     function submitBid (address _assessor, address _assessment, uint _tokenSalt) public {
@@ -45,7 +57,7 @@ contract Minter {
 
         uint hash = uint(keccak256(_assessor, assessment, _tokenSalt, assessment.salt()));
 
-        uint distance = epochHash>hash ? epochHash - hash : hash - epochHash;
+        uint distance = epochHash > hash ? epochHash - hash : hash - epochHash;
         if( distance < closestDistance ){
             closestDistance = distance;
             winner = _assessor;
@@ -74,5 +86,3 @@ contract Minter {
         epochLength = _length;
     }
 }
-
-
