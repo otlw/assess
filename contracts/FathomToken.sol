@@ -16,8 +16,9 @@ contract FathomToken is StandardToken{
     string public constant name = "Aha";
 
     address public minter;
-    address owner;
+    address public owner;
 
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
     event Notification(address user, address sender, uint topic);
     /*
       0 = You've started an assessment
@@ -31,6 +32,7 @@ contract FathomToken is StandardToken{
     */
 
     function FathomToken(address _conceptRegistry, address _initialUser, uint _initialBalance, address _minter) public {
+        owner = msg.sender;
         conceptRegistry = ConceptRegistry(_conceptRegistry);
         minter = _minter;
         totalSupply = _initialBalance;
@@ -62,5 +64,16 @@ contract FathomToken is StandardToken{
         balances[_to] += _amount;
         Transfer(address(0), _to, _amount);
         return true;
+    }
+
+    function changeMinter(address _newMinter) public {
+        require(msg.sender == owner);
+        minter = _newMinter;
+    }
+
+    function transferOwnership(address _newOwner) public {
+        require(msg.sender == owner);
+        OwnershipTransferred(owner, _newOwner);
+        owner = _newOwner;
     }
 }

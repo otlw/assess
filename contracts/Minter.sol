@@ -1,14 +1,17 @@
-pragma solidity ^0.4.11;
+pragma solidity 0.4.18;
 
 import "./ConceptRegistry.sol";
 import "./Assessment.sol";
 import "./FathomToken.sol";
 
+
 contract Minter {
-    bool initialized;
+
+
+    bool public initialized;
     uint public reward;
 
-    uint public epochTime;
+    uint public epochStart;
     uint public epochHash;
     uint public epochLength;
 
@@ -18,7 +21,7 @@ contract Minter {
     address public winner;
     uint public closestDistance = 2**256 - 1;
 
-    address owner;
+    address public owner;
 
     modifier onlyOwner() {
         require(msg.sender == owner);
@@ -33,7 +36,7 @@ contract Minter {
     function Minter(address _conceptRegistry, uint _epochLength, uint _reward) public {
         conceptRegistry = ConceptRegistry(_conceptRegistry);
         epochLength = _epochLength;
-        epochTime = now;
+        epochStart = now;
         epochHash = uint(block.blockhash(block.number - 1));
         reward = _reward;
         owner = msg.sender;
@@ -45,34 +48,50 @@ contract Minter {
             initialized = true;
         }
     }
+    /*
+      function to be called by an assessor to submit a ticket to the lottery if
+      the assessor has revealed their score in an assessment whose commit-phase
+      will end before the end of the epoch.
+      @param _assessor: address of the assessor
+      @param _assessment: address of the assessment
+      @param _tokenSalt: a number smaller or equal to amount of tokens the assessor staked in the assessment
+    */
 
     function submitBid (address _assessor, address _assessment, uint _tokenSalt) public {
         Assessment assessment = Assessment(_assessment);
         require(conceptRegistry.conceptExists(assessment.concept()) &&
                 Concept(assessment.concept()).assessmentExists(_assessment) &&
-                assessment.endTime() < epochTime + epochLength &&
-                uint(assessment.assessmentStage()) == 4 &&
+                assessment.endTime() < epochStart + epochLength &&
                 uint(assessment.assessorState(_assessor)) == 4 &&
                 _tokenSalt <= assessment.cost());
 
         uint distance = getTicketDistance(_assessor, assessment, _tokenSalt, assessment.salt());
-        if( distance < closestDistance ){
+        if (distance < closestDistance) {
             closestDistance = distance;
             winner = _assessor;
         }
     }
 
-    function getTicketDistance(address _assessor, address _assessment, uint _tokenSalt, bytes32 _assessmentSalt) public  returns(uint distance) {
-        uint hash = uint(keccak256(_assessor, assessment, _tokenSalt, assessmentSalt));
+    function getTicketDistance(
+        address _assessor,
+        address _assessment,
+        uint _tokenSalt,
+        bytes32 _assessmentSalt
+    )
+        public view returns(uint distance)
+    {
+        uint hash = uint(keccak256(_assessor, _assessment, _tokenSalt, _assessmentSalt));
         distance = epochHash > hash ? epochHash - hash : hash - epochHash;
     }
 
     function endEpoch() public {
-        if(now > (epochTime + epochLength)){
-            if(fathomToken.mint(winner, reward)){
-                epochTime = now;
-                epochHash = uint(block.blockhash(block.number -1));
-                closestDistance = 2**256 -1;
+        if (now > (epochStart + epochLength)) {
+            if (fathomToken.mint(winner, reward)) {
+                TokensMinted(winner, reward);
+                epochStart = epochStart + epochLength;
+                epochHash = uint(block.blockhash(block.number - 1));
+                closestDistance = 2**256-1;
+                winner = address(0x0);
             }
         }
     }
