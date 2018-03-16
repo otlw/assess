@@ -1,10 +1,13 @@
-abi = require('ethjs-abi')
-ethereumjsABI = require('ethereumjs-abi')
+var abi = require('ethjs-abi')
+var ethereumjsABI = require('ethereumjs-abi')
+var Web3 = require('web3')
+var web3 = new Web3(Web3.givenProvider || "ws://localhost:8546");
+var jsAssess = require('./simulateAssessment.js')
 var FathomToken = artifacts.require("FathomToken")
 var Assessment = artifacts.require("Assessment")
 
 
-exports.hashScoreAndSalt = function(_score, _salt, abi) {
+exports.hashScoreAndSalt = function(_score, _salt) {
     return '0x' + ethereumjsABI.soliditySHA3(
         ["int128", "string"],
         [_score, _salt]
@@ -81,4 +84,42 @@ exports.getRandomInt  = function(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
 }
+/*
+  helper function to generate a bunch of tickets for the minting lottery py pulling
+  the relevant data from the assessments and generating the hashes
+  @param assessments: list of assessments for which to generate tickets (entries are JSON
+    objects returned from .js/assessmentFunctions.createAndRunAssessment())
+  @param nAssessors: number of assessors to generate tickets for
+  @param nSalts: number of tickets to generate per assessor
+  */
+exports.generateTickets = async function (assessments, nAssessors, nSalts) {
+    let tickets = []
+    for (let assessment of assessments) {
+        let assessmentSaltHex = await assessment.instance.salt.call()
+        let maxAss = Math.min(nAssessors, assessment.calledAssessors.length)
+        for (let assessor of assessment.calledAssessors.slice(0,maxAss)) {
+            let maxTickets = Math.min(nSalts, assessment.cost)
+            for (let i=0; i<maxTickets; i++) {
+                tickets.push(
+                    {
+                        inputs: {
+                            assessor: assessor,
+                            assessment: assessment.address,
+                            tokenSalt: i,
+                            salt: assessmentSaltHex
+                        },
+                        hash: jsAssess.hashTicket(
+                            assessor,
+                            assessment.address,
+                            i,
+                            assessmentSaltHex)
+                    }
+                )
+            }
+        }
+    }
+    return tickets
+}
+
+
 

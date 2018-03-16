@@ -44,6 +44,7 @@ exports.makeAssessment = async function(conceptAddress, assesseeAddress, cost, s
     assessmentData.calledAssessors = utils.getCalledAssessors(assessmentResult.receipt)
     assessmentData.address = utils.getNotificationArgsFromReceipt(assessmentResult.receipt, 1)[0].sender
     assessmentData.txResult = assessmentResult
+    assessmentData.cost = cost
     return assessmentData
 }
 
