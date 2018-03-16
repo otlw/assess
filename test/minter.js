@@ -43,7 +43,7 @@ contract("Minting New Tokens:", function(accounts) {
             assert.equal(stage.toNumber(), 4, "assessment did not move to stage done")
         })
         describe("During the epoch, the minter...", async () => {
-            itAgora("accepts bids from finished assessments", async () => {
+            it("accepts bids from finished assessments", async () => {
                 minter = await Minter.deployed()
                 await minter.submitBid(assessment.calledAssessors[0], assessment.address, cost-3)
                 assert.equal(assessment.calledAssessors[0], await minter.winner.call())
