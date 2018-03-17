@@ -36,10 +36,9 @@ contract ("Assessment without consensus assessors:", (accounts) => {
         let assessedConceptAddress = txResult.logs[0].args["_concept"]
         assessmentData = await chain.makeAssessment(assessedConceptAddress, assessee.address, cost, size, 1000, 2000)
         assessment = Assessment.at(assessmentData.address)
-        assessors = assessmentData.assessors
+        assessors = assessmentData.calledAssessors
 
         initialBalances = await utils.getBalances(assessors, aha)
-        console.log("initial", initialBalances)
         await chain.confirmAssessors(assessors.slice(0,size), assessment)
         utils.evmIncreaseTime(13)
         await chain.commitAssessors(assessors.slice(0,size), hashes, assessment)
@@ -52,7 +51,6 @@ contract ("Assessment without consensus assessors:", (accounts) => {
 
     it("no Assessor is being paid out anything", async () => {
         finalBalances = await utils.getBalances(assessors, aha)
-        console.log("final", finalBalances)
         for (var i in finalBalances) {
             assert.equal(finalBalances[i], initialBalances[i] - cost, "assessors did not loose all their money")
         }

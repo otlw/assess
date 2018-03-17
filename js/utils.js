@@ -22,13 +22,10 @@ exports.getNotificationArgsFromReceipt = function(_receipt, _topic) {
             notificationIndex = i;
         }
     }
-
     for (i=0; i < _receipt.logs.length; i++) {
         if (_receipt.logs[i].topics[0] == "0xe41f8f86e0c2a4bb86f57d2698c1704cd23b5f42a84336cdb49377cdca96d876"){
             let event = abi.decodeEvent(FathomToken.abi[notificationIndex], _receipt.logs[i].data)
-            if (_topic == -1){
-                events.push({user: event.user, sender: event.sender, topic: event.topic.toNumber()})
-            } else if (event.topic.toNumber() == _topic) {
+            if (event.topic.toNumber() == _topic) {
                 events.push({user: event.user, sender: event.sender, topic: event.topic.toNumber()})
             }
         }
@@ -70,13 +67,13 @@ exports.getBalances = async function(_accounts, _userRegistryInstance){
 exports.getEthBalances = function(_accounts){
     balances = []
     for (i=0; i<_accounts.length; i++){
-        balances.push(web3.eth.getBalance(_accounts[i]).toNumber())
+        balances.push(web3.eth.getBalance(_accounts[i]))
     }
     return balances
 }
 
 exports.weiToDollar = function(wei, etherPrice) {
-    return web3.fromWei(wei,"ether") * etherPrice
+    return web3.utils.fromWei(wei,"ether") * etherPrice
 }
 
 exports.getRandomInt  = function(min, max) {
