@@ -9,7 +9,7 @@ try {
     accounts = setup.accounts
 }
 catch(e) {
-    var nInitialUsersWithFunds = 8
+    var nInitialUsersWithFunds = 9
     accounts = web3.eth.accounts.slice(0,nInitialUsersWithFunds)
 }
 
@@ -23,12 +23,11 @@ module.exports = function(deployer) {
 
 // function to repeatedly send funds to one of the initial members
 function fundInitialMembers (fathomTokenInstance, _members, _amount) {
-    console.log("adding initial members...")
+    console.log("funding initial members...")
     var chain = new Promise((resolve, reject)=> resolve(1))
     for(i=1; i < _members.length; i++) {
         chain = chain.then(function(index) {
             fathomTokenInstance.transfer(_members[index], _amount)
-            console.log("transfering ", _amount, " AHAs to", _members[index])
             return index += 1
         })
     }

@@ -47,7 +47,6 @@ function addInitialMembers (distributorInstance, _members, _weights) {
     for(i=0; i < _members.length; i++) {
         chain = chain.then(function(index) {
             distributorInstance.addInitialMember(_members[index], _weights[index])
-            console.log("added ", _members[index], "to MEW")
             return index += 1
         })
     }
