@@ -3,6 +3,7 @@ pragma solidity ^0.4.11;
 import "./Concept.sol";
 import "./ConceptRegistry.sol";
 import "./lib/StandardToken.sol";
+import "./Minter.sol";
 
 /*
 @type: contract
@@ -14,6 +15,10 @@ contract FathomToken is StandardToken{
     ConceptRegistry conceptRegistry;
     string public constant name = "Aha";
 
+    address public minter;
+    address public owner;
+
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
     event Notification(address indexed user, address indexed sender, uint indexed topic);
     /*
       0 = You've started an assessment
@@ -26,8 +31,10 @@ contract FathomToken is StandardToken{
       7 = Assessment Finished,
     */
 
-    function FathomToken(address _conceptRegistry, address _initialUser, uint _initialBalance) public {
+    function FathomToken(address _conceptRegistry, address _initialUser, uint _initialBalance, address _minter) public {
+        owner = msg.sender;
         conceptRegistry = ConceptRegistry(_conceptRegistry);
+        minter = _minter;
         totalSupply = _initialBalance;
         balances[_initialUser] = _initialBalance;
     }
@@ -47,5 +54,26 @@ contract FathomToken is StandardToken{
         balances[_to] += _amount;
         Transfer(_from, _to, _amount);
         return true;
+    }
+
+    function mint(address _to, uint _amount) public returns(bool){
+        require(msg.sender == minter);
+        require(totalSupply + _amount > totalSupply);
+
+        totalSupply += _amount;
+        balances[_to] += _amount;
+        Transfer(address(0), _to, _amount);
+        return true;
+    }
+
+    function changeMinter(address _newMinter) public {
+        require(msg.sender == owner);
+        minter = _newMinter;
+    }
+
+    function transferOwnership(address _newOwner) public {
+        require(msg.sender == owner);
+        OwnershipTransferred(owner, _newOwner);
+        owner = _newOwner;
     }
 }

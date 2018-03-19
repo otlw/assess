@@ -43,7 +43,7 @@ contract("Steal Stake:", function(accounts){
         //initiate assessment, save assessors and their initial balance
         assessmentData = await chain.makeAssessment(assessedConceptAddress, assessee, cost, size, waitTime, timeLimit)
         assessmentContract = Assessment.at(assessmentData.address)
-        calledAssessors = assessmentData.assessors
+        calledAssessors = assessmentData.calledAssessors
 
         assert.isAbove(calledAssessors.length, size - 1, "not enough assessors were called")
     })
