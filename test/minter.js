@@ -79,13 +79,13 @@ contract("Minting New Tokens:", function(accounts) {
                 let assessment2 = await chain.createAndRunAssessment(
                     assessedConcept.address,
                     assessees[1],
-                    cost, size, waitTime, epochLength*2, // assessment-params
+                    cost, size, waitTime, epochLength*1.2, // assessment-params
                     scores, -1 // scores & default salts
                 )
                 let stage = await assessment2.instance.assessmentStage.call()
                 assert.equal(stage.toNumber(), 4, "assessment did not move to stage done")
                 try {
-                    await minter.submitBid(assessment2.calledAssessors[0], assessment2.address, 1)
+                    await minter.submitBid(assessment2.calledAssessors[1], assessment2.address, 1)
                 } catch (e) {
                     if (e.toString().indexOf('revert') > 0) {
                         assert(true)

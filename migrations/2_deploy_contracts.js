@@ -23,7 +23,7 @@ try {
 }
 
 let initialAhaAccount = accounts[0]
-let initialAmount = 10000000000 * (nInitialMewMembers+2)
+let initialAmount = 10000000000 * (nInitialMewMembers+3)
 
 // nInitialUsers = x; // x many members can be directly added to MEW
 // If you want to disable the distributor, you can also comment out its deployment
@@ -44,7 +44,7 @@ module.exports = function(deployer) {
       return deployer.deploy(Minter, ConceptRegistry.address, epochLength, tokenReward)
   }).then(function(){
     console.log("sending all initial AHAs to address: ", initialAhaAccount)
-      return deployer.deploy(FathomToken, ConceptRegistry.address, accounts[0], accounts.length*10000000000, Minter.address)
+      return deployer.deploy(FathomToken, ConceptRegistry.address, initialAhaAccount, initialAmount, Minter.address)
   }).then(function(){
       return Minter.deployed()
   }).then(function(minter){
