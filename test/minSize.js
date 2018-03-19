@@ -37,7 +37,7 @@ contract ("Minimum size violations will cancel assessments", (accounts) => {
 
             let assessmentData = await chain.makeAssessment(assessedConceptAddress, assessee.address, cost, size, 1000, timelimit)
             assessment = Assessment.at(assessmentData.address)
-            assessors = assessmentData.assessors
+            assessors = assessmentData.calledAssessors
 
             initialBalances = await utils.getBalances(assessors, aha)
             assert.isAbove(assessors.length, size-1, "not enough assessors were called")
@@ -86,7 +86,7 @@ contract ("Minimum size violations will cancel assessments", (accounts) => {
             assessee.balance = await aha.balanceOf.call(assessee.address)
             assessmentData = await chain.makeAssessment(txResult.logs[0].args["_concept"], assessee.address, cost, size, 1000, timelimit)
             assessment = Assessment.at(assessmentData.address)
-            assessors = assessmentData.assessors
+            assessors = assessmentData.calledAssessors
 
             // save the assessee's balance before the last makeAssessment() call
             assessee.balance = (await aha.balanceOf.call(assessee.address)).toNumber() + cost * size

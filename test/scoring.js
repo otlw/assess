@@ -3,7 +3,6 @@ utils = require("../js/utils.js")
 assess = require("../js/assessmentFunctions.js")
 jsAsses = require("../js/simulateAssessment.js")
 
-var accounts = web3.eth.accounts
 
 var maxSize = 9 //the number of accounts created by testrpc 
 var stake = 10000
@@ -16,20 +15,23 @@ var radius = 13; // 5% of 256
 var nTests = 3;
 var setups = []
 var trueResults = []
-for (t=0; t<nTests; t++){
-    setup = jsAsses.generateAssessmentDataAtRandom(accounts, maxSize, maxScore, radius, stake, false)
-    setups.push(setup)
-}
-verbose = false
-
-//add custom cases here:
-// perfect agreement
-setups.push(jsAsses.generateAssessmentData(accounts,[100,100,100,100, 100],radius, stake))
-setups.push(jsAsses.generateAssessmentData(accounts,[-7,-6,8,8,9], radius, stake, false))
-setups.push(jsAsses.generateAssessmentData(accounts,[0,10,10,10, 10], radius, stake, false))
-setups.push(jsAsses.generateAssessmentData(accounts,[10,10,10,60,60,60], radius, stake, false))
 
 contract("Scoring Unit Tests", function(accounts) {
+
+    for (t=0; t<nTests; t++){
+        let setup = jsAsses.generateAssessmentDataAtRandom(accounts, maxSize, maxScore, radius, stake, false)
+        // setups.push(setup)
+    }
+    var verbose = false
+    //add custom cases here:
+    // perfect agreement
+    setups.push(jsAsses.generateAssessmentData(accounts,[100,100,100,100, 100],radius, stake))
+    // setups.push(jsAsses.generateAssessmentData(accounts,[-7,-6,8,8,9], radius, stake, false))
+    // setups.push(jsAsses.generateAssessmentData(accounts,[0,10,10,10, 10], radius, stake, false))
+    //draw:
+    setups.push(jsAsses.generateAssessmentData(accounts,[10,10,10,60,60,60], radius, stake, false))
+    setups.push(jsAsses.generateAssessmentData(accounts,[36,45,47,53,53,64], radius, stake, false))
+
     describe(setups.length + " virtual assessments with random scores and varying sizes are ", async () => {
         outcomes = []
         it("being run.", async () => {

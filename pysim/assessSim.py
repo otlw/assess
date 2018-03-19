@@ -25,7 +25,7 @@ def MMD(scores):
 def printClusters(cs, radius):
     print "clusterRadius : ", radius
     for idx, c in enumerate(cs):
-        print "Cluster ", idx, ": ", c
+        print "Cluster ", idx, ": ", c, " -> range: ", max(c) - min(c), ", score: ", np.mean(c)
     print "Clusterlengths: ", [len(c) for c in cs]
     print "biggest Cluster: ", max(cs, key=lambda x: (len(x))) #, -1*MAD(x), 1-np.mean(x)))
 

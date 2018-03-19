@@ -28,7 +28,7 @@ contract("An assessment where not enough asssessors confirm", (accounts) => {
 
         let assessmentData = await chain.makeAssessment(assessedConceptAddress, assessee.address, cost, size, waitTime, timeLimit)
         assessment = Assessment.at(assessmentData.address)
-        assessors = assessmentData.assessors
+        assessors = assessmentData.calledAssessors
 
         // save the assessee's balance before the last makeAssessment() call
         assessee.balance = (await aha.balanceOf.call(assessee.address)).toNumber() + cost * size
@@ -90,7 +90,7 @@ contract ("An assessment where assessors fail to reveal", (accounts) => {
         let assessedConceptAddress = txResult.logs[0].args["_concept"]
         let assessmentData = await chain.makeAssessment(assessedConceptAddress, assessee.address, cost, size, 1000, 2000)
         assessment = Assessment.at(assessmentData.address)
-        assessors = assessmentData.assessors
+        assessors = assessmentData.calledAssessors
         assessee.balance = await aha.balanceOf.call(assessee.address)
 
         initialBalances = await utils.getBalances(assessors, aha)

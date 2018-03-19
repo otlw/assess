@@ -91,7 +91,7 @@ contract('Assessment', function(accounts) {
 
         describe('Called', function() {
             it("should call the assessors", async() => {
-                calledAssessors = assessmentData.assessors
+                calledAssessors = assessmentData.calledAssessors
                 assert.isAtLeast(calledAssessors.length, size , "not enough assesssors got added to the pool")
             })
 

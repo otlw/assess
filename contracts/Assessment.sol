@@ -19,7 +19,7 @@ contract Assessment {
         Burned
     }
 
-    Concept concept;
+    Concept public concept;
     FathomToken fathomToken;
 
     uint public endTime;
@@ -33,6 +33,7 @@ contract Assessment {
     uint public done; //counter how many assessors have committed/revealed their score
     mapping(address => int128) scores;
     int public finalScore;
+    bytes32 public salt; //used for token distribution
 
     modifier onlyConcept() {
         require(msg.sender == address(concept));
@@ -193,6 +194,7 @@ contract Assessment {
         if(assessorState[msg.sender] == State.Committed &&
            commits[msg.sender] == keccak256(_score, _salt)) {
                     scores[msg.sender] = _score;
+                    salt = salt ^ (keccak256(_salt));
                     assessorState[msg.sender] = State.Done;
                     done++;
         }
