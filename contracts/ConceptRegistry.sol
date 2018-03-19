@@ -17,7 +17,7 @@ contract ConceptRegistry {
         if (initialized == false) {
             fathomToken = _token;
             distributorAddress = _distributor;
-            Concept mew = new Concept(new address[] (0), new uint[] (0), uint(2**255), "");
+            Concept mew = new Concept(new address[] (0), new uint[] (0), uint(2**255), "", address(0x0));
             mewAddress = address(mew);
             conceptExists[mewAddress] = true;
             initialized = true;
@@ -28,8 +28,8 @@ contract ConceptRegistry {
       @purpose: To make a concept
       @param: address[] parentList = an array of addresses containing the addresses of the concepts parents
     */
-    function makeConcept(address[] parentList, uint[] _propagationRates, uint _lifetime, bytes _data) public returns (address){
-        Concept newConcept = new Concept(parentList, _propagationRates, _lifetime, _data);
+    function makeConcept(address[] parentList, uint[] _propagationRates, uint _lifetime, bytes _data, address _owner) public returns (address){
+        Concept newConcept = new Concept(parentList, _propagationRates, _lifetime, _data, _owner);
 
         conceptExists[address(newConcept)] = true;
         ConceptCreation(address(newConcept));

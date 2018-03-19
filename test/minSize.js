@@ -29,7 +29,7 @@ contract ("Minimum size violations will cancel assessments", (accounts) => {
         it ("An assessment of size 5 is created and assessors are called", async () => {
             aha = await FathomToken.deployed()
             let conceptReg = await ConceptRegistry.deployed()
-            let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+            let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"","0x0")
             let assessedConceptAddress = txResult.logs[0].args["_concept"]
 
             // save the assessee's balance before the makeAssessment() call
@@ -81,7 +81,7 @@ contract ("Minimum size violations will cancel assessments", (accounts) => {
         it ("An assessment of size 5 is created and assessors are called", async () => {
             aha = await FathomToken.deployed()
             let conceptReg = await ConceptRegistry.deployed()
-            let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+            let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"","0x0")
 
             assessee.balance = await aha.balanceOf.call(assessee.address)
             assessmentData = await chain.makeAssessment(txResult.logs[0].args["_concept"], assessee.address, cost, size, 1000, timelimit)
