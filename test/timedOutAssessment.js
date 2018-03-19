@@ -23,7 +23,7 @@ contract("An assessment where not enough asssessors confirm", (accounts) => {
     it ("should be created with at least "+size+" assessors", async () => {
         aha = await FathomToken.deployed()
         let conceptReg = await ConceptRegistry.deployed()
-        const txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+        const txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"","0x0")
         let assessedConceptAddress = txResult.logs[0].args["_concept"]
 
         let assessmentData = await chain.makeAssessment(assessedConceptAddress, assessee.address, cost, size, waitTime, timeLimit)
@@ -86,7 +86,7 @@ contract ("An assessment where assessors fail to reveal", (accounts) => {
     it ("should run until the reveal stage", async () => {
         aha = await FathomToken.deployed()
         let conceptReg = await ConceptRegistry.deployed()
-        const txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+        const txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"","0x0")
         let assessedConceptAddress = txResult.logs[0].args["_concept"]
         let assessmentData = await chain.makeAssessment(assessedConceptAddress, assessee.address, cost, size, 1000, 2000)
         assessment = Assessment.at(assessmentData.address)

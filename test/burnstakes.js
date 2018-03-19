@@ -40,7 +40,7 @@ contract("Burning Stakes:", function(accounts){
     describe("Initially", function(){
         it("an assessment is created and user are called to be assessors.", async () =>{
             conceptReg = await ConceptRegistry.deployed()
-            let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+            let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"","0x0")
             let assessedConceptAddress = txResult.logs[0].args["_concept"]
             assessedConcept = await Concept.at(assessedConceptAddress)
 

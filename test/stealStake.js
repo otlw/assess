@@ -35,7 +35,7 @@ contract("Steal Stake:", function(accounts){
 
     it("An assessment is created and users are called to be assessors.", async () =>{
         let conceptReg = await ConceptRegistry.deployed()
-        let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+        let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"","0x0")
         let assessedConceptAddress = txResult.logs[0].args["_concept"]
         assessedConcept = Concept.at(assessedConceptAddress)
         aha = await FathomToken.deployed()

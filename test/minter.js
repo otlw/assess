@@ -28,7 +28,7 @@ contract("Minting New Tokens:", function(accounts) {
 
         it ("a concept is created", async () => {
             conceptReg = await ConceptRegistry.deployed()
-            let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+            let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"", "0x0")
             assessedConcept = await Concept.at(txResult.logs[0].args["_concept"])
             fathomToken = await FathomToken.deployed()
             assert.isTrue( await conceptReg.conceptExists.call(assessedConcept.address))

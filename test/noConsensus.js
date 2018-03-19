@@ -32,7 +32,7 @@ contract ("Assessment without consensus assessors:", (accounts) => {
         let conceptReg = await ConceptRegistry.deployed()
 
         assessee.balance = await aha.balanceOf.call(assessee.address)
-        let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+        let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"","0x0")
         let assessedConceptAddress = txResult.logs[0].args["_concept"]
         assessmentData = await chain.makeAssessment(assessedConceptAddress, assessee.address, cost, size, 1000, 2000)
         assessment = Assessment.at(assessmentData.address)
