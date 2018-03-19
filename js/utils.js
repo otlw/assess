@@ -1,5 +1,5 @@
-abi = require('ethjs-abi')
-ethereumjsABI = require('ethereumjs-abi')
+var abi = require('ethjs-abi')
+var ethereumjsABI = require('ethereumjs-abi')
 var FathomToken = artifacts.require("FathomToken")
 var Assessment = artifacts.require("Assessment")
 
@@ -21,12 +21,11 @@ exports.getNotificationArgsFromReceipt = function(_receipt, _topic) {
     }
 
     for (i=0; i < _receipt.logs.length; i++) {
+        //check whether event-signature (topic 0) matches the Notification-Event:
         if (_receipt.logs[i].topics[0] == "0xe41f8f86e0c2a4bb86f57d2698c1704cd23b5f42a84336cdb49377cdca96d876"){
-            let event = abi.decodeEvent(FathomToken.abi[notificationIndex], _receipt.logs[i].data)
-            if (_topic == -1){
-                events.push({user: event.user, sender: event.sender, topic: event.topic.toNumber()})
-            } else if (event.topic.toNumber() == _topic) {
-                events.push({user: event.user, sender: event.sender, topic: event.topic.toNumber()})
+            let decodedEvent = abi.decodeLogItem(FathomToken.abi[notificationIndex], _receipt.logs[i])
+            if (decodedEvent.topic.toNumber() === _topic) {
+                events.push(decodedEvent)
             }
         }
     }
