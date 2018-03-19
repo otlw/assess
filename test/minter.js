@@ -4,6 +4,7 @@ var Concept = artifacts.require("Concept");
 var Assessment = artifacts.require("Assessment");
 var Minter = artifacts.require("Minter");
 
+var BigNumber = require('bignumber.js');
 var utils = require("../js/utils.js")
 var chain = require("../js/assessmentFunctions.js")
 
@@ -24,6 +25,7 @@ contract("Minting New Tokens:", function(accounts) {
     let epochLength
 
     describe ("Initially,", async () => {
+
         it ("a concept is created", async () => {
             conceptReg = await ConceptRegistry.deployed()
             let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
@@ -32,7 +34,7 @@ contract("Minting New Tokens:", function(accounts) {
             assert.isTrue( await conceptReg.conceptExists.call(assessedConcept.address))
         })
 
-        it ("an assessment is run until the end (one assessors failing to reveal)", async () => {
+        it ("an assessment is run until the end", async () => {
             assessment = await chain.createAndRunAssessment(
                 assessedConcept.address,
                 assessees[0],
@@ -43,10 +45,37 @@ contract("Minting New Tokens:", function(accounts) {
             assert.equal(stage.toNumber(), 4, "assessment did not move to stage done")
         })
         describe("During the epoch, the minter...", async () => {
+
             it("accepts bids from finished assessments", async () => {
                 minter = await Minter.deployed()
                 await minter.submitBid(assessment.calledAssessors[0], assessment.address, cost-3)
                 assert.equal(assessment.calledAssessors[0], await minter.winner.call())
+            })
+
+        // describe(nAssessments * nAssessors * nSalts + ' tickets are submitted...', function() {
+
+            it("updates the winner if the distance of a hashed ticket is smaller", async () => {
+                let goal = await minter.epochHash.call()
+                let tickets = await utils.generateTickets([assessment], 2, 10)
+                for (let ticket of tickets) {
+                    ticket.hashAsInt = new BigNumber(ticket.hash)
+                    let ticketDistance = (goal > ticket.hashAsInt) ? goal.minus(ticket.hashAsInt) : ticket.hashAsInt.minus(goal)
+                    ticketDistance.s = 1 //weird workaround, because sometimes the distance comes out negative
+
+                    // submit tickets
+                    let closestDistanceByMinter = await minter.closestDistance.call()
+                    await minter.submitBid(ticket.inputs.assessor, ticket.inputs.assessment, ticket.inputs.tokenSalt)
+                    let closestDistanceByMinterAfter = await minter.closestDistance.call()
+
+                    // and see if closestDistance and winner change as expected
+                    if (ticketDistance.toNumber() < closestDistanceByMinter.toNumber()) {
+                        let winnerByMinter = await minter.winner.call()
+                        assert.equal(winnerByMinter, ticket.inputs.assessor, "the assessor was not saved as winner, despite a closer ticket")
+                        assert.isBelow(closestDistanceByMinterAfter.toNumber(), closestDistanceByMinter.toNumber(), "the bestDistance of the minter did not decrease despite a closer ticket")
+                    } else {
+                        assert.equal(closestDistanceByMinterAfter.toNumber(), closestDistanceByMinter.toNumber(), "the closest distance changed without the ticket being a winner")
+                    }
+                }
             })
 
             it("rejects bids from addressess that have not revealed a score", async () => {
