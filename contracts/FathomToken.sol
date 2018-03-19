@@ -19,7 +19,7 @@ contract FathomToken is StandardToken{
     address public owner;
 
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
-    event Notification(address user, address sender, uint topic);
+    event Notification(address indexed user, address indexed sender, uint indexed topic);
     /*
       0 = You've started an assessment
       1 = Called As A Potential Assessor
