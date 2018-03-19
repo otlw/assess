@@ -20,21 +20,6 @@ contract("Changing data on Concepts: ", (accounts) => {
 
     })
     describe("Concepts..", async () => {
-        it("should allow only the owner to change the data", async () => {
-            let dataBefore  = await createdConcept.data.call()
-            await createdConcept.changeData("apple")
-            let dataAfter  = await createdConcept.data.call()
-            assert.notEqual(dataBefore, dataAfter);
-            try {
-                await createdConcept.changeData("appple", {from:accounts[2]})
-            } catch(e) {
-                if (e.toString().indexOf('revert') > 0) {
-                    assert(true, "a 'revert' is thrown")
-                } else {
-                    assert(false, e.toString(), "execution should have failed with a revert")
-                }
-            }
-        })
         it("should allow only the owner to change lifetime of the concept", async () => {
             let ltBefore  = await createdConcept.lifetime.call()
             await createdConcept.changeLifetime(10000)

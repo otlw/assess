@@ -67,10 +67,6 @@ contract Concept {
         lifetime = _newLifetime;
     }
 
-    function changeData(bytes _newData) onlyOwner() public {
-        data = _newData;
-    }
-
     function getMemberLength() public constant returns(uint) {
         return members.length;
     }
