@@ -48,7 +48,7 @@ contract("Minting New Tokens:", function(accounts) {
 
             it("accepts bids from finished assessments", async () => {
                 minter = await Minter.deployed()
-                await minter.submitBid(assessment.calledAssessors[0], assessment.address, cost-3)
+                await minter.submitTicket(assessment.calledAssessors[0], assessment.address, cost-3)
                 assert.equal(assessment.calledAssessors[0], await minter.winner.call())
             })
 
@@ -64,7 +64,7 @@ contract("Minting New Tokens:", function(accounts) {
 
                     // submit tickets
                     let closestDistanceByMinter = await minter.closestDistance.call()
-                    await minter.submitBid(ticket.inputs.assessor, ticket.inputs.assessment, ticket.inputs.tokenSalt)
+                    await minter.submitTicket(ticket.inputs.assessor, ticket.inputs.assessment, ticket.inputs.tokenSalt)
                     let closestDistanceByMinterAfter = await minter.closestDistance.call()
 
                     // and see if closestDistance and winner change as expected
@@ -80,7 +80,7 @@ contract("Minting New Tokens:", function(accounts) {
 
             it("rejects bids from addressess that have not revealed a score", async () => {
                 try {
-                    await minter.submitBid(assessees[0], assessment.address, cost-3)
+                    await minter.submitTicket(assessees[0], assessment.address, cost-3)
                 } catch (e) {
                     if (e.toString().indexOf('revert') > 0) {
                         assert(true)
@@ -92,7 +92,7 @@ contract("Minting New Tokens:", function(accounts) {
 
             it("rejects bids if the token-salt is too high", async () => {
                 try {
-                    await minter.submitBid(assessment.calledAssessors[0], assessment.address, cost+1)
+                    await minter.submitTicket(assessment.calledAssessors[0], assessment.address, cost+1)
                 } catch (e) {
                     if (e.toString().indexOf('revert') > 0) {
                         assert(true)
@@ -114,7 +114,7 @@ contract("Minting New Tokens:", function(accounts) {
                 let stage = await assessment2.instance.assessmentStage.call()
                 assert.equal(stage.toNumber(), 4, "assessment did not move to stage done")
                 try {
-                    await minter.submitBid(assessment2.calledAssessors[1], assessment2.address, 1)
+                    await minter.submitTicket(assessment2.calledAssessors[1], assessment2.address, 1)
                 } catch (e) {
                     if (e.toString().indexOf('revert') > 0) {
                         assert(true)

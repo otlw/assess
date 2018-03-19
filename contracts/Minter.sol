@@ -56,7 +56,7 @@ contract Minter {
       @param _assessment: address of the assessment
       @param _tokenSalt: a number smaller or equal to amount of tokens the assessor staked in the assessment
     */
-    function submitBid (address _assessor, address _assessment, uint _tokenSalt) public {
+    function submitTicket (address _assessor, address _assessment, uint _tokenSalt) public {
         Assessment assessment = Assessment(_assessment);
         require(conceptRegistry.conceptExists(address(assessment.concept())) &&
                 Concept(assessment.concept()).assessmentExists(_assessment) &&
