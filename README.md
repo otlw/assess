@@ -145,6 +145,13 @@ code too, please do so in the context of a separate issue.
 
 #### Javascript
 
-TBD.
+We follow Standard JS style guide.
 
+[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
+
+To use its linter, run the following command:
+```
+npm run lint
+```
+This will check all JavaScript files in the current working directory and call attention to any code that needs fixing. 
 
