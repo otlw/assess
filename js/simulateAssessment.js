@@ -1,3 +1,6 @@
+var Web3 = require('web3')
+var web3 = new Web3(Web3.givenProvider || "ws://localhost:8546");
+
 // this tests the Math-Library function getFinalScore, therefore assessments without consensus
 // will not produce a zero score, but the average of the biggest cluster
 exports.getFinalScore = function(scores, radius) {
@@ -88,3 +91,11 @@ exports.generateAssessmentData = function(accounts, scores, radius, cost, dissen
                                          dissentBonus)
            }
 }
+
+/*
+  creates bytes32-hash to be used as a lottery-ticket using the solidity dense-packed data-handling
+*/
+exports.hashTicket = function(_assessor, _assessment, _tokenSalt, _assessmentSalt) {
+    return web3.utils.soliditySha3(_assessor, _assessment, _tokenSalt, _assessmentSalt)
+}
+

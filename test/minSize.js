@@ -29,7 +29,7 @@ contract ("Minimum size violations will cancel assessments", (accounts) => {
         it ("An assessment of size 5 is created and assessors are called", async () => {
             aha = await FathomToken.deployed()
             let conceptReg = await ConceptRegistry.deployed()
-            let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+            let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"","0x0")
             let assessedConceptAddress = txResult.logs[0].args["_concept"]
 
             // save the assessee's balance before the makeAssessment() call
@@ -37,7 +37,7 @@ contract ("Minimum size violations will cancel assessments", (accounts) => {
 
             let assessmentData = await chain.makeAssessment(assessedConceptAddress, assessee.address, cost, size, 1000, timelimit)
             assessment = Assessment.at(assessmentData.address)
-            assessors = assessmentData.assessors
+            assessors = assessmentData.calledAssessors
 
             initialBalances = await utils.getBalances(assessors, aha)
             assert.isAbove(assessors.length, size-1, "not enough assessors were called")
@@ -81,12 +81,12 @@ contract ("Minimum size violations will cancel assessments", (accounts) => {
         it ("An assessment of size 5 is created and assessors are called", async () => {
             aha = await FathomToken.deployed()
             let conceptReg = await ConceptRegistry.deployed()
-            let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+            let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"","0x0")
 
             assessee.balance = await aha.balanceOf.call(assessee.address)
             assessmentData = await chain.makeAssessment(txResult.logs[0].args["_concept"], assessee.address, cost, size, 1000, timelimit)
             assessment = Assessment.at(assessmentData.address)
-            assessors = assessmentData.assessors
+            assessors = assessmentData.calledAssessors
 
             // save the assessee's balance before the last makeAssessment() call
             assessee.balance = (await aha.balanceOf.call(assessee.address)).toNumber() + cost * size

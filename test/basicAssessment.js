@@ -48,7 +48,7 @@ contract('Assessment', function(accounts) {
     describe('Before the assessment', function(){
         it('A concept is created', async () => {
             conceptReg = await ConceptRegistry.deployed()
-            let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+            let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"","0x0")
             assessedConcept = await Concept.at(txResult.logs[0].args["_concept"])
 
             assert.isTrue( await conceptReg.conceptExists.call(assessedConcept.address))
@@ -91,7 +91,7 @@ contract('Assessment', function(accounts) {
 
         describe('Called', function() {
             it("should call the assessors", async() => {
-                calledAssessors = assessmentData.assessors
+                calledAssessors = assessmentData.calledAssessors
                 assert.isAtLeast(calledAssessors.length, size , "not enough assesssors got added to the pool")
             })
 

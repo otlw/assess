@@ -35,7 +35,7 @@ contract("Steal Stake:", function(accounts){
 
     it("An assessment is created and users are called to be assessors.", async () =>{
         let conceptReg = await ConceptRegistry.deployed()
-        let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"")
+        let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]),[500],60*60*24,"","0x0")
         let assessedConceptAddress = txResult.logs[0].args["_concept"]
         assessedConcept = Concept.at(assessedConceptAddress)
         aha = await FathomToken.deployed()
@@ -43,7 +43,7 @@ contract("Steal Stake:", function(accounts){
         //initiate assessment, save assessors and their initial balance
         assessmentData = await chain.makeAssessment(assessedConceptAddress, assessee, cost, size, waitTime, timeLimit)
         assessmentContract = Assessment.at(assessmentData.address)
-        calledAssessors = assessmentData.assessors
+        calledAssessors = assessmentData.calledAssessors
 
         assert.isAbove(calledAssessors.length, size - 1, "not enough assessors were called")
     })
