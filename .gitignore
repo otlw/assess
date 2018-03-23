@@ -1,7 +1,8 @@
 **/chain_db/
 /build/
 node_modules
-
+initialMembers.json
+secrets.json
 
 # Other
 .notes
