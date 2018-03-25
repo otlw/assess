@@ -43,6 +43,19 @@ contract("ConceptRegistry", function() {
             }
         }
     })
+
+  it ('should throw if no parents specified', async () => {
+    try {
+      await conReg.makeConcept([], [], 60 * 60 * 24, '', '0x0')
+    } catch (e) {
+      if (e.toString().indexOf('revert') > 0) {
+        assert(true)
+      }
+      else {
+        assert(false, e.toString())
+      }
+    }
+  })
 })
 
 contract("Initial User", function(accounts){ 
