@@ -44,7 +44,7 @@ contract("ConceptRegistry", function() {
         }
     })
 
-  it ('should throw if no parents specified', async () => {
+  it ('should throw if no parents are specified', async () => {
     try {
       await conReg.makeConcept([], [], 60 * 60 * 24, '', '0x0')
     } catch (e) {
