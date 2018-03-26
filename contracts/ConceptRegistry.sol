@@ -29,6 +29,7 @@ contract ConceptRegistry {
       @param: address[] parentList = an array of addresses containing the addresses of the concepts parents
     */
     function makeConcept(address[] parentList, uint[] _propagationRates, uint _lifetime, bytes _data, address _owner) public returns (address){
+        require(parentList.length > 0);
         Concept newConcept = new Concept(parentList, _propagationRates, _lifetime, _data, _owner);
 
         conceptExists[address(newConcept)] = true;
