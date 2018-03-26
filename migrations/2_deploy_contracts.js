@@ -1,4 +1,5 @@
 var Math = artifacts.require("./Math.sol");
+var Constants = artifacts.require("./Constants.sol");
 var Concept = artifacts.require("./Concept.sol");
 var Assessment = artifacts.require("./Assessment.sol");
 var ConceptRegistry = artifacts.require("./ConceptRegistry.sol");
@@ -41,6 +42,7 @@ let initialAmount = 10000000000 * (nInitialMewMembers+3)
   var distributor;
   deployer.deploy(Math);
   deployer.link(Math, [Assessment, Concept, ConceptRegistry])
+  deployer.deploy(Constants);
   deployer.then( function(){
       return deployer.deploy(ConceptRegistry)
   }).then(function(){
@@ -57,6 +59,6 @@ let initialAmount = 10000000000 * (nInitialMewMembers+3)
   }).then(function(){
       return ConceptRegistry.deployed()
   }).then(function(instance){
-      return instance.init(FathomToken.address, Distributor.address)
+    return instance.init(FathomToken.address, Distributor.address, Constants.address)
   })
 };

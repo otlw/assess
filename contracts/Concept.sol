@@ -4,6 +4,7 @@ import "./FathomToken.sol";
 import "./ConceptRegistry.sol";
 import "./Assessment.sol";
 import "./Math.sol";
+import "./Constants.sol";
 
 //@purpose: To store concept data and create and manage assessments and members
 contract Concept {
@@ -12,6 +13,7 @@ contract Concept {
     address public owner;
     FathomToken public fathomToken;
     ConceptRegistry conceptRegistry;
+    Constants public constants;
     uint public lifetime;
     mapping (address => bool) public assessmentExists;
 
@@ -52,6 +54,7 @@ contract Concept {
         lifetime = _lifetime;
         owner = _owner;
         fathomToken = FathomToken(conceptRegistry.fathomToken());
+        constants = Constants(conceptRegistry.constants());
     }
 
     modifier onlyOwner(){
@@ -113,6 +116,7 @@ contract Concept {
         uint weight2;
         address randomMember1;
         while (members.length > 1 && weight1 == 0) {
+          
             uint index1 = Math.getRandom(seed, members.length - 1);
             randomMember1 = members[index1];
             weight1 = getWeightAndUpdate(randomMember1);
@@ -172,17 +176,17 @@ contract Concept {
       @param: uint size = the number of assessors
     */
     function makeAssessment(uint cost, uint size, uint _waitTime, uint _timeLimit) public returns(bool) {
-        if (size >= 5 && fathomToken.balanceOf(msg.sender)>= cost*size) {
+      if (size >= constants.MIN_ASSESSMENT_SIZE() && fathomToken.balanceOf(msg.sender)>= cost*size) {
             Assessment newAssessment = new Assessment(msg.sender, size, cost, _waitTime, _timeLimit);
             assessmentExists[address(newAssessment)] = true;
             fathomToken.takeBalance(msg.sender, address(newAssessment), cost*size, address(this));
             // get membernumber of mew to see whether there are more than 200 users in the system:
             address mewAddress = conceptRegistry.mewAddress();
             uint nMemberInMew = Concept(mewAddress).getMemberLength();
-            if (nMemberInMew < size * 5) {
+            if (nMemberInMew < size * constants.ASSESSORPOOL_SIZE_FACTOR()) {
                 newAssessment.callAllFromMew(nMemberInMew, mewAddress);
             } else {
-                newAssessment.setAssessorPool(block.number, address(this), size*5);
+                newAssessment.setAssessorPool(block.number, address(this), size*constants.ASSESSORPOOL_SIZE_FACTOR());
             }
             return true;
         }

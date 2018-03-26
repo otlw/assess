@@ -3,6 +3,7 @@ pragma solidity ^0.4.11;
 import "./Math.sol";
 import "./Concept.sol";
 import "./FathomToken.sol";
+import "./Constants.sol";
 
 contract Assessment {
     address public assessee;
@@ -21,6 +22,7 @@ contract Assessment {
 
     Concept public concept;
     FathomToken fathomToken;
+    Constants constants;
 
     uint public endTime;
     // will keep track of timelimits for 1) latest possible time to confirm and
@@ -53,6 +55,7 @@ contract Assessment {
         assessee = _assessee;
         concept = Concept(msg.sender);
         fathomToken = concept.fathomToken();
+        constants = concept.constants();
 
         endTime = now + _timeLimit;
         // set checkpoint to latest possible time to confirm
@@ -161,7 +164,7 @@ contract Assessment {
         }
         if (done == size) {
             //set checkpoint to end of 12 hour challenge period after which scores can be revealed
-            checkpoint = now + 12 hours;
+            checkpoint = now + constants.CHALLENGE_COMMIT_PERIOD();
             notifyAssessors(uint(State.Committed), 5);
             done = 0; //Resets the done counter
             assessmentStage = State.Committed;
@@ -180,14 +183,14 @@ contract Assessment {
     }
 
     //@purpose: called by assessors to reveal their own commits or others
-    // must be called between 12 hours after the latest commit and 24 hours after the
+    // must be called between Constants.CHALLENGE_COMMIT_PERIOD after the latest commit and 12 more hours after the
     // end of the assessment. If the last commit happens during at the last possible
     // point in time (right before endtime), this period will be 12hours
     function reveal(int128 _score, string _salt) public onlyInStage(State.Committed) {
         // scores can only be revealed after the challenge period has passed
         require(now > checkpoint);
         // If the time to reveal has passed, burn all unrevealed assessors
-        if (now > endTime + 24 hours) {
+        if (now > endTime + constants.CHALLENGE_COMMIT_PERIOD() + 12 hours) {
             burnStakes(State.Committed);
         }
 
@@ -220,7 +223,7 @@ contract Assessment {
     */
     function burnAssessor(address _assessor) private {
         assessorState[_assessor] = State.Burned;
-        if (--size < 5) {
+        if (--size < constants.MIN_ASSESSMENT_SIZE()) {
             cancelAssessment();
         }
     }
