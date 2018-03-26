@@ -58,7 +58,7 @@ async function test(){
     console.log("MEW address is :")
     console.log(mewAddress)
 
-    let txResult = await conceptRegDeployed.makeConcept(([mewAddress]),[500],60*60*24,"",accounts[0])
+    let txResult = await conceptRegDeployed.makeConcept([mewAddress],[500],60*60*24,"",accounts[0])
     // assessedConcept = await Concept.at(txResult.logs[0].args["_concept"])
 
     // await conceptRegContract.setProvider(provider)
