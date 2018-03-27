@@ -1,6 +1,7 @@
 About
 ========
 
+
 An Ethereum based solution for peer assessment based on a participatory token economy. You get tokens through assessment, you pay them to get assessed. This system is an abstracted assessment framework capable of assessing anything that can be defined through a hierarchical ontology.
 For more documentation see our [whitepaper](http://fathom.network/whitepaper/).
 
@@ -119,6 +120,14 @@ To contribute to this project...
   you we work together,
 - talk to us on [gitter](https://gitter.im/fathom-network/Lobby) or
 - send an email to <contact@fathom.network> if you would like to get in contact.
+
+This repo has two relevant branches: master and development. master holds
+the version of our protocol which will eventually be deployed on the main-net.
+On the development-branch, the protocol is modified to make testing and
+developing for it much easier. Therefore, several constants (e.g. minimum number
+of assessors) have been factored out into an extra-contract, so that it becomes
+possible to create and complete assessments without having to wait and whithout
+controlling many accounts.
 
 Styleguide
 ==========
