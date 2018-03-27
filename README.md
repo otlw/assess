@@ -112,6 +112,11 @@ Lastly, run
 - If you get any other issues feel free to open an issue or add to an existing
 one.
 
+Tests
+============
+Most functionnalities are tested in the test files inside the 'test' folder.
+To run them, try 'truffle test'
+
 Contributing
 =========
 
