@@ -10,20 +10,26 @@ pragma solidity ^0.4.18;
 */
 
 contract Constants {
-  uint public MIN_ASSESSMENT_SIZE = 5;
-  uint public CHALLENGE_COMMIT_PERIOD = 12 hours;
-  uint public ASSESSORPOOL_SIZE_FACTOR = 5;
+  uint public MIN_ASSESSMENT_SIZE; // 5
+  uint public CHALLENGE_COMMIT_PERIOD; // 12 hours
+  uint public ASSESSORPOOL_SIZE_FACTOR;  // originally 5
+
+  function Constants(uint _minSize, uint _challengePeriod, uint _assessorpoolSize) public {
+    MIN_ASSESSMENT_SIZE = _minSize;
+    CHALLENGE_COMMIT_PERIOD = _challengePeriod;
+    ASSESSORPOOL_SIZE_FACTOR = _assessorpoolSize;
+  }
 
   function setMinAssessmentSize(uint newSize) public {
     MIN_ASSESSMENT_SIZE = newSize;
   }
 
   function setChallengeCommitPeriod(uint newTime) public {
-    MIN_ASSESSMENT_SIZE = newTime;
+    CHALLENGE_COMMIT_PERIOD = newTime;
   }
 
   function setAssessorpoolSizeFactor(uint newFactor) public {
-    MIN_ASSESSMENT_SIZE = newFactor;
+    ASSESSORPOOL_SIZE_FACTOR = newFactor;
   }
 
 }

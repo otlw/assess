@@ -36,13 +36,17 @@ module.exports = function(deployer) {
   }
 
 
-let initialAhaAccount = accounts[0]
-let initialAmount = 10000000000 * (nInitialMewMembers+3)
+  let initialAhaAccount = accounts[0]
+  let initialAmount = 10000000000 * (nInitialMewMembers+3)
+
+  let minAssessmentSize = 5;
+  let challengePeriod = 60*60*12;
+  let assessorpoolSizeFactor = 5;
 
   var distributor;
   deployer.deploy(Math);
   deployer.link(Math, [Assessment, Concept, ConceptRegistry])
-  deployer.deploy(Constants);
+  deployer.deploy(Constants, minAssessmentSize, challengePeriod, assessorpoolSizeFactor);
   deployer.then( function(){
       return deployer.deploy(ConceptRegistry)
   }).then(function(){
