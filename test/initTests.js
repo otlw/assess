@@ -56,6 +56,19 @@ contract("ConceptRegistry", function() {
       }
     }
   })
+
+  it ('should throw if propagation rate = 1000', async() => {
+    try {
+      await conReg.makeConcept([createdConceptAddress], [1000], 60 * 60 * 24, '', '0x0')
+    } catch (e) {
+      if (e.toString().indexOf('revert') > 0) {
+        assert(true)
+      }
+      else {
+        assert(false, e.toString())
+      }
+    }
+  })
 })
 
 contract("Initial User", function(accounts){ 
