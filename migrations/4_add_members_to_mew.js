@@ -3,7 +3,7 @@ var Distributor = artifacts.require("./Distributor.sol");
 
 var initialMewMembers;
 
-const nInitialUsersWithFunds = 6
+const nInitialUsers = 6
 
 
 module.exports = function(deployer) {
