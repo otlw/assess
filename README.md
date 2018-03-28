@@ -67,7 +67,7 @@ distributed.
 To do so, create a file `./intitialMembers.json` in the root-folder of the
 project.
 
-**NB : the teamTestAddresses.json file contains the core team's addresses and can be renamed to intitialMembers.json for testing purposes. (Don't forget to put the address controlled by the seeds in the first position though)
+**NB : the teamTestAddresses.json file contains the core team's addresses and can be renamed to intitialMembers.json for testing purposes. (Don't forget to put the address controlled by the seeds in the first position though)**
 
 Its content should look like this:
 >'{"accounts": ["0xaccount1...", "0xaccount2...", ... ]}'
