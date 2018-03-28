@@ -9,6 +9,7 @@ merging master into it.
 About
 ========
 
+
 An Ethereum based solution for peer assessment based on a participatory token economy. You get tokens through assessment, you pay them to get assessed. This system is an abstracted assessment framework capable of assessing anything that can be defined through a hierarchical ontology.
 For more documentation see our [whitepaper](http://fathom.network/whitepaper/).
 
