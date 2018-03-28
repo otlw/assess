@@ -43,7 +43,7 @@ contract Concept {
 
         for (uint j=0; j < _parents.length; j++) {
             require(conceptRegistry.conceptExists(_parents[j]));
-            require(_propagationRates[j] <= 1000);
+            require(_propagationRates[j] < 1000);
         }
 
         propagationRates = _propagationRates;
