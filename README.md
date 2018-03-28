@@ -50,7 +50,7 @@ In another console, run the migration:
 >'truffle migrate'
 
 
-### ...to the rinkeby-testnet
+### ...to the rinkeby- or kovan-testnet
 
 As you want to deploy to a real testnet, you need to have
 [Metamask](https://metamask.io/) installed and some rinkeby-ether on its first
@@ -100,8 +100,11 @@ change that play around with the parameters in `/migrations/3_fund_users.js` and
 #### 4) Deploy
 
 Lastly, run 
->'truffle migrate --network rinkeby'
+>'truffle migrate --network rinkeby' 
 
+or 
+
+>'truffle migrate --network kovan 
 
 #### 5) Troubleshooting
 
