@@ -1,11 +1,13 @@
 var FathomToken = artifacts.require("./FathomToken.sol");
 var accounts, setup;
 
+const nInitialUsersWithFunds = 9
+
 module.exports = function(deployer) {
     //choose accounts depending on network
   if (deployer.network==="development"){
     console.log("Development network detected, using dev accounts...")
-    accounts = web3.eth.accounts.slice(0,9)
+    accounts = web3.eth.accounts.slice(0,nInitialUsersWithFunds)
   } else if (deployer.network==="rinkeby") {
     var setup = require("./../initialMembers.json")
     console.log("Rinkeby network detected, using provided list of initial members....")
