@@ -1,3 +1,11 @@
+ABOUT THIS BRANCH!
+==========
+
+This branch should always mirror the master branch. If you want to use it to test a certain feature, make sure
+that the relevant parts of this branch have not changed on master or simply bring it up to date by 
+merging master into it.
+
+
 About
 ========
 
