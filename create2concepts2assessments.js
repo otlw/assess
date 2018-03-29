@@ -9,19 +9,22 @@ let provider
 
 const network=process.argv[2]
 
-const Eth = require('ethjs');
+//const Eth = require('ethjs');
+    const Web3=require("web3")
 
 //detect network and declare variables accordingly
 if (network=="rinkeby"){
     //use rinkeby
-    provider=new Eth.HttpProvider('https://rinkeby.infura.io')
+    provider='https://rinkeby.infura.io' //new Eth.HttpProvider('https://rinkeby.infura.io')
 } else {
     //use Ganache by default (last deployed contract version)
     let networkValues=Object.values(conceptRegABI.networks)
     let networkKeys=Object.keys(conceptRegABI.networks)
-    provider=new Eth.HttpProvider('http://localhost:8545')
+    provider='http://localhost:8545' //new Web3.HttpProvider('http://localhost:8545')
 }
-const eth = new Eth(provider);
+//const eth = new Eth(provider);
+    const web3=new Web3(provider)
+    const eth=web3.eth
 
 var nInitialUsers = 6
 var gasPrice = 1000000000; //safe low cost
@@ -31,7 +34,7 @@ var etherPrice = 460 // as of 11/17
 
 async function test(){
     //log accounts
-    let accounts= await eth.accounts()
+    let accounts= await eth.getAccounts()
     if (accounts.length===0){
         //if not on testnet
         const setup = require("./initialMembers.json")
@@ -40,7 +43,7 @@ async function test(){
     console.log("++++++++++= accounts : ")
     console.log(accounts)
     //log network
-    let net= await eth.net_version()
+    let net= await eth.net.getId()
     console.log("current network version")
     console.log(net)
     //log deployed contracts
@@ -49,17 +52,26 @@ async function test(){
     //set contract address from ABI
     conceptRegAddress=conceptRegABI.networks[net].address
     //instantiate contract
-    conceptRegContract = await eth.contract(conceptRegABI.abi)
-    conceptRegDeployed= await conceptRegContract.at(conceptRegAddress)
+    conceptRegContract = await new web3.eth.Contract(conceptRegABI.abi,conceptRegAddress,{from:accounts[0]})
+    //console.log(conceptRegContract)
+    // conceptRegDeployed= await conceptRegContract.at(conceptRegAddress)
 
 
     //log mewAddress
-    let mewAddress=await conceptRegDeployed.mewAddress()
-    mewAddress=mewAddress[0]
+    //let getMewAddress=await 
+    // conceptRegContract.methods.mewAddress().call((err,res)=>{
+    //     console.log(err,res)
+    // })
+    let mewAddress=await conceptRegContract.methods.mewAddress().call()
     console.log("MEW address is :")
     console.log(mewAddress)
+    //mewAddress=mewAddress[0]
+    //console.log(getMewAddress )
+    //let mewAddress=await getMewAddress.call()
+    // console.log("MEW address is :")
+    // console.log(mewAddress)
 
-    let txResult = await conceptRegDeployed.makeConcept([mewAddress],[500],60*60*24,"",accounts[0])
+    let txResult = await conceptRegContract.methods.makeConcept([mewAddress],[500],60*60*24,"",accounts[0]).send({from:accounts[0]})
     // assessedConcept = await Concept.at(txResult.logs[0].args["_concept"])
 
     // await conceptRegContract.setProvider(provider)
