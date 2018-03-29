@@ -14,17 +14,12 @@ const Eth = require('ethjs');
 //detect network and declare variables accordingly
 if (network=="rinkeby"){
     //use rinkeby
-    conceptRegAddress=conceptRegABI.networks[4].address
     provider=new Eth.HttpProvider('https://rinkeby.infura.io')
 } else {
     //use Ganache by default (last deployed contract version)
     let networkValues=Object.values(conceptRegABI.networks)
     let networkKeys=Object.keys(conceptRegABI.networks)
-    conceptRegAddress=networkValues[networkValues.length-1].address
-    //const ganache = require("ganache-cli");
-    //provider=ganache.provider()
-    const Ganache = require("ganache-core");
-    provider=Ganache.provider({network_id:networkKeys[networkKeys.length-1]})
+    provider=new Eth.HttpProvider('http://localhost:8545')
 }
 const eth = new Eth(provider);
 
@@ -51,6 +46,8 @@ async function test(){
     //log deployed contracts
     console.log("-- deployed version of concept reg on different networks -- :")
     console.log(conceptRegABI.networks)
+    //set contract address from ABI
+    conceptRegAddress=conceptRegABI.networks[net].address
     //instantiate contract
     conceptRegContract = await eth.contract(conceptRegABI.abi)
     conceptRegDeployed= await conceptRegContract.at(conceptRegAddress)
@@ -62,7 +59,7 @@ async function test(){
     console.log("MEW address is :")
     console.log(mewAddress)
 
-    let txResult = await conceptRegDeployed.makeConcept([mewAddress],[500],60*60*24,"","0x0")
+    let txResult = await conceptRegDeployed.makeConcept([mewAddress],[500],60*60*24,"",accounts[0])
     // assessedConcept = await Concept.at(txResult.logs[0].args["_concept"])
 
     // await conceptRegContract.setProvider(provider)
