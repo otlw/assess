@@ -1,53 +1,49 @@
-### FruitBasket: a Meta-Issue-Template for Discussions
-**NOTE: This Issue Template is for framing project discussions that fall outside existing templates.** 
-It's sort of a meta-issue-template, since it will include issues about issues. 
-Project discussion topics, like fruits, can be of different shapes and sizes, 
-as well as degrees of ripeness. Hopefully this template will help us catch them all 
--- for consideration, discussion, and collective decision-making. 
-This template and format will likely evolve with use. 
-And it remains an open question whether this will be the best medium for this activity 
-(for example, there may be some issues which don't lend themselves 
-to a tidy resolution and may remain open, indefinitely). 
-But it is an attempt to bring into our Gitlab repo the sorts of project discussions 
-that are often occurring outside of it, scattershot, via chat threads and collaborative text documents. 
+`DISCUSSION` Proposal
+<!---
+A Template for Discussions...
+The purpose of this template is to frame project discussions that fall outside other existing templates. 
+Project discussion topics, like fruits, can be of different shapes, sizes, and degrees of ripeness. 
+Hopefully this template will help us catch them all -- for consideration and collaborative response.
+Topics that begin here may be repackaged into actionable issues once they've been given some thought and discussion. 
 
-<!-- If you are submitting another issue** like a bug, new feature or some other proposed change, -->
-<!-- please use one of the other Issue Templates -->
-
-* Please provide a concise description of the topic for discussion in the Title above
-
+* If you are submitting a BUG report or FEATURE proposal instead, please use one of the other templates.
+* Please provide a concise description of the discussion topic in the Title above
+--->
 --------------------------------------------------------------------------------
 
-## Description
-<!-- Provide a more detailed description of the issue/topic you are proposing -->
-<!-- Describe the "Current State" of things, or why this topic is important to address -->
-<!-- Describe the "Expected State" of things, or the result you expect to come from addressing the issue -->
+## Current Behavior
+<!-- Describe the current behavior/state that makes this topic important to address -->
+
+
+## Expected Behavior 
+<!-- Describe the expected behavior/state that you hope to see following discussion/decisions/implementation -->
 
 
 ## Motivation and Context
-<!-- Provide any context or specifics here (examples, use cases, user stories) -->
-<!-- to flesh out the significance of the issue -->
+<!-- Provide context (e.g., examples, use cases, user stories, goals) -->
+<!-- How has this issue affected you? What are you trying to accomplish? -->
 
 
 ## Possible Implementation
-<!-- Suggest a concrete way to explore or implement the issue -->
-<!-- Include any details helpful to understanding what the implementation would look like, or entail -->
+<!-- Suggest a concrete way to explore this issue or a possible implementation -->
+<!-- Include any details helpful to understanding what the implementation might entail or look like -->
 
 
-## Other Info
-<!-- Include any other relevant data, links, resources, screenshots, etc. -->
+## Info, Links, etc
+<!-- Links: Post links to helpful info, data, resources -->
+<!-- Images: Drag screenshots or other image files here -->
+<!-- Code: Format any relevant code, commands, output, using code blocks (```) -->
 
 
-## Assign Collaborators
-<!-- Since gitlab only allows for one official Assignee, you can specify collaborators here for this discussion -->
-<!-- (Add them below, by their gitlab handle) -->
+## Notify Collaborators
+<!-- Notify collaborators for this discussion by adding their GitLab handles here -->
+
 
 --------------------------------------------------------------------------------
 
-/label ~discussion
+/label ~"discussion"
 
-**Disclaimer:** This form is a work in progress. We aim to shape it into a "form" that will be of maximum utility.  
-Feedback on its components is welcomed!
+**Disclaimer:** This form is a work in progress. Feedback on its components is welcomed!
 
-<!-- Specify your issue further using the drop-down lists below, as appropriate -->
+<!-- Add further specification using the drop-down lists below, as appropriate -->
 
