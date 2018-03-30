@@ -9,16 +9,6 @@ pragma solidity ^0.4.11;
 library Math {
     uint constant public consentRadius = 13; //13 is 5% of the total range of 256
 
-    /*
-      @purpose: To generate a weak random number between 0 and the specified maximum
-      @param: uint seed = seed number for the generation of a random number
-      @param: uint max = the max for the range of random numbers that can be made
-      @returns: The random number
-    */
-    function getRandom(uint seed, uint max) public constant returns(uint) { //Based on the function by alexvandesande
-        return(uint(keccak256(block.blockhash(block.number-1), seed))%(max+1)); //Hashes the seed number with the last blockhash to generate a random number and shifts it into the desired range by using a modulus
-    }
-
   // calculates possible clusters around all scores and returns the average score
   // and size of the biggest one.
   function getFinalScore(int[] data) public pure returns(int finalScore, uint largestClusterSize) {

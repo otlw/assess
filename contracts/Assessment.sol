@@ -12,7 +12,6 @@ contract Assessment {
     State public assessmentStage;
     enum State {
         None,
-        Called,
         Confirmed,
         Committed,
         Done,
@@ -68,7 +67,7 @@ contract Assessment {
 
     // ends the assessment, refunds the assessee and all assessors who have not been burned
     function cancelAssessment() private {
-        uint assesseeRefund = assessmentStage == State.Called ? cost * size : cost * assessors.length; //in later stages size can be reduced by burned assessors
+        uint assesseeRefund = assessmentStage == State.None ? cost * size : cost * assessors.length; //in later stages size can be reduced by burned assessors
         fathomToken.transfer(assessee, assesseeRefund);
         fathomToken.notification(assessee, 3); //Assessment Cancelled and you have been refunded
         for (uint i = 0; i < assessors.length; i++) {
@@ -80,75 +79,61 @@ contract Assessment {
         selfdestruct(address(concept));
     }
 
-    //adds a user to the pool eligible to accept an assessment
-    function addAssessorToPool(address assessor) private returns(bool) {
-        if (assessor != assessee && assessorState[assessor] == State.None) {
-            fathomToken.notification(assessor, 1); //Called As A Potential Assessor
-            assessorState[assessor] = State.Called;
-            return true;
-        }
-    }
-
-    /*
-      To recursively set the pool to draw assessors from in the assessment
-      stops when the pool of potential assessors is 20 times the size of the assessment2
-      @param: uint seed = the seed number for random number generation
-      @param: address _concept = the concept being called from
-      @param: uint num = the total number of assessors to be called
-    */
-    function setAssessorPool(uint seed, address _concept, uint num) public onlyConcept() {
-        uint numCalled = 0;
-        uint membersOfConcept = Concept(_concept).getMemberLength();
-        //we want to call at most half of the members of each concept
-        uint maxFromThisPool = num > membersOfConcept/2 ? membersOfConcept/2 : num;
-        for (uint k=0; k < maxFromThisPool; k++) {
-            address randomUser = Concept(_concept).getWeightedRandomMember(seed + k);
-            if (randomUser != address(0x0) && addAssessorToPool(randomUser)) {
-                numCalled++;
-            }
-        }
-        uint remaining = num - numCalled;
-        if (remaining > 0) {
-            for (uint i = 0; i < Concept(_concept).getParentsLength(); i++) {
-                setAssessorPool(seed + numCalled + i, Concept(_concept).parents(i), remaining/Concept(_concept).getParentsLength() + 1); //Calls the remaining users from the parent concepts proportional to their size
-            }
-        }
-        assessmentStage = State.Called;
-    }
-
-    /*
-      Function to call all members of mew to be assessors. Will be removed after
-      the alpha-testing phase.
-    */
-    function callAllFromMew(uint _nMew, address _mew) public onlyConcept() {
-        Concept mew = Concept(_mew);
-        for (uint i=0; i< _nMew; i++) {
-            addAssessorToPool(mew.members(i));
-        }
-        assessmentStage = State.Called;
-    }
 
     // called by an assessor to confirm and stake
-    function confirmAssessor() public onlyInStage(State.Called) {
-        // cancel if the assessment is past its startTime
-        if (now > checkpoint){
-            cancelAssessment();
-            return;
-        }
-        if (assessorState[msg.sender] == State.Called &&
-            assessors.length < size &&
-            fathomToken.takeBalance(msg.sender, address(this), cost, concept)
-            ) {
-            assessors.push(msg.sender);
-            assessorState[msg.sender] = State.Confirmed;
-            fathomToken.notification(msg.sender, 2); //Confirmed for assessing, stake has been taken
-        }
-        if (assessors.length == size) {
-            notifyAssessors(uint(State.Confirmed), 4);
-            fathomToken.notification(assessee, 4);
-            assessmentStage = State.Confirmed;
-        }
+    function confirmAssessor(address _assessment, address[] conceptPath, uint _salt) public onlyInStage(State.None) {
+
+      uint threshold = 200; // 20% of hashes are valid... Gotta get a better measure for this
+      Assessment assessment = Assessment(_assessment);
+
+      //Requirements for valid assessor
+      require(assessment.assessee() == msg.sender);
+      require(assessment.assessmentStage() == Assessment.State.Done);
+      require(assessment.finalScore() > 0);
+
+      uint weight = uint(assessment.finalScore()) * assessment.size();
+
+      require(conceptPath[0] == address(assessment.concept));
+      require(assessment.concept().assessmentExists(_assessment));
+      require(concept.conceptRegistry().conceptExists(conceptPath[0]));
+
+      bool live = false;
+      uint assessmentDate = assessment.endTime();
+      for(uint i = 1; i <= conceptPath.length; i++){
+        Concept child = Concept(conceptPath[i-1]);
+        uint conceptRel = child.conceptRel(conceptPath[i]);
+        require(conceptRel > 0);
+
+        weight = (weight*conceptRel)/1000;
+        live = live || (now-assessmentDate < child.lifetime());
+      }
+      require(live);
+      require(conceptPath[conceptPath.length] == address(concept));
+      require(_salt < weight);
+
+      uint hash = uint(keccak256(msg.sender, _assessment, _salt)) % 1000;
+      require(hash < threshold);
+
+      //cancel if the assessment is past its startTime
+      if (now > checkpoint){
+        cancelAssessment();
+        return;
+      }
+      if (assessorState[msg.sender] == State.None &&
+          assessors.length < size &&
+          fathomToken.takeBalance(msg.sender, address(this), cost, concept)
+          ) {
+        assessors.push(msg.sender);
+        assessorState[msg.sender] = State.Confirmed;
+        fathomToken.notification(msg.sender, 2); //Confirmed for assessing, stake has been taken
+      }
+      if (assessors.length == size) {
+        notifyAssessors(uint(State.Confirmed), 4);
+        fathomToken.notification(assessee, 4);
+        assessmentStage = State.Confirmed;
+      }
     }
+
     //called by an assessor to commit a hash of their score //TODO explain in more detail what's happening
     function commit(bytes32 _hash) public onlyInStage(State.Confirmed) {
         if (now > endTime) {
@@ -247,9 +232,6 @@ contract Assessment {
         // check if a majority of assessors found a point of consensus
         if (finalClusterLength > done/2) {
             payout(finalClusterLength);
-            if (finalScore > 0) {
-                concept.addMember(assessee, uint(finalScore) * finalClusterLength);
-            }
         } else {
             // set final Score to zero to signal no consensus
             finalScore = 0;

@@ -18,10 +18,8 @@ contract Distributor{
 
     function addInitialMember(address _memberAddress, uint _memberWeight) public {
         require(memberAddresses.length < nInitialMembers);
-        Concept(ConceptRegistry(conceptRegistry).mewAddress()).addInitialMember(_memberAddress, _memberWeight);
+        //Concept(ConceptRegistry(conceptRegistry).mewAddress()).addInitialMember(_memberAddress, _memberWeight);
         memberAddresses.push(_memberAddress);
         memberWeights.push(_memberWeight);
     }
-
 }
-
