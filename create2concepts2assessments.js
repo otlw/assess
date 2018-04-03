@@ -5,35 +5,45 @@ let conceptRegAddress
 let conceptRegDeployed
 let conceptRegContract
 
+let conceptABI=require('./build/contracts/Concept.json');
+let conceptAddress
+let conceptDeployed
+let conceptContract
+
 let provider
 
 const network=process.argv[2]
 
-//const Eth = require('ethjs');
-    const Web3=require("web3")
-
-//detect network and declare variables accordingly
-if (network=="rinkeby"){
-    //use rinkeby
-    provider='https://rinkeby.infura.io' //new Eth.HttpProvider('https://rinkeby.infura.io')
-} else {
-    //use Ganache by default (last deployed contract version)
-    let networkValues=Object.values(conceptRegABI.networks)
-    let networkKeys=Object.keys(conceptRegABI.networks)
-    provider='http://localhost:8545' //new Web3.HttpProvider('http://localhost:8545')
-}
-//const eth = new Eth(provider);
-    const web3=new Web3(provider)
-    const eth=web3.eth
-
-var nInitialUsers = 6
-var gasPrice = 1000000000; //safe low cost
-var etherPrice = 460 // as of 11/17
 
 
 
 async function test(){
+
+    //const Eth = require('ethjs');
+    const Web3=require("web3")
+
+    //detect network and declare variables accordingly
+    if (network=="rinkeby"){
+        //use rinkeby   
+        let truffleConfig=await require("./truffle.js")
+        provider=await truffleConfig.networks.rinkeby.provider //new Web3.providers.HttpProvider('https://rinkeby.infura.io/2FBsjXKlWVXGLhKn7PF7')//await truffleConfig.networks.rinkeby.provider //'https://rinkeby.infura.io/2FBsjXKlWVXGLhKn7PF7' //new Eth.HttpProvider('https://rinkeby.infura.io')
+    } else {
+        //use Ganache by default (last deployed contract version)
+        let networkValues=Object.values(conceptRegABI.networks)
+        let networkKeys=Object.keys(conceptRegABI.networks)
+        provider='http://localhost:8545' //new Web3.HttpProvider('http://localhost:8545')
+    }
+    //const eth = new Eth(provider);
+    const web3=new Web3(provider)
+    const eth=web3.eth
+
+    var nInitialUsers = 6
+    var gasPrice = 1000000000; //safe low cost
+    var etherPrice = 460 // as of 11/17
+
     //log accounts
+    //see https://github.com/MetaMask/provider-engine/issues/178 &https://github.com/trufflesuite/truffle-hdwallet-provider/issues/18 
+    //=> TLDR "Web3ProviderEngine does not support synchronous requests nor does send a promise back"
     let accounts= await eth.getAccounts()
     if (accounts.length===0){
         //if not on testnet
@@ -51,17 +61,12 @@ async function test(){
     console.log(conceptRegABI.networks)
     //set contract address from ABI
     conceptRegAddress=conceptRegABI.networks[net].address
-    //instantiate contract
+    console.log("Concept registery Address is : "+conceptRegAddress)
+    //instantiate contracts
     conceptRegContract = await new web3.eth.Contract(conceptRegABI.abi,conceptRegAddress,{from:accounts[0]})
     //console.log(conceptRegContract)
     // conceptRegDeployed= await conceptRegContract.at(conceptRegAddress)
 
-
-    //log mewAddress
-    //let getMewAddress=await 
-    // conceptRegContract.methods.mewAddress().call((err,res)=>{
-    //     console.log(err,res)
-    // })
     let mewAddress=await conceptRegContract.methods.mewAddress().call()
     console.log("MEW address is :")
     console.log(mewAddress)
@@ -71,8 +76,20 @@ async function test(){
     // console.log("MEW address is :")
     // console.log(mewAddress)
 
-    let txResult = await conceptRegContract.methods.makeConcept([mewAddress],[500],60*60*24,"",accounts[0]).send({from:accounts[0]})
-    // assessedConcept = await Concept.at(txResult.logs[0].args["_concept"])
+    //deploy one concept
+    let txResultConcept1 = await conceptRegContract.methods.makeConcept([mewAddress],[500],60*60*24,"0x",accounts[0]).send({from:accounts[0],gas: 3200000})
+    console.log("txResultConcept1")
+    let concept1Address=txResultConcept1.events.ConceptCreation.address
+    console.log("New concept deployed from mew concept at "+concept1Address)
+    conceptContract=await new web3.eth.Contract(conceptABI.abi,concept1Address,{from:accounts[0]})
+    console.log("concept1 instanciated")
+
+    //deploy a second concept
+    let txResultConcept2 = await conceptRegContract.methods.makeConcept([mewAddress],[500],60*60*24,"0x",accounts[0]).send({from:accounts[0],gas: 3200000})
+    let concept2Address=txResultConcept2.events.ConceptCreation.address
+    console.log("New concept deployed from mew concept at "+concept2Address)
+    conceptContract=await new web3.eth.Contract(conceptABI.abi,concept2Address,{from:accounts[0]})
+    console.log("concept2 instanciated")
 
     // await conceptRegContract.setProvider(provider)
     // conceptRegDeployed= await conceptRegContract.at(conceptRegAddress)
