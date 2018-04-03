@@ -39,6 +39,7 @@ exports.revealAssessors = async function(_assessors, _scores, _salts, _assessmen
 }
 
 exports.makeAssessment = async function(conceptAddress, assesseeAddress, cost, size, startTime, endTime) {
+    console.log(cost, size, startTime, endTime, {from: assesseeAddress})
     var assessmentData = {}
     var assessmentResult = await Concept.at(conceptAddress).makeAssessment(cost, size, startTime, endTime, {from: assesseeAddress})
     assessmentData.calledAssessors = utils.getCalledAssessors(assessmentResult.receipt)
