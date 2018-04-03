@@ -72,7 +72,7 @@ contract('Assessment', function(accounts) {
             gasCosts.push({function: "makeAssessment",
                            cost: {
                                ether:web3.fromWei(receiptFromMakeAssessment.gasUsed * gasPrice, "ether"),
-                               $: utils.weiToDollar(receiptFromMakeAssessment.gasUsed * gasPrice, etherPrice)
+                               $: utils.weiToDollar((receiptFromMakeAssessment.gasUsed * gasPrice).toString(), etherPrice.toString())
                            }})
 
             assessmentContract = Assessment.at(assessmentData.address)
@@ -149,7 +149,7 @@ contract('Assessment', function(accounts) {
                 gasCosts.push({function: "commit",
                                cost: {
                                    ether:web3.fromWei(receiptFromLastCommit.gasUsed * gasPrice, "ether"),
-                                   $: utils.weiToDollar(receiptFromLastCommit.gasUsed * gasPrice, etherPrice)
+                                   $: utils.weiToDollar((receiptFromLastCommit.gasUsed * gasPrice).toString(), etherPrice.toString())
                                }
                               })
 
@@ -184,7 +184,7 @@ contract('Assessment', function(accounts) {
                 gasCosts.push({function: "last Reveal + calculate + payout",
                                cost: {
                                    ether:web3.fromWei(receiptFromLastReveal.gasUsed * gasPrice, "ether"),
-                                   $: utils.weiToDollar(receiptFromLastReveal.gasUsed * gasPrice, etherPrice)
+                                   $: utils.weiToDollar((receiptFromLastReveal.gasUsed * gasPrice).toString(), etherPrice.toString())
                                }
                               })
 
