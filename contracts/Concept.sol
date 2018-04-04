@@ -21,7 +21,6 @@ contract Concept {
     mapping (address => MemberData) public memberData;
 
 
-    event AssessmentCreation (address _assessment);
 
     struct MemberData {
         address recentAssessment;
@@ -177,7 +176,6 @@ contract Concept {
     function makeAssessment(uint cost, uint size, uint _waitTime, uint _timeLimit) public returns(bool) {
         if (size >= 5 && fathomToken.balanceOf(msg.sender)>= cost*size) {
             Assessment newAssessment = new Assessment(msg.sender, size, cost, _waitTime, _timeLimit);
-            AssessmentCreation(address(newAssessment));
             assessmentExists[address(newAssessment)] = true;
             fathomToken.takeBalance(msg.sender, address(newAssessment), cost*size, address(this));
             // get membernumber of mew to see whether there are more than 200 users in the system:
