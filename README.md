@@ -115,7 +115,8 @@ one.
 Tests
 ============
 Most functionnalities are tested in the test files inside the 'test' folder.
-To run them, try 'truffle test'
+To run them, try:
+`truffle test`
 
 Also, we added a script, create2concepts2assessments.js, to test interacting with those contracts outside of the truffle context.
 This script aims at testing deployed concepts and assessments 
