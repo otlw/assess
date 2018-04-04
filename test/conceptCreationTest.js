@@ -1,13 +1,13 @@
-var ConceptRegistry = artifacts.require('ConceptRegistry')
-var FathomToken = artifacts.require('FathomToken')
-var Concept = artifacts.require('Concept')
+const ConceptRegistry = artifacts.require('ConceptRegistry')
+const FathomToken = artifacts.require('FathomToken')
+const Concept = artifacts.require('Concept')
 
-var conReg
-var aha
+let conReg
+let aha
+let mewAddress
+let createdConceptAddress
 
 contract('ConceptRegistry', function (accounts) {
-  var mewAddress
-  var createdConceptAddress
 
   it('should have created the mew contract', async () => {
     conReg = await ConceptRegistry.deployed()
