@@ -1,23 +1,13 @@
 var FathomToken = artifacts.require("./FathomToken.sol");
 var accounts, setup;
 
-// try {
-//     //NOTE: this should only be used when deploying to the rinkeby-testnet.
-//     // For development please use the accounts from the web3-object
-//     setup = require("./../initialMembers.json")
-//     console.log("using provided list of initial members.")
-//     accounts = setup.accounts
-// }
-// catch(e) {
-//     var nInitialUsersWithFunds = 9
-//     accounts = web3.eth.accounts.slice(0,nInitialUsersWithFunds)
-// }
+const nInitialUsersWithFunds = 9
 
 module.exports = function(deployer) {
     //choose accounts depending on network
   if (deployer.network==="development"){
     console.log("Development network detected, using dev accounts...")
-    accounts = web3.eth.accounts.slice(0,9)
+    accounts = web3.eth.accounts.slice(0,nInitialUsersWithFunds)
   } else if (deployer.network==="rinkeby") {
     var setup = require("./../initialMembers.json")
     console.log("Rinkeby network detected, using provided list of initial members....")

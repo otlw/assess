@@ -3,12 +3,13 @@ var Distributor = artifacts.require("./Distributor.sol");
 
 var initialMewMembers;
 
+const nInitialUsers = 6
 
 module.exports = function(deployer) {
   //choose accounts depending on network
   if (deployer.network==="development"){
     console.log("Development network detected, using dev accounts...")
-    initialMewMembers = web3.eth.accounts.slice(0,6)
+    initialMewMembers = web3.eth.accounts.slice(0,nInitialUsers)
   } else if (deployer.network==="rinkeby") {
     var setup = require("./../initialMembers.json")
     console.log("Rinkeby network detected, using provided list of initial members....")
