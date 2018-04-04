@@ -26,6 +26,7 @@ module.exports = function(deployer) {
     var setup = require("./../initialMembers.json")
     console.log("Rinkeby network detected, using provided list of initial members....")
     accounts = setup.accounts
+    console.log(accounts)
     nInitialMewMembers = accounts.length > 5 ? accounts.length : 5
   } else {
     var setup = require("./../initialMembers.json")
