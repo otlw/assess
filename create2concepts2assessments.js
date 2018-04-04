@@ -70,9 +70,9 @@ async function test(){
     let mewAddress=await conceptRegContract.methods.mewAddress().call()
     console.log("MEW address is :")
     console.log(mewAddress)
-    console.log("ConceptReg Address : " + conceptRegAddress)
 
     //deploy one concept
+    console.log("deploying first concept....")
     let txResultConcept1 = await conceptRegContract.methods.makeConcept([mewAddress],[500],60*60*24,"0x",accounts[0]).send({from:accounts[0],gas: 3200000})
     let concept1Address=txResultConcept1.events.ConceptCreation.returnValues._concept
     console.log("New concept deployed from mew concept at "+concept1Address)
@@ -80,6 +80,7 @@ async function test(){
     console.log("concept1 instanciated")
 
     //deploy a second concept
+    console.log("deploying second concept....")
     let txResultConcept2 = await conceptRegContract.methods.makeConcept([mewAddress],[500],60*60*24,"0x42",accounts[0]).send({from:accounts[0],gas: 3200000})
     let concept2Address=txResultConcept2.events.ConceptCreation.returnValues._concept
     console.log("New concept deployed from mew concept at "+concept2Address)
@@ -101,6 +102,7 @@ async function test(){
     console.log("Assessee initial ETH balance "+Number(assesseeEthBalance))
 
     //deploy 1 assessment from concept 1
+    console.log("deploying first assessment....")
     const txResultAssessment1 = await conceptContract1.methods.makeAssessment(cost, size, startTime, endTime).send({from:assesseeAddress,gas: 3200000}) 
     const assessmentAddress1=txResultAssessment1.events.AssessmentCreation.returnValues._assessment
     console.log("New assessment deployed from concept1 at "+assessmentAddress1)
@@ -113,6 +115,7 @@ async function test(){
     // console.log(events)
 
     //deploy an assessment from concept 2
+    console.log("deploying second assessment....")
     const txResultAssessment2 = await conceptContract2.methods.makeAssessment(cost, size, startTime, endTime).send({from:assesseeAddress,gas: 3200000}) 
     const assessmentAddress2=txResultAssessment2.events.AssessmentCreation.returnValues._assessment
     console.log("New assessment deployed from concept1 at "+assessmentAddress2)
