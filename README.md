@@ -115,7 +115,8 @@ one.
 Tests
 ============
 Most functionnalities are tested in the test files inside the 'test' folder.
-To run them, try 'truffle test'
+To run them, try:
+`truffle test`
 
 Contributing
 =========
