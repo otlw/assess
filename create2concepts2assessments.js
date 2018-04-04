@@ -5,7 +5,7 @@
 // when calling, this function, provide the network name to use it on another network than ganache-cli:
 // ex: 'node create2concepts2assessments.js rinkeby'
 
-specify network as first argument
+//specify network as first argument
 
 let conceptRegABI=require('./build/contracts/ConceptRegistry.json');
 let conceptRegAddress
@@ -89,7 +89,9 @@ async function test(){
 
     //deploy one concept
     console.log("deploying first concept....")
-    let txResultConcept1 = await conceptRegContract.methods.makeConcept([mewAddress],[500],60*60*24,"0x",accounts[0]).send({from:accounts[0],gas: 3200000})
+    //encode a title for this concept
+    const msg = '0x' + (Buffer.from("hello, hellooooo", 'utf8')).toString('hex')
+    let txResultConcept1 = await conceptRegContract.methods.makeConcept([mewAddress],[500],60*60*24,msg,accounts[0]).send({from:accounts[0],gas: 3200000})
     //use the tx to get deployed concept address
     let concept1Address=txResultConcept1.events.ConceptCreation.returnValues._concept
     console.log("New concept deployed from mew concept at "+concept1Address)
