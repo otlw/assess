@@ -5,19 +5,17 @@
 // when calling, this function, provide the network name to use it on another network than ganache-cli:
 // ex: 'node create2concepts2assessments.js rinkeby'
 
-//specify network as first argument
-
-let conceptRegABI=require('./build/contracts/ConceptRegistry.json');
+let conceptRegArtifact=require('./build/contracts/ConceptRegistry.json');
 let conceptRegAddress
 let conceptRegContract
 
-let conceptABI=require('./build/contracts/Concept.json');
+let conceptArtifact=require('./build/contracts/Concept.json');
 let conceptAddress
 let conceptContract
 
-let assessmentABI=require('./build/contracts/Assessment.json');
+let assessmentArtifact=require('./build/contracts/Assessment.json');
 
-let ahaABI=require('./build/contracts/FathomToken.json');
+let ahaArtifact=require('./build/contracts/FathomToken.json');
 let ahaAddress
 let ahaContract
 
@@ -40,8 +38,8 @@ async function test(){
         provider=await truffleConfig.networks.rinkeby.provider //new Web3.providers.HttpProvider('https://rinkeby.infura.io/2FBsjXKlWVXGLhKn7PF7')//await truffleConfig.networks.rinkeby.provider //'https://rinkeby.infura.io/2FBsjXKlWVXGLhKn7PF7' //new Eth.HttpProvider('https://rinkeby.infura.io')
     } else {
         //use Ganache by default (last deployed contract version)
-        let networkValues=Object.values(conceptRegABI.networks)
-        let networkKeys=Object.keys(conceptRegABI.networks)
+        let networkValues=Object.values(conceptRegArtifact.networks)
+        let networkKeys=Object.keys(conceptRegArtifact.networks)
         provider='http://localhost:8545' //new Web3.HttpProvider('http://localhost:8545')
     }
     //const eth = new Eth(provider);
@@ -70,15 +68,15 @@ async function test(){
     console.log(net)
     //log deployed contracts
     console.log("-- deployed version of concept reg on different networks -- :")
-    console.log(conceptRegABI.networks)
+    console.log(conceptRegArtifact.networks)
 
     console.log("\n### -- 2. Instanciate Concept Registry -- ###\n")
 
     //set contract address from ABI
-    conceptRegAddress=conceptRegABI.networks[net].address
+    conceptRegAddress=conceptRegArtifact.networks[net].address
     console.log("Concept registery Address is : "+conceptRegAddress)
     //instantiate contracts
-    conceptRegContract = await new web3.eth.Contract(conceptRegABI.abi,conceptRegAddress,{from:accounts[0]})
+    conceptRegContract = await new web3.eth.Contract(conceptRegArtifact.abi,conceptRegAddress,{from:accounts[0]})
 
     let mewAddress=await conceptRegContract.methods.mewAddress().call()
     console.log("MEW address is :")
@@ -95,7 +93,7 @@ async function test(){
     //use the tx to get deployed concept address
     let concept1Address=txResultConcept1.events.ConceptCreation.returnValues._concept
     console.log("New concept deployed from mew concept at "+concept1Address)
-    conceptContract1=await new web3.eth.Contract(conceptABI.abi,concept1Address,{from:accounts[0]})
+    conceptContract1=await new web3.eth.Contract(conceptArtifact.abi,concept1Address,{from:accounts[0]})
     console.log("concept1 instanciated")
 
     //deploy a second concept
@@ -104,7 +102,7 @@ async function test(){
     //use the tx to get deployed concept address
     let concept2Address=txResultConcept2.events.ConceptCreation.returnValues._concept
     console.log("New concept deployed from mew concept at "+concept2Address)
-    conceptContract2=await new web3.eth.Contract(conceptABI.abi,concept2Address,{from:accounts[0]})
+    conceptContract2=await new web3.eth.Contract(conceptArtifact.abi,concept2Address,{from:accounts[0]})
     console.log("concept2 instanciated")
 
     console.log("\n### -- 4. List Concepts Created from this Registry -- ###\n")
@@ -126,7 +124,7 @@ async function test(){
     const assesseeAddress=accounts[0]
 
     //check balance of assessee
-    const ahaContract = await new web3.eth.Contract(ahaABI.abi,ahaABI.networks[net].address,{from:accounts[0]})
+    const ahaContract = await new web3.eth.Contract(ahaArtifact.abi,ahaArtifact.networks[net].address,{from:accounts[0]})
     assesseeInitialBalance =  await ahaContract.methods.balanceOf(assesseeAddress).call()
     console.log("account 0 is : "+accounts[0])
     console.log("Assessee initial AHA balance "+Number(assesseeInitialBalance))
@@ -141,7 +139,7 @@ async function test(){
     const assessmentAddress1=events1[events1.length-1].returnValues.sender
     console.log("New assessment deployed from concept1 at "+assessmentAddress1)
     //instanciate assessment contract
-    let assessmentContract1= await new web3.eth.Contract(assessmentABI.abi,assessmentAddress1)
+    let assessmentContract1= await new web3.eth.Contract(assessmentArtifact.abi,assessmentAddress1)
     console.log("assessment1 instanciated")
 
     //deploy an assessment from concept 2
@@ -152,7 +150,7 @@ async function test(){
     const assessmentAddress2=events2[events2.length-1].returnValues.sender
     console.log("New assessment deployed from concept1 at "+assessmentAddress2)
     //instanciate assessment contract
-    let assessmentContract2= await new web3.eth.Contract(assessmentABI.abi,assessmentAddress2)
+    let assessmentContract2= await new web3.eth.Contract(assessmentArtifact.abi,assessmentAddress2)
     console.log("assessment2 instanciated")
 }
 test()
