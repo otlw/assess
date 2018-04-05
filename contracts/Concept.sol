@@ -20,8 +20,6 @@ contract Concept {
     address[] public members;
     mapping (address => MemberData) public memberData;
 
-
-
     struct MemberData {
         address recentAssessment;
         uint index;
