@@ -121,13 +121,9 @@ Most functionnalities are tested in the test files inside the 'test' folder.
 To run them, try:
 `truffle test`
 
-Also, we added a script, create2concepts2assessments.js, to test interacting with those contracts outside of the truffle context.
-This script aims at testing deployed concepts and assessments 
-and to deploy 2 new concepts and 2 new assessments on the current deployed Concept Registry.
-Those will be useful examples to develop our apps.
-
-When calling, this function, provide the network name to use it on another network than ganache-cli:
-ex: 'node create2concepts2assessments.js rinkeby'
+Also, there is a script 'create2concepts2assessmnets.js' that creates two new concepts and initiates an assessment on each. 
+When deploying to a non-development testnet, supply the name of the net as argument:
+'node create2concepts2assessments.js rinkeby'
 
 Contributing
 =========
