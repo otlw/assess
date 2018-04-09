@@ -172,20 +172,21 @@ contract Concept {
       @param: uint size = the number of assessors
     */
     function makeAssessment(uint cost, uint size, uint _waitTime, uint _timeLimit) public returns(bool) {
-        if (size >= 5 && fathomToken.balanceOf(msg.sender)>= cost*size) {
-            Assessment newAssessment = new Assessment(msg.sender, size, cost, _waitTime, _timeLimit);
-            assessmentExists[address(newAssessment)] = true;
-            fathomToken.takeBalance(msg.sender, address(newAssessment), cost*size, address(this));
-            // get membernumber of mew to see whether there are more than 200 users in the system:
-            address mewAddress = conceptRegistry.mewAddress();
-            uint nMemberInMew = Concept(mewAddress).getMemberLength();
-            if (nMemberInMew < size * 5) {
-                newAssessment.callAllFromMew(nMemberInMew, mewAddress);
-            } else {
-                newAssessment.setAssessorPool(block.number, address(this), size*5);
-            }
-            return true;
-        }
+      require(size >= 5 && fathomToken.balanceOf(msg.sender)>= cost*size);
+
+      Assessment newAssessment = new Assessment(msg.sender, size, cost, _waitTime, _timeLimit);
+      assessmentExists[address(newAssessment)] = true;
+      fathomToken.takeBalance(msg.sender, address(newAssessment), cost*size, address(this));
+
+      // get membernumber of mew to see whether there are more than 200 users in the system:
+      address mewAddress = conceptRegistry.mewAddress();
+      uint nMemberInMew = Concept(mewAddress).getMemberLength();
+      if (nMemberInMew < size * 5) {
+        newAssessment.callAllFromMew(nMemberInMew, mewAddress);
+      } else {
+        newAssessment.setAssessorPool(block.number, address(this), size*5);
+      }
+      return true;
     }
 
     /*
