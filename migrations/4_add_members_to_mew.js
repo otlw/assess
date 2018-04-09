@@ -3,24 +3,25 @@ var Distributor = artifacts.require("./Distributor.sol");
 
 var initialMewMembers;
 
-try {
-    //NOTE: this should only be used when deploying to the rinkeby-testnet.
-    // For development please use the accounts from the web3-object
-    var setup = require("./../initialMembers.json")
-    console.log("using provided list of initial members")
-    initialMewMembers = setup.accounts;
-}
-catch(e) {
-    let accounts = web3.eth.accounts
-    // minimal Setup: 6 members in mew with weight 100
-    // note: 5 accounts are needed for the mininal valid assessment, +1 for burnStakes-test
-    var nInitialUsers = 6
-    initialMewMembers = accounts.slice(0,nInitialUsers)
-}
+const nInitialUsers = 6
 
-let initialWeights = new Array(initialMewMembers.length).fill(100)
 
 module.exports = function(deployer) {
+  //choose accounts depending on network
+  if (deployer.network==="development"){
+    console.log("Development network detected, using dev accounts...")
+    initialMewMembers = web3.eth.accounts.slice(0,nInitialUsers)
+  } else if (deployer.network==="rinkeby") {
+    var setup = require("./../initialMembers.json")
+    console.log("Rinkeby network detected, using provided list of initial members....")
+    initialMewMembers = setup.accounts
+  } else {
+    var setup = require("./../initialMembers.json")
+    console.log("Unexpected non-development network detected, using provided list of initial members....")
+    initialMewMembers = setup.accounts
+  }
+  let initialWeights = new Array(initialMewMembers.length).fill(100)
+
   deployer.then( function(){
       return ConceptRegistry.deployed()
   }).then(function(instance){

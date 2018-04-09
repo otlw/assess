@@ -45,7 +45,7 @@ contract Concept {
 
         for (uint j=0; j < _parents.length; j++) {
             require(conceptRegistry.conceptExists(_parents[j]));
-            require(_propagationRates[j] <= 1000);
+            require(_propagationRates[j] < 1000);
         }
 
         propagationRates = _propagationRates;
@@ -176,20 +176,21 @@ contract Concept {
       @param: uint size = the number of assessors
     */
     function makeAssessment(uint cost, uint size, uint _waitTime, uint _timeLimit) public returns(bool) {
-      if (size >= constants.MIN_ASSESSMENT_SIZE() && fathomToken.balanceOf(msg.sender)>= cost*size) {
-            Assessment newAssessment = new Assessment(msg.sender, size, cost, _waitTime, _timeLimit);
-            assessmentExists[address(newAssessment)] = true;
-            fathomToken.takeBalance(msg.sender, address(newAssessment), cost*size, address(this));
-            // get membernumber of mew to see whether there are more than 200 users in the system:
-            address mewAddress = conceptRegistry.mewAddress();
-            uint nMemberInMew = Concept(mewAddress).getMemberLength();
-            if (nMemberInMew < size * constants.ASSESSORPOOL_SIZE_FACTOR()) {
-                newAssessment.callAllFromMew(nMemberInMew, mewAddress);
-            } else {
-                newAssessment.setAssessorPool(block.number, address(this), size*constants.ASSESSORPOOL_SIZE_FACTOR());
-            }
-            return true;
-        }
+      require(size >= constants.MIN_ASSESSMENT_SIZE() && fathomToken.balanceOf(msg.sender)>= cost*size);
+
+      Assessment newAssessment = new Assessment(msg.sender, size, cost, _waitTime, _timeLimit);
+      assessmentExists[address(newAssessment)] = true;
+      fathomToken.takeBalance(msg.sender, address(newAssessment), cost*size, address(this));
+
+      // get membernumber of mew to see whether there are more than 200 users in the system:
+      address mewAddress = conceptRegistry.mewAddress();
+      uint nMemberInMew = Concept(mewAddress).getMemberLength();
+      if (nMemberInMew < size * constants.MIN_ASSESSMENT_SIZE()) {
+        newAssessment.callAllFromMew(nMemberInMew, mewAddress);
+      } else {
+        newAssessment.setAssessorPool(block.number, address(this), size*constants.MIN_ASSESSMENT_SIZE());
+      }
+      return true;
     }
 
     /*

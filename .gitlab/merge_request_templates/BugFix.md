@@ -1,50 +1,50 @@
-**NOTE: This merge request form is for Bug Fixes ONLY**.  
-<!-- For other types of merge requests please use the appropriate form --> 
-<!-- Please see our `CONTRIBUTING` guide to learn how we work with contributions, -->
-<!-- and thus to make the most of your awesome time and effort -->
-
-* Please provide a concise description of your change in the Title above.
-
+`BugFix` Merge Request 
+<!--
+* NOTE: This Merge Request form is for Bug Fixes ONLY.
+* Please use a different template to merge in other changes.
+* Please provide a concise description of the BugFix in the Title above.
+--->
 --------------------------------------------------------------------------------
-## Related Issue for this Merge Request
-<!-- This project only accepts merge requests related to open issues -->
-<!-- If fixing a bug, there should be an issue describing it with steps to reproduce -->
-<!-- (if such an issue does not exist, please create one) -->
-<!-- Reference open issues by their issue number --> 
-<!-- (e.g., "resolves #35" or "resolves #11, #27, #28") -->
+
+## Related Issue
+<!-- Please reference the open issue here that this Merge Request resolves by writing, "resolves #" -->
+<!-- * This will allow you to select or enter the specific issue, by its number -->
+<!-- * Note: This project can only accept merge requests related to open issues. -->
+<!-- * There should be an open issue describing the bug, with steps to reproduce it. -->
+<!--   (If such an issue does not already exist, please create one)   -->
 
 
 ## Motivation and Context  
-  * **Provide any context here for the bug fix to supplement the open issue**
+<!-- Provide any context here to supplement the open issue. -->
+<!-- What was the source of the bug? --> 
+<!-- If the open issue is unclear on this point, please link to the line of code responsible. -->
 
-  * **What was the source of the bug?** 
-    <!-- If possible, link to the line of code responsible for the bug,  -->
-    <!-- especially if the documentation in the open issue is unclear on this point -->
 
 ## Description of Change
-<!-- Describe your changes, including any details helpful to understanding them -->
+<!-- Describe your changes, including any details helpful to understanding them. -->
 <!-- What is the new behavior as a result of the bug fix? -->
 
 
-## Other Info
-<!-- You may paste any relevant logs, screenshots, code snippets, or links -->
-<!-- Please use code blocks (```) to format console output, logs, and code -->
+## Screenshots, Code, Links
+<!-- Paste any relevant screenshots (drag image file here), code snippets, links. -->
+<!-- Please use code blocks (```) to format code, console output, logs. -->
 
 
-## Please put an `x` in any of the boxes below that apply:  
-(This helps us with our follow-up and follow-through work)
-- [ ] My change requires a change to the documentation.
-- [ ] I have updated the documentation accordingly.
-- [ ] I have added tests to cover my changes.
-- [ ] All new and existing tests passed.
+## Related Tasks
+<!-- Are there any other tasks that need to be completed along with this merge request? -->
+<!-- If so, please list them here as checklist items, to help with tracking their completion. -->
+<!-- A starter item is provided below. You may add to it, or delete if not needed. -->
+<!-- For example: "- [ ] Update documentation..." -->
+
+- [ ] 
 
 
-## Notify Relevant Individuals
+## Notify Others
 <!-- Add the gitlab handles of specific individuals here to notify them directly -->
+
 
 --------------------------------------------------------------------------------
 
-/label ~bug
+/label ~"bug"
 
-<!-- Specify your merge request further using the drop-down lists below, as appropriate -->
-
+<!-- Add further specification using the drop-down lists below, as appropriate -->
