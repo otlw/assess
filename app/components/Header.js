@@ -14,12 +14,7 @@ export class Header extends Component {
   }
 
   render () {
-
-    let buttonMsg = 'Public View'
-    if (this.props.userAddress === 'publicView') {
-      buttonMsg = 'Back to User View'
-    }
-
+    
     let network
     if (NetworkNames[this.props.networkID]) {
       network = NetworkNames[this.props.networkID]

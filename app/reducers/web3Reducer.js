@@ -8,7 +8,6 @@ let initialState = {
   web3: {},
   web3_version: 'none',
   isConnected: false,
-  block: 1,
   userAddress: '',
   networkID: 666,
   balance: 0,

@@ -4,7 +4,6 @@ import { web3Connect, receiveVariable } from '../actions/async.js'
 
 const mapStateToProps = state => {
   return {
-    block: state.block,
     web3_version: state.web3_version,
     userAddress: state.userAddress,
     networkID: state.networkID,
