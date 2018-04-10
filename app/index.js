@@ -21,7 +21,7 @@ render(
 	  	h('div',[
 	  		h(HeaderBox),
 		    h(Route, {exact:true,path:'/',component: AssessmentDashboardApp}),
-		    h(Route, {path:'/assessment',component: AssessmentViewApp})
+		    h(Route, {path:'/assessment/:id',component: AssessmentViewApp})
 		])
 	  ])),
   document.getElementById('root')
