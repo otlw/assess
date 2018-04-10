@@ -5,6 +5,7 @@ initialMembers.json
 secrets.json
 
 dist/bundle.js
+dist/bundle.js.map
 
 # Other
 .notes

@@ -64,7 +64,6 @@ export function fetchNetworkID () {
     let w3 = getState().web3
     let networkID = await w3.eth.net.getId()
     dispatch(receiveVariable('networkID', networkID))
-    dispatch(loadConceptsFromConceptRegistery())
   }
 }
 
