@@ -75,7 +75,7 @@ export function fetchAHABalance () {
     let networkID = await w3.eth.net.getId()
 
     //get token contract
-    const ahaArtifact = require('../contracts/FathomToken.json')
+    const ahaArtifact = require('../../build/contracts/FathomToken.json')
     const ahaContract = await new w3.eth.Contract(ahaArtifact.abi, ahaArtifact.networks[networkID].address)
     //get balance from contract
     let userBalance = await ahaContract.methods.balanceOf(userAddress).call()
@@ -90,7 +90,7 @@ export function loadConceptsFromConceptRegistery () {
 
     // instanciate Concept registery Contract
     try {
-      var conceptRegistryArtifact = require('../contracts/ConceptRegistry.json')
+      var conceptRegistryArtifact = require('../../build//contracts/ConceptRegistry.json')
       var abi = conceptRegistryArtifact.abi
       var contractAddress = conceptRegistryArtifact.networks[networkID].address
     } catch (e) {
