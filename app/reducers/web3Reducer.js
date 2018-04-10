@@ -12,7 +12,6 @@ let initialState = {
   userAddress: '',
   networkID: 666,
   balance: 0,
-  conceptAddressList: []
 }
 
 function web3Reducer (state = initialState, action) {
