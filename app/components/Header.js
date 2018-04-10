@@ -1,7 +1,7 @@
 import { Component } from 'react'
 var h = require('react-hyperscript')
 
-export class Status extends Component {
+export class Header extends Component {
   componentWillMount () {
     this.props.web3Connect()
   }
@@ -59,4 +59,4 @@ export class Status extends Component {
   }
 }
 
-export default Status
+export default Header
