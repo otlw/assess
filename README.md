@@ -65,7 +65,7 @@ Your secrets.json-file should look like this:
 
 You need to provide at least one address to which all the initial tokens will be
 distributed. 
-To do so, create a file `./intitialMembers.json` in the root-folder of the
+To do so, create a file `./initialMembers.json` in the root-folder of the
 project.
 
 Its content should look like this:

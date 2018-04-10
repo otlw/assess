@@ -4,6 +4,8 @@ node_modules
 initialMembers.json
 secrets.json
 
+dist/bundle.js
+
 # Other
 .notes
 .ideas
