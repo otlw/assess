@@ -13,9 +13,8 @@ export const web3Connect = () => {
       // after web3 is instanciated, fetch contract info (mew concept) and user address
       if (w3) {
         dispatch(web3Connected(w3))
-        dispatch(loadContractInstance('ConceptRegistry')) // which will trigger fetchFathomParams
-        dispatch(loadNotificationsFromFathomToken()) // which will load the assessments
-        dispatch(fetchUserAddress())
+        dispatch(fetchUserAddress()) //which will get user related info -> balance
+        dispatch(fetchNetworkID()) //which will get contract related info -> list of concepts from registry
       } else {
         dispatch(web3Disconnected())
       }
@@ -23,8 +22,6 @@ export const web3Connect = () => {
       console.log('no Metamask')
       let w3 = new Web3('https://rinkeby.infura.io/2FBsjXKlWVXGLhKn7PF7')
       dispatch(web3Connected(w3))
-      dispatch(loadContractInstance('ConceptRegistry')) // which will trigger fetchFathomParams
-      dispatch(loadNotificationsFromFathomToken()) // which will load the assessments
       dispatch(receiveVariable('userAddress', 'publicView'))
     }
   }
@@ -53,14 +50,21 @@ export function fetchUserAddress () {
   return async (dispatch, getState) => {
     let w3 = getState().web3
     let accounts = await w3.eth.getAccounts()
-    console.log('accounts')
-    console.log(accounts)
     if (accounts.length === 0) {
       dispatch(receiveVariable('userAddress', 'pleaseEnterPasswordToUnblockMetamask'))
     } else {
       dispatch(receiveVariable('userAddress', accounts[0]))
       dispatch(fetchAHABalance())
     }
+  }
+}
+
+export function fetchNetworkID () {
+  return async (dispatch, getState) => {
+    let w3 = getState().web3
+    let networkID = await w3.eth.net.getId()
+    dispatch(receiveVariable('networkID', networkID))
+    dispatch(loadConceptsFromConceptRegistery())
   }
 }
 
@@ -78,170 +82,40 @@ export function fetchAHABalance () {
   }
 }
 
-//* *********************** Imma keepthose two functions for reference and decide later if get rid of them **************************************
-//* *********************** the used function are under them **************************************
-
-// uses web3.eth.Contract to instanciate a contract from it's name and network (using contracts folder built from truffle)
-// in use rn
-export function loadContractInstance (contractName, address) {
+export function loadConceptsFromConceptRegistery () {
   return async (dispatch, getState) => {
     let w3 = getState().web3
-    let accounts = await w3.eth.getAccounts()
+    let networkID = getState().networkID
 
-    try {
-      var metaAbi = require('../contracts/' + contractName + '.json')
-      var abi = metaAbi.abi
-      let networkID = await w3.eth.net.getId()
-      dispatch(receiveVariable('networkID', networkID))
-      var contractAddress = address || metaAbi.networks[networkID].address
-    } catch (e) {
-      console.error(e)
-    }
-
-    // the web3 way
-    const contractInstance = await new w3.eth.Contract(abi, contractAddress, {from: accounts[0]})
-    dispatch(receiveVariable(contractName, contractInstance))
-
-    // after instanciating the contract, trigger some side effects/functions (@observable)
-    if (contractName === 'ConceptRegistry') {
-      dispatch(fetchFathomParams())
-    }
-  }
-}
-
-// list all events of a contract Instance
-export function loadContractEvents (contractInstance, eventName) {
-  return async (dispatch) => {
-    let pastevents = await contractInstance.getPastEvents({fromBlock: 0, toBlock: 'latest'})
-    let filteredEvents = pastevents.filter((e) => {
-      return (e.event === eventName)
-    })
-    if (eventName === 'ConceptCreation') {
-      dispatch(receiveVariable(eventName, filteredEvents))
-    } else {
-      dispatch(receiveVariable(eventName, filteredEvents))
-    }
-  }
-}
-//* *****************************************************************************************************************
-
-// this is if we use AssessmentCreation events from the concepts
-// not being user rn
-export function loadAssessmentsFromConceptRegistery () {
-  return async (dispatch, getState) => {
-    let w3 = getState().web3
-    let accounts = await w3.eth.getAccounts()
-
-    try {
-      var metaAbi = require('../contracts/ConceptRegistry.json')
-      var abi = metaAbi.abi
-      let networkID = await w3.eth.net.getId()
-      var contractAddress = metaAbi.networks[networkID].address
-    } catch (e) {
-      console.error(e)
-    }
     // instanciate Concept registery Contract
-    const contractInstance = await new w3.eth.Contract(abi, contractAddress, {from: accounts[0]})
-    let pastevents = await contractInstance.getPastEvents({fromBlock: 0, toBlock: 'latest'})
-    let filteredEvents = pastevents.filter((e) => {
-      return (e.event === 'ConceptCreation')
-    })
-    console.log(filteredEvents)
-  }
-}
-
-// this is if we use Notifications from the FathomToken contract  ==> thats what we'll use for now
-export function loadNotificationsFromFathomToken () {
-  return async (dispatch, getState) => {
-    let w3 = getState().web3
-    let accounts = await w3.eth.getAccounts()
-
     try {
-      var metaAbi = require('../contracts/FathomToken.json')
-      var abi = metaAbi.abi
-      let networkID = await w3.eth.net.getId()
-      var contractAddress = metaAbi.networks[networkID].address
+      var conceptRegistryArtifact = require('../contracts/ConceptRegistry.json')
+      var abi = conceptRegistryArtifact.abi
+      var contractAddress = conceptRegistryArtifact.networks[networkID].address
     } catch (e) {
       console.error(e)
     }
-    // instanciate Concept registery Contract
-    const contractInstance = await new w3.eth.Contract(abi, contractAddress, {from: accounts[0]})
-    let pastevents = await contractInstance.getPastEvents({fromBlock: 0, toBlock: 'latest'})
-    let filteredEvents = pastevents.filter((e) => {
-      return (e.event === 'Notification')
-    })
-    dispatch(receiveVariable('notifications', filteredEvents))
-    dispatch(getAssessmentsFromNotifications(filteredEvents))
+    const contractInstance = await new w3.eth.Contract(abi, contractAddress)
+
+    //get concepts from registry
+    listConcepts(contractInstance)
   }
 }
 
-export function getAssessmentsFromNotifications (notifications) {
+export const listConcepts = (conceptRegisteryInstance) => {
   return async (dispatch, getState) => {
     let w3 = getState().web3
-    // select creationNotifications who have topic===0
-    let creationNotifications = notifications.filter((n) => {
-      return (n.returnValues.topic && n.returnValues.topic === '0')
+
+    //use concept creation events to list concept addresses
+    let pastevents = await contractInstance.getPastEvents('ConceptCreation',{fromBlock: 0, toBlock: 'latest'})
+    let listOfAdresses=pastevents.map((e)=>{
+      return e.returnValues._concept
     })
-    // map their addresses
-    let listOfAssessmentAddresses = creationNotifications.map((n) => {
-      return n.returnValues.sender
-    })
-    var assessment = require('../contracts/Assessment.json')
-    var concept = require('../contracts/Concept.json')
-    let assessmentList = []
-    listOfAssessmentAddresses.forEach(async (address) => {
-      // get info from assessment
-      let assessmentInstance = new w3.eth.Contract(assessment.abi, address)
-      let cost = await assessmentInstance.methods.cost().call()
-      let size = await assessmentInstance.methods.size().call()
-      let stage = await assessmentInstance.methods.assessmentStage().call()
-      let assessee = await assessmentInstance.methods.assessee().call()
-      let conceptAddress = await assessmentInstance.methods.concept().call()
-      // list assessors
-      let stage2Notifications = notifications.filter((n) => {
-        return (n.returnValues.topic && n.returnValues.topic === '2' &&
-            n.returnValues.sender && n.returnValues.sender === address)
-      })
-      let assessors = stage2Notifications.map((n) => {
-        return n.returnValues.user
-      })
-      // get info from associated concept
-      let conceptInstance = new w3.eth.Contract(concept.abi, conceptAddress)
-      let conceptData = await conceptInstance.methods.data().call()
-      if (conceptData) {
-        conceptData = Buffer.from(conceptData.slice(2), 'hex').toString('utf8')
-      } else {
-        conceptData = 'No Data in this Concept'
-      }
-      // push the final object
-      let assmnt = {
-        address: address,
-        cost: cost,
-        size: size,
-        assessee: assessee,
-        stage: stage,
-        conceptAddress: conceptAddress,
-        conceptData: conceptData,
-        assessors: assessors
-      }
-      // for stage 1 (Called As A Potential Assessor), list all potential assessors from notifications
-      if (stage === '1') {
-        let stage1Notifications = notifications.filter((n) => {
-          return (n.returnValues.topic && n.returnValues.topic === '1' &&
-            n.returnValues.sender && n.returnValues.sender === address)
-        })
-        let potAssessors = stage1Notifications.map((n) => {
-          return n.returnValues.user
-        })
-        assmnt.potAssessors = potAssessors
-      }
-      assessmentList.push(assmnt)
-      if (assessmentList.length === listOfAssessmentAddresses.length) {
-        dispatch(receiveVariable('assessmentList', assessmentList))
-      }
-    })
+    dispatch(receiveVariable('conceptAddressList', listOfAdresses))
   }
 }
+
+
 
 // to save something from the chain in state
 export function receiveVariable (name, value) {
@@ -254,15 +128,6 @@ export function receiveVariable (name, value) {
   }
 }
 
-// reading all variables from the chain
-// needs coneptRegistry to be instanciated first
-export const fetchFathomParams = () => {
-  return async (dispatch, getState) => {
-    let cRegInstance = getState().ConceptRegistry
-    let mew = await cRegInstance.methods.mewAddress().call()
-    dispatch(receiveVariable('mewAddress', mew))
-  }
-}
 
 export const actions = {
   web3Connect

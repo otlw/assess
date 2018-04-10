@@ -53,14 +53,6 @@ export class Status extends Component {
           h('span', 'AHA balance: '),
           h('span', this.props.balance)
         ]),
-        h('div', [
-          h('span', 'ConceptRegistry: '),
-          h('span', this.props.ConceptRegistry._address)
-        ]),
-        h('div', [
-          h('span', 'Mew-Concept: '),
-          h('span', this.props.mewAddress)
-        ]),
         h('div', {style: buttonStyle, onClick: this.togglePublicView.bind(this)}, buttonMsg)
       ])
     )

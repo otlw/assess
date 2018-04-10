@@ -5,7 +5,6 @@ var h = require('react-hyperscript')
 
 export class AssessmentsBoard extends Component {
   render () {
-    let assessmentList = this.props.assessmentList
     // for testing purposes
     // let assessmentList=[{
     //   address:"0x958E248Fa0dAb6862Dda122e1723E8000A0D2543",
@@ -42,10 +41,14 @@ export class AssessmentsBoard extends Component {
     //   stage:"6",
     //   assessors:["0xf2a2E600Eb309A5d8A17C18756F65608bD5ce5Db"],
     // }]
-    let userAddress = this.props.userAddress
-    if (this.props.assessmentList.length === 0) {
+    if (this.props.assessments === {}) {
       return null
     } else {
+      let userAddress = this.props.userAddress
+      let assessmentList = Object.keys(this.props.assessments).map((address)=>{
+        return {...this.props.assessments[address],address}
+      })
+
       // style
       const mainFrameStyle = {style: {border: '0.5px solid lightgrey', borderRadius: '1em', padding: '1em', marginTop: '2em'}}
       let potentialAssessments

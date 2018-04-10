@@ -6,8 +6,6 @@ const mapStateToProps = state => {
   return {
     block: state.block,
     web3_version: state.web3_version,
-    mewAddress: state.mewAddress,
-    ConceptRegistry: state.ConceptRegistry,
     userAddress: state.userAddress,
     networkID: state.networkID,
     balance: state.balance

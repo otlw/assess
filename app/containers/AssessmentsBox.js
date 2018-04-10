@@ -3,7 +3,7 @@ import AssessmentsBoard from '../components/AssessmentsBoard'
 
 const mapStateToProps = state => {
   return {
-    assessmentList: state.assessmentList,
+    assessments: state.assessments,
     userAddress: state.userAddress
   }
 }
