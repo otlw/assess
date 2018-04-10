@@ -1,9 +1,6 @@
 import { Component } from 'react'
 var h = require('react-hyperscript')
 
-// styles
-const buttonStyle = {textAlign: 'center', borderRadius: '0.8em', border: '1px solid black', margin: '1em 40%', padding: '0.2em 1em'}
-
 const NetworkNames = {
   4: 'rinkeby',
   1: 'mainnet',
@@ -14,14 +11,6 @@ const NetworkNames = {
 export class Header extends Component {
   componentWillMount () {
     this.props.web3Connect()
-  }
-
-  togglePublicView () {
-    if (this.props.userAddress === 'publicView') {
-      this.props.web3Connect()
-    } else {
-      this.props.receiveVariable('userAddress', 'publicView')
-    }
   }
 
   render () {
@@ -55,7 +44,6 @@ export class Header extends Component {
           h('span', 'AHA balance: '),
           h('span', this.props.balance)
         ]),
-        h('div', {style: buttonStyle, onClick: this.togglePublicView.bind(this)}, buttonMsg)
       ])
     )
   }
