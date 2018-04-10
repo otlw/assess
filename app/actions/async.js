@@ -19,7 +19,7 @@ export const web3Connect = () => {
         dispatch(web3Disconnected())
       }
     } else {
-      console.log('no Metamask')
+      //if no metamask, use rinkeby and set to public View
       let w3 = new Web3('https://rinkeby.infura.io/2FBsjXKlWVXGLhKn7PF7')
       dispatch(web3Connected(w3))
       dispatch(receiveVariable('userAddress', 'publicView'))
@@ -73,11 +73,12 @@ export function fetchAHABalance () {
     let w3 = getState().web3
     let userAddress = getState().userAddress
     let networkID = await w3.eth.net.getId()
-    const ahaABI = require('../contracts/FathomToken.json')
-    const ahaContract = await new w3.eth.Contract(ahaABI.abi, ahaABI.networks[networkID].address)
+
+    //get token contract
+    const ahaArtifact = require('../contracts/FathomToken.json')
+    const ahaContract = await new w3.eth.Contract(ahaArtifact.abi, ahaArtifact.networks[networkID].address)
+    //get balance from contract
     let userBalance = await ahaContract.methods.balanceOf(userAddress).call()
-    console.log('userBalance')
-    console.log(userBalance)
     dispatch(receiveVariable('balance', userBalance))
   }
 }
@@ -98,7 +99,7 @@ export function loadConceptsFromConceptRegistery () {
     const contractInstance = await new w3.eth.Contract(abi, contractAddress)
 
     //get concepts from registry
-    listConcepts(contractInstance)
+    dispatch(listConcepts(contractInstance))
   }
 }
 
@@ -107,7 +108,7 @@ export const listConcepts = (conceptRegisteryInstance) => {
     let w3 = getState().web3
 
     //use concept creation events to list concept addresses
-    let pastevents = await contractInstance.getPastEvents('ConceptCreation',{fromBlock: 0, toBlock: 'latest'})
+    let pastevents = await conceptRegisteryInstance.getPastEvents('ConceptCreation',{fromBlock: 0, toBlock: 'latest'})
     let listOfAdresses=pastevents.map((e)=>{
       return e.returnValues._concept
     })

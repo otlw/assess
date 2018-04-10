@@ -19,8 +19,8 @@ const store = createStore(
 
 render(
 	h(Provider,{store},
-  h(HashRouter, [
-    h(Route, {component: App})
-  ])),
+	  h(HashRouter, [
+	    h(Route, {component: App})
+	  ])),
   document.getElementById('root')
 )

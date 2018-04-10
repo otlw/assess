@@ -9,13 +9,10 @@ let initialState = {
   web3_version: 'none',
   isConnected: false,
   block: 1,
-  fathomTokenAddress: '',
   userAddress: '',
   networkID: 666,
   balance: 0,
-  notifications: [],
-  //assessmentList: [],
-  assessments: {}
+  conceptAddressList:[]
 }
 
 function web3Reducer (state = initialState, action) {
