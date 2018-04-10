@@ -1,6 +1,16 @@
 import { Component } from 'react'
 var h = require('react-hyperscript')
 
+// styles
+const buttonStyle = {textAlign: 'center', borderRadius: '0.8em', border: '1px solid black', margin: '1em 40%', padding: '0.2em 1em'}
+
+const NetworkNames = {
+  4: 'rinkeby',
+  1: 'mainnet',
+  3: 'ropsten',
+  42: 'kovan'
+}
+
 export class Header extends Component {
   componentWillMount () {
     this.props.web3Connect()
@@ -15,20 +25,12 @@ export class Header extends Component {
   }
 
   render () {
-    // styles
-    const buttonStyle = {textAlign: 'center', borderRadius: '0.8em', border: '1px solid black', margin: '1em 40%', padding: '0.2em 1em'}
 
     let buttonMsg = 'Public View'
     if (this.props.userAddress === 'publicView') {
       buttonMsg = 'Back to User View'
     }
 
-    const NetworkNames = {
-      4: 'rinkeby',
-      1: 'mainnet',
-      3: 'ropsten',
-      42: 'kovan'
-    }
     let network
     if (NetworkNames[this.props.networkID]) {
       network = NetworkNames[this.props.networkID]
