@@ -5,10 +5,10 @@ var h = require('react-hyperscript')
 
 export class App extends Component {
   render () {
-	return h('div', [
-	    h(StatusBox),
-	    h(ConceptBox)
-  	])
+    return h('div', [
+    	h(StatusBox),
+    	h(ConceptBox)
+ 	])
   }
 }
 

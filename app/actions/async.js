@@ -13,13 +13,13 @@ export const web3Connect = () => {
       // after web3 is instanciated, fetch contract info (mew concept) and user address
       if (w3) {
         dispatch(web3Connected(w3))
-        dispatch(fetchUserAddress()) //which will get user related info -> balance
-        dispatch(fetchNetworkID()) //which will get contract related info -> list of concepts from registry
+        dispatch(fetchUserAddress()) // which will get user related info -> balance
+        dispatch(fetchNetworkID()) // which will get contract related info -> list of concepts from registry
       } else {
         dispatch(web3Disconnected())
       }
     } else {
-      //if no metamask, use rinkeby and set to public View
+      // if no metamask, use rinkeby and set to public View
       let w3 = new Web3('https://rinkeby.infura.io/2FBsjXKlWVXGLhKn7PF7')
       dispatch(web3Connected(w3))
       dispatch(receiveVariable('userAddress', 'publicView'))
@@ -74,10 +74,10 @@ export function fetchAHABalance () {
     let userAddress = getState().userAddress
     let networkID = await w3.eth.net.getId()
 
-    //get token contract
+    // get token contract
     const ahaArtifact = require('../../build/contracts/FathomToken.json')
     const ahaContract = await new w3.eth.Contract(ahaArtifact.abi, ahaArtifact.networks[networkID].address)
-    //get balance from contract
+    // get balance from contract
     let userBalance = await ahaContract.methods.balanceOf(userAddress).call()
     dispatch(receiveVariable('balance', userBalance))
   }
@@ -98,25 +98,21 @@ export function loadConceptsFromConceptRegistery () {
     }
     const contractInstance = await new w3.eth.Contract(abi, contractAddress)
 
-    //get concepts from registry
+    // get concepts from registry
     dispatch(listConcepts(contractInstance))
   }
 }
 
 export const listConcepts = (conceptRegisteryInstance) => {
   return async (dispatch, getState) => {
-    let w3 = getState().web3
-
-    //use concept creation events to list concept addresses
-    let pastevents = await conceptRegisteryInstance.getPastEvents('ConceptCreation',{fromBlock: 0, toBlock: 'latest'})
-    let listOfAdresses=pastevents.map((e)=>{
+    // use concept creation events to list concept addresses
+    let pastevents = await conceptRegisteryInstance.getPastEvents('ConceptCreation', {fromBlock: 0, toBlock: 'latest'})
+    let listOfAdresses = pastevents.map((e) => {
       return e.returnValues._concept
     })
     dispatch(receiveVariable('conceptAddressList', listOfAdresses))
   }
 }
-
-
 
 // to save something from the chain in state
 export function receiveVariable (name, value) {
@@ -128,7 +124,6 @@ export function receiveVariable (name, value) {
     }
   }
 }
-
 
 export const actions = {
   web3Connect
