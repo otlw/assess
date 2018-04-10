@@ -71,7 +71,7 @@ contract('Assessment', function (accounts) {
 
       gasCosts.push({function: 'makeAssessment',
         cost: {
-          ether: web3.fromWei(receiptFromMakeAssessment.gasUsed * gasPrice, 'ether'),
+          ether: web3.fromWei(receiptFromMakeAssessment.gasUsed * gasPrice.toString(), 'ether'),
           $: utils.weiToDollar((receiptFromMakeAssessment.gasUsed * gasPrice).toString(), etherPrice.toString())
         }})
 

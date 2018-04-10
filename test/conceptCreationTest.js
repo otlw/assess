@@ -30,8 +30,6 @@ contract('ConceptRegistry', function (accounts) {
     assert.isTrue(await conReg.conceptExists.call(createdConceptAddressS), 'a new concept should have been created')
   })
   it("shouldn't be the same address for both concepts (same data)", async () => {
-    console.log('createdConceptAddress : ' + createdConceptAddress)
-    console.log('createdConceptAddressS : ' + createdConceptAddressS)
 
     assert.notEqual(createdConceptAddress, createdConceptAddressS, 'concept1 and concept1(same data) are the same')
   })
@@ -44,8 +42,6 @@ contract('ConceptRegistry', function (accounts) {
     assert.isTrue(await conReg.conceptExists.call(createdConceptAddress2), "concept2 doesn't exist")
   })
   it("shouldn't be the same address for both concepts (different data)", async () => {
-    console.log('createdConceptAddress : ' + createdConceptAddress)
-    console.log('createdConceptAddress2 : ' + createdConceptAddress2)
 
     assert.notEqual(createdConceptAddress, createdConceptAddress2, 'concept1 and concept2 are the same')
   })
