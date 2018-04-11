@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import AssessmentCreationBar from '../components/AssessmentCreationBar'
+import { loadConceptContractAndCreateAssessment } from '../actions/conceptActions.js'
 
 const mapStateToProps = state => {
   return {
@@ -7,4 +8,8 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps)(AssessmentCreationBar)
+const mapDispatchToProps = {
+  loadConceptContractAndCreateAssessment
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AssessmentCreationBar)

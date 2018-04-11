@@ -23,7 +23,6 @@ const dropdownStyle={
       backgroundColor: "#f9f9f9",
       minWidth: "8em",
       boxShadow: "0px 8px 16px 0px rgba(0,0,0,0.2)",
-      //padding: "1em 1.3em",
       zIndex: "1",
   },
   item:{
@@ -77,7 +76,7 @@ export class Dropdown extends Component {
     return h("div",{style:dropdownStyle.dropdown},[
       //button
       h("span",{style:dropdownStyle.button,onMouseEnter:this.hoverOn.bind(this),onMouseLeave:this.hoverOff.bind(this)
-      },this.props.list[this.props.selectedID]),
+      },this.props.list[this.props.selectedID]+"[arrow.png]"),
       //content (dropdown list)
       h("div",{
         style:dropdownContent,

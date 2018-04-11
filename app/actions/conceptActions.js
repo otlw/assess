@@ -46,3 +46,31 @@ export const listConcepts = (w3,conceptRegisteryInstance) => {
     dispatch(receiveVariable('conceptList', conceptList))
   }
 }
+
+//combination of two functions above for directly creating assessments from conceptList
+export function loadConceptContractAndCreateAssessment (address) {
+  return async (dispatch, getState) => {
+    let w3 = getState().web3
+    let userAddress = getState().userAddress
+
+    // instanciate Concept Contract
+    try {
+      var conceptArtifact = require('../../build/contracts/Concept.json')
+      var abi = conceptArtifact.abi
+    } catch (e) {
+      console.error(e)
+    }
+    let conceptInstance = await new w3.eth.Contract(abi, address)
+
+    //define constants for assessments => those could be move to a config file
+    const cost = 10;
+    const size = 5;
+    const endTime = 1000000000000;
+    const startTime = 1000000000;
+    const assesseeAddress=userAddress
+    //this is were a status should be set to "waiting for assessment creation"
+    let tx=await conceptInstance.methods.makeAssessment(cost, size, startTime, endTime).send({from:assesseeAddress,gas: 3200000}) 
+    console.log(tx)
+    //this is were a status should be set to "assessment created"
+  }
+}
