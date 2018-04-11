@@ -14,7 +14,6 @@ export class Header extends Component {
   }
 
   render () {
-    
     let network
     if (NetworkNames[this.props.networkID]) {
       network = NetworkNames[this.props.networkID]
@@ -38,7 +37,7 @@ export class Header extends Component {
         h('div', [
           h('span', 'AHA balance: '),
           h('span', this.props.balance)
-        ]),
+        ])
       ])
     )
   }
