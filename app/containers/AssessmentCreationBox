@@ -1,0 +1,10 @@
+import { connect } from 'react-redux'
+import AssessmentCreationBar from '../components/AssessmentCreationBar'
+
+const mapStateToProps = state => {
+  return {
+    conceptAddressList: state.conceptAddressList
+  }
+}
+
+export default connect(mapStateToProps)(AssessmentCreationBar)
