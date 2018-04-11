@@ -3,7 +3,7 @@ import AssessmentCreationBar from '../components/AssessmentCreationBar'
 
 const mapStateToProps = state => {
   return {
-    conceptAddressList: state.conceptAddressList
+    conceptList: state.conceptList
   }
 }
 

@@ -24,8 +24,8 @@ export const listConcepts = (w3,conceptRegisteryInstance) => {
   return async (dispatch, getState) => {
     // use concept creation events to list concept addresses
     let pastevents = await conceptRegisteryInstance.getPastEvents('ConceptCreation', {fromBlock: 0, toBlock: 'latest'})
-    let listOfAdresses = pastevents.map(async (e) => {
-      
+
+    let conceptList = await Promise.all(pastevents.map(async (e) => {
       // instanciate Concept Contract to get 'data' (ie the name of the concept)
       try {
         var conceptArtifact = require('../../build/contracts/Concept.json')
@@ -34,11 +34,15 @@ export const listConcepts = (w3,conceptRegisteryInstance) => {
         console.error(e)
       }
       let conceptInstance = await new w3.eth.Contract(abi, e.returnValues._concept)
-      let data= await conceptInstance.methods.data().call()
-      console.log(data)
 
-      return e.returnValues._concept
-    })
-    dispatch(receiveVariable('conceptAddressList', listOfAdresses))
+      //get data
+      let data= await conceptInstance.methods.data().call()
+
+      //uncode data
+      let uncoded=Buffer.from(data.slice(2), 'hex').toString('utf8')
+
+      return {address:e.returnValues._concept,data:uncoded}
+    }))
+    dispatch(receiveVariable('conceptList', conceptList))
   }
 }

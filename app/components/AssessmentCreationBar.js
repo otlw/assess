@@ -35,10 +35,13 @@ export class AssessmentCreationBar extends Component {
   }
 
   render () {
+    let conceptNameList=this.props.conceptList.map((concept)=>{
+      return concept.data
+    })
     return h("div",{style:assessmentCreationStyle.frame},[
       h("div",{style:assessmentCreationStyle.fieldName},"Select Concept"),
       h("div",{style:assessmentCreationStyle.dropdown},
-        h(Dropdown,{list:this.props.conceptAddressList,selectedID:this.state.selectedConceptKey,set:this.setConceptKey.bind(this)})
+        h(Dropdown,{list:conceptNameList,selectedID:this.state.selectedConceptKey,set:this.setConceptKey.bind(this)})
       )
     ])
   }
