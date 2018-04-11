@@ -81,7 +81,6 @@ export function fetchAHABalance () {
   }
 }
 
-
 // to save something from the chain in state
 export function receiveVariable (name, value) {
   return {

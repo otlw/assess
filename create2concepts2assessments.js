@@ -120,7 +120,6 @@ async function test () {
   const assessmentAddress1 = events1[events1.length - 1].returnValues.sender
   console.log('New assessment created on concept1 at address:' + assessmentAddress1)
 
-
   // deploy an assessment from concept 2
   console.log('Creating second assessment....')
   const txResultAssessment2 = await conceptContract2.methods.makeAssessment(cost, size, startTime, endTime).send({from: accounts[0], gas: 3200000})
