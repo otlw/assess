@@ -67,8 +67,8 @@ async function test () {
   // deploy one concept
   console.log('Creating first concept....')
   // encode a title for this concept
-  const msg = '0x' + (Buffer.from('hello, hellooooo', 'utf8')).toString('hex')
-  let txResultConcept1 = await conceptRegContract.methods.makeConcept([mewAddress], [500], 60 * 60 * 24, msg, accounts[0]).send({from: accounts[0], gas: 3200000})
+  const msg1 = '0x' + (Buffer.from('holla, ', 'utf8')).toString('hex')
+  let txResultConcept1 = await conceptRegContract.methods.makeConcept([mewAddress], [500], 60 * 60 * 24, msg1, accounts[0]).send({from: accounts[0], gas: 3200000})
   // use the tx to get deployed concept address
   let concept1Address = txResultConcept1.events.ConceptCreation.returnValues._concept
   console.log('New concept created as child of mew concept at ' + concept1Address)
@@ -77,7 +77,9 @@ async function test () {
 
   // deploy a second concept
   console.log('Deploying second concept....')
-  let txResultConcept2 = await conceptRegContract.methods.makeConcept([mewAddress], [500], 60 * 60 * 24, '0x42', accounts[0]).send({from: accounts[0], gas: 3200000})
+  // encode a title for this concept
+  const msg2 = '0x' + (Buffer.from('holla !!!', 'utf8')).toString('hex')
+  let txResultConcept2 = await conceptRegContract.methods.makeConcept([mewAddress], [500], 60 * 60 * 24, msg2, accounts[0]).send({from: accounts[0], gas: 3200000})
   // use the tx to get deployed concept address
   let concept2Address = txResultConcept2.events.ConceptCreation.returnValues._concept
   console.log('New concept created as child of mew concept at ' + concept2Address)
@@ -127,7 +129,7 @@ async function test () {
   const assessmentAddress2 = events2[events2.length - 1].returnValues.sender
   console.log('New assessment deployed from concept1 at ' + assessmentAddress2)
 
-  // going further...
+  // Instantiating the assessment contracts...
   // let assessmentArtifact = require('./build/contracts/Assessment.json')
   // instanciate assessment contract 1
   // let assessmentContract1 = await new web3.eth.Contract(assessmentArtifact.abi, assessmentAddress1)
