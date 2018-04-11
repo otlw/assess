@@ -49,7 +49,7 @@ export function web3Disconnected () {
 
 export function fetchUserAddress () {
   return async (dispatch, getState) => {
-    let w3 = getState().web3
+    let w3 = getState().connect.web3
     let accounts = await w3.eth.getAccounts()
     if (accounts.length === 0) {
       dispatch(receiveVariable('userAddress', 'pleaseEnterPasswordToUnblockMetamask'))
@@ -62,7 +62,7 @@ export function fetchUserAddress () {
 
 export function fetchNetworkID () {
   return async (dispatch, getState) => {
-    let w3 = getState().web3
+    let w3 = getState().connect.web3
     let networkID = await w3.eth.net.getId()
     dispatch(receiveVariable('networkID', networkID))
   }
@@ -70,8 +70,8 @@ export function fetchNetworkID () {
 
 export function fetchAHABalance () {
   return async (dispatch, getState) => {
-    let w3 = getState().web3
-    let userAddress = getState().userAddress
+    let w3 = getState().connect.web3
+    let userAddress = getState().connect.userAddress
     let networkID = await w3.eth.net.getId()
 
     // get token contract
@@ -104,7 +104,7 @@ export function setAssessment (address) {
 
 export function fetchAssessmentData (address, getInfo, getAssessors) {
   return async (dispatch, getState) => {
-    let w3 = getState().web3
+    let w3 = getState().connect.web3
     try {
       const assessmentArtifact = require('../../build/contracts/Assessment.json')
       const assessmentInstance = new w3.eth.Contract(assessmentArtifact.abi, address)

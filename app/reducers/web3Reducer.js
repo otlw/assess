@@ -13,12 +13,10 @@ let initialState = {
   userAddress: '',
   networkID: 666,
   balance: 0,
-  assessments: {'asdfsfd': 1},
-  selectedAssessment: ''
 }
 
-function web3Reducer (state = initialState, action) {
-  console.log('reducer got:', action.type, 'with payload: ', action.payload)
+function connect (state = initialState, action) {
+  // console.log('web3-reducer got:', action.type, 'with payload: ', action.payload)
 
   switch (action.type) {
   case WEB3_CONNECTED:
@@ -40,24 +38,9 @@ function web3Reducer (state = initialState, action) {
     newState[action.payload.name] = action.payload.value
     return newState
   }
-  case SET_ASSESSMENT:
-    return {
-      ...state,
-      selectedAssessment: action.payload.address
-    }
-  case RECEIVE_ASSESSMENT:
-    let newState =  {
-      ...state,
-      assessments: {
-        ...state.assessments,
-        [action.payload.assessment.address]: action.payload.assessment
-      }
-    }
-    console.log('newState', newState)
-    return newState
   default:
     return state
   }
 }
 
-export default web3Reducer
+export default connect

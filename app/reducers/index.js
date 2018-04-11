@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux'
-import web3Reducer from './web3Reducer'
+import connect from './web3Reducer'
+import assessments from './assessmentReducer'
 
 export default combineReducers({
-  web3Reducer
+  connect: connect,
+  assessments: assessments
 })
