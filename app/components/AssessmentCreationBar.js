@@ -1,34 +1,35 @@
 import { Component } from 'react'
 import Dropdown from "./Dropdown"
+import styled from "styled-components"
 var h = require('react-hyperscript')
 
 //this is gonna move to mainStyle object
-const assessmentCreationStyle={
-  frame:{
-    marginTop:"1em",
-    padding:"0.6em",
-    textAlign:"left",
-    border:"0.5px solid lightgrey",
-    borderRadius:"0.3em"
-  },
-  fieldName:{
-    fontWeight:"bold",
-    display:"inline-block"
-  },
-  dropdown:{
-    marginLeft:"1em",
-    border:"1px solid lightblue",
-    padding:"0.2em",
-    display:"inline-block"
-  },
-  buttonStyle:{
-    borderRadius:"0.8em",
-    border:"1px solid black",
-    padding:"0.2em 1em",
-    display:"inline-block",
-    marginLeft:"2em"
-  }
-}
+const CreationBox = styled('div')`
+margin-top: 1em;
+padding: 0.6em;
+text-align: left;
+border: 0.5px solid lightgrey;
+`
+
+const FieldName = styled('div')`
+font-weight: bold;
+display: inline-block
+`
+
+const DropdownBox = styled('div')`
+margin-left: 1em;
+border: 1px solid lightblue;
+padding 0.2em;
+display: inline-block;
+`
+
+const Button = styled('div')`
+border-radius: 0.8em;
+border: 1px solid black;
+padding 0.2em 1em;
+display: inline-block
+margin-left: 2em;
+`
 
 export class AssessmentCreationBar extends Component {
   constructor(props) {
@@ -50,12 +51,15 @@ export class AssessmentCreationBar extends Component {
     let conceptNameList=this.props.conceptList.map((concept)=>{
       return concept.data
     })
-    return h("div",{style:assessmentCreationStyle.frame},[
-      h("div",{style:assessmentCreationStyle.fieldName},"Select Concept :"),
-      h("div",{style:assessmentCreationStyle.dropdown},
-        h(Dropdown,{list:conceptNameList,selectedID:this.state.selectedConceptKey,set:this.setConceptKey.bind(this)})
+    return h(CreationBox,[
+      h(FieldName, "Select Concept :"),
+      h(DropdownBox,[
+        h(Dropdown, {
+          list: conceptNameList,
+          selectedID: this.state.selectedConceptKey,
+          set: this.setConceptKey.bind(this)})]
       ),
-      h("div",{style:assessmentCreationStyle.buttonStyle,onClick:this.createAssessment.bind(this)},"Create Assessment")
+      h(Button, {onClick: this.createAssessment.bind(this)},"Create Assessment")
     ])
   }
 }
