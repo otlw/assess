@@ -12,7 +12,7 @@ let initialState = {
   isConnected: false,
   userAddress: '',
   networkID: 666,
-  balance: 0,
+  balance: 0
 }
 
 function connect (state = initialState, action) {
