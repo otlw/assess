@@ -115,6 +115,19 @@ or
 - If you get any other issues feel free to open an issue or add to an existing
 one.
 
+
+Tests
+============
+Most functionnalities are tested in the test files inside the 'test' folder. 
+To run them, try: 
+> truffle test
+
+Also, there is a script 'create2concepts2assessmnets.js' that creates two new
+concepts and initiates an assessment on each. When deploying to a
+non-development testnet, supply the name of the net as argument: 
+> node create2concepts2assessments.js rinkeby
+
+
 Contributing
 =========
 
