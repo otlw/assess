@@ -3,7 +3,7 @@ import thunk from 'redux-thunk'
 import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import AssessmentDashboardApp from './components/AssessmentDashboardApp'
-import AssessmentViewApp from './components/AssessmentViewApp'
+import AssessmentViewAppBox from './containers/AssessmentViewAppBox'
 import HeaderBox from './containers/HeaderBox'
 import rootReducer from './reducers/web3Reducer.js'
 import h from 'react-hyperscript'
@@ -21,7 +21,7 @@ render(
 	  	h('div',[
 	  		h(HeaderBox),
 		    h(Route, {exact:true,path:'/',component: AssessmentDashboardApp}),
-		    h(Route, {path:'/assessment/:id',component: AssessmentViewApp})
+		    h(Route, {path:'/assessment/:id',component: AssessmentViewAppBox})
 		])
 	  ])),
   document.getElementById('root')
