@@ -1,6 +1,6 @@
-//Dropdown Component : props: 
-// list ["string1","string2",etc], 
-// selectedID:integer, 
+// Dropdown Component : props:
+// list ["string1","string2",etc],
+// selectedID:integer,
 // set: function (integer)=>effect
 
 import { Component } from 'react'
@@ -31,33 +31,32 @@ padding 0.3em;
 ${props => props.hover ? 'color:blue; \n padding: 0.3em;' : ''}
 `
 export class Dropdown extends Component {
-
-  //the state determines if the dropdown is displayed or not
-  constructor(props) {
-    super(props);
-    this.state={
-      hover:false,
-      hoverKey:-1
+  // the state determines if the dropdown is displayed or not
+  constructor (props) {
+    super(props)
+    this.state = {
+      hover: false,
+      hoverKey: -1
     }
   }
 
-  hoverOn(e){
-    this.setState({hover:true})
+  hoverOn (e) {
+    this.setState({hover: true})
   }
 
-  hoverOff(e){
-    this.setState({hover:false})
+  hoverOff (e) {
+    this.setState({hover: false})
   }
 
-  hoverKeyOn(e){
-    this.setState({hoverKey:Number(e.target.id)})
+  hoverKeyOn (e) {
+    this.setState({hoverKey: Number(e.target.id)})
   }
 
-  hoverKeyOff(e){
-    this.setState({hoverKey:-1})
+  hoverKeyOff (e) {
+    this.setState({hoverKey: -1})
   }
 
-  select(e){
+  select (e) {
     this.props.set(Number(e.target.id))
   }
 

@@ -32,23 +32,23 @@ margin-left: 2em;
 `
 
 export class AssessmentCreationBar extends Component {
-  constructor(props) {
-    super(props);
-    this.state={
-      selectedConceptKey:0
+  constructor (props) {
+    super(props)
+    this.state = {
+      selectedConceptKey: 0
     }
   }
 
-  setConceptKey(key){
-    this.setState({selectedConceptKey:key})
+  setConceptKey (key) {
+    this.setState({selectedConceptKey: key})
   }
 
-  createAssessment(e){
+  createAssessment (e) {
     this.props.loadConceptContractAndCreateAssessment(this.props.conceptList[this.state.selectedConceptKey].address)
   }
 
   render () {
-    let conceptNameList=this.props.conceptList.map((concept)=>{
+    let conceptNameList = this.props.conceptList.map((concept) => {
       return concept.data
     })
     return h(CreationBox,[

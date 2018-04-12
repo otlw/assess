@@ -1,6 +1,6 @@
 import Web3 from 'web3'
 
-import {loadConceptsFromConceptRegistery} from "./conceptActions"
+import {loadConceptsFromConceptRegistery} from './conceptActions'
 
 export const WEB3_CONNECTED = 'WEB3_CONNECTED'
 export const WEB3_DISCONNECTED = 'WEB3_DISCONNECTED'
@@ -83,7 +83,6 @@ export function fetchAHABalance () {
     dispatch(receiveVariable('balance', userBalance))
   }
 }
-
 
 // to save something from the chain in state
 export function receiveVariable (name, value) {
