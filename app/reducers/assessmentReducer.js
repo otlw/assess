@@ -1,5 +1,6 @@
 import {
   RECEIVE_ASSESSMENT,
+  RECEIVE_ASSESSORS,
   SET_ASSESSMENT
 } from '../actions/async.js'
 
@@ -26,6 +27,15 @@ function assessments (state = initialState, action) {
     return  {
       ...state,
         [action.payload.assessment.address]: action.payload.assessment
+    }
+  case RECEIVE_ASSESSORS:
+    let address = action.payload.address
+    return {
+      ...state,
+      [address]: {
+        ...state.address,
+        assessors: action.payload.assessors
+      }
     }
   default:
     return state

@@ -4,6 +4,7 @@ export const WEB3_CONNECTED = 'WEB3_CONNECTED'
 export const WEB3_DISCONNECTED = 'WEB3_DISCONNECTED'
 export const RECEIVE_VARIABLE = 'RECEIVE_VARIABLE'
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
+export const RECEIVE_ASSESSORS = 'RECEIVE_ASSESSORS'
 export const SET_ASSESSMENT = 'SET_ASSESSMENT'
 
 // actions to instantiate web3
@@ -102,30 +103,84 @@ export function setAssessment (address) {
   }
 }
 
-export function fetchAssessmentData (address, getInfo, getAssessors) {
+export function fetchAssessmentData (address) {
   return async (dispatch, getState) => {
     let w3 = getState().connect.web3
     try {
       const assessmentArtifact = require('../../build/contracts/Assessment.json')
       const assessmentInstance = new w3.eth.Contract(assessmentArtifact.abi, address)
-      if (getInfo) {
-        let cost = await assessmentInstance.methods.cost().call()
-        let size = await assessmentInstance.methods.size().call()
-        let stage = await assessmentInstance.methods.assessmentStage().call()
-        let assessee = await assessmentInstance.methods.assessee().call()
-        dispatch(receiveAssessment({
-          address: address,
-          cost: cost,
-          size: size,
-          assessee: assessee,
-          stage: stage,
-        }))
-      }
+      let cost = await assessmentInstance.methods.cost().call()
+      let size = await assessmentInstance.methods.size().call()
+      let stage = await assessmentInstance.methods.assessmentStage().call()
+      let assessee = await assessmentInstance.methods.assessee().call()
+      dispatch(receiveAssessment({
+        address: address,
+        cost: cost,
+        size: size,
+        assessee: assessee,
+        stage: stage,
+      }))
     } catch(e) {
       console.log('reading from the chain did not work!', e)
     }
   }
 }
+
+// reads all assessors from event-logs and reads their stage from the chain (TODO)
+// if the assessment is in the calling phase, both called & staked assessors will
+// be saved to the state
+export function fetchAssessors (address, stage) {
+  return async (dispatch, getState) => {
+    let w3 = getState().connect.web3
+    let networkID = getState().connect.networkID
+    console.log('stagetype', typeof stage)
+    try {
+      // reading assessors from events
+      const fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
+      const fathomTokenInstance = new w3.eth.Contract(fathomTokenArtifact.abi, fathomTokenArtifact.networks[networkID].address)
+      // NOTE: if working, the first two arguemnts of the filters below should be applied here
+      let pastEvents = await fathomTokenInstance.getPastEvents({fromBlock:0, toBlock:"latest"})
+      console.log('pastEvents: ', pastEvents)
+      let calledAssessors = []
+      if (stage === '1') {
+        let calledNotifications = pastEvents.filter(e =>
+                                                    e.event == 'Notification' &&
+                                                    e.returnValues['sender'] === address &&
+                                                    e.returnValues['topic'] === '1' &&
+                                                    calledAssessors.push(e.returnValues['user']))
+      }
+      console.log('calledAssessors ',calledAssessors )
+      let stakedAssessors = []
+      let stakedEvents = pastEvents.filter(e =>
+                                           e.event == 'Notification' &&
+                                           e.returnValues['sender'] === address &&
+                                           e.returnValues['topic'] === '2' &&
+                                           stakedAssessors.push({
+                                             address: e.returnValues['user']
+                                                   }))
+      console.log('stakedAssessors ', stakedAssessors )
+      // TODO: get stages
+      dispatch(receiveAssessors(address, calledAssessors, stakedAssessors, stage))
+    } catch(e) {
+      console.log('fetching assessors from the events did not work!', e)
+    }
+  }
+}
+
+export function receiveAssessors (address, calledAssessors, stakedAssessors, stage) {
+  let assessors = {staked: stakedAssessors}
+  if (stage === '1') {
+    assessors['called'] = calledAssessors
+  }
+  return {
+    type: RECEIVE_ASSESSORS,
+    payload: {
+      address,
+      assessors
+    }
+  }
+}
+
 
 // to save something from the chain in state
 export function receiveVariable (name, value) {

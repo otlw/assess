@@ -6,14 +6,25 @@ var h = require('react-hyperscript')
 export class AssessmentViewApp extends Component {
 
   render () {
-    if(this.props.selectedAssessment === '') {
+    if (this.props.selectedAssessment === '') {
       this.props.setAssessment(this.props.match.params.id)
       return h('div', 'Loading...')
     }
     if (!this.props.assessments.hasOwnProperty(this.props.selectedAssessment)) {
-      this.props.fetchAssessmentData(this.props.selectedAssessment, true, true)
-      return h('div', 'fetching data from chain...')
-    } else {
+      //assessment not there -> fetch basic info
+      this.props.fetchAssessmentData(this.props.selectedAssessment)
+      return h('div', '1/2: fetching data from chain...')
+    }
+    else if (!this.props.assessments[this.props.selectedAssessment].hasOwnProperty("assessors")) {
+      // basic data is there, but no assessors
+      this.props.fetchAssessors(
+        this.props.selectedAssessment,
+        this.props.assessments[this.props.selectedAssessment].stage
+      )
+      return h('div', '2/2: fetching assessors from event-logs...')
+    }
+    else {
+      console.log('aseessors in state:', this.props.assessments[this.props.selectedAssessment]['assessors'])
       let assessment = this.props.assessments[this.props.selectedAssessment]
       return (
         h('div',[

@@ -11,8 +11,8 @@ let initialState = {
   web3_version: 'none',
   isConnected: false,
   userAddress: '',
-  networkID: 666,
-  balance: 0
+  networkID: 4,
+  balance: 0,
 }
 
 function connect (state = initialState, action) {
