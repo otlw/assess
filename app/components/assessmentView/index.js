@@ -25,6 +25,7 @@ export class AssessmentViewApp extends Component {
     }
     else {
       console.log('aseessors in state:', this.props.assessments[this.props.selectedAssessment]['assessors'])
+      console.log('facts in state:', this.props.assessments[this.props.selectedAssessment]['assessors'])
       let assessment = this.props.assessments[this.props.selectedAssessment]
       return (
         h('div',[
@@ -32,6 +33,7 @@ export class AssessmentViewApp extends Component {
           h(AssessmentData, {
             address: this.props.selectedAssessment,
             cost: assessment.cost,
+            size: assessment.size,
             stage: assessment.stage,
             assessee: assessment.assessee
           }),

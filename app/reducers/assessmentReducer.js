@@ -4,6 +4,9 @@ import {
   SET_ASSESSMENT
 } from '../actions/async.js'
 
+var extend = require("xtend")
+
+
 let initialState = {
   selectedAssessment: '',
   '0xdummy' : {
@@ -23,19 +26,16 @@ function assessments (state = initialState, action) {
       ...state,
       selectedAssessment: action.payload.address
     }
-  case RECEIVE_ASSESSMENT:
+  case RECEIVE_ASSESSMENT: {
+    console.log('assessment-reducer got:', action.type, 'with payload: ', action.payload)
+    return extend(state, {[action.payload.assessment.address]: action.payload.assessment})
+  }
+  case RECEIVE_ASSESSORS:
+    // console.log('assessment-reducer got:', action.type, 'with payload: ', action.payload)
+    let address = action.payload.address
     return  {
       ...state,
-        [action.payload.assessment.address]: action.payload.assessment
-    }
-  case RECEIVE_ASSESSORS:
-    let address = action.payload.address
-    return {
-      ...state,
-      [address]: {
-        ...state.address,
-        assessors: action.payload.assessors
-      }
+      [address]: extend(state[address], {assessors:action.payload.assessors})
     }
   default:
     return state

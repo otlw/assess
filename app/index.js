@@ -10,8 +10,6 @@ import h from 'react-hyperscript'
 
 import {HashRouter, Route} from 'react-router-dom'
 
-console.log(rootReducer)
-
 const store = createStore(
   rootReducer,
   applyMiddleware(thunk)

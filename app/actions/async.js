@@ -133,7 +133,6 @@ export function fetchAssessors (address, stage) {
   return async (dispatch, getState) => {
     let w3 = getState().connect.web3
     let networkID = getState().connect.networkID
-    console.log('stagetype', typeof stage)
     try {
       // reading assessors from events
       const fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
