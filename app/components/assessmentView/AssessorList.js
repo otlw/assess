@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import AssessorStatusBox from '../../containers/AssessorStatusBox'
 import AssessorStatus from './AssessorStatus'
 var h = require('react-hyperscript')
 
@@ -6,35 +7,33 @@ var h = require('react-hyperscript')
 export class AssessorList extends Component {
 
   render() {
+    // if user has not staked but has been called, add him to the staked-list with status 'Called'
     let assessors = this.props.assessors
-    if (assessors.hasOwnProperty('called')) {
-      if (assessors.called.includes(this.props.userAddress)) {
-        assessors.staked.push({
-          address: 'you',
-          stage: 1
-        })
-      }
+    console.log('assessors ',assessors )
+    let userHasStaked = assessors.staked.filter(a => a.address === this.props.userAddress)
+    if (userHasStaked.length === 0  &&
+        assessors.called.includes(this.props.userAddress)) {
+      assessors.staked.push({
+        address: 'you',
+        stage: 1
+      })
     }
-    if (assessors.hasOwnProperty('staked')) {
-      assessors.staked.push({address:'testAssessor', stage: 1})
-      return h('div',
-               assessors.staked.map( (assessor,k) => {
-                 return h(AssessorStatus, {
-                   assessorAddress: assessor.address,
-                   assessorNumber: k,
-                   assessorStage: parseInt(assessor.stage),
-                   stage: parseInt(this.props.stage),
-                 })
+    assessors.staked.push({address:'testAssessor', stage: 1})
+    return h('div',
+             assessors.staked.map( (assessor,k) => {
+               return h(AssessorStatusBox, {
+                 assessorAddress: assessor.address,
+                 assessmentAddress: this.props.address,
+                 assessorNumber: k,
+                 assessorStage: parseInt(assessor.stage),
+                 stage: parseInt(this.props.stage),
                })
-      )
-    } else {
-      console.log('could not find called assessors in ', JSON.stringify(assessors.called))
-      return h('div', 'could not find assessors')
-    }
+             })
+    )
   }
 }
 
-      export default AssessorList
+export default AssessorList
 
       // AssessorList.propTypes = {
       //   assessors:  React.PropTypes.List.isRequired //TODO? how to describe the li

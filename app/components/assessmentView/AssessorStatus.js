@@ -12,8 +12,17 @@ const stages = {
 
 // component to display an individual assessor slot address and options
 export class AssessorStatus extends Component {
+ constructor(props) {
+   super(props)
+   this.buttonLogic = {
+     1: {function: this.stake, text: 'Stake!'},
+     2: {function: this.commit, text: 'Commit a score!'},
+     3: {function: this.reveal, text: 'Reveal your score!'},
+   }
+ }
 
   stake() {
+    this.props.confirmAssessor(this.props.assessmentAddress)
   }
 
   commit() {
@@ -26,36 +35,24 @@ export class AssessorStatus extends Component {
   }
 
   render() {
-    let displayString = 'assessor ' + this.props.assessorNumber + ": " + this.props.assessorAddress + ' ->   '
+    let displayString = 'assessor ' + this.props.assessorNumber + ": " + this.props.assessorAddress.slice(0,9) + '... ->   '
     let active = this.props.assessorStage === this.props.stage
-    let buttonString = ''
-    switch (this.props.stage) {
-        // calling phase
-      case 1:
-        if (active) { //TODO use active in buttonElement
-          buttonString = 'stakeButton'
-        } else {
-          buttonString = 'greyedOutStakeButton'
-        }
-        break
-        // committing phase
-        /* case 2:
-         *   if (active) { //TODO use active in buttonElement
-         *     buttonString = 'commitButton'
-         *   } else {
-         *     buttonString = 'greyedOutCommitButton'
-         *   }
-         *   break */
-      default:
-        console.log('somehting wnet wrong. stage is', typeof this.props.stage)
-        buttonString =  h('div', 'something went wrong')
+    let button = this.buttonLogic[this.props.assessorStage]
+    if (active) {
+      return (
+        h('div', [
+          h('span', displayString),
+          h('button', {onClick: button.function.bind(this)}, button.text)
+        ])
+      )
+    } else {
+      return (
+        h('div', [
+          h('span', displayString),
+          h('span', 'Waiting for others')
+        ])
+      )
     }
-    return (
-      h('div', [
-        h('span', displayString),
-        h('span', buttonString)
-      ])
-    )
   }
 }
 
