@@ -26,7 +26,7 @@ export class AssessorStatus extends Component {
   }
 
   render() {
-    let displayString = 'assessor ' + this.props.assessorNumber + ": " + this.props.assessorAddress
+    let displayString = 'assessor ' + this.props.assessorNumber + ": " + this.props.assessorAddress + ' ->   '
     let active = this.props.assessorStage === this.props.stage
     let buttonString = ''
     switch (this.props.stage) {

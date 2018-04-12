@@ -6,28 +6,23 @@ var h = require('react-hyperscript')
 export class AssessorList extends Component {
 
   render() {
-    console.log('rednerList')
     let assessors = this.props.assessors
-    /* console.log('assessors ',JSON.stringify(assessors) ) */
-    /* console.log('assessors ',assessors ) */
     if (assessors.hasOwnProperty('called')) {
-      console.log('hasOwnPropertyCalled', assessors.called)
       if (assessors.called.includes(this.props.userAddress)) {
         assessors.staked.push({
           address: 'you',
-          stage: '1'
+          stage: 1
         })
       }
     }
     if (assessors.hasOwnProperty('staked')) {
-      console.log('hasOwnPropertyStaked', assessors.staked)
-      assessors.staked.push({address:'test', stage: 1})
+      assessors.staked.push({address:'testAssessor', stage: 1})
       return h('div',
                assessors.staked.map( (assessor,k) => {
                  return h(AssessorStatus, {
-                   assessorAddress: assessor.address,// === this.props.userAddress ? 'you!' : assessor.address
+                   assessorAddress: assessor.address,
                    assessorNumber: k,
-                   assessorStage: assessor.stage,
+                   assessorStage: parseInt(assessor.stage),
                    stage: parseInt(this.props.stage),
                  })
                })

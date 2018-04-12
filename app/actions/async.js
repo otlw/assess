@@ -140,6 +140,9 @@ export function fetchAssessors (address, stage) {
       const fathomTokenInstance = new w3.eth.Contract(fathomTokenArtifact.abi, fathomTokenArtifact.networks[networkID].address)
       // NOTE: if working, the first two arguemnts of the filters below should be applied here
       let pastEvents = await fathomTokenInstance.getPastEvents({fromBlock:0, toBlock:"latest"})
+      if (pastEvents.length === []) {
+        console.log('weirdly no Notifications events have been found. Try switching Metamasks network back and forth')
+      }
       // console.log('pastEvents: ', pastEvents)
       let calledAssessors = []
       if (stage === '1') {
