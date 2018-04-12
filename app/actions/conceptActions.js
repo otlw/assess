@@ -33,8 +33,8 @@ export const listConcepts = (conceptRegistryInstance) => {
       try {
         var conceptArtifact = require('../../build/contracts/Concept.json')
         var abi = conceptArtifact.abi
-      } catch (event) {
-        console.error(event)
+      } catch (error) {
+        console.error(error)
         return
       }
       let conceptInstance = await new w3.eth.Contract(abi, event.returnValues._concept)
