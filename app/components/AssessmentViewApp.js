@@ -1,5 +1,5 @@
 import { Component } from 'react'
-var h = require('react-hyperscript')
+import h from 'react-hyperscript'
 
 export class AssessmentViewApp extends Component {
   render () {

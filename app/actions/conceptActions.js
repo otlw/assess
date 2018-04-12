@@ -12,6 +12,7 @@ export function loadConceptsFromConceptRegistery () {
       var contractAddress = conceptRegistryArtifact.networks[networkID].address
     } catch (e) {
       console.error(e)
+      return
     }
     const contractInstance = await new w3.eth.Contract(abi, contractAddress)
 
@@ -27,23 +28,24 @@ export const listConcepts = (conceptRegistryInstance) => {
     // use concept creation events to list concept addresses
     let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {fromBlock: 0, toBlock: 'latest'})
 
-    let conceptList = await Promise.all(pastevents.map(async (e) => {
+    let conceptList = await Promise.all(pastevents.map(async (event) => {
       // instanciate Concept Contract to get 'data' (ie the name of the concept)
       try {
         var conceptArtifact = require('../../build/contracts/Concept.json')
         var abi = conceptArtifact.abi
-      } catch (e) {
-        console.error(e)
+      } catch (event) {
+        console.error(event)
+        return
       }
-      let conceptInstance = await new w3.eth.Contract(abi, e.returnValues._concept)
+      let conceptInstance = await new w3.eth.Contract(abi, event.returnValues._concept)
 
       // get data
       let data = await conceptInstance.methods.data().call()
 
       // uncode data
-      let uncoded = Buffer.from(data.slice(2), 'hex').toString('utf8')
+      let decodedConceptData = Buffer.from(data.slice(2), 'hex').toString('utf8')
 
-      return {address: e.returnValues._concept, data: uncoded}
+      return {address: event.returnValues._concept, data: decodedConceptData}
     }))
     dispatch(receiveVariable('conceptList', conceptList))
   }
@@ -61,6 +63,7 @@ export function loadConceptContractAndCreateAssessment (address) {
       var abi = conceptArtifact.abi
     } catch (e) {
       console.error(e)
+      return
     }
     let conceptInstance = await new w3.eth.Contract(abi, address)
 

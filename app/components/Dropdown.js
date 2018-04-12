@@ -4,7 +4,7 @@
 // set: function (integer)=>effect
 
 import { Component } from 'react'
-var h = require('react-hyperscript')
+import h from 'react-hyperscript'
 
 // should be moved to style folder when it's created
 // or stay here to be more easily reused
