@@ -1,6 +1,6 @@
 import { Component } from 'react'
 import Dropdown from './Dropdown'
-var h = require('react-hyperscript')
+import h from 'react-hyperscript'
 
 // this is gonna move to mainStyle object
 const assessmentCreationStyle = {

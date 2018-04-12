@@ -16,14 +16,16 @@ export function loadConceptsFromConceptRegistery () {
     const contractInstance = await new w3.eth.Contract(abi, contractAddress)
 
     // get concepts from registry
-    dispatch(listConcepts(w3, contractInstance))
+    dispatch(listConcepts(contractInstance))
   }
 }
 
-export const listConcepts = (w3, conceptRegisteryInstance) => {
+export const listConcepts = (conceptRegistryInstance) => {
   return async (dispatch, getState) => {
+    let w3 = getState().web3
+
     // use concept creation events to list concept addresses
-    let pastevents = await conceptRegisteryInstance.getPastEvents('ConceptCreation', {fromBlock: 0, toBlock: 'latest'})
+    let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {fromBlock: 0, toBlock: 'latest'})
 
     let conceptList = await Promise.all(pastevents.map(async (e) => {
       // instanciate Concept Contract to get 'data' (ie the name of the concept)
