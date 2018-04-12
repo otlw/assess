@@ -1,5 +1,7 @@
 import Web3 from 'web3'
 
+import {updateAssessmentsAndNotificationsFromFathomToken} from "./assessmentActions"
+
 export const WEB3_CONNECTED = 'WEB3_CONNECTED'
 export const WEB3_DISCONNECTED = 'WEB3_DISCONNECTED'
 export const RECEIVE_VARIABLE = 'RECEIVE_VARIABLE'
@@ -63,6 +65,7 @@ export function fetchNetworkID () {
     let w3 = getState().web3
     let networkID = await w3.eth.net.getId()
     dispatch(receiveVariable('networkID', networkID))
+    dispatch(updateAssessmentsAndNotificationsFromFathomToken())
   }
 }
 

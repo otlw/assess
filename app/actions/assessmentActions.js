@@ -1,3 +1,4 @@
+import {receiveVariable} from "./async.js"
 
 export function updateAssessmentsAndNotificationsFromFathomToken () {
   return async (dispatch, getState) => {
@@ -10,7 +11,7 @@ export function updateAssessmentsAndNotificationsFromFathomToken () {
 
     //get notification events from fathomToken contract
     try {
-      var fathomTokenArtifact = require('../contracts/FathomToken.json')
+      var fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
       var abi = fathomTokenArtifact.abi
       var fathomTokenAddress = fathomTokenArtifact.networks[networkID].address
     } catch (e) {
@@ -21,12 +22,14 @@ export function updateAssessmentsAndNotificationsFromFathomToken () {
     const fathomTokenInstance = await new w3.eth.Contract(abi, fathomTokenAddress)
     //filter notifications meant for the user
     let pastNotifications = await fathomTokenInstance.getPastEvents('Notification',{filter: {user: userAddress},fromBlock: 0, toBlock: 'latest'})
-    
+    console.log("pastNotifications")
+    console.log(pastNotifications)
     //update assessment object acording to notification 'topic', ie stage (see FathomToken.sol in contracts folder)
     //NB: maybe we should add a condition to only update stage to a higher number, since notifications could come in the wrong order (could they?)
     pastNotifications.forEach((notification)=>{
       switch (notification.returnValues.topic){
         case '0':
+        console.log("oh")
           assessments[notification.returnValues.sender]={assessee:userAddress,role:"assessee",stage:0}
           break;
         case '1':
@@ -67,8 +70,8 @@ export function getAssessmentDataFromContracts () {
     let w3 = getState().web3
     let oldAssessments = getState().assessments
 
-    var assessmentArtifact = require('../contracts/Assessment.json')
-    var conceptArtifact = require('../contracts/Concept.json')
+    var assessmentArtifact = require('../../build/contracts/Assessment.json')
+    var conceptArtifact = require('../../build/contracts/Concept.json')
     let assessments=Object.assign({}, oldAssessments)
 
     //get all assessment addresses
@@ -82,7 +85,6 @@ export function getAssessmentDataFromContracts () {
       let assessmentInstance = new w3.eth.Contract(assessmentArtifact.abi, address)
       let cost = await assessmentInstance.methods.cost().call()
       let size = await assessmentInstance.methods.size().call()
-      let stage = await assessmentInstance.methods.assessmentStage().call()
       let conceptAddress = await assessmentInstance.methods.concept().call()
 
       //should this be necessary for the filtervIew? (we already have assessee knowledge IF the user is the assessee)
@@ -103,7 +105,6 @@ export function getAssessmentDataFromContracts () {
         cost,
         size,
         //assessee,
-        stage,
         conceptAddress,
         conceptData
       }
