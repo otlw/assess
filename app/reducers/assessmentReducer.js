@@ -27,7 +27,6 @@ function assessments (state = initialState, action) {
       selectedAssessment: action.payload.address
     }
   case RECEIVE_ASSESSMENT: {
-    console.log('assessment-reducer got:', action.type, 'with payload: ', action.payload)
     return extend(state, {[action.payload.assessment.address]: action.payload.assessment})
   }
   case RECEIVE_ASSESSORS:

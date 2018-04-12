@@ -7,7 +7,8 @@ import { fetchAssessmentData,
 const mapStateToProps = state => {
   return {
     assessments: state.assessments,
-    selectedAssessment: state.assessments.selectedAssessment
+    selectedAssessment: state.assessments.selectedAssessment,
+    userAddress: state.connect.userAddress
   }
 }
 

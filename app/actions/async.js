@@ -77,11 +77,11 @@ export function fetchAHABalance () {
 
     // get token contract
     // THIS THROWS AN ERROR 
-    // const ahaArtifact = require('../../build/contracts/FathomToken.json')
-    // const ahaContract = await new w3.eth.Contract(ahaArtifact.abi, ahaArtifact.networks[networkID].address)
+    const ahaArtifact = require('../../build/contracts/FathomToken.json')
+    const ahaContract = await new w3.eth.Contract(ahaArtifact.abi, ahaArtifact.networks[networkID].address)
     // get balance from contract
-    // let userBalance = await ahaContract.methods.balanceOf(userAddress).call()
-    // dispatch(receiveVariable('balance', userBalance))
+    let userBalance = await ahaContract.methods.balanceOf(userAddress).call()
+    dispatch(receiveVariable('balance', userBalance))
   }
 }
 
@@ -133,13 +133,14 @@ export function fetchAssessors (address, stage) {
   return async (dispatch, getState) => {
     let w3 = getState().connect.web3
     let networkID = getState().connect.networkID
+    // console.log('stagetype', typeof stage)
     try {
       // reading assessors from events
       const fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
       const fathomTokenInstance = new w3.eth.Contract(fathomTokenArtifact.abi, fathomTokenArtifact.networks[networkID].address)
       // NOTE: if working, the first two arguemnts of the filters below should be applied here
       let pastEvents = await fathomTokenInstance.getPastEvents({fromBlock:0, toBlock:"latest"})
-      console.log('pastEvents: ', pastEvents)
+      // console.log('pastEvents: ', pastEvents)
       let calledAssessors = []
       if (stage === '1') {
         let calledNotifications = pastEvents.filter(e =>
@@ -148,7 +149,7 @@ export function fetchAssessors (address, stage) {
                                                     e.returnValues['topic'] === '1' &&
                                                     calledAssessors.push(e.returnValues['user']))
       }
-      console.log('calledAssessors ',calledAssessors )
+      // console.log('calledAssessors ',calledAssessors )
       let stakedAssessors = []
       let stakedEvents = pastEvents.filter(e =>
                                            e.event == 'Notification' &&
@@ -157,7 +158,7 @@ export function fetchAssessors (address, stage) {
                                            stakedAssessors.push({
                                              address: e.returnValues['user']
                                                    }))
-      console.log('stakedAssessors ', stakedAssessors )
+      // console.log('stakedAssessors ', stakedAssessors )
       // TODO: get stages
       dispatch(receiveAssessors(address, calledAssessors, stakedAssessors, stage))
     } catch(e) {
