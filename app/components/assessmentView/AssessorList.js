@@ -7,20 +7,9 @@ var h = require('react-hyperscript')
 export class AssessorList extends Component {
 
   render() {
-    // if user has not staked but has been called, add him to the staked-list with status 'Called'
-    let assessors = this.props.assessors
-    console.log('assessors ',assessors )
-    let userHasStaked = assessors.staked.filter(a => a.address === this.props.userAddress)
-    if (userHasStaked.length === 0  &&
-        assessors.called.includes(this.props.userAddress)) {
-      assessors.staked.push({
-        address: 'you',
-        stage: 1
-      })
-    }
-    assessors.staked.push({address:'testAssessor', stage: 1})
+    this.props.assessors.push({address:'testAssessor', stage: 1})
     return h('div',
-             assessors.staked.map( (assessor,k) => {
+             this.props.assessors.map( (assessor,k) => {
                return h(AssessorStatusBox, {
                  assessorAddress: assessor.address,
                  assessmentAddress: this.props.address,
@@ -34,7 +23,3 @@ export class AssessorList extends Component {
 }
 
 export default AssessorList
-
-      // AssessorList.propTypes = {
-      //   assessors:  React.PropTypes.List.isRequired //TODO? how to describe the li
-      // }

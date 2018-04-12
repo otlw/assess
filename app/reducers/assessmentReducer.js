@@ -30,7 +30,7 @@ function assessments (state = initialState, action) {
     return extend(state, {[action.payload.assessment.address]: action.payload.assessment})
   }
   case RECEIVE_ASSESSORS:
-    // console.log('assessment-reducer got:', action.type, 'with payload: ', action.payload)
+    console.log('assessment-reducer got:', action.type, 'with payload: ', action.payload)
     let address = action.payload.address
     return  {
       ...state,

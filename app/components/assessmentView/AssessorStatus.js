@@ -35,7 +35,7 @@ export class AssessorStatus extends Component {
   }
 
   render() {
-    let displayString = 'assessor ' + this.props.assessorNumber + ": " + this.props.assessorAddress.slice(0,9) + '... ->   '
+    let displayString = 'assessor ' + this.props.assessorNumber + ": " + this.props.assessorAddress + '... ->   '
     let active = this.props.assessorStage === this.props.stage
     let button = this.buttonLogic[this.props.assessorStage]
     if (active) {

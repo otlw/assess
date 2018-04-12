@@ -126,55 +126,55 @@ export function fetchAssessmentData (address) {
   }
 }
 
-// reads all assessors from event-logs and reads their stage from the chain (TODO)
-// if the assessment is in the calling phase, both called & staked assessors will
-// be saved to the state
+// reads all staked assessors from event-logs and TODO reads their stage from the chain
+// if the assessment is in the calling phase one also checks whether the user has been called
+// and if, so he will be added to the list of assessors with his stage set to 1
 export function fetchAssessors (address, stage) {
   return async (dispatch, getState) => {
     let w3 = getState().connect.web3
     let networkID = getState().connect.networkID
+    let userAddress = getState().connect.userAddress
     // console.log('stagetype', typeof stage)
     try {
       // reading assessors from events
       const fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
       const fathomTokenInstance = new w3.eth.Contract(fathomTokenArtifact.abi, fathomTokenArtifact.networks[networkID].address)
-      // NOTE: if working, the first two arguemnts of the filters below should be applied here
+      // NOTE: this piece is a bit tricky, as filtering in the call usually works on the local testnet, but not on rinkeby
+      // for rinkeby one has to get all events and filter locally
       let pastEvents = await fathomTokenInstance.getPastEvents({fromBlock:0, toBlock:"latest"})
       if (pastEvents.length === []) {
         console.log('weirdly no Notifications events have been found. Try switching Metamasks network back and forth')
       }
-      // console.log('pastEvents: ', pastEvents)
-      let calledAssessors = []
+      let assessors = []
       if (stage === '1') {
         let calledNotifications = pastEvents.filter(e =>
                                                     e.event == 'Notification' &&
                                                     e.returnValues['sender'] === address &&
-                                                    e.returnValues['topic'] === '1' &&
-                                                    calledAssessors.push(e.returnValues['user']))
+                                                    e.returnValues['user'] === userAddress &&
+                                                    e.returnValues['topic'] === '1' && //NOTE: unclear why topic is a string!
+                                                    assessors.push({
+                                                      address: 'hey look, this is you!!', //e.returnValues['user']
+                                                      stage: '1'
+                                                    })
+                                                   )
       }
-      // console.log('calledAssessors ',calledAssessors )
-      let stakedAssessors = []
+      console.log('assessors after looking for calling',assessors )
       let stakedEvents = pastEvents.filter(e =>
                                            e.event == 'Notification' &&
                                            e.returnValues['sender'] === address &&
                                            e.returnValues['topic'] === '2' &&
-                                           stakedAssessors.push({
-                                             address: e.returnValues['user']
-                                                   }))
-      // console.log('stakedAssessors ', stakedAssessors )
-      // TODO: get stages
-      dispatch(receiveAssessors(address, calledAssessors, stakedAssessors, stage))
+                                           assessors.push({address: e.returnValues['user']})
+                                          )
+      console.log('asessors after looking for staked Events ', assessors )
+      // TODO: get stages by dispatching a update-assessor-stage-action
+      dispatch(receiveAssessors(address, assessors))
     } catch(e) {
-      console.log('fetching assessors from the events did not work!', e)
+      console.log('ERROR: fetching assessors from the events did not work!', e)
     }
   }
 }
 
-export function receiveAssessors (address, calledAssessors, stakedAssessors, stage) {
-  let assessors = {staked: stakedAssessors}
-  if (stage === '1') {
-    assessors['called'] = calledAssessors
-  }
+export function receiveAssessors (address, assessors) {
   return {
     type: RECEIVE_ASSESSORS,
     payload: {
