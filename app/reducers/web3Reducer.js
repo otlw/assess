@@ -10,7 +10,8 @@ let initialState = {
   isConnected: false,
   userAddress: '',
   networkID: 666,
-  balance: 0
+  balance: 0,
+  assessments:{}
 }
 
 function web3Reducer (state = initialState, action) {
