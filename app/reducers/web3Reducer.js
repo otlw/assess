@@ -11,6 +11,7 @@ let initialState = {
   userAddress: '',
   networkID: 666,
   balance: 0,
+  assessments: {},
   conceptList: []
 }
 
