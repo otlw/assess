@@ -11,11 +11,10 @@ let initialState = {
   userAddress: '',
   networkID: 4,
   balance: 0,
+  conceptList: []
 }
 
 function ethereum (state = initialState, action) {
-  // console.log('web3-reducer got:', action.type, 'with payload: ', action.payload)
-
   switch (action.type) {
   case WEB3_CONNECTED:
     return {

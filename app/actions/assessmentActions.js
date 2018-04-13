@@ -1,8 +1,14 @@
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
+export const RECEIVE_ALL_ASSESSMENTS = 'RECEIVE_ALL_ASSESSMENTS'
 export const RECEIVE_ASSESSORS = 'RECEIVE_ASSESSORS'
 export const SET_ASSESSMENT = 'SET_ASSESSMENT'
+const ethereumjsABI = require('ethereumjs-abi')
+const assessmentArtifact = require('../../build/contracts/Assessment.json')
+const conceptArtifact = require('../../build/contracts/Concept.json')
+const fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
 
-var ethereumjsABI = require('ethereumjs-abi')
+import { receiveVariable } from './async.js'
+
 export function hashScoreAndSalt (_score, _salt) {
   return '0x' + ethereumjsABI.soliditySHA3(
     ['int128', 'string'],
@@ -18,7 +24,6 @@ export function confirmAssessor (address) {
 	  let userAddress = getState().ethereum.userAddress
 	  // instanciate Concept Contract
 	  try {
-	    var assessmentArtifact = require('../../build/contracts/Assessment.json')
 	    var abi = assessmentArtifact.abi
 	  } catch (e) {
 	    console.error(e)
@@ -37,7 +42,6 @@ export function commit (address, score, salt) {
 	  let userAddress = getState().ethereum.userAddress
 	  // instantiate Concept Contract
 	  try {
-	    var assessmentArtifact = require('../../build/contracts/Assessment.json')
 	    var abi = assessmentArtifact.abi
 	  } catch (e) {
 	    console.error(e)
@@ -58,7 +62,6 @@ export function reveal (address, score, salt) {
 	  let userAddress = getState().ethereum.userAddress
 	  // instanciate Concept Contract
 	  try {
-	    var assessmentArtifact = require('../../build/contracts/Assessment.json')
 	    var abi = assessmentArtifact.abi
 	  } catch (e) {
 	    console.error(e)
@@ -70,26 +73,44 @@ export function reveal (address, score, salt) {
   }
 }
 
+// fetch assessment data for one given assessment
 export function fetchAssessmentData (address) {
   return async (dispatch, getState) => {
     let w3 = getState().ethereum.web3
-    try {
-      const assessmentArtifact = require('../../build/contracts/Assessment.json')
-      const assessmentInstance = new w3.eth.Contract(assessmentArtifact.abi, address)
-      let cost = await assessmentInstance.methods.cost().call()
-      let size = await assessmentInstance.methods.size().call()
-      let stage = await assessmentInstance.methods.assessmentStage().call()
-      let assessee = await assessmentInstance.methods.assessee().call()
-      dispatch(receiveAssessment({
-        address: address,
-        cost: cost,
-        size: size,
-        assessee: assessee,
-        stage: stage,
-      }))
-    } catch(e) {
-      console.log('reading from the chain did not work!', e)
+    dispatch(receiveAssessment(await readAssessmentDataFromChain(address, w3)))
+  }
+}
+
+async function readAssessmentDataFromChain (address, w3) {
+  try {
+    let assessmentInstance = new w3.eth.Contract(assessmentArtifact.abi, address)
+    let cost = await assessmentInstance.methods.cost().call()
+    let size = await assessmentInstance.methods.size().call()
+    let stage = await assessmentInstance.methods.assessmentStage().call()
+    let assessee = await assessmentInstance.methods.assessee().call()
+    let conceptAddress = await assessmentInstance.methods.concept().call()
+
+    // get data from associated concept
+    let conceptInstance = new w3.eth.Contract(conceptArtifact.abi, conceptAddress)
+    let conceptData = await conceptInstance.methods.data().call()
+    if (conceptData) {
+      conceptData = Buffer.from(conceptData.slice(2), 'hex').toString('utf8')
+    } else {
+      conceptData = 'No Data in this Concept'
     }
+
+    return {
+      address,
+      cost,
+      size,
+      assessee,
+      stage,
+      conceptAddress,
+      conceptData
+    }
+  } catch(e) {
+    console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
+    //TODO how to end this in case of error?
   }
 }
 
@@ -103,7 +124,6 @@ export function fetchAssessors (address, stage) {
     let userAddress = getState().ethereum.userAddress
     try {
       // reading assessors from events
-      const fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
       const fathomTokenInstance = new w3.eth.Contract(fathomTokenArtifact.abi, fathomTokenArtifact.networks[networkID].address)
       // NOTE: this piece is a bit tricky, as filtering in the call usually works on the local testnet, but not on rinkeby
       // for rinkeby one has to get all events and filter locally
@@ -129,11 +149,9 @@ export function fetchAssessors (address, stage) {
 
 export function fetchAssessorStages (address, assessors, checkUserAddress=false) {
 	return async (dispatch, getState) => {
-    console.log('entered')
 	  let w3 = getState().ethereum.web3
 	  // instanciate Concept Contract
 	  try {
-	    var assessmentArtifact = require('../../build/contracts/Assessment.json')
 	    var abi = assessmentArtifact.abi
 	  } catch (e) {
 	    console.error(e)
@@ -155,6 +173,89 @@ export function fetchAssessorStages (address, assessors, checkUserAddress=false)
   }
 }
 
+export function fetchAssessmentsAndNotificationsFromFathomToken () {
+  return async (dispatch, getState) => {
+    // get State data
+    let w3 = getState().ethereum.web3
+    let userAddress = getState().ethereum.userAddress
+    let networkID = await getState().ethereum.networkID
+    let assessments = getState().assessments
+
+    // get notification events from fathomToken contract
+    const abi = fathomTokenArtifact.abi
+    let fathomTokenAddress = fathomTokenArtifact.networks[networkID].address
+
+    // instantiate Concept registery Contract
+    const fathomTokenInstance = await new w3.eth.Contract(abi, fathomTokenAddress)
+    // filter notifications meant for the user
+    let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {filter: {user: userAddress}, fromBlock: 0, toBlock: 'latest'})
+
+    // update assessment object acording to notification 'topic', ie stage (see FathomToken.sol in contracts folder)
+    pastNotifications.forEach((notification) => {
+      let assessmentAddress = notification.returnValues.sender
+      //fetch old version of the assessment, if it exists
+      let stage = Number(notification.returnValues.topic)
+      let role = ""
+      if (assessments[assessmentAddress]){
+        stage=assessments[assessmentAddress].stage
+        role=assessments[assessmentAddress].role
+      }
+
+      //update user role if relevant
+      if (notification.returnValues.topic==="0"){
+        role="assessee"
+      } else if ((notification.returnValues.topic==="1")&&notification.returnValues.role!=="assessor"){
+        role="potAssessor"
+      } else if (notification.returnValues.topic==="2"){
+        role="assessor"
+      }
+
+      //update stage if bigger than the current one
+      if (Number(notification.returnValues.topic)>stage){
+        stage=Number(notification.returnValues.topic)
+      }
+
+      //assign all new fields to the assessments object
+      assessments[assessmentAddress] = {...assessments[assessmentAddress],role, stage}
+    })
+    dispatch(receiveVariable('assessments', assessments))
+    // this is for when we need to show more than just the address
+    dispatch(getAssessmentDataFromContracts())
+  }
+}
+
+// fetches assessmentData for ALL assessments in state
+export function getAssessmentDataFromContracts () {
+  return async (dispatch, getState) => {
+    // get necessary data
+    let w3 = getState().ethereum.web3
+    let assessments = Object.assign({}, getState().assessments)
+
+    // get all assessment addresses (minus the selectedAssessment-key)
+    let assessmentAddresses = Object.keys(assessments)
+
+    //remove the selectedAssessment-key:
+    let index = assessmentAddresses.indexOf('selectedAssessment')
+    if (index >= 0) {
+      assessmentAddresses.splice(index, 1)
+    }
+
+    // process them
+    let count = 0
+    assessmentAddresses.forEach(async (address) => {
+      // get info from assessment
+      let assessment = await readAssessmentDataFromChain(address, w3)
+      assessments[address] = {...assessments[address], assessment}
+
+      count++
+      if (assessmentAddresses.length === count) {
+        dispatch(receiveVariable('assessments', assessments))
+      }
+    })
+  }
+}
+
+
 // ============== sync actions ===================
 
 export function receiveAssessors (address, assessors) {
@@ -172,9 +273,17 @@ export function receiveAssessment(assessment) {
   }
 }
 
+export function receiveAllAssessments(assessments) {
+  return {
+    type: RECEIVE_ALL_ASSESSMENTS,
+    assessments
+  }
+}
+
 export function setAssessment (address) {
   return {
     type: SET_ASSESSMENT,
     address
   }
 }
+
