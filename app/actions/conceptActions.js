@@ -6,14 +6,9 @@ export function loadConceptsFromConceptRegistery () {
     let networkID = getState().networkID
 
     // instanciate Concept registery Contract
-    try {
-      var conceptRegistryArtifact = require('../../build/contracts/ConceptRegistry.json')
-      var abi = conceptRegistryArtifact.abi
-      var contractAddress = conceptRegistryArtifact.networks[networkID].address
-    } catch (e) {
-      console.error(e)
-      return
-    }
+    const conceptRegistryArtifact = require('../../build/contracts/ConceptRegistry.json')
+    const abi = conceptRegistryArtifact.abi
+    let contractAddress = conceptRegistryArtifact.networks[networkID].address
     const contractInstance = await new w3.eth.Contract(abi, contractAddress)
 
     // get concepts from registry
@@ -30,13 +25,8 @@ export const listConcepts = (conceptRegistryInstance) => {
 
     let conceptList = await Promise.all(pastevents.map(async (event) => {
       // instanciate Concept Contract to get 'data' (ie the name of the concept)
-      try {
-        var conceptArtifact = require('../../build/contracts/Concept.json')
-        var abi = conceptArtifact.abi
-      } catch (error) {
-        console.error(error)
-        return
-      }
+      const conceptArtifact = require('../../build/contracts/Concept.json')
+      const abi = conceptArtifact.abi
       let conceptInstance = await new w3.eth.Contract(abi, event.returnValues._concept)
 
       // get data
@@ -58,13 +48,8 @@ export function loadConceptContractAndCreateAssessment (address) {
     let userAddress = getState().userAddress
 
     // instanciate Concept Contract
-    try {
-      var conceptArtifact = require('../../build/contracts/Concept.json')
-      var abi = conceptArtifact.abi
-    } catch (e) {
-      console.error(e)
-      return
-    }
+    const conceptArtifact = require('../../build/contracts/Concept.json')
+    const abi = conceptArtifact.abi
     let conceptInstance = await new w3.eth.Contract(abi, address)
 
     // define constants for assessments => those could be move to a config file
