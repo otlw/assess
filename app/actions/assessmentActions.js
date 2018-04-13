@@ -10,26 +10,20 @@ export function updateAssessmentsAndNotificationsFromFathomToken () {
     let assessments=getState().assessments
 
     //get notification events from fathomToken contract
-    try {
-      var fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
-      var abi = fathomTokenArtifact.abi
-      var fathomTokenAddress = fathomTokenArtifact.networks[networkID].address
-    } catch (e) {
-      console.error(e)
-      return;
-    }
+      const fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
+      const abi = fathomTokenArtifact.abi
+      let fathomTokenAddress = fathomTokenArtifact.networks[networkID].address
+
     // instanciate Concept registery Contract
     const fathomTokenInstance = await new w3.eth.Contract(abi, fathomTokenAddress)
     //filter notifications meant for the user
     let pastNotifications = await fathomTokenInstance.getPastEvents('Notification',{filter: {user: userAddress},fromBlock: 0, toBlock: 'latest'})
-    console.log("pastNotifications")
-    console.log(pastNotifications)
+
     //update assessment object acording to notification 'topic', ie stage (see FathomToken.sol in contracts folder)
     //NB: maybe we should add a condition to only update stage to a higher number, since notifications could come in the wrong order (could they?)
     pastNotifications.forEach((notification)=>{
       switch (notification.returnValues.topic){
         case '0':
-        console.log("oh")
           assessments[notification.returnValues.sender]={assessee:userAddress,role:"assessee",stage:0}
           break;
         case '1':

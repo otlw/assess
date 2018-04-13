@@ -26,6 +26,10 @@ export class AssessmentFilterView extends Component {
     }
   }
 
+  setTab(e){
+    this.setState({selectedTab:e.target.innerHTML})
+  }
+
   render () {
       let userAddress = this.props.userAddress
 
@@ -37,9 +41,9 @@ export class AssessmentFilterView extends Component {
       //map tab components according to selected tab
       let tabs=["Past","Current","Potential"].map((tabName)=>{
         if (tabName===this.state.selectedTab){
-          return h("div",{style:{...filterViewStyles.tabStyle,color:"blue"}},tabName)
+          return h("div",{style:{...filterViewStyles.tabStyle,color:"blue"},onClick:this.setTab.bind(this)},tabName)
         } else{
-          return h("div",{style:filterViewStyles.tabStyle},tabName)
+          return h("div",{style:filterViewStyles.tabStyle,onClick:this.setTab.bind(this)},tabName)
         }
       })
 

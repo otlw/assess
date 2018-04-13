@@ -25,6 +25,8 @@ export class AssessmentItem extends Component {
       h('div', assessment.address),
       h('div', itemStyle.titleStyle, 'stage'),
       h('div', assessment.stage),
+      h('div', itemStyle.titleStyle, 'role'),
+      h('div', assessment.role),
       h('br')
     ])
   }
