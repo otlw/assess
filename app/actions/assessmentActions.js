@@ -1,6 +1,6 @@
 import {receiveVariable} from './async.js'
 
-export function updateAssessmentsAndNotificationsFromFathomToken () {
+export function fetchAssessmentsAndNotificationsFromFathomToken () {
   return async (dispatch, getState) => {
     // get State data
     let w3 = getState().web3
@@ -55,11 +55,10 @@ export function getAssessmentDataFromContracts () {
   return async (dispatch, getState) => {
     // get necessary data
     let w3 = getState().web3
-    let oldAssessments = getState().assessments
+    let assessments = Object.assign({}, getState().assessments)
 
     var assessmentArtifact = require('../../build/contracts/Assessment.json')
     var conceptArtifact = require('../../build/contracts/Concept.json')
-    let assessments = Object.assign({}, oldAssessments)
 
     // get all assessment addresses
     let listOfAssessmentAddresses = Object.keys(assessments)
@@ -74,9 +73,6 @@ export function getAssessmentDataFromContracts () {
       let startTime = await assessmentInstance.methods.checkpoint().call()
       let endTime = await assessmentInstance.methods.endTime().call()
       let conceptAddress = await assessmentInstance.methods.concept().call()
-
-      // should this be necessary for the filtervIew? (we already have assessee knowledge IF the user is the assessee)
-      // let assessee = await assessmentInstance.methods.assessee().call()
 
       // get data from associated concept
       let conceptInstance = new w3.eth.Contract(conceptArtifact.abi, conceptAddress)
