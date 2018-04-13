@@ -76,6 +76,8 @@ export function getAssessmentDataFromContracts () {
       let assessmentInstance = new w3.eth.Contract(assessmentArtifact.abi, address)
       let cost = await assessmentInstance.methods.cost().call()
       let size = await assessmentInstance.methods.size().call()
+      let startTime = await assessmentInstance.methods.checkpoint().call()
+      let endTime = await assessmentInstance.methods.endTime().call()
       let conceptAddress = await assessmentInstance.methods.concept().call()
 
       // should this be necessary for the filtervIew? (we already have assessee knowledge IF the user is the assessee)
@@ -95,7 +97,8 @@ export function getAssessmentDataFromContracts () {
         address,
         cost,
         size,
-        // assessee,
+        startTime,
+        endTime,
         conceptAddress,
         conceptData
       }
