@@ -1,6 +1,6 @@
 import { Component } from 'react'
 import h from 'react-hyperscript'
-import AssessmentFilterViewBox from "../containers/AssessmentFilterViewBox"
+import AssessmentFilterViewBox from '../containers/AssessmentFilterViewBox'
 
 export class AssessmentDashboardApp extends Component {
   render () {

@@ -1,6 +1,6 @@
 import Web3 from 'web3'
 
-import {updateAssessmentsAndNotificationsFromFathomToken} from "./assessmentActions"
+import {updateAssessmentsAndNotificationsFromFathomToken} from './assessmentActions'
 
 export const WEB3_CONNECTED = 'WEB3_CONNECTED'
 export const WEB3_DISCONNECTED = 'WEB3_DISCONNECTED'
