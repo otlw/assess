@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import h from 'react-hyperscript'
+import {Link} from 'react-router-dom'
 
 // styles
 const itemStyle = {
@@ -18,11 +19,10 @@ const itemStyle = {
 export class AssessmentItem extends Component {
   render () {
     const assessment = this.props.assessment
-
     return h('div', {style: itemStyle.frameStyle}, [
       h('br'),
       h('div', itemStyle.titleStyle, 'Assessment'),
-      h('div', assessment.address),
+      h(Link, {to: 'assessment/' + assessment.address}, assessment.address),
       h('div', itemStyle.titleStyle, 'stage'),
       h('div', assessment.stage),
       h('div', itemStyle.titleStyle, 'role'),

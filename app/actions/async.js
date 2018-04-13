@@ -68,7 +68,6 @@ export function web3Disconnected () {
   }
 }
 
-
 // to save something from the chain in state
 export function receiveVariable (name, value) {
   return {
