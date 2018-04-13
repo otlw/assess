@@ -1,5 +1,5 @@
 import { Component } from 'react'
-var h = require('react-hyperscript')
+import h from 'react-hyperscript'
 
 const NetworkNames = {
   4: 'rinkeby',
@@ -10,7 +10,7 @@ const NetworkNames = {
 
 export class Header extends Component {
   componentWillMount () {
-    this.props.web3Connect()
+    this.props.connect()
   }
 
   render () {

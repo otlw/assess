@@ -1,6 +1,6 @@
 import { Component } from 'react'
 import AssessmentCreationBox from '../containers/AssessmentCreationBox'
-var h = require('react-hyperscript')
+import h from 'react-hyperscript'
 
 export class AssessmentDashboardApp extends Component {
   render () {

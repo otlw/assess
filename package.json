@@ -16,6 +16,9 @@
   },
   "author": "Jared Pereira",
   "license": "MIT",
+  "standard":{
+    "globals": ["it", "contract", "assert", "describe", "artifacts"]
+  },
   "devDependencies": {
     "babel-core": "^6.4.5",
     "babel-loader": "^6.2.1",
