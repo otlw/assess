@@ -19,7 +19,7 @@ contract('Assessment', function(accounts) {
     let assessmentData;
 
     let cost = 10000000;
-    let size = 5;
+    let size = 3;
     let timeLimit = 100000000;
     let waitTime = 100;
 
@@ -68,35 +68,38 @@ contract('Assessment', function(accounts) {
           await assessedConcept.makeAssessment(cost, 3, waitTime, timeLimit)
         } catch (e) {
           if (e.toString().indexOf('revert') > 0) {
-            assert(true)
+            return assert(true)
           }
           else {
-            assert(false, e.toString())
+            return assert(false, e.toString())
           }
         }
+        assert(false)
       })
-        it("should initiate an assessment", async () => {
-            ethBalancesBefore = utils.getEthBalances(accounts.slice(0,nInitialUsers + 2))
 
-            assessmentData = await chain.makeAssessment(assessedConcept.address, assessee, cost, size, waitTime, timeLimit)
-            receiptFromMakeAssessment = assessmentData.txResult.receipt
+      it("should initiate an assessment", async () => {
+        ethBalancesBefore = utils.getEthBalances(accounts.slice(0,nInitialUsers + 2))
 
-            gasCosts.push({function: "makeAssessment",
-                           cost: {
-                               ether:web3.fromWei(receiptFromMakeAssessment.gasUsed * gasPrice, "ether"),
-                               $: utils.weiToDollar(receiptFromMakeAssessment.gasUsed * gasPrice, etherPrice)
-                           }})
+        assessmentData = await chain.makeAssessment(assessedConcept.address, assessee, cost, size, waitTime, timeLimit)
+        receiptFromMakeAssessment = assessmentData.txResult.receipt
 
-            assessmentContract = Assessment.at(assessmentData.address)
+        console.log('gasPrice',gasPrice)
+        gasCosts.push({function: "makeAssessment",
+                       cost: {
+                         ether:web3.fromWei(receiptFromMakeAssessment.gasUsed * gasPrice, "ether"),
+                         $: utils.weiToDollar((receiptFromMakeAssessment.gasUsed * gasPrice).toString(), etherPrice)
+                       }})
 
-            assert.isTrue(await assessedConcept.assessmentExists.call(assessmentContract.address), "the assessment hasn't been created")
-        })
+        assessmentContract = Assessment.at(assessmentData.address)
 
-        it("should charge the assessee", async() => {
-            const balance = await aha.balanceOf.call(assessee)
-            assert.equal(balance.toNumber(), assesseeInitialBalance - cost*size, "the assessee did not get charged correctly")
-            })
-        })
+        assert.isTrue(await assessedConcept.assessmentExists.call(assessmentContract.address), "the assessment hasn't been created")
+      })
+
+      it("should charge the assessee", async() => {
+        const balance = await aha.balanceOf.call(assessee)
+        assert.equal(balance.toNumber(), assesseeInitialBalance - cost*size, "the assessee did not get charged correctly")
+      })
+    })
 
     describe('In assessment stage', function() {
         let receiptFromLastReveal;
@@ -161,7 +164,7 @@ contract('Assessment', function(accounts) {
                 gasCosts.push({function: "commit",
                                cost: {
                                    ether:web3.fromWei(receiptFromLastCommit.gasUsed * gasPrice, "ether"),
-                                   $: utils.weiToDollar(receiptFromLastCommit.gasUsed * gasPrice, etherPrice)
+                                 $: utils.weiToDollar((receiptFromLastCommit.gasUsed * gasPrice).toString(), etherPrice)
                                }
                               })
 
@@ -195,8 +198,8 @@ contract('Assessment', function(accounts) {
                 receiptFromLastReveal = result.receipt
                 gasCosts.push({function: "last Reveal + calculate + payout",
                                cost: {
-                                   ether:web3.fromWei(receiptFromLastReveal.gasUsed * gasPrice, "ether"),
-                                   $: utils.weiToDollar(receiptFromLastReveal.gasUsed * gasPrice, etherPrice)
+                                 ether:web3.fromWei(receiptFromLastReveal.gasUsed * gasPrice, "ether"),
+                                 $: utils.weiToDollar((receiptFromLastReveal.gasUsed * gasPrice).toString(), etherPrice)
                                }
                               })
 

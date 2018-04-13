@@ -185,7 +185,7 @@ contract Concept {
       // get membernumber of mew to see whether there are more than 200 users in the system:
       address mewAddress = conceptRegistry.mewAddress();
       uint nMemberInMew = Concept(mewAddress).getMemberLength();
-      if (nMemberInMew < size * constants.MIN_ASSESSMENT_SIZE()) {
+      if (nMemberInMew < size * constants.ASSESSORPOOL_SIZE_FACTOR()) {
         newAssessment.callAllFromMew(nMemberInMew, mewAddress);
       } else {
         newAssessment.setAssessorPool(block.number, address(this), size*constants.MIN_ASSESSMENT_SIZE());

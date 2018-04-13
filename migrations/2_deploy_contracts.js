@@ -39,9 +39,9 @@ module.exports = function(deployer) {
   let initialAhaAccount = accounts[0]
   let initialAmount = 10000000000 * (nInitialMewMembers+3)
 
-  let minAssessmentSize = 5;
-  let challengePeriod = 60*60*12;
-  let assessorpoolSizeFactor = 5;
+  let minAssessmentSize = 2;
+  let challengePeriod = 7;
+  let assessorpoolSizeFactor = 14;
 
   var distributor;
   deployer.deploy(Math);
