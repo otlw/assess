@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import AssessmentList from '../components/AssessmentList'
+import AssessmentList from './AssessmentList'
 
 import h from 'react-hyperscript'
 

@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import AssessmentItem from '../components/AssessmentItem'
+import AssessmentItem from './AssessmentItem'
 import h from 'react-hyperscript'
 
 const assessmentListStyle = {
