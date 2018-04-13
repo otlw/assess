@@ -1,6 +1,6 @@
-import { connect } from 'react-redux'
+import { connect as connectRedux } from 'react-redux'
 import Header from '../components/Header'
-import { web3Connect, receiveVariable } from '../actions/async.js'
+import { connect, receiveVariable } from '../actions/async.js'
 
 const mapStateToProps = state => {
   return {
@@ -12,8 +12,8 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-  web3Connect,
+  connect,
   receiveVariable
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header)
+export default connectRedux(mapStateToProps, mapDispatchToProps)(Header)

@@ -17,12 +17,12 @@ const store = createStore(
 
 render(
   h(Provider, {store},
-	  h(HashRouter, [
+    h(HashRouter, [
 	  	h('div', [
-	  		h(HeaderBox),
-		    h(Route, {exact: true, path: '/', component: AssessmentDashboardApp}),
-		    h(Route, {path: '/assessment/:id', component: AssessmentViewApp})
+		  	h(HeaderBox),
+	        h(Route, {exact: true, path: '/', component: AssessmentDashboardApp}),
+	        h(Route, {path: '/assessment/:id', component: AssessmentViewApp})
       	])
-	  ])),
+    ])),
   document.getElementById('root')
 )
