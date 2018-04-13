@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import AssessmentViewApp from '../components/assessmentView/'
 import { fetchAssessmentData,
          fetchAssessors,
-         setAssessment } from '../actions/async'
+         setAssessment } from '../actions/assessmentActions'
 
 const mapStateToProps = state => {
   return {

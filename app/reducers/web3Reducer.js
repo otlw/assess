@@ -2,8 +2,6 @@ import {
   RECEIVE_VARIABLE,
   WEB3_CONNECTED,
   WEB3_DISCONNECTED,
-  RECEIVE_ASSESSMENT,
-  SET_ASSESSMENT
 } from '../actions/async.js'
 
 let initialState = {

@@ -2,7 +2,7 @@ import {
   RECEIVE_ASSESSMENT,
   RECEIVE_ASSESSORS,
   SET_ASSESSMENT
-} from '../actions/async.js'
+} from '../actions/assessmentActions'
 
 import extend from 'xtend'
 
@@ -23,17 +23,17 @@ function assessments (state = initialState, action) {
   case SET_ASSESSMENT:
     return {
       ...state,
-      selectedAssessment: action.payload.address
+      selectedAssessment: action.address
     }
   case RECEIVE_ASSESSMENT: {
-    return extend(state, {[action.payload.assessment.address]: action.payload.assessment})
+    return extend(state, {[action.assessment.address]: action.assessment})
   }
   case RECEIVE_ASSESSORS:
-    console.log('assessment-reducer got:', action.type, 'with payload: ', action.payload)
-    let address = action.payload.address
+    console.log('assessment-reducer got:', action.type, 'with payload: ', action)
+    let address = action.address
     return  {
       ...state,
-      [address]: extend(state[address], {assessors:action.payload.assessors})
+      [address]: extend(state[address], {assessors:action.assessors})
     }
   default:
     return state
