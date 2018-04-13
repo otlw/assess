@@ -19,6 +19,8 @@ export class AssessorStatus extends Component {
      2: {function: this.commit, text: 'Commit a score!'},
      3: {function: this.reveal, text: 'Reveal your score!'},
    }
+   this.salt = 'hihi'
+   this.score = 100
  }
 
   stake() {
@@ -26,12 +28,16 @@ export class AssessorStatus extends Component {
   }
 
   commit() {
+    window.alert("Please write down your salt:", this.salt)
+    this.props.commit(this.props.assessmentAddress, this.score, this.salt)
   }
 
   reveal() {
+    this.props.reveal(this.props.assessmentAddress, this.score, this.salt)
   }
 
   steal() {
+    //TODO
   }
 
   render() {

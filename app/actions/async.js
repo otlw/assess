@@ -134,7 +134,6 @@ export function fetchAssessors (address, stage) {
     let w3 = getState().connect.web3
     let networkID = getState().connect.networkID
     let userAddress = getState().connect.userAddress
-    // console.log('stagetype', typeof stage)
     try {
       // reading assessors from events
       const fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
@@ -142,35 +141,50 @@ export function fetchAssessors (address, stage) {
       // NOTE: this piece is a bit tricky, as filtering in the call usually works on the local testnet, but not on rinkeby
       // for rinkeby one has to get all events and filter locally
       let pastEvents = await fathomTokenInstance.getPastEvents({fromBlock:0, toBlock:"latest"})
+      // console.log('pastEvents ',pastEvents )
       if (pastEvents.length === []) {
         console.log('weirdly no Notifications events have been found. Try switching Metamasks network back and forth')
       }
       let assessors = []
-      if (stage === '1') {
-        let calledNotifications = pastEvents.filter(e =>
-                                                    e.event == 'Notification' &&
-                                                    e.returnValues['sender'] === address &&
-                                                    e.returnValues['user'] === userAddress &&
-                                                    e.returnValues['topic'] === '1' && //NOTE: unclear why topic is a string!
-                                                    assessors.push({
-                                                      address: 'hey look, this is you!!', //e.returnValues['user']
-                                                      stage: '1'
-                                                    })
-                                                   )
-      }
-      console.log('assessors after looking for calling',assessors )
       let stakedEvents = pastEvents.filter(e =>
                                            e.event == 'Notification' &&
                                            e.returnValues['sender'] === address &&
                                            e.returnValues['topic'] === '2' &&
-                                           assessors.push({address: e.returnValues['user']})
+                                           assessors.push(e.returnValues['user'])
                                           )
       console.log('asessors after looking for staked Events ', assessors )
-      // TODO: get stages by dispatching a update-assessor-stage-action
-      dispatch(receiveAssessors(address, assessors))
+      dispatch(fetchAssessorStages(address, assessors, stage==='1'))
     } catch(e) {
       console.log('ERROR: fetching assessors from the events did not work!', e)
     }
+  }
+}
+
+export function fetchAssessorStages (address, assessors, checkUserAddress=false) {
+	return async (dispatch, getState) => {
+    console.log('entered')
+	  let w3 = getState().connect.web3
+	  // instanciate Concept Contract
+	  try {
+	    var assessmentArtifact = require('../../build/contracts/Assessment.json')
+	    var abi = assessmentArtifact.abi
+	  } catch (e) {
+	    console.error(e)
+	  }
+	  let assessmentInstance = await new w3.eth.Contract(abi, address)
+    let assessorStages = []
+    for (let i=0; i<assessors.length; i++) {
+      let stage = await assessmentInstance.methods.assessorState(assessors[i]).call()
+      assessorStages.push({address: assessors[i], stage: stage})
+    }
+    if (checkUserAddress) {
+	    let userAddress = getState().connect.userAddress
+      let userStage = await assessmentInstance.methods.assessorState(userAddress).call()
+      if (userStage === '1') {
+        assessorStages.push({address: userAddress, stage: userStage})
+      }
+    }
+    dispatch(receiveAssessors(address, assessorStages))
   }
 }
 
@@ -183,7 +197,6 @@ export function receiveAssessors (address, assessors) {
     }
   }
 }
-
 
 // to save something from the chain in state
 export function receiveVariable (name, value) {
