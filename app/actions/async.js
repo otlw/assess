@@ -50,7 +50,7 @@ export function web3Disconnected () {
 
 export function fetchUserAddress () {
   return async (dispatch, getState) => {
-    let w3 = getState().connect.web3
+    let w3 = getState().ethereum.web3
     let accounts = await w3.eth.getAccounts()
     if (accounts.length === 0) {
       dispatch(receiveVariable('userAddress', 'pleaseEnterPasswordToUnblockMetamask'))
@@ -63,7 +63,7 @@ export function fetchUserAddress () {
 
 export function fetchNetworkID () {
   return async (dispatch, getState) => {
-    let w3 = getState().connect.web3
+    let w3 = getState().ethereum.web3
     let networkID = await w3.eth.net.getId()
     dispatch(receiveVariable('networkID', networkID))
   }
@@ -71,12 +71,12 @@ export function fetchNetworkID () {
 
 export function fetchAHABalance () {
   return async (dispatch, getState) => {
-    let w3 = getState().connect.web3
-    let userAddress = getState().connect.userAddress
+    let w3 = getState().ethereum.web3
+    let userAddress = getState().ethereum.userAddress
     let networkID = await w3.eth.net.getId()
 
     // get token contract
-    // THIS THROWS AN ERROR 
+    // THIS THROWS AN ERROR
     const ahaArtifact = require('../../build/contracts/FathomToken.json')
     const ahaContract = await new w3.eth.Contract(ahaArtifact.abi, ahaArtifact.networks[networkID].address)
     // get balance from contract
@@ -105,7 +105,7 @@ export function setAssessment (address) {
 
 export function fetchAssessmentData (address) {
   return async (dispatch, getState) => {
-    let w3 = getState().connect.web3
+    let w3 = getState().ethereum.web3
     try {
       const assessmentArtifact = require('../../build/contracts/Assessment.json')
       const assessmentInstance = new w3.eth.Contract(assessmentArtifact.abi, address)
@@ -126,14 +126,14 @@ export function fetchAssessmentData (address) {
   }
 }
 
-// reads all staked assessors from event-logs and TODO reads their stage from the chain
+// reads all staked assessors from event-logs and reads their stage from the chain
 // if the assessment is in the calling phase one also checks whether the user has been called
 // and if, so he will be added to the list of assessors with his stage set to 1
 export function fetchAssessors (address, stage) {
   return async (dispatch, getState) => {
-    let w3 = getState().connect.web3
-    let networkID = getState().connect.networkID
-    let userAddress = getState().connect.userAddress
+    let w3 = getState().ethereum.web3
+    let networkID = getState().ethereum.networkID
+    let userAddress = getState().ethereum.userAddress
     try {
       // reading assessors from events
       const fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
@@ -152,7 +152,7 @@ export function fetchAssessors (address, stage) {
                                            e.returnValues['topic'] === '2' &&
                                            assessors.push(e.returnValues['user'])
                                           )
-      console.log('asessors after looking for staked Events ', assessors )
+      // console.log('asessors after looking for staked Events ', assessors )
       dispatch(fetchAssessorStages(address, assessors, stage==='1'))
     } catch(e) {
       console.log('ERROR: fetching assessors from the events did not work!', e)
@@ -163,7 +163,7 @@ export function fetchAssessors (address, stage) {
 export function fetchAssessorStages (address, assessors, checkUserAddress=false) {
 	return async (dispatch, getState) => {
     console.log('entered')
-	  let w3 = getState().connect.web3
+	  let w3 = getState().ethereum.web3
 	  // instanciate Concept Contract
 	  try {
 	    var assessmentArtifact = require('../../build/contracts/Assessment.json')
@@ -178,7 +178,7 @@ export function fetchAssessorStages (address, assessors, checkUserAddress=false)
       assessorStages.push({address: assessors[i], stage: stage})
     }
     if (checkUserAddress) {
-	    let userAddress = getState().connect.userAddress
+	    let userAddress = getState().ethereum.userAddress
       let userStage = await assessmentInstance.methods.assessorState(userAddress).call()
       if (userStage === '1') {
         assessorStages.push({address: userAddress, stage: userStage})

@@ -8,7 +8,7 @@ const mapStateToProps = state => {
   return {
     assessment: state.assessments[state.assessments.selectedAssessment],
     selectedAssessment: state.assessments.selectedAssessment,
-    userAddress: state.connect.userAddress
+    userAddress: state.ethereum.userAddress
   }
 }
 

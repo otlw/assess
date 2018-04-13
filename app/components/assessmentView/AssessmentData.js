@@ -34,8 +34,4 @@ export class AssessmentData extends Component {
   }
 }
 
-AssessmentData.propTypes = {
-  /* assessment:  React.PropTypes.object.isRequired */
-}
-
 export default AssessmentData

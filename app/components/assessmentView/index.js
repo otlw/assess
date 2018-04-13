@@ -38,7 +38,7 @@ export class AssessmentViewApp extends Component {
           }),
           h(AssessorList, {
             userAddress: this.props.userAddress,
-            address: this.props.selectedAssessment,
+            assessmentAddress: this.props.selectedAssessment,
             assessors: assessment.assessors,
             stage: assessment.stage
           })

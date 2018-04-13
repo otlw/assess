@@ -15,7 +15,7 @@ let initialState = {
   balance: 0,
 }
 
-function connect (state = initialState, action) {
+function ethereum (state = initialState, action) {
   // console.log('web3-reducer got:', action.type, 'with payload: ', action.payload)
 
   switch (action.type) {
@@ -43,4 +43,4 @@ function connect (state = initialState, action) {
   }
 }
 
-export default connect
+export default ethereum

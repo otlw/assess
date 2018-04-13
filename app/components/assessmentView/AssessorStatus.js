@@ -67,9 +67,4 @@ export class AssessorStatus extends Component {
   }
 }
 
-AssessorStatus.propTypes = {
-  assessorAddress:  React.PropTypes.string.isRequired,
-  assessorNumber:  React.PropTypes.number.isRequired
-}
-
 export default AssessorStatus

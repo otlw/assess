@@ -4,10 +4,10 @@ import { web3Connect, receiveVariable } from '../actions/async.js'
 
 const mapStateToProps = state => {
   return {
-    web3_version: state.connect.web3_version,
-    userAddress: state.connect.userAddress,
-    networkID: state.connect.networkID,
-    balance: state.connect.balance
+    web3_version: state.ethereum.web3_version,
+    userAddress: state.ethereum.userAddress,
+    networkID: state.ethereum.networkID,
+    balance: state.ethereum.balance
   }
 }
 

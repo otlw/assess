@@ -4,8 +4,7 @@ import {
   SET_ASSESSMENT
 } from '../actions/async.js'
 
-var extend = require("xtend")
-
+import extend from 'xtend'
 
 let initialState = {
   selectedAssessment: '',
