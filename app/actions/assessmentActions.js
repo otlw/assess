@@ -19,36 +19,31 @@ export function updateAssessmentsAndNotificationsFromFathomToken () {
     let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {filter: {user: userAddress}, fromBlock: 0, toBlock: 'latest'})
 
     // update assessment object acording to notification 'topic', ie stage (see FathomToken.sol in contracts folder)
-    // NB: maybe we should add a condition to only update stage to a higher number, since notifications could come in the wrong order (could they?)
     pastNotifications.forEach((notification) => {
-      switch (notification.returnValues.topic) {
-        case '0':
-          assessments[notification.returnValues.sender] = {assessee: userAddress, role: 'assessee', stage: 0}
-          break
-        case '1':
-          assessments[notification.returnValues.sender] = {potAssessor: [userAddress], role: 'potAssessor', stage: 1}
-          break
-        case '2':
-          assessments[notification.returnValues.sender] = {assessor: [userAddress], role: 'assessor', stage: 2}
-          break
-        case '3':
-          assessments[notification.returnValues.sender] = {...assessments[notification.returnValues.sender], stage: 3}
-          break
-        case '4':
-          assessments[notification.returnValues.sender] = {...assessments[notification.returnValues.sender], stage: 4}
-          break
-        case '5':
-          assessments[notification.returnValues.sender] = {...assessments[notification.returnValues.sender], stage: 5}
-          break
-        case '6':
-          assessments[notification.returnValues.sender] = {...assessments[notification.returnValues.sender], stage: 6}
-          break
-        case '7':
-          assessments[notification.returnValues.sender] = {...assessments[notification.returnValues.sender], stage: 7}
-          break
-        default:
-          break
+      //fetch old version of the assessment, if it exists
+      let stage=Number(notification.returnValues.topic)
+      let role=""
+      if (assessments[notification.returnValues.sender]){
+        stage=assessments[notification.returnValues.sender].stage
+        role=assessments[notification.returnValues.sender].role
       }
+
+      //update user role if relevant
+      if (notification.returnValues.topic==="0"){
+        role="assessee"
+      } else if ((notification.returnValues.topic==="1")&&notification.returnValues.role!=="assessor"){
+        role="potAssessor"
+      } else if (notification.returnValues.topic==="2"){
+        role="assessor"
+      }
+
+      //update stage if bigger than the current one
+      if (Number(notification.returnValues.topic)>stage){
+        stage=Number(notification.returnValues.topic)
+      }
+
+      //assign all new fields to the assessments object
+      assessments[notification.returnValues.sender] = {...assessments[notification.returnValues.sender],role, stage}
     })
     dispatch(receiveVariable('assessments', assessments))
     // this is for when we need to show more than just the address
