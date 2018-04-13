@@ -15,9 +15,11 @@ export class AssessorStatus extends Component {
  constructor(props) {
    super(props)
    this.buttonLogic = {
-     1: {function: this.stake, text: 'Stake!'},
-     2: {function: this.commit, text: 'Commit a score!'},
-     3: {function: this.reveal, text: 'Reveal your score!'},
+     1: {function: this.stake, text: 'Stake!', disabled:false},
+     2: {function: this.commit, text: 'Commit a score!', disabled:false},
+     3: {function: this.reveal, text: 'Reveal your score!', disabled:false},
+     4: {function: this.done, text: 'done!', disabled:true},
+     5: {function: this.done, text: 'Burned!', disabled:true}
    }
    this.salt = 'hihi'
    this.score = 100
@@ -28,7 +30,7 @@ export class AssessorStatus extends Component {
   }
 
   commit() {
-    window.alert("Please write down your salt:", this.salt)
+    window.alert("Please write down your salt:" + this.salt)
     this.props.commit(this.props.assessmentAddress, this.score, this.salt)
   }
 
@@ -40,6 +42,9 @@ export class AssessorStatus extends Component {
     //TODO
   }
 
+  done() {
+  }
+
   render() {
     let displayString = 'assessor ' + this.props.assessorNumber + ": " + this.props.assessorAddress + '... ->   '
     let active = this.props.assessorStage === this.props.stage
@@ -48,7 +53,7 @@ export class AssessorStatus extends Component {
       return (
         h('div', [
           h('span', displayString),
-          h('button', {onClick: button.function.bind(this)}, button.text)
+          h('button', {onClick: button.function.bind(this), disabled:button.disabled}, button.text)
         ])
       )
     } else {

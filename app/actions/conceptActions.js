@@ -40,7 +40,7 @@ export function commit (address, score, salt) {
     // this is were a status should be set to "pending...""
     // also salt should be saved in state
 	  let tx = await assessmentInstance.methods.commit(
-      this.hashScoreAndSalt(score, salt)
+      hashScoreAndSalt(score, salt)
     ).send({from: userAddress, gas: 3200000})
 	  console.log(tx)
   }
