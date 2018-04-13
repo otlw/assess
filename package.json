@@ -10,7 +10,7 @@
     "compile": "truffle compile",
     "test": "ganache-cli > /dev/null 2>&1 & truffle test",
     "lint": "standard --verbose | snazzy",
-    "fix": "standard --fix",
+    "fix": "standard --fix './app/index.js' './app/**/*.js' ",
     "build": "webpack",
     "dev": "webpack-dev-server --open"
   },
