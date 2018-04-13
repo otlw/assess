@@ -9,8 +9,8 @@ export function hashScoreAndSalt (_score, _salt) {
 
 export function confirmAssessor (address) {
 	return async (dispatch, getState) => {
-	  let w3 = getState().connect.web3
-	  let userAddress = getState().connect.userAddress
+	  let w3 = getState().ethereum.web3
+	  let userAddress = getState().ethereum.userAddress
 	  // instanciate Concept Contract
 	  try {
 	    var assessmentArtifact = require('../../build/contracts/Assessment.json')
@@ -27,8 +27,8 @@ export function confirmAssessor (address) {
 
 export function commit (address, score, salt) {
 	return async (dispatch, getState) => {
-	  let w3 = getState().connect.web3
-	  let userAddress = getState().connect.userAddress
+	  let w3 = getState().ethereum.web3
+	  let userAddress = getState().ethereum.userAddress
 	  // instanciate Concept Contract
 	  try {
 	    var assessmentArtifact = require('../../build/contracts/Assessment.json')
@@ -48,8 +48,8 @@ export function commit (address, score, salt) {
 
 export function reveal (address, score, salt) {
 	return async (dispatch, getState) => {
-	  let w3 = getState().connect.web3
-	  let userAddress = getState().connect.userAddress
+	  let w3 = getState().ethereum.web3
+	  let userAddress = getState().ethereum.userAddress
 	  // instanciate Concept Contract
 	  try {
 	    var assessmentArtifact = require('../../build/contracts/Assessment.json')
