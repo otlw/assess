@@ -4,7 +4,7 @@ import AssessmentFilterView from '../components/AssessmentFilterView'
 const mapStateToProps = state => {
   return {
     assessments: state.assessments,
-    userAddress: state.userAddress
+    userAddress: state.ethereum.userAddress
   }
 }
 

@@ -30,7 +30,6 @@ export function confirmAssessor (address) {
 	  }
 	  let assessmentInstance = await new w3.eth.Contract(abi, address)
     // / this is were a status should be set to "pending...""
-    console.log('sdfsdfs')
 	  let tx = await assessmentInstance.methods.confirmAssessor().send({from: userAddress, gas: 3200000})
 	  console.log(tx)
   }
@@ -81,36 +80,43 @@ export function fetchAssessmentData (address) {
   }
 }
 
-async function readAssessmentDataFromChain (address, w3) {
-  try {
-    let assessmentInstance = new w3.eth.Contract(assessmentArtifact.abi, address)
-    let cost = await assessmentInstance.methods.cost().call()
-    let size = await assessmentInstance.methods.size().call()
-    let stage = await assessmentInstance.methods.assessmentStage().call()
-    let assessee = await assessmentInstance.methods.assessee().call()
-    let conceptAddress = await assessmentInstance.methods.concept().call()
+export function readAssessmentDataFromChain (address) {
+  console.log('entered address')
+  return async (dispatch, getState) => {
+    let w3 = getState().ethereum.web3
+    let userAddress = getState().ethereum.userAddress
+    try {
+      let assessmentInstance = new w3.eth.Contract(assessmentArtifact.abi, address)
+      let cost = await assessmentInstance.methods.cost().call()
+      let size = await assessmentInstance.methods.size().call()
+      let stage = Number(await assessmentInstance.methods.assessmentStage().call())
+      let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
+      let assessee = await assessmentInstance.methods.assessee().call()
+      let conceptAddress = await assessmentInstance.methods.concept().call()
 
-    // get data from associated concept
-    let conceptInstance = new w3.eth.Contract(conceptArtifact.abi, conceptAddress)
-    let conceptData = await conceptInstance.methods.data().call()
-    if (conceptData) {
-      conceptData = Buffer.from(conceptData.slice(2), 'hex').toString('utf8')
-    } else {
-      conceptData = 'No Data in this Concept'
+      // get data from associated concept
+      let conceptInstance = new w3.eth.Contract(conceptArtifact.abi, conceptAddress)
+      let conceptData = await conceptInstance.methods.data().call()
+      if (conceptData) {
+        conceptData = Buffer.from(conceptData.slice(2), 'hex').toString('utf8')
+      } else {
+        conceptData = 'No Data in this Concept' //TODO can this be removed
+        console.log('was undefined: conceptData ',conceptData )
+      }
+      dispatch(receiveAssessment({
+        address,
+        cost,
+        size,
+        assessee,
+        userStage,
+        stage,
+        conceptAddress,
+        conceptData
+      }))
+    } catch(e) {
+      console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
+      //TODO how to end this in case of error?
     }
-
-    return {
-      address,
-      cost,
-      size,
-      assessee,
-      stage,
-      conceptAddress,
-      conceptData
-    }
-  } catch(e) {
-    console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
-    //TODO how to end this in case of error?
   }
 }
 
@@ -128,7 +134,7 @@ export function fetchAssessors (address, stage) {
       // NOTE: this piece is a bit tricky, as filtering in the call usually works on the local testnet, but not on rinkeby
       // for rinkeby one has to get all events and filter locally
       let pastEvents = await fathomTokenInstance.getPastEvents({fromBlock:0, toBlock:"latest"})
-      // console.log('pastEvents ',pastEvents )
+      console.log('pastEvents ',pastEvents )
       if (pastEvents.length === []) {
         console.log('weirdly no Notifications events have been found. Try switching Metamasks network back and forth')
       }
@@ -140,7 +146,7 @@ export function fetchAssessors (address, stage) {
                                            assessors.push(e.returnValues['user'])
                                           )
       // console.log('asessors after looking for staked Events ', assessors )
-      dispatch(fetchAssessorStages(address, assessors, stage==='1'))
+      dispatch(fetchAssessorStages(address, assessors, stage===1))
     } catch(e) {
       console.log('ERROR: fetching assessors from the events did not work!', e)
     }
@@ -163,6 +169,7 @@ export function fetchAssessorStages (address, assessors, checkUserAddress=false)
       assessorStages.push({address: assessors[i], stage: stage})
     }
     if (checkUserAddress) {
+      console.log('checkUserAddress',checkUserAddress)
 	    let userAddress = getState().ethereum.userAddress
       let userStage = await assessmentInstance.methods.assessorState(userAddress).call()
       if (userStage === '1') {
@@ -182,75 +189,23 @@ export function fetchAssessmentsAndNotificationsFromFathomToken () {
     let assessments = getState().assessments
 
     // get notification events from fathomToken contract
-    const abi = fathomTokenArtifact.abi
+    const abi = fathomTokenArtifact.abi //TODO helper function for instantiating contracts?
     let fathomTokenAddress = fathomTokenArtifact.networks[networkID].address
 
     // instantiate Concept registery Contract
     const fathomTokenInstance = await new w3.eth.Contract(abi, fathomTokenAddress)
-    // filter notifications meant for the user
     let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {filter: {user: userAddress}, fromBlock: 0, toBlock: 'latest'})
-
-    // update assessment object acording to notification 'topic', ie stage (see FathomToken.sol in contracts folder)
-    pastNotifications.forEach((notification) => {
-      let assessmentAddress = notification.returnValues.sender
-      //fetch old version of the assessment, if it exists
-      let stage = Number(notification.returnValues.topic)
-      let role = ""
-      if (assessments[assessmentAddress]){
-        stage=assessments[assessmentAddress].stage
-        role=assessments[assessmentAddress].role
+    let assessmentAddresses = pastNotifications.reduce((accumulator , notification) => {
+      let assessment = notification.returnValues.sender
+      if (accumulator.indexOf(assessment) === -1) {
+        accumulator.push(assessment)
       }
+      return accumulator
+    }, [])
+    console.log('assessmentAddresses ',assessmentAddresses )
 
-      //update user role if relevant
-      if (notification.returnValues.topic==="0"){
-        role="assessee"
-      } else if ((notification.returnValues.topic==="1")&&notification.returnValues.role!=="assessor"){
-        role="potAssessor"
-      } else if (notification.returnValues.topic==="2"){
-        role="assessor"
-      }
-
-      //update stage if bigger than the current one
-      if (Number(notification.returnValues.topic)>stage){
-        stage=Number(notification.returnValues.topic)
-      }
-
-      //assign all new fields to the assessments object
-      assessments[assessmentAddress] = {...assessments[assessmentAddress],role, stage}
-    })
-    dispatch(receiveVariable('assessments', assessments))
-    // this is for when we need to show more than just the address
-    dispatch(getAssessmentDataFromContracts())
-  }
-}
-
-// fetches assessmentData for ALL assessments in state
-export function getAssessmentDataFromContracts () {
-  return async (dispatch, getState) => {
-    // get necessary data
-    let w3 = getState().ethereum.web3
-    let assessments = Object.assign({}, getState().assessments)
-
-    // get all assessment addresses (minus the selectedAssessment-key)
-    let assessmentAddresses = Object.keys(assessments)
-
-    //remove the selectedAssessment-key:
-    let index = assessmentAddresses.indexOf('selectedAssessment')
-    if (index >= 0) {
-      assessmentAddresses.splice(index, 1)
-    }
-
-    // process them
-    let count = 0
-    assessmentAddresses.forEach(async (address) => {
-      // get info from assessment
-      let assessment = await readAssessmentDataFromChain(address, w3)
-      assessments[address] = {...assessments[address], assessment}
-
-      count++
-      if (assessmentAddresses.length === count) {
-        dispatch(receiveVariable('assessments', assessments))
-      }
+    assessmentAddresses.forEach((address) => {
+      dispatch(readAssessmentDataFromChain(address))
     })
   }
 }

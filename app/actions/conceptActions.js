@@ -1,4 +1,6 @@
 export const RECEIVE_CONCEPTS = 'RECEIVE_CONCEPTS'
+const conceptArtifact = require('../../build/contracts/Concept.json')
+const conceptRegistryArtifact = require('../../build/contracts/ConceptRegistry.json')
 
 export function loadConceptsFromConceptRegistery () {
   return async (dispatch, getState) => {
@@ -6,7 +8,6 @@ export function loadConceptsFromConceptRegistery () {
     let networkID = getState().ethereum.networkID
 
     // instanciate Concept registery Contract
-    const conceptRegistryArtifact = require('../../build/contracts/ConceptRegistry.json')
     const abi = conceptRegistryArtifact.abi
     let conceptRegistryAddress = conceptRegistryArtifact.networks[networkID].address
     const conceptRregistryInstance = await new w3.eth.Contract(abi, conceptRegistryAddress)
@@ -25,7 +26,6 @@ export const listConcepts = (conceptRegistryInstance) => {
 
     let conceptList = await Promise.all(pastevents.map(async (event) => {
       // instanciate Concept Contract to get 'data' (ie the name of the concept)
-      const conceptArtifact = require('../../build/contracts/Concept.json')
       const abi = conceptArtifact.abi
       let conceptInstance = await new w3.eth.Contract(abi, event.returnValues._concept)
 
@@ -52,16 +52,15 @@ export function receiveConcepts(concepts) {
 export function loadConceptContractAndCreateAssessment (address) {
   return async (dispatch, getState) => {
     let w3 = getState().ethereum.web3
-    let userAddress = getState().userAddress
+    let userAddress = getState().ethereum.userAddress
 
     // instanciate Concept Contract
-    const conceptArtifact = require('../../build/contracts/Concept.json')
     const abi = conceptArtifact.abi
     let conceptInstance = await new w3.eth.Contract(abi, address)
 
     // define constants for assessments => those could be move to a config file
     const cost = 10
-    const size = 5
+    const size = 2
     const endTime = 1000000000000
     const startTime = 1000000000
     const assesseeAddress = userAddress

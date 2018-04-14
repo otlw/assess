@@ -55,7 +55,7 @@ export class AssessmentCreationBar extends Component {
       h('div', {style: assessmentCreationStyle.dropdown},
         h(Dropdown, {list: conceptNameList, selectedID: this.state.selectedConceptKey, set: this.setConceptKey.bind(this)})
       ),
-      h('div', {style: assessmentCreationStyle.buttonStyle, onClick: this.createAssessment.bind(this)}, 'Create Assessment')
+      h('button', {style: assessmentCreationStyle.buttonStyle, onClick: this.createAssessment.bind(this)}, 'Create Assessment')
     ])
   }
 }

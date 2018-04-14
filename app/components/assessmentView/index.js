@@ -26,6 +26,7 @@ export class AssessmentViewApp extends Component {
     }
     else {
       let assessment = this.props.assessment
+      console.log(assessment)
       return (
         h('div',[
     	    h('div',"Imagine the following stylishly displayed:"),
