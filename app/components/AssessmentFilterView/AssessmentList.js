@@ -27,15 +27,15 @@ export class AssessmentList extends Component {
         return assessment.stage === Stage.Done
       },
       Current: (assessment) => {
-        // console.log(assessment)
-        // console.log(this.props.userAddress)
         if(this.props.userAddress === assessment.assessee){
           return assessment.stage < Stage.Done
         }
         return assessment.stage > Stage.Called && assessment.stage < Stage.Done
       },
       Potential: (assessment) => {
-        return (props.userAddress !== assessment.assessee && assessment.stage === Stage.Called)
+        return (props.userAddress !== assessment.assessee &&
+                assessment.stage === Stage.Called &&
+                !this.filters['Current'](assessment))
       }
     }
   }

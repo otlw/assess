@@ -76,7 +76,7 @@ export function reveal (address, score, salt) {
 export function fetchAssessmentData (address) {
   return async (dispatch, getState) => {
     let w3 = getState().ethereum.web3
-    dispatch(receiveAssessment(await readAssessmentDataFromChain(address, w3)))
+    receiveAssessment(await readAssessmentDataFromChain(address, w3)) //TODO look again here
   }
 }
 
@@ -100,7 +100,7 @@ export function readAssessmentDataFromChain (address) {
       if (conceptData) {
         conceptData = Buffer.from(conceptData.slice(2), 'hex').toString('utf8')
       } else {
-        conceptData = 'No Data in this Concept' //TODO can this be removed
+        conceptData = ''
         console.log('was undefined: conceptData ',conceptData )
       }
       dispatch(receiveAssessment({
@@ -136,7 +136,7 @@ export function fetchAssessors (address, stage) {
       let pastEvents = await fathomTokenInstance.getPastEvents({fromBlock:0, toBlock:"latest"})
       console.log('pastEvents ',pastEvents )
       if (pastEvents.length === []) {
-        console.log('weirdly no Notifications events have been found. Try switching Metamasks network back and forth')
+        console.log('Oddly no Notifications events have been found. Try switching Metamasks network back and forth')
       }
       let assessors = []
       let stakedEvents = pastEvents.filter(e =>

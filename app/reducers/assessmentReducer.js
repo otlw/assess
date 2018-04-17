@@ -22,14 +22,9 @@ function assessments (state = initialState, action) {
     return extend(state, action.assessments)
   }
   case RECEIVE_ASSESSMENT: {
-    console.log('reducer got:', action.type, 'with payload: ', action)
-    // return extend(state, {[action.assessment.address]: action.assessment})
-    let newS =  extend(state, {[action.assessment.address]: action.assessment})
-    // console.log('newS ',JSON.stringify(newS) )
-    return newS
+    return  extend(state, {[action.assessment.address]: action.assessment})
   }
   case RECEIVE_ASSESSORS:
-    // console.log('assessment-reducer got:', action.type, 'with payload: ', action)
     let address = action.address
     return  {
       ...state,

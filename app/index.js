@@ -14,7 +14,7 @@ const store = createStore(
   rootReducer,
   applyMiddleware(thunk)
 )
-console.log('defualtState', store.getState())
+console.log('defaultState', store.getState())
 
 render(
   h(Provider, {store},

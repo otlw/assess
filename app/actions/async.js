@@ -68,42 +68,6 @@ export function web3Disconnected () {
   }
 }
 
-export function fetchUserAddress () {
-  return async (dispatch, getState) => {
-    let w3 = getState().ethereum.web3
-    let accounts = await w3.eth.getAccounts()
-    if (accounts.length === 0) {
-      dispatch(receiveVariable('userAddress', 'pleaseEnterPasswordToUnblockMetamask'))
-    } else {
-      dispatch(receiveVariable('userAddress', accounts[0]))
-      dispatch(fetchAHABalance())
-    }
-  }
-}
-
-export function fetchNetworkID () {
-  return async (dispatch, getState) => {
-    let w3 = getState().ethereum.web3
-    let networkID = await w3.eth.net.getId()
-    dispatch(receiveVariable('networkID', networkID))
-  }
-}
-
-export function fetchAHABalance () {
-  return async (dispatch, getState) => {
-    let w3 = getState().ethereum.web3
-    let userAddress = getState().ethereum.userAddress
-    let networkID = await w3.eth.net.getId()
-
-    // get token contract
-    // THIS THROWS AN ERROR
-    const ahaArtifact = require('../../build/contracts/FathomToken.json')
-    const ahaContract = await new w3.eth.Contract(ahaArtifact.abi, ahaArtifact.networks[networkID].address)
-    // get balance from contract
-    let userBalance = await ahaContract.methods.balanceOf(userAddress).call()
-    dispatch(receiveVariable('balance', userBalance))
-  }
-}
 
 // to save something from the chain in state
 export function receiveVariable (name, value) {
