@@ -79,11 +79,12 @@ contract('Minting New Tokens:', function (accounts) {
           await minter.submitTicket(assessees[0], assessment.address, cost - 3)
         } catch (e) {
           if (e.toString().indexOf('revert') > 0) {
-            assert(true)
+            return assert(true)
           } else {
-            assert(false, e.toString(), 'bid could be submitted by foreign address')
+            return assert(false, e.toString(), 'bid could be submitted by foreign address')
           }
         }
+        assert(false)
       })
 
       it('rejects bids if the token-salt is too high', async () => {
@@ -91,11 +92,12 @@ contract('Minting New Tokens:', function (accounts) {
           await minter.submitTicket(assessment.calledAssessors[0], assessment.address, cost + 1)
         } catch (e) {
           if (e.toString().indexOf('revert') > 0) {
-            assert(true)
+            return assert(true)
           } else {
-            assert(false, e.toString(), 'a bid with too high a salt could be submitted')
+            return assert(false, e.toString(), 'a bid with too high a salt could be submitted')
           }
         }
+        assert(false)
       })
 
       it('rejects bids from assessments ending in another epoch', async () => {
@@ -113,11 +115,12 @@ contract('Minting New Tokens:', function (accounts) {
           await minter.submitTicket(assessment2.calledAssessors[1], assessment2.address, 1)
         } catch (e) {
           if (e.toString().indexOf('revert') > 0) {
-            assert(true)
+            return assert(true)
           } else {
-            assert(false, e.toString(), 'a bid was submitted based on an assessment from a future epoch')
+            return assert(false, e.toString(), 'a bid was submitted based on an assessment from a future epoch')
           }
         }
+        assert(false)
       })
 
       it('can not be prompted to mint tokens', async () => {
@@ -125,11 +128,12 @@ contract('Minting New Tokens:', function (accounts) {
           await minter.endEpoch()
         } catch (e) {
           if (e.toString().indexOf('revert') > 0) {
-            assert(true)
+            return assert(true)
           } else {
-            assert(false, e.toString(), 'minter minted tokens before end of epoch')
+            return assert(false, e.toString(), 'minter minted tokens before end of epoch')
           }
         }
+        //assert(false)
       })
     })
 

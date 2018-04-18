@@ -74,11 +74,12 @@ contract('Steal Stake:', function (accounts) {
         await assessmentContract.reveal(scores[0], salts[0], {from: confirmedAssessors[0]})
       } catch (e) {
         if (e.toString().indexOf('revert') > 0) {
-          assert(true, "a 'revert' is thrown")
+          return assert(true, "a 'revert' is thrown")
         } else {
-          assert(false, e.toString(), 'execution should have failed with a revert')
+          return assert(false, e.toString(), 'execution should have failed with a revert')
         }
       }
+      assert(false)
     })
 
     it('they are marked as done, and the assessment progresses.', async () => {

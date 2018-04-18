@@ -68,11 +68,12 @@ contract('Assessment', function (accounts) {
         await assessedConcept.makeAssessment(cost, 3, waitTime, timeLimit)
       } catch (e) {
         if (e.toString().indexOf('revert') > 0) {
-          assert(true)
+          return assert(true)
         } else {
-          assert(false, e.toString())
+          return assert(false, e.toString())
         }
       }
+      assert(false)
     })
     it('should initiate an assessment', async () => {
       ethBalancesBefore = utils.getEthBalances(accounts.slice(0, nInitialUsers + 2))
