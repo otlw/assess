@@ -27,11 +27,12 @@ contract('Changing data on Concepts: ', (accounts) => {
         await createdConcept.changeLifetime(4, {from: accounts[2]})
       } catch (e) {
         if (e.toString().indexOf('revert') > 0) {
-          assert(true, "a 'revert' is thrown")
+          return assert(true, "a 'revert' is thrown")
         } else {
-          assert(false, e.toString(), 'execution should have failed with a revert')
+          return assert(false, e.toString(), 'execution should have failed with a revert')
         }
       }
+      assert(false)
     })
 
     it('should allow ownership to be transferred', async () => {
