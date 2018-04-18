@@ -9,18 +9,40 @@ const assessmentListStyle = {
   }
 }
 
-const stagesOfTab = {
-  'Past': [3, 6, 7],
-  'Current': [0, 2, 4, 5],
-  'Potential': [1]
+const Stage = {
+  None: 0,
+  Called: 1,
+  Confirmed: 2,
+  Committed: 3,
+  Done: 4,
+  Burned: 5
 }
 
 export class AssessmentList extends Component {
+  constructor(props){
+    super(props)
+
+    this.filters = {
+      Past: (assessment) => {
+        return assessment.stage === Stage.Done
+      },
+      Current: (assessment) => {
+        if(this.props.userAddress === assessment.assessee){
+          return assessment.stage < Stage.Done
+        }
+        return assessment.stage > Stage.Called && assessment.stage < Stage.Done
+      },
+      Potential: (assessment) => {
+        return (props.userAddress !== assessment.assessee &&
+                assessment.stage === Stage.Called &&
+                !this.filters['Current'](assessment))
+      }
+    }
+  }
+
   render () {
     // filter assessments with the stages corresponding to the Tab
-    let filteredList = this.props.assessmentList.filter((assessment) => {
-      return stagesOfTab[this.props.selectedTab].indexOf(assessment.stage) > -1
-    })
+    let filteredList = this.props.assessmentList.filter(this.filters[this.props.selectedTab])
 
     // map assessment list to components
     if (filteredList.length === 0) {

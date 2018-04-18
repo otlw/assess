@@ -16,8 +16,14 @@
   },
   "author": "Jared Pereira",
   "license": "MIT",
-  "standard":{
-    "globals": ["it", "contract", "assert", "describe", "artifacts"]
+  "standard": {
+    "globals": [
+      "it",
+      "contract",
+      "assert",
+      "describe",
+      "artifacts"
+    ]
   },
   "devDependencies": {
     "babel-core": "^6.4.5",
@@ -49,6 +55,7 @@
     "redux": "^3.5.2",
     "redux-thunk": "^2.2.0",
     "truffle-hdwallet-provider": "0.0.3",
-    "web3": "^1.0.0-beta.33"
+    "web3": "^1.0.0-beta.33",
+    "xtend": "^4.0.1"
   }
 }
