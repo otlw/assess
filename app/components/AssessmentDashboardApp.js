@@ -1,11 +1,15 @@
 import { Component } from 'react'
-var h = require('react-hyperscript')
+import h from 'react-hyperscript'
+
+import AssessmentFilterViewBox from '../containers/AssessmentFilterViewBox'
+import AssessmentCreationBox from '../containers/AssessmentCreationBox'
 
 export class AssessmentDashboardApp extends Component {
+
   render () {
     return h('div', {style: {textAlign: 'center'}}, [
-    	h('div', 'AssessmentDashboardApp'),
-    	h('div', 'insert components here')
+      h(AssessmentCreationBox),
+      h(AssessmentFilterViewBox)
  	])
   }
 }

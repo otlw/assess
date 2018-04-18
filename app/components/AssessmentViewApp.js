@@ -1,9 +1,8 @@
 import { Component } from 'react'
-var h = require('react-hyperscript')
+import h from 'react-hyperscript'
 
 export class AssessmentViewApp extends Component {
   render () {
-  	console.log(this.props)
     return h('div', {style: {textAlign: 'center'}}, [
     	h('div', 'AssessmentViewApp'),
     	h('div', 'insert components here'),

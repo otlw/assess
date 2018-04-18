@@ -10,14 +10,20 @@
     "compile": "truffle compile",
     "test": "ganache-cli > /dev/null 2>&1 & truffle test",
     "lint": "standard --verbose | snazzy",
-    "fix": "standard --fix",
+    "fix": "standard --fix './app/index.js' './app/**/*.js' ",
     "build": "webpack",
     "dev": "webpack-dev-server --open"
   },
   "author": "Jared Pereira",
   "license": "MIT",
-  "standard":{
-    "globals": ["it", "contract", "assert", "describe", "artifacts"]
+  "standard": {
+    "globals": [
+      "it",
+      "contract",
+      "assert",
+      "describe",
+      "artifacts"
+    ]
   },
   "devDependencies": {
     "babel-core": "^6.4.5",
@@ -31,6 +37,7 @@
     "react-scripts": "^1.0.2",
     "snazzy": "^7.1.1",
     "standard": "^11.0.1",
+    "styled-components": "^3.2.5",
     "truffle": "4.0.1",
     "webpack": "^4.2.0",
     "webpack-cli": "^2.0.12",
@@ -49,6 +56,7 @@
     "redux": "^3.5.2",
     "redux-thunk": "^2.2.0",
     "truffle-hdwallet-provider": "0.0.3",
-    "web3": "^1.0.0-beta.33"
+    "web3": "^1.0.0-beta.33",
+    "xtend": "^4.0.1"
   }
 }
