@@ -1,5 +1,6 @@
 import Web3 from 'web3'
 
+import {fetchAssessmentsAndNotificationsFromFathomToken} from './assessmentActions'
 import {loadConceptsFromConceptRegistery} from './conceptActions'
 
 export const WEB3_CONNECTED = 'WEB3_CONNECTED'
@@ -35,6 +36,7 @@ export const connect = () => {
         }
         // and finally call the other actions that fill the state
         dispatch(loadConceptsFromConceptRegistery())
+        dispatch(fetchAssessmentsAndNotificationsFromFathomToken())
       } else {
         dispatch(web3Disconnected())
       }
@@ -65,6 +67,7 @@ export function web3Disconnected () {
     payload: {}
   }
 }
+
 
 // to save something from the chain in state
 export function receiveVariable (name, value) {

@@ -4,7 +4,7 @@ import { loadConceptContractAndCreateAssessment } from '../actions/conceptAction
 
 const mapStateToProps = state => {
   return {
-    conceptList: state.conceptList
+    conceptList: state.concepts
   }
 }
 

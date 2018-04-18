@@ -1,31 +1,31 @@
-import {receiveVariable} from './async.js'
+export const RECEIVE_CONCEPTS = 'RECEIVE_CONCEPTS'
+const conceptArtifact = require('../../build/contracts/Concept.json')
+const conceptRegistryArtifact = require('../../build/contracts/ConceptRegistry.json')
 
 export function loadConceptsFromConceptRegistery () {
   return async (dispatch, getState) => {
-    let w3 = getState().web3
-    let networkID = getState().networkID
+    let w3 = getState().ethereum.web3
+    let networkID = getState().ethereum.networkID
 
     // instanciate Concept registery Contract
-    const conceptRegistryArtifact = require('../../build/contracts/ConceptRegistry.json')
     const abi = conceptRegistryArtifact.abi
-    let contractAddress = conceptRegistryArtifact.networks[networkID].address
-    const contractInstance = await new w3.eth.Contract(abi, contractAddress)
+    let conceptRegistryAddress = conceptRegistryArtifact.networks[networkID].address
+    const conceptRregistryInstance = await new w3.eth.Contract(abi, conceptRegistryAddress)
 
     // get concepts from registry
-    dispatch(listConcepts(contractInstance))
+    dispatch(listConcepts(conceptRregistryInstance))
   }
 }
 
 export const listConcepts = (conceptRegistryInstance) => {
   return async (dispatch, getState) => {
-    let w3 = getState().web3
+    let w3 = getState().ethereum.web3
 
     // use concept creation events to list concept addresses
     let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {fromBlock: 0, toBlock: 'latest'})
 
     let conceptList = await Promise.all(pastevents.map(async (event) => {
       // instanciate Concept Contract to get 'data' (ie the name of the concept)
-      const conceptArtifact = require('../../build/contracts/Concept.json')
       const abi = conceptArtifact.abi
       let conceptInstance = await new w3.eth.Contract(abi, event.returnValues._concept)
 
@@ -37,24 +37,30 @@ export const listConcepts = (conceptRegistryInstance) => {
 
       return {address: event.returnValues._concept, data: decodedConceptData}
     }))
-    dispatch(receiveVariable('conceptList', conceptList))
+    dispatch(receiveConcepts(conceptList))
+  }
+}
+
+export function receiveConcepts(concepts) {
+  return {
+    type: RECEIVE_CONCEPTS,
+    concepts
   }
 }
 
 // combination of two functions above for directly creating assessments from conceptList
 export function loadConceptContractAndCreateAssessment (address) {
   return async (dispatch, getState) => {
-    let w3 = getState().web3
-    let userAddress = getState().userAddress
+    let w3 = getState().ethereum.web3
+    let userAddress = getState().ethereum.userAddress
 
     // instanciate Concept Contract
-    const conceptArtifact = require('../../build/contracts/Concept.json')
     const abi = conceptArtifact.abi
     let conceptInstance = await new w3.eth.Contract(abi, address)
 
     // define constants for assessments => those could be move to a config file
     const cost = 10
-    const size = 5
+    const size = 2
     const endTime = 1000000000000
     const startTime = 1000000000
     const assesseeAddress = userAddress

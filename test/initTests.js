@@ -36,11 +36,12 @@ contract('ConceptRegistry', function () {
       await conReg.makeConcept(['0x123'], [500], 60 * 60 * 24, '', '0x0')
     } catch (e) {
       if (e.toString().indexOf('revert') > 0) {
-        assert(true)
+        return assert(true)
       } else {
-        assert(false, e.toString())
+        return assert(false, e.toString())
       }
     }
+    assert(false)
   })
 
   it('should throw if no parents are specified', async () => {
@@ -48,11 +49,12 @@ contract('ConceptRegistry', function () {
       await conReg.makeConcept([], [], 60 * 60 * 24, '', '0x0')
     } catch (e) {
       if (e.toString().indexOf('revert') > 0) {
-        assert(true)
+        return assert(true)
       } else {
-        assert(false, e.toString())
+        return assert(false, e.toString())
       }
     }
+    assert(false)
   })
 
   it('should throw if propagation rate = 1000', async () => {
@@ -60,11 +62,12 @@ contract('ConceptRegistry', function () {
       await conReg.makeConcept([createdConceptAddress], [1000], 60 * 60 * 24, '', '0x0')
     } catch (e) {
       if (e.toString().indexOf('revert') > 0) {
-        assert(true)
+        return assert(true)
       } else {
-        assert(false, e.toString())
+        return assert(false, e.toString())
       }
     }
+    assert(false)
   })
 })
 
