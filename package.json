@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "bignumber.js": "^6.0.0",
+    "eth-dagger": "0.0.1-beta.3",
     "ethereumjs-abi": "^0.6.4",
     "hyperscript": "^2.0.2",
     "prop-types": "^15.5.10",
