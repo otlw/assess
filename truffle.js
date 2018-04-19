@@ -25,11 +25,12 @@ module.exports = {
     kovan: {
       provider: new HDWalletProvider(mnemonic.seed, 'https://kovan.infura.io/2FBsjXKlWVXGLhKn7PF7'),
       network_id: 42
+    },
+    ropsten: {
+      provider: new HDWalletProvider(mnemonic.seed, "https://ropsten.infura.io/2FBsjXKlWVXGLhKn7PF7"),
+      network_id: 3,
+      gas: 1828127,
     }
-    // ropsten: {
-    //   provider: new HDWalletProvider(mnemonic.seed, "https://ropsten.infura.io/2FBsjXKlWVXGLhKn7PF7"),
-    //   network_id: 3
-    // }
   },
   solc: {
     optimizer: {
