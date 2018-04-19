@@ -1,3 +1,5 @@
+import Web3 from 'web3'
+
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const RECEIVE_ALL_ASSESSMENTS = 'RECEIVE_ALL_ASSESSMENTS'
 export const RECEIVE_ASSESSORS = 'RECEIVE_ASSESSORS'
@@ -81,7 +83,6 @@ export function fetchAssessmentData (address) {
 }
 
 export function readAssessmentDataFromChain (address) {
-  console.log('entered address')
   return async (dispatch, getState) => {
     let w3 = getState().ethereum.web3
     let userAddress = getState().ethereum.userAddress
@@ -202,10 +203,50 @@ export function fetchAssessmentsAndNotificationsFromFathomToken () {
       }
       return accumulator
     }, [])
-    console.log('assessmentAddresses ',assessmentAddresses )
 
+    //listen to incoming notifications
+    dispatch(listenToUserNotifications())
+
+    //read contract data for each assessment
     assessmentAddresses.forEach((address) => {
       dispatch(readAssessmentDataFromChain(address))
+    })
+  }
+}
+
+//listens to all incoming notifications with user===userAddress
+export function listenToUserNotifications () {
+  return async (dispatch, getState) => {
+
+    // get State data
+    let w3 = getState().ethereum.web3
+    let userAddress = getState().ethereum.userAddress
+    let networkID = await getState().ethereum.networkID
+
+    //copy web3 and change provider to infura-WS
+    let web3copy=Object.assign({},w3)
+    web3copy.setProvider(new Web3.providers.WebsocketProvider('wss://rinkeby.infura.io/ws'));
+
+    // instanciate fathomTokenn contract
+    const abi = fathomTokenArtifact.abi
+    let fathomTokenAddress = fathomTokenArtifact.networks[networkID].address
+    const fathomTokenInstance = await new web3copy.eth.Contract(abi, fathomTokenAddress)
+
+    //listen to notifications from token that have the user's address
+    fathomTokenInstance.events.Notification({
+        fromBlock: 0,
+        filter:{user:userAddress}
+    }, function(error, event){ 
+      console.log(event); 
+      //get assessments from state
+      //let assessments=getState().assessments
+      // if not registered, add it to assessment state
+      // if (!assessments[event.returnValues.sender]){
+
+      // }
+      console.log(event.returnValues.sender)
+      dispatch(readAssessmentDataFromChain(event.returnValues.sender))
+      
     })
   }
 }
