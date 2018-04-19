@@ -43,7 +43,7 @@ export class AssessmentList extends Component {
   render () {
     // filter assessments with the stages corresponding to the Tab
     let filteredList = this.props.assessmentList.filter(this.filters[this.props.selectedTab])
-    console.log(filteredList.length)
+
     // map assessment list to components
     if (filteredList.length === 0) {
       return h('div', {style: assessmentListStyle.frame}, 'No ' + this.props.selectedTab + ' Assessments')
