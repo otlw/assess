@@ -36,7 +36,7 @@ export const connect = () => {
         }
         // and finally call the other actions that fill the state
         dispatch(loadConceptsFromConceptRegistery())
-        dispatch(fetchAssessmentsAndNotificationsFromFathomToken())
+        dispatch(fetchAssessmentsAndNotificationsFromFathomToken()) //and listen to notifications
       } else {
         dispatch(web3Disconnected())
       }

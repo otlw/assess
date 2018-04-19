@@ -8,6 +8,7 @@ const conceptArtifact = require('../../build/contracts/Concept.json')
 const fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
 
 import { receiveVariable } from './async.js'
+import EthDagger from "eth-dagger"
 
 export function hashScoreAndSalt (_score, _salt) {
   return '0x' + ethereumjsABI.soliditySHA3(
@@ -192,7 +193,7 @@ export function fetchAssessmentsAndNotificationsFromFathomToken () {
     const abi = fathomTokenArtifact.abi //TODO helper function for instantiating contracts?
     let fathomTokenAddress = fathomTokenArtifact.networks[networkID].address
 
-    // instantiate Concept registery Contract
+    // instantiate fathomToken registery Contract
     const fathomTokenInstance = await new w3.eth.Contract(abi, fathomTokenAddress)
     let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {filter: {user: userAddress}, fromBlock: 0, toBlock: 'latest'})
     let assessmentAddresses = pastNotifications.reduce((accumulator , notification) => {
@@ -202,11 +203,51 @@ export function fetchAssessmentsAndNotificationsFromFathomToken () {
       }
       return accumulator
     }, [])
-    console.log('assessmentAddresses ',assessmentAddresses )
 
+    //listen to incoming notifications
+    dispatch(listenToUserNotifications())
+
+    //read contract data for each assessment
     assessmentAddresses.forEach((address) => {
       dispatch(readAssessmentDataFromChain(address))
     })
+  }
+}
+
+//listens to all incoming notifications with user===userAddress
+export function listenToUserNotifications () {
+  return async (dispatch, getState) => {
+    // Get dagger object
+    const dagger = new EthDagger('wss://ropsten.dagger.matic.network');
+
+    // get State data
+    let w3 = getState().ethereum.web3
+    let userAddress = getState().ethereum.userAddress
+    let networkID = await getState().ethereum.networkID
+
+    // instanciate fathomTokenn contract
+    const abi = fathomTokenArtifact.abi
+    let fathomTokenAddress = fathomTokenArtifact.networks[networkID].address
+    const fathomTokenInstance = await new w3.eth.Contract(abi, fathomTokenAddress)
+
+    // Get dagger contract
+    const daggerContract = dagger.contract(fathomTokenInstance);
+
+    // Get subscription filter
+    const filter = daggerContract.events.Notification({
+      // filter: { 
+      //   user: userAddress
+      // }
+    });
+    console.log("listening...")
+    console.log(userAddress)
+    // Start watching logs
+    filter.watch((log) => {
+      // log.returnValues.value => 100 GNT
+      // log.returnValues.from => '0x12345678...'
+      // log.returnValues.to => address which value has been transferred to
+      console.log(log)
+    });
   }
 }
 
