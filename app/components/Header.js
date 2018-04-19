@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import h from 'react-hyperscript'
+import {Link} from 'react-router-dom'
 
 const NetworkNames = {
   4: 'rinkeby',
@@ -7,6 +8,8 @@ const NetworkNames = {
   3: 'ropsten',
   42: 'kovan'
 }
+
+const buttonStyle={border:"1px solid grey",borderRadius:"1em",padding:"0.2em 1em",margin:"0.2em"}
 
 export class Header extends Component {
   componentWillMount () {
@@ -37,7 +40,8 @@ export class Header extends Component {
         h('div', [
           h('span', 'AHA balance: '),
           h('span', this.props.balance)
-        ])
+        ]),
+        h(Link,{style:buttonStyle, to: '/'}, "Home")
       ])
     )
   }
