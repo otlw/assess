@@ -29,7 +29,8 @@ module.exports = {
     ropsten: {
       provider: new HDWalletProvider(mnemonic.seed, "https://ropsten.infura.io/2FBsjXKlWVXGLhKn7PF7"),
       network_id: 3,
-      gas: 1828127,
+      gas: 4700000,
+      gasPrice:1000000000
     }
   },
   solc: {
