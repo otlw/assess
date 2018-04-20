@@ -2,9 +2,9 @@ import { render } from 'react-dom'
 import thunk from 'redux-thunk'
 import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
-import AssessmentDashboardApp from './components/AssessmentDashboardApp'
-import AssessmentViewApp from './containers/AssessmentViewApp'
-import HeaderBox from './containers/HeaderBox'
+import Dashboard from './components/Dashboard'
+import AssessmentView from './components/AssessmentView'
+import Header from './components/Header'
 import rootReducer from './reducers'///web3Reducer.js'
 import h from 'react-hyperscript'
 
@@ -20,9 +20,9 @@ render(
   h(Provider, {store},
     h(HashRouter, [
 	  	h('div', [
-		  	h(HeaderBox),
-	        h(Route, {exact: true, path: '/', component: AssessmentDashboardApp}),
-	        h(Route, {path: '/assessment/:id', component: AssessmentViewApp})
+		  	h(Header),
+	        h(Route, {exact: true, path: '/', component: Dashboard}),
+	        h(Route, {path: '/assessment/:id', component: AssessmentView})
       	])
     ])),
   document.getElementById('root')

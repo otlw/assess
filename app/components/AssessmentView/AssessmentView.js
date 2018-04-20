@@ -3,7 +3,7 @@ import AssessmentData from './AssessmentData'
 import AssessorList from './AssessorList'
 var h = require('react-hyperscript')
 
-export class AssessmentViewApp extends Component {
+export class AssessmentView extends Component {
 
   render () {
     // if rendered for the first time, put assessment address into state
@@ -49,4 +49,4 @@ export class AssessmentViewApp extends Component {
   }
 }
 
-export default AssessmentViewApp
+export default AssessmentView
