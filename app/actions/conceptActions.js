@@ -41,7 +41,7 @@ export const listConcepts = (conceptRegistryInstance) => {
   }
 }
 
-export function receiveConcepts(concepts) {
+export function receiveConcepts (concepts) {
   return {
     type: RECEIVE_CONCEPTS,
     concepts

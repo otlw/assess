@@ -1,9 +1,9 @@
 import { Component } from 'react'
-import Dropdown from "./Dropdown"
-import styled from "styled-components"
+import Dropdown from './Dropdown'
+import styled from 'styled-components'
 var h = require('react-hyperscript')
 
-//this is gonna move to mainStyle object
+// this is gonna move to mainStyle object
 const CreationBox = styled('div')`
 margin-top: 1em;
 padding: 0.6em;
@@ -51,15 +51,15 @@ export class AssessmentCreationBar extends Component {
     let conceptNameList = this.props.conceptList.map((concept) => {
       return concept.data
     })
-    return h(CreationBox,[
-      h(FieldName, "Select Concept :"),
-      h(DropdownBox,[
+    return h(CreationBox, [
+      h(FieldName, 'Select Concept :'),
+      h(DropdownBox, [
         h(Dropdown, {
           list: conceptNameList,
           selectedID: this.state.selectedConceptKey,
           set: this.setConceptKey.bind(this)})]
       ),
-      h(Button, {onClick: this.createAssessment.bind(this)},"Create Assessment")
+      h(Button, {onClick: this.createAssessment.bind(this)}, 'Create Assessment')
     ])
   }
 }

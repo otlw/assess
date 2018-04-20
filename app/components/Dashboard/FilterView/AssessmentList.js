@@ -19,7 +19,7 @@ const Stage = {
 }
 
 export class AssessmentList extends Component {
-  constructor(props){
+  constructor (props) {
     super(props)
 
     this.filters = {
@@ -27,7 +27,7 @@ export class AssessmentList extends Component {
         return assessment.stage === Stage.Done
       },
       Current: (assessment) => {
-        if(this.props.userAddress === assessment.assessee){
+        if (this.props.userAddress === assessment.assessee) {
           return assessment.stage < Stage.Done
         }
         return assessment.stage > Stage.Called && assessment.stage < Stage.Done
