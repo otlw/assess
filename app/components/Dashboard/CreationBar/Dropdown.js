@@ -8,8 +8,8 @@ import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 
-//should be moved to style folder when it's created
-//or stay here to be more easily reused
+// should be moved to style folder when it's created
+// or stay here to be more easily reused
 
 const dropdownContent = styled.div`
 display: ${(props) => props.hover ? 'block' : 'none'};
@@ -68,7 +68,7 @@ export class Dropdown extends Component {
           onMouseEnter: this.hoverOn.bind(this),
           onMouseLeave: this.hoverOff.bind(this)
         },
-        this.props.list[this.props.selectedID]+"[arrow.png]"),
+        this.props.list[this.props.selectedID] + '[arrow.png]'),
       h(dropdownContent, {
         hover: this.state.hover,
         onMouseEnter: this.hoverOn.bind(this),
