@@ -72,13 +72,6 @@ export function reveal (address, score, salt) {
 
 // fetch assessment data for one given assessment
 export function fetchAssessmentData (address) {
-  return async (dispatch, getState) => {
-    let w3 = getState().ethereum.web3
-    receiveAssessment(await readAssessmentDataFromChain(address, w3)) // TODO look again here
-  }
-}
-
-export function readAssessmentDataFromChain (address) {
   console.log('entered address')
   return async (dispatch, getState) => {
     let w3 = getState().ethereum.web3
@@ -202,11 +195,75 @@ export function fetchAssessmentsAndNotificationsFromFathomToken () {
     }, [])
     console.log('assessmentAddresses ', assessmentAddresses)
 
-    assessmentAddresses.forEach((address) => {
-      dispatch(readAssessmentDataFromChain(address))
+    assessmentAddresses.forEach( (address) => {
+      dispatch(fetchAssessmentData(address))
     })
   }
 }
+
+export function fetchLatestAssessments () {
+  return async (dispatch, getState) => {
+     // get State data
+     let w3 = getState().ethereum.web3
+     let userAddress = getState().ethereum.userAddress
+     let networkID = await getState().ethereum.networkID
+     let assessments = await getState().assessments
+
+    // get notification events from fathomToken contract
+    const abi = fathomTokenArtifact.abi
+    let fathomTokenAddress = fathomTokenArtifact.networks[networkID].address
+
+    // instantiate Concept registery Contract
+    const fathomTokenInstance = await new w3.eth.Contract(abi, fathomTokenAddress)
+    let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {filter: {user: userAddress}, fromBlock: 0, toBlock: 'latest'})
+    let assessmentAddresses = pastNotifications.reduce((accumulator, notification) => {
+      let assessment = notification.returnValues.sender
+      if (accumulator.indexOf(assessment) === -1) {
+        accumulator.push(assessment)
+      }
+      return accumulator
+    }, [])
+    console.log('assessmentAddresses ', assessmentAddresses)
+
+    assessmentAddresses.forEach( (address) => {
+      if ( Object.keys(assessments).includes(address)) {
+        updateExistingAssessment(address)
+      } else {
+        fetchAssessmentData(address)
+      }
+    })
+  }
+}
+
+function updateExistingAssessment (address) { //not use oldStage?
+  return async (dispatch, getState) => {
+    let w3 = getState().ethereum.web3
+    let networkID = await getState().ethereum.networkID
+    let userAddress = getState().ethereum.userAddress
+    let oldStage = getState().assessments[address].stage
+
+    const abi = assessmentArtifact.abi
+    const assessmentInstance = await new w3.eth.Contract(abi, address)
+    let  userStage= assessmentInstance.methods.assessorStages.call(userAddress)
+    let  assessmentStage = assessmentInstance.methods.assessmentStage.call()
+
+    // instantiate Concept registery Contract
+    // Burned?
+    // move to past & fetch Stage
+
+  // if oldStage === Called
+    if (oldStage == )
+  // only keep assessment around if the user is in it (if userStage === Confirmed)
+
+
+  // fetch newStage
+  // if newStage == Done
+  // fetch Score, and payout
+
+  // else:
+  // just set stage = newStage
+}
+
 
 // ============== sync actions ===================
 
