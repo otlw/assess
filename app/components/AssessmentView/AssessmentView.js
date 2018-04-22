@@ -26,7 +26,7 @@ export class AssessmentView extends Component {
       console.log(assessment)
       return (
         h('div', [
-          h('div', 'Imagine the following stylishly displayed:'),
+          h('div', '============AssessmentData================================='),
           h(AssessmentData, {
             address: assessment.address,
             cost: assessment.cost,
@@ -34,6 +34,7 @@ export class AssessmentView extends Component {
             stage: assessment.stage,
             assessee: assessment.assessee
           }),
+          h('div', '============Assessors================================='),
           h(AssessorList, {
             userAddress: this.props.userAddress,
             assessmentAddress: this.props.selectedAssessment,

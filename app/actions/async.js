@@ -1,6 +1,6 @@
 import Web3 from 'web3'
 
-import {fetchAssessmentsAndNotificationsFromFathomToken} from './assessmentActions'
+import {fetchLatestAssessments} from './assessmentActions'
 import {loadConceptsFromConceptRegistery} from './conceptActions'
 
 export const WEB3_CONNECTED = 'WEB3_CONNECTED'
@@ -36,7 +36,7 @@ export const connect = () => {
         }
         // and finally call the other actions that fill the state
         dispatch(loadConceptsFromConceptRegistery())
-        dispatch(fetchAssessmentsAndNotificationsFromFathomToken())
+        dispatch(fetchLatestAssessments())
       } else {
         dispatch(web3Disconnected())
       }

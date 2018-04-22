@@ -1,4 +1,7 @@
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
+export const RECEIVE_FINALSCORE = 'RECEIVE_FINALSCORE'
+export const RECEIVE_ASSESSMENTSTAGE = 'RECEIVE_ASSESSMENTSTAGE'
+export const REMOVE_ASSESSMENT = 'REMOVE_ASSESSMENT'
 export const RECEIVE_ALL_ASSESSMENTS = 'RECEIVE_ALL_ASSESSMENTS'
 export const RECEIVE_ASSESSORS = 'RECEIVE_ASSESSORS'
 export const SET_ASSESSMENT = 'SET_ASSESSMENT'
@@ -81,6 +84,7 @@ export function fetchAssessmentData (address) {
       let cost = await assessmentInstance.methods.cost().call()
       let size = await assessmentInstance.methods.size().call()
       let stage = Number(await assessmentInstance.methods.assessmentStage().call())
+      let finalScore = await assessmentInstance.methods.finalScore().call()
       let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
       let assessee = await assessmentInstance.methods.assessee().call()
       let conceptAddress = await assessmentInstance.methods.concept().call()
@@ -107,6 +111,24 @@ export function fetchAssessmentData (address) {
     } catch (e) {
       console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
       // TODO how to end this in case of error?
+    }
+  }
+}
+
+export function fetchScoreAndPayout (address) {
+  return async (dispatch, getState) => {
+    let w3 = getState().ethereum.web3
+    let userAddress = getState().ethereum.userAddress
+    try {
+      let assessmentInstance = new w3.eth.Contract(assessmentArtifact.abi, address)
+      let finalScore = await assessmentInstance.methods.finalScore().call()
+
+      dispatch(receiveFinalScore({
+        address,
+        finalScore,
+      }))
+    } catch (e) {
+      console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
     }
   }
 }
@@ -172,35 +194,6 @@ export function fetchAssessorStages (address, assessors, checkUserAddress = fals
   }
 }
 
-export function fetchAssessmentsAndNotificationsFromFathomToken () {
-  return async (dispatch, getState) => {
-    // get State data
-    let w3 = getState().ethereum.web3
-    let userAddress = getState().ethereum.userAddress
-    let networkID = await getState().ethereum.networkID
-
-    // get notification events from fathomToken contract
-    const abi = fathomTokenArtifact.abi // TODO helper function for instantiating contracts?
-    let fathomTokenAddress = fathomTokenArtifact.networks[networkID].address
-
-    // instantiate Concept registery Contract
-    const fathomTokenInstance = await new w3.eth.Contract(abi, fathomTokenAddress)
-    let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {filter: {user: userAddress}, fromBlock: 0, toBlock: 'latest'})
-    let assessmentAddresses = pastNotifications.reduce((accumulator, notification) => {
-      let assessment = notification.returnValues.sender
-      if (accumulator.indexOf(assessment) === -1) {
-        accumulator.push(assessment)
-      }
-      return accumulator
-    }, [])
-    console.log('assessmentAddresses ', assessmentAddresses)
-
-    assessmentAddresses.forEach( (address) => {
-      dispatch(fetchAssessmentData(address))
-    })
-  }
-}
-
 export function fetchLatestAssessments () {
   return async (dispatch, getState) => {
      // get State data
@@ -212,8 +205,6 @@ export function fetchLatestAssessments () {
     // get notification events from fathomToken contract
     const abi = fathomTokenArtifact.abi
     let fathomTokenAddress = fathomTokenArtifact.networks[networkID].address
-
-    // instantiate Concept registery Contract
     const fathomTokenInstance = await new w3.eth.Contract(abi, fathomTokenAddress)
     let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {filter: {user: userAddress}, fromBlock: 0, toBlock: 'latest'})
     let assessmentAddresses = pastNotifications.reduce((accumulator, notification) => {
@@ -227,12 +218,21 @@ export function fetchLatestAssessments () {
 
     assessmentAddresses.forEach( (address) => {
       if ( Object.keys(assessments).includes(address)) {
-        updateExistingAssessment(address)
+        dispatch(updateExistingAssessment(address))
       } else {
-        fetchAssessmentData(address)
+        dispatch(fetchAssessmentData(address))
       }
     })
   }
+}
+
+const Stage = {
+  None: 0,
+  Called: 1,
+  Confirmed: 2,
+  Committed: 3,
+  Done: 4,
+  Burned: 5
 }
 
 function updateExistingAssessment (address) { //not use oldStage?
@@ -244,24 +244,26 @@ function updateExistingAssessment (address) { //not use oldStage?
 
     const abi = assessmentArtifact.abi
     const assessmentInstance = await new w3.eth.Contract(abi, address)
-    let  userStage= assessmentInstance.methods.assessorStages.call(userAddress)
+    let  userStage = assessmentInstance.methods.assessorStages.call(userAddress)
     let  assessmentStage = assessmentInstance.methods.assessmentStage.call()
 
     // instantiate Concept registery Contract
-    // Burned?
+    // Burned? //TODO
     // move to past & fetch Stage
 
-  // if oldStage === Called
-    if (oldStage == )
-  // only keep assessment around if the user is in it (if userStage === Confirmed)
+    if (oldStage === Stage.Called) {
+      // only keep assessment around if the user is in it
+      if (userStage < Stage.Confirmed) {
+       dispatch(removeAssessment(address))
+      }
+    }
 
-
-  // fetch newStage
-  // if newStage == Done
-  // fetch Score, and payout
-
-  // else:
-  // just set stage = newStage
+    if (assessmentStage === Stage.Done) {
+      dispatch(fetchScoreAndPayout(address))
+    } else {
+      dispatch(receiveAssessmentStage(address, assessmentStage))
+    }
+  }
 }
 
 
@@ -279,6 +281,29 @@ export function receiveAssessment (assessment) {
   return {
     type: RECEIVE_ASSESSMENT,
     assessment
+  }
+}
+
+export function receiveAssessmentStage (address, stage) {
+  return {
+    type: RECEIVE_ASSESSMENTSTAGE,
+    address,
+    stage
+  }
+}
+
+export function receiveFinalScore (address, finalScore) {
+  return {
+    type: RECEIVE_ASSESSMENTSTAGE,
+    address,
+    finalScore
+  }
+}
+
+export function removeAssessment (address) {
+  return {
+    type: REMOVE_ASSESSMENT,
+    address
   }
 }
 
