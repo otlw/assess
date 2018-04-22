@@ -1,13 +1,10 @@
 import { connect } from 'react-redux'
 import AssessmentView from './AssessmentView.js'
-import { fetchAssessmentData,
-  fetchAssessors,
-  setAssessment } from '../../actions/assessmentActions'
+import { fetchAssessmentData, fetchAssessors} from '../../actions/assessmentActions'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
   return {
-    assessment: state.assessments[state.assessments.selectedAssessment],
-    selectedAssessment: state.assessments.selectedAssessment,
+    assessment: state.assessments[ownProps.match.params.id],
     userAddress: state.ethereum.userAddress
   }
 }
@@ -15,7 +12,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   fetchAssessmentData,
   fetchAssessors,
-  setAssessment
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AssessmentView)

@@ -6,18 +6,15 @@ var h = require('react-hyperscript')
 export class AssessmentView extends Component {
   render () {
     // if rendered for the first time, put assessment address into state
-    if (this.props.selectedAssessment === '') {
-      this.props.setAssessment(this.props.match.params.id)
-      return h('div', 'Loading...')
-    }
+    let selectedAssessment = this.props.match.params.id
     if (!this.props.assessment) {
       // assessment not there -> fetch basic info
-      this.props.fetchAssessmentData(this.props.selectedAssessment)
+      this.props.fetchAssessmentData(selectedAssessment)
       return h('div', '1/2: fetching data from chain...')
     } else if (!this.props.assessment.hasOwnProperty('assessors')) {
       // basic data is there, but no assessors
       this.props.fetchAssessors(
-        this.props.selectedAssessment,
+        selectedAssessment,
         this.props.assessment.stage
       )
       return h('div', '2/2: fetching assessors from event-logs...')
@@ -37,7 +34,7 @@ export class AssessmentView extends Component {
           h('div', '============Assessors================================='),
           h(AssessorList, {
             userAddress: this.props.userAddress,
-            assessmentAddress: this.props.selectedAssessment,
+            assessmentAddress: selectedAssessment,
             assessors: assessment.assessors,
             stage: assessment.stage
           })

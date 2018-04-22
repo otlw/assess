@@ -247,10 +247,6 @@ function updateExistingAssessment (address) { //not use oldStage?
     let  userStage = assessmentInstance.methods.assessorStages.call(userAddress)
     let  assessmentStage = assessmentInstance.methods.assessmentStage.call()
 
-    // instantiate Concept registery Contract
-    // Burned? //TODO
-    // move to past & fetch Stage
-
     if (oldStage === Stage.Called) {
       // only keep assessment around if the user is in it
       if (userStage < Stage.Confirmed) {
@@ -311,12 +307,5 @@ export function receiveAllAssessments (assessments) {
   return {
     type: RECEIVE_ALL_ASSESSMENTS,
     assessments
-  }
-}
-
-export function setAssessment (address) {
-  return {
-    type: SET_ASSESSMENT,
-    address
   }
 }
