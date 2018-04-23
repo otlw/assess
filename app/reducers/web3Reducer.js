@@ -10,7 +10,7 @@ let initialState = {
   isConnected: false,
   userAddress: '',
   networkID: 4,
-  balance: 0,
+  AhaBalance: 0,
   conceptList: []
 }
 

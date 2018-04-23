@@ -32,7 +32,7 @@ export const connect = () => {
           const ahaContract = await new w3.eth.Contract(ahaArtifact.abi, ahaArtifact.networks[networkID].address)
           // get balance from contract
           let userBalance = await ahaContract.methods.balanceOf(accounts[0]).call()
-          dispatch(receiveVariable('balance', userBalance))
+          dispatch(receiveVariable('AhaBalance', userBalance))
         }
         // and finally call the other actions that fill the state
         dispatch(loadConceptsFromConceptRegistery())
