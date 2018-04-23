@@ -3,8 +3,7 @@ import {
   RECEIVE_FINALSCORE,
   RECEIVE_ASSESSMENTSTAGE,
   REMOVE_ASSESSMENT,
-  RECEIVE_ALL_ASSESSMENTS,
-  RECEIVE_ASSESSORS,
+  RECEIVE_ASSESSORS
 } from '../actions/assessmentActions'
 
 import extend from 'xtend'
@@ -32,7 +31,7 @@ function assessments (state = initialState, action) {
       [address]: extend(state[address], {finalScore: action.finalScore})
     }
   }
-  case REMOVE_ASSESSMENT:{
+  case REMOVE_ASSESSMENT: {
     let newStage = {...state}
     delete newStage[action.address]
     return newStage

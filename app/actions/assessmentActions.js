@@ -54,7 +54,6 @@ export function reveal (address, score, salt) {
 
 // fetch assessment data for one given assessment
 export function fetchAssessmentData (address) {
-  console.log('entered address')
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     try {
@@ -175,7 +174,6 @@ export function fetchLatestAssessments () {
       }
       return accumulator
     }, [])
-    console.log('assessmentAddresses ', assessmentAddresses)
 
     assessmentAddresses.forEach((address) => {
       dispatch(updateAssessments(address))

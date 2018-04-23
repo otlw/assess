@@ -3,31 +3,25 @@ export const RECEIVE_CONCEPTS = 'RECEIVE_CONCEPTS'
 
 export function loadConceptsFromConceptRegistery () {
   return async (dispatch, getState) => {
-    const conceptRregistryInstance = getInstance.conceptRegistry(getState())
+    const conceptRegistryInstance = getInstance.conceptRegistry(getState())
 
     // get concepts from registry
-    dispatch(listConcepts(conceptRregistryInstance))
-  }
-}
-
-export const listConcepts = (conceptRegistryInstance) => {
-  return async (dispatch, getState) => {
-    // use concept creation events to list concept addresses
     let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {fromBlock: 0, toBlock: 'latest'})
 
-    let conceptList = await Promise.all(pastevents.map(async (event) => {
+    let concepts = {}
+    await Promise.all(pastevents.map(async (event) => {
+      let address = event.returnValues._concept
       // instanciate Concept Contract to get 'data' (ie the name of the concept)
-      let conceptInstance = getInstance.concept(getState(), event.returnValues._concept)
+      let conceptInstance = getInstance.concept(getState(), address)
 
-      // get data
+      // get and decode data
       let data = await conceptInstance.methods.data().call()
-
-      // uncode data
       let decodedConceptData = Buffer.from(data.slice(2), 'hex').toString('utf8')
 
-      return {address: event.returnValues._concept, data: decodedConceptData}
+      return (concepts[address] = decodedConceptData)
     }))
-    dispatch(receiveConcepts(conceptList))
+    console.log('concepts ', concepts)
+    dispatch(receiveConcepts(concepts))
   }
 }
 
