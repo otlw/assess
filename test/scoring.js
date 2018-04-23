@@ -5,7 +5,6 @@ jsAsses = require('../js/simulateAssessment.js')
 
 var maxSize = 9 // the number of accounts created by testrpc
 var stake = 10000
-var inflationRate = 1
 // setting random scores
 var maxScore = 127
 // radius within two assessors agree
@@ -41,9 +40,7 @@ contract('Scoring Unit Tests', function (accounts) {
         // fetch its outcome
         for (var key in setup.assessors) {
           distance = Math.abs(setup.scores[key] - resultInfo[0].toNumber())
-          payout = await mathlib.getPayout.call(distance,
-            stake,
-            inflationRate)
+          let payout = await mathlib.getPayout.call(distance, stake)
           payouts.push(payout[0].toNumber())
         }
         // save it for later comparisons

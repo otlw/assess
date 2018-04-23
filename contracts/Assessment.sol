@@ -258,7 +258,6 @@ contract Assessment {
     }
 
     function payout(uint finalClusterLength) onlyInStage(State.Done) public {
-        uint q = 1; //INFLATION RATE
         uint dissentBonus = 0;
         bool[] memory inAssessor = new bool[] (assessors.length);
         uint[] memory inAssessorPayout = new uint[] (assessors.length);
@@ -267,7 +266,7 @@ contract Assessment {
             if (assessorState[assessors[i]] == State.Done) {
                 uint payoutValue;
                 bool dissenting;
-                (payoutValue, dissenting) = Math.getPayout(Math.abs(scores[assessors[i]] - finalScore), cost, q);
+                (payoutValue, dissenting) = Math.getPayout(Math.abs(scores[assessors[i]] - finalScore), cost);
                 if (dissenting) {
                     dissentBonus += cost - payoutValue;
                     if (payoutValue > 0) {

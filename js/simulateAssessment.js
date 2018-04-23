@@ -37,13 +37,12 @@ exports.computePayouts = function (scores, finalScore, radius, cost, dissentBonu
   payouts = []
   dissentBonus = 0
   inAssessorsIdxs = []
-  q = 1 // INFLATION RATE
   for (key in scores) {
     distance = Math.abs(scores[key] - finalScore)
     let xOfRadius = Math.floor((distance * 10000) / radius)
     // console.log("scoreDinstance(JS) for assessor " + key + " : " + scoreDistance)
     if (distance <= radius) { // in RewardCluster?
-      payouts.push(Math.floor((q * cost * Math.max(10000 - xOfRadius, 0)) / 10000) + cost)
+      payouts.push(Math.floor((cost * Math.max(10000 - xOfRadius, 0)) / 10000) + cost)
       inAssessorsIdxs.push(key)
     } else {
       payoutValue = Math.floor((cost * Math.max(20000 - xOfRadius, 0)) / 20000)
