@@ -1,15 +1,16 @@
 var Web3 = require('web3')
 var web3 = new Web3(Web3.givenProvider || 'ws://localhost:8546')
+const utils = require('../js/utils.js')
 
 // this tests the Math-Library function getFinalScore, therefore assessments without consensus
 // will not produce a zero score, but the average of the biggest cluster
 exports.getFinalScore = function (scores, radius) {
-  largestCluster = []
-  largestClusterScore = 0
-  finalScore = 0
+  let largestCluster = []
+  let largestClusterScore = 0
+  let finalScore = 0
   for (var j = 0; j < scores.length; j++) {
-    cluster = []
-    clusterScore = 0
+    let cluster = []
+    let clusterScore = 0
     for (var i = 0; i < scores.length; i++) {
       if (Math.abs(scores[j] - scores[i]) <= radius) {
         cluster.push(scores[i])
@@ -34,18 +35,18 @@ function solidityRound (x) {
 
 // emulating the funcionality of the getPayout function of Math.sol
 exports.computePayouts = function (scores, finalScore, radius, cost, dissentBonus = false) {
-  payouts = []
+  let payouts = []
   dissentBonus = 0
-  inAssessorsIdxs = []
-  for (key in scores) {
-    distance = Math.abs(scores[key] - finalScore)
+  let inAssessorsIdxs = []
+  for (var key in scores) {
+    let distance = Math.abs(scores[key] - finalScore)
     let xOfRadius = Math.floor((distance * 10000) / radius)
     // console.log("scoreDinstance(JS) for assessor " + key + " : " + scoreDistance)
     if (distance <= radius) { // in RewardCluster?
       payouts.push(Math.floor((cost * Math.max(10000 - xOfRadius, 0)) / 10000) + cost)
       inAssessorsIdxs.push(key)
     } else {
-      payoutValue = Math.floor((cost * Math.max(20000 - xOfRadius, 0)) / 20000)
+      let payoutValue = Math.floor((cost * Math.max(20000 - xOfRadius, 0)) / 20000)
       payouts.push(payoutValue)
       dissentBonus += cost - payoutValue
     }
@@ -61,19 +62,19 @@ exports.computePayouts = function (scores, finalScore, radius, cost, dissentBonu
 }
 
 exports.generateAssessmentDataAtRandom = function (accounts, maxAssessors, maxScore, radius, cost, dissentBonus = false) {
-  size = utils.getRandomInt(5, maxAssessors)
-  scores = []
-  for (i = 0; i < size; i++) {
+  let size = utils.getRandomInt(5, maxAssessors)
+  let scores = []
+  for (var i = 0; i < size; i++) {
     scores.push(utils.getRandomInt(-maxScore, maxScore))
   }
   return this.generateAssessmentData(accounts, scores, radius, cost, dissentBonus)
 }
 
 exports.generateAssessmentData = function (accounts, scores, radius, cost, dissentBonus = false) {
-  size = scores.length
-  assessors = accounts.slice(0, size)
+  let size = scores.length
+  let assessors = accounts.slice(0, size)
   // generating the right results
-  resultInfo = this.getFinalScore(scores, radius)
+  let resultInfo = this.getFinalScore(scores, radius)
   return {assessors: assessors,
     scores: scores,
     stake: cost,
