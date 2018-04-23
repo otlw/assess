@@ -164,7 +164,6 @@ export function fetchLatestAssessments () {
   return async (dispatch, getState) => {
     // get State data
     let userAddress = getState().ethereum.userAddress
-    let assessments = await getState().assessments
 
     // get notification events from fathomToken contract
     const fathomTokenInstance = getInstance.fathomToken(getState())
@@ -179,12 +178,19 @@ export function fetchLatestAssessments () {
     console.log('assessmentAddresses ', assessmentAddresses)
 
     assessmentAddresses.forEach((address) => {
-      if (Object.keys(assessments).includes(address)) {
-        dispatch(updateExistingAssessment(address))
-      } else {
-        dispatch(fetchAssessmentData(address))
-      }
+      dispatch(updateAssessments(address))
     })
+  }
+}
+
+export function updateAssessments (address) {
+  return async (dispatch, getState) => {
+    let assessments = await getState().assessments
+    if (Object.keys(assessments).includes(address)) {
+      dispatch(updateExistingAssessment(address))
+    } else {
+      dispatch(fetchAssessmentData(address))
+    }
   }
 }
 
