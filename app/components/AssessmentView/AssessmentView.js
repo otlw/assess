@@ -20,7 +20,6 @@ export class AssessmentView extends Component {
       return h('div', '2/2: fetching assessors from event-logs...')
     } else {
       let assessment = this.props.assessment
-      console.log(assessment)
       return (
         h('div', [
           h('div', '============AssessmentData================================='),

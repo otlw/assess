@@ -20,7 +20,6 @@ export function loadConceptsFromConceptRegistery () {
 
       return (concepts[address] = decodedConceptData)
     }))
-    console.log('concepts ', concepts)
     dispatch(receiveConcepts(concepts))
   }
 }

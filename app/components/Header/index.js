@@ -7,7 +7,7 @@ const mapStateToProps = state => {
     web3_version: state.ethereum.web3_version,
     userAddress: state.ethereum.userAddress,
     networkID: state.ethereum.networkID,
-    balance: state.ethereum.balance
+    AhaBalance: state.ethereum.AhaBalance
   }
 }
 

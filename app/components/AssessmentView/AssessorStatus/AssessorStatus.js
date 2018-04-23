@@ -6,11 +6,11 @@ export class AssessorStatus extends Component {
   constructor (props) {
     super(props)
     this.buttonLogic = {
-      1: {function: this.stake, text: 'Stake!', disabled: false},
-      2: {function: this.commit, text: 'Commit a score!', disabled: false},
-      3: {function: this.reveal, text: 'Reveal your score!', disabled: false},
-      4: {function: this.done, text: 'done!', disabled: true},
-      5: {function: this.done, text: 'Burned!', disabled: true}
+      1: {function: this.stake, text: 'Stake!'},
+      2: {function: this.commit, text: 'Commit a score!'},
+      3: {function: this.reveal, text: 'Reveal your score!'},
+      4: {function: this.done, text: 'done!'},
+      5: {function: this.done, text: 'Burned!'}
     }
     this.salt = 'hihi'
     this.score = 100
@@ -44,7 +44,7 @@ export class AssessorStatus extends Component {
       return (
         h('div', [
           h('span', displayString),
-          h('button', {onClick: button.function.bind(this), disabled: button.disabled}, button.text)
+          h('button', {onClick: button.function.bind(this)}, button.text)
         ])
       )
     } else {

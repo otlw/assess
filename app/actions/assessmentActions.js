@@ -117,7 +117,6 @@ export function fetchAssessors (address, stage) {
       // NOTE: this piece is a bit tricky, as filtering in the call usually works on the local testnet, but not on rinkeby
       // for rinkeby one has to get all events and filter locally
       let pastEvents = await fathomTokenInstance.getPastEvents({fromBlock: 0, toBlock: 'latest'})
-      console.log('pastEvents ', pastEvents)
       if (pastEvents.length === []) {
         console.log('Oddly no Notifications events have been found. Try switching Metamasks network back and forth')
       }
@@ -146,7 +145,6 @@ export function fetchAssessorStages (address, assessors, checkUserAddress = fals
       assessorStages.push({address: assessors[i], stage: stage})
     }
     if (checkUserAddress) {
-      console.log('checkUserAddress', checkUserAddress)
       let userAddress = getState().ethereum.userAddress
       let userStage = await assessmentInstance.methods.assessorState(userAddress).call()
       if (userStage === '1') {

@@ -72,9 +72,7 @@ export function web3Disconnected () {
 export function receiveVariable (name, value) {
   return {
     type: RECEIVE_VARIABLE,
-    payload: {
-      name: name,
-      value: value
-    }
+    name,
+    value
   }
 }
