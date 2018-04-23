@@ -4,9 +4,7 @@ export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const RECEIVE_FINALSCORE = 'RECEIVE_FINALSCORE'
 export const RECEIVE_ASSESSMENTSTAGE = 'RECEIVE_ASSESSMENTSTAGE'
 export const REMOVE_ASSESSMENT = 'REMOVE_ASSESSMENT'
-export const RECEIVE_ALL_ASSESSMENTS = 'RECEIVE_ALL_ASSESSMENTS'
 export const RECEIVE_ASSESSORS = 'RECEIVE_ASSESSORS'
-export const SET_ASSESSMENT = 'SET_ASSESSMENT'
 
 const ethereumjsABI = require('ethereumjs-abi')
 
@@ -253,12 +251,5 @@ export function removeAssessment (address) {
   return {
     type: REMOVE_ASSESSMENT,
     address
-  }
-}
-
-export function receiveAllAssessments (assessments) {
-  return {
-    type: RECEIVE_ALL_ASSESSMENTS,
-    assessments
   }
 }

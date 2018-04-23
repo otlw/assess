@@ -33,9 +33,7 @@ export class AssessmentList extends Component {
         return assessment.stage > Stage.Called && assessment.stage < Stage.Done
       },
       Potential: (assessment) => {
-        return (props.userAddress !== assessment.assessee &&
-                assessment.stage === Stage.Called &&
-                !this.filters['Current'](assessment))
+        return (this.props.userAddress !== assessment.assessee && assessment.stage === Stage.Called)
       }
     }
   }
