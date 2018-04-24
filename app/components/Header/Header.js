@@ -25,6 +25,7 @@ export class Header extends Component {
     }
     return (
       h('div', [
+        h(Link,{style:buttonStyle, to: '/'}, "Home"),
         h('div', [
           h('span', 'Web3-version: '),
           h('span', this.props.web3_version)
@@ -40,8 +41,7 @@ export class Header extends Component {
         h('div', [
           h('span', 'AHA balance: '),
           h('span', this.props.balance)
-        ]),
-        h(Link,{style:buttonStyle, to: '/'}, "Home")
+        ])
       ])
     )
   }

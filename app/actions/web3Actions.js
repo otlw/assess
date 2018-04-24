@@ -1,6 +1,6 @@
 import Web3 from 'web3'
-
-import {fetchAssessmentsAndNotificationsFromFathomToken} from './assessmentActions'
+import { getInstance } from './utils.js'
+import {fetchLatestAssessments} from './assessmentActions'
 import {loadConceptsFromConceptRegistery} from './conceptActions'
 
 export const WEB3_CONNECTED = 'WEB3_CONNECTED'
@@ -27,16 +27,14 @@ export const connect = () => {
           dispatch(receiveVariable('userAddress', 'pleaseEnterPasswordToUnblockMetamask'))
         } else {
           dispatch(receiveVariable('userAddress', accounts[0]))
-          // get token contract
-          const ahaArtifact = require('../../build/contracts/FathomToken.json')
-          const ahaContract = await new w3.eth.Contract(ahaArtifact.abi, ahaArtifact.networks[networkID].address)
           // get balance from contract
-          let userBalance = await ahaContract.methods.balanceOf(accounts[0]).call()
-          dispatch(receiveVariable('balance', userBalance))
+          let fathomTokenInstance = getInstance.fathomToken(getState())
+          let userBalance = await fathomTokenInstance.methods.balanceOf(accounts[0]).call()
+          dispatch(receiveVariable('AhaBalance', userBalance))
         }
         // and finally call the other actions that fill the state
         dispatch(loadConceptsFromConceptRegistery())
-        dispatch(fetchAssessmentsAndNotificationsFromFathomToken())
+        dispatch(fetchLatestAssessments())
       } else {
         dispatch(web3Disconnected())
       }
@@ -68,14 +66,11 @@ export function web3Disconnected () {
   }
 }
 
-
 // to save something from the chain in state
 export function receiveVariable (name, value) {
   return {
     type: RECEIVE_VARIABLE,
-    payload: {
-      name: name,
-      value: value
-    }
+    name,
+    value
   }
 }

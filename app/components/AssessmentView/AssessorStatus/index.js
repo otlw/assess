@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
-import AssessorStatus from '../components/assessmentView/AssessorStatus'
-import { confirmAssessor, commit, reveal } from '../actions/assessmentActions'
+import AssessorStatus from './AssessorStatus.js'
+import { confirmAssessor, commit, reveal } from '../../../actions/assessmentActions'
 
 const mapStateToProps = state => {
   return {}

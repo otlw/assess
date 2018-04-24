@@ -9,7 +9,7 @@
   "scripts": {
     "compile": "truffle compile",
     "test": "ganache-cli > /dev/null 2>&1 & truffle test",
-    "lint": "standard --verbose | snazzy",
+    "lint": "standard --verbose './app/index.js' './app/**/*.js'| snazzy ",
     "fix": "standard --fix './app/index.js' './app/**/*.js' ",
     "build": "webpack",
     "dev": "webpack-dev-server --open"
@@ -26,15 +26,9 @@
     ]
   },
   "devDependencies": {
-    "babel-core": "^6.4.5",
-    "babel-loader": "^6.2.1",
-    "babel-preset-es2015": "^6.3.13",
-    "babel-preset-react": "^6.3.13",
     "enzyme": "^2.8.2",
     "ethjs-abi": "^0.2.0",
     "ganache-cli": "^6.0.3",
-    "react-addons-test-utils": "^15.5.1",
-    "react-scripts": "^1.0.2",
     "snazzy": "^7.1.1",
     "standard": "^11.0.1",
     "styled-components": "^3.2.5",
@@ -47,7 +41,6 @@
     "bignumber.js": "^6.0.0",
     "ethereumjs-abi": "^0.6.4",
     "hyperscript": "^2.0.2",
-    "prop-types": "^15.5.10",
     "react": "^15.5.0",
     "react-dom": "^15.5.0",
     "react-hyperscript": "^3.2.0",

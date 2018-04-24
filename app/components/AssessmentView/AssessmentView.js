@@ -3,33 +3,26 @@ import AssessmentData from './AssessmentData'
 import AssessorList from './AssessorList'
 var h = require('react-hyperscript')
 
-export class AssessmentViewApp extends Component {
-
+export class AssessmentView extends Component {
   render () {
     // if rendered for the first time, put assessment address into state
-    if (this.props.selectedAssessment === '') {
-      this.props.setAssessment(this.props.match.params.id)
-      return h('div', 'Loading...')
-    }
+    let selectedAssessment = this.props.match.params.id
     if (!this.props.assessment) {
-      //assessment not there -> fetch basic info
-      this.props.fetchAssessmentData(this.props.selectedAssessment)
+      // assessment not there -> fetch basic info
+      this.props.fetchAssessmentData(selectedAssessment)
       return h('div', '1/2: fetching data from chain...')
-    }
-    else if (!this.props.assessment.hasOwnProperty("assessors")) {
+    } else if (!this.props.assessment.hasOwnProperty('assessors')) {
       // basic data is there, but no assessors
       this.props.fetchAssessors(
-        this.props.selectedAssessment,
+        selectedAssessment,
         this.props.assessment.stage
       )
       return h('div', '2/2: fetching assessors from event-logs...')
-    }
-    else {
+    } else {
       let assessment = this.props.assessment
-      console.log(assessment)
       return (
-        h('div',[
-    	    h('div',"Imagine the following stylishly displayed:"),
+        h('div', [
+          h('div', '============AssessmentData================================='),
           h(AssessmentData, {
             address: assessment.address,
             cost: assessment.cost,
@@ -37,16 +30,17 @@ export class AssessmentViewApp extends Component {
             stage: assessment.stage,
             assessee: assessment.assessee
           }),
+          h('div', '============Assessors================================='),
           h(AssessorList, {
             userAddress: this.props.userAddress,
-            assessmentAddress: this.props.selectedAssessment,
+            assessmentAddress: selectedAssessment,
             assessors: assessment.assessors,
             stage: assessment.stage
           })
- 	      ])
+        ])
       )
     }
   }
 }
 
-export default AssessmentViewApp
+export default AssessmentView

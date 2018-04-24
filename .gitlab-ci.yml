@@ -3,6 +3,10 @@ image: library/node
 before_script:
   - npm install > /dev/null 2>&1 
 
+lint:
+  stage: build
+  script: npm run lint
+
 runTests:
   script:
     - npm test

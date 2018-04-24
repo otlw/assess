@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import AssessmentFilterView from '../components/AssessmentFilterView'
+import FilterView from './FilterView'
 
 const mapStateToProps = state => {
   return {
@@ -8,4 +8,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps)(AssessmentFilterView)
+export default connect(mapStateToProps)(FilterView)
