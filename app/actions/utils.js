@@ -1,6 +1,7 @@
 const assessmentABI = require('../../build/contracts/Assessment.json').abi
 const conceptABI = require('../../build/contracts/Concept.json').abi
 const fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
+console.log('fathomTokenArtifact ', fathomTokenArtifact )
 const conceptRegistryArtifact = require('../../build/contracts/ConceptRegistry.json')
 
 export const Stage = {
@@ -13,6 +14,7 @@ export const Stage = {
 }
 
 function getContractInstance (web3, abi, address) {
+  console.log('abi', abi)
   return new web3.eth.Contract(abi, address)
 }
 

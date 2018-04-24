@@ -27,3 +27,14 @@ http://localhost:8080/#/assessment/<assessmentAddress>
 
 Wheneever you run ganache with your seedwords, assessments & concepts will be
 deployed to the same address, so you can always navigate back to it 
+
+
+## How to test the frontend on a deployed version of the rinkeby-testnet
+
+To interact with the latest version of the fathom-network that has been deployed to rinkeby, run 
+
+> node scripts/loadDeployedNetwork.js
+
+Similarly, if you have deployed a new version of the network, use the saving script to save it to the deployments-folder:
+
+> node scripts/saveDeployedNetwork.js
