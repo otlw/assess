@@ -9,7 +9,7 @@ const NetworkNames = {
   42: 'kovan'
 }
 
-const buttonStyle={border:"1px solid grey",borderRadius:"1em",padding:"0.2em 1em",margin:"0.2em"}
+const buttonStyle = {border: '1px solid grey', borderRadius: '1em', padding: '0.2em 1em', margin: '0.2em'}
 
 export class Header extends Component {
   componentWillMount () {
@@ -25,7 +25,7 @@ export class Header extends Component {
     }
     return (
       h('div', [
-        h(Link,{style:buttonStyle, to: '/'}, "Home"),
+        h(Link, {style: buttonStyle, to: '/'}, 'Home'),
         h('div', [
           h('span', 'Web3-version: '),
           h('span', this.props.web3_version)

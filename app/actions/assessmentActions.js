@@ -188,7 +188,7 @@ export function updateAssessments (address) {
   }
 }
 
-function updateExistingAssessment (address) { //not use oldStage?
+function updateExistingAssessment (address) { // not use oldStage?
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let oldStage = getState().assessments[address].stage
