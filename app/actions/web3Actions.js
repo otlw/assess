@@ -1,5 +1,5 @@
 import Web3 from 'web3'
-
+import { getInstance } from './utils.js'
 import {fetchLatestAssessments} from './assessmentActions'
 import {loadConceptsFromConceptRegistery} from './conceptActions'
 
@@ -27,11 +27,9 @@ export const connect = () => {
           dispatch(receiveVariable('userAddress', 'pleaseEnterPasswordToUnblockMetamask'))
         } else {
           dispatch(receiveVariable('userAddress', accounts[0]))
-          // get token contract
-          const ahaArtifact = require('../../build/contracts/FathomToken.json')
-          const ahaContract = await new w3.eth.Contract(ahaArtifact.abi, ahaArtifact.networks[networkID].address)
           // get balance from contract
-          let userBalance = await ahaContract.methods.balanceOf(accounts[0]).call()
+          let fathomTokenInstance = getInstance.fathomToken(getState())
+          let userBalance = await fathomTokenInstance.methods.balanceOf(accounts[0]).call()
           dispatch(receiveVariable('AhaBalance', userBalance))
         }
         // and finally call the other actions that fill the state

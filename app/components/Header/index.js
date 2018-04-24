@@ -1,6 +1,6 @@
 import { connect as connectRedux } from 'react-redux'
 import Header from './Header.js'
-import { connect, receiveVariable } from '../../actions/async.js'
+import { connect, receiveVariable } from '../../actions/web3Actions.js'
 
 const mapStateToProps = state => {
   return {

@@ -2,7 +2,7 @@ import {
   RECEIVE_VARIABLE,
   WEB3_CONNECTED,
   WEB3_DISCONNECTED
-} from '../actions/async.js'
+} from '../actions/web3Actions.js'
 
 import extend from 'xtend'
 
