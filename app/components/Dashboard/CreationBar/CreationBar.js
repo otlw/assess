@@ -44,18 +44,18 @@ export class AssessmentCreationBar extends Component {
   }
 
   createAssessment (e) {
-    this.props.loadConceptContractAndCreateAssessment(
-      Object.keys(this.props.concepts)[this.state.selectedConceptKey]
-    )
+    this.props.loadConceptContractAndCreateAssessment(this.props.conceptList[this.state.selectedConceptKey].address)
   }
 
   render () {
-    let conceptNames = Object.values(this.props.concepts)
+    let conceptNameList = this.props.conceptList.map((concept) => {
+      return concept.data
+    })
     return h(CreationBox, [
       h(FieldName, 'Select Concept :'),
       h(DropdownBox, [
         h(Dropdown, {
-          conceptNames: conceptNames,
+          list: conceptNameList,
           selectedID: this.state.selectedConceptKey,
           set: this.setConceptKey.bind(this)})]
       ),

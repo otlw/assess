@@ -36,7 +36,7 @@ export class Header extends Component {
         ]),
         h('div', [
           h('span', 'AHA balance: '),
-          h('span', this.props.AhaBalance)
+          h('span', this.props.balance)
         ])
       ])
     )

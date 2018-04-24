@@ -2,9 +2,7 @@ import {
   RECEIVE_VARIABLE,
   WEB3_CONNECTED,
   WEB3_DISCONNECTED
-} from '../actions/web3Actions.js'
-
-import extend from 'xtend'
+} from '../actions/async.js'
 
 let initialState = {
   web3: {},
@@ -12,7 +10,7 @@ let initialState = {
   isConnected: false,
   userAddress: '',
   networkID: 4,
-  AhaBalance: 0,
+  balance: 0,
   conceptList: []
 }
 
@@ -32,8 +30,11 @@ function ethereum (state = initialState, action) {
         isConnected: false,
         web3_version: 'none'
       }
-    case RECEIVE_VARIABLE:
-      return extend(state, {[action.name]: action.value})
+    case RECEIVE_VARIABLE: {
+      let newState = Object.assign({}, state)
+      newState[action.payload.name] = action.payload.value
+      return newState
+    }
     default:
       return state
   }

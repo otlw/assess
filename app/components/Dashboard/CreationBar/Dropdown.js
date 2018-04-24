@@ -68,12 +68,12 @@ export class Dropdown extends Component {
           onMouseEnter: this.hoverOn.bind(this),
           onMouseLeave: this.hoverOff.bind(this)
         },
-        this.props.conceptNames[this.props.selectedID] + '[arrow.png]'),
+        this.props.list[this.props.selectedID] + '[arrow.png]'),
       h(dropdownContent, {
         hover: this.state.hover,
         onMouseEnter: this.hoverOn.bind(this),
         onMouseLeave: this.hoverOff.bind(this)
-      }, this.props.conceptNames.map((string, k) => {
+      }, this.props.list.map((string, k) => {
         let hover = (k === this.state.hoverKey)
         return h(StyledItem, {
           hover,
