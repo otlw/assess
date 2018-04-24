@@ -4,6 +4,9 @@
 
 > ganache-cli -m "your twelve seed words "
 
+*Whenever you run ganache with your seedwords, assessments & concepts will be
+deployed to the same address, so you can always navigate back to them*
+
 2. Deploy the contracts to your network
 
 > truffle migrate --reset
@@ -16,14 +19,12 @@
 
 > node create2concepts2assessments.js 
 
-5. The dashboard should be running on http://localhost:8080/
+5. View and create assessments on http://localhost:8080/
 
 - to create more assessments, select a concept in the top component and use the "Create Assessment" button
 - browse tabs to look for your assessments
 - click on an assessment address to see a detailed view of that assessment and interact with it
 
-Whenever you run ganache with your seedwords, assessments & concepts will be
-deployed to the same address, so you can always navigate back to it 
 
 ## How to test the frontend on Rinkeby
 
@@ -44,7 +45,7 @@ deployed to the same address, so you can always navigate back to it
 
 > node create2concepts2assessments.js rinkeby
 
-5. The dashboard should be running on http://localhost:8080/
+5. View and create assessments on http://localhost:8080/
 
 - to create more assessments, select a concept in the top component and use the "Create Assessment" button
 - browse tabs to look for your assessments
