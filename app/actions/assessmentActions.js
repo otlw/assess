@@ -86,16 +86,16 @@ export function fetchAssessmentData (address) {
     } catch (e) {
       console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
       // In case of error, we assume the assessment address is invalid
-      //conceptData will be used to detect wrong address situation (but could be any other field)
+      // conceptData will be used to detect wrong address situation (but could be any other field)
       dispatch(receiveAssessment({
-        address:address,
-        cost:"cost",
-        size:"size",
-        assessee:"assessee",
-        userStage:0,
-        stage:0,
-        conceptAddress:"conceptAddress",
-        conceptData:"wrongAddress"
+        address: address,
+        cost: 'cost',
+        size: 'size',
+        assessee: 'assessee',
+        userStage: 0,
+        stage: 0,
+        conceptAddress: 'conceptAddress',
+        conceptData: 'wrongAddress'
       }))
     }
   }

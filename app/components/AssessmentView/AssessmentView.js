@@ -11,7 +11,7 @@ export class AssessmentView extends Component {
       // assessment not there -> fetch basic info
       this.props.fetchAssessmentData(selectedAssessment)
       return h('div', '1/2: fetching data from chain...')
-    } else if (!this.props.assessment.hasOwnProperty('assessors')&&this.props.assessment.conceptData!=="wrongAddress") {
+    } else if (!this.props.assessment.hasOwnProperty('assessors') && this.props.assessment.conceptData !== 'wrongAddress') {
       console.log(this.props.assessment.conceptData)
       // if no assessors and the address of the assessment is correct, fetch assessors
       this.props.fetchAssessors(
@@ -19,10 +19,10 @@ export class AssessmentView extends Component {
         this.props.assessment.stage
       )
       return h('div', '2/2: fetching assessors from event-logs...')
-    } else if (this.props.assessment.conceptData==="wrongAddress") {
-      //if wrong assessment address, display relevant view
-      return h("div","*** Wrong Assessment Address ***")
-    } else  {
+    } else if (this.props.assessment.conceptData === 'wrongAddress') {
+      // if wrong assessment address, display relevant view
+      return h('div', '*** Wrong Assessment Address ***')
+    } else {
       let assessment = this.props.assessment
       return (
         h('div', [
