@@ -17,33 +17,33 @@ function assessments (state = initialState, action) {
     case RECEIVE_ASSESSMENT: {
       return extend(state, {[action.assessment.address]: action.assessment})
     }
-  case RECEIVE_ASSESSMENTSTAGE: {
-    let address = action.address
-    return {
-      ...state,
-      [address]: extend(state[address], {stage: action.stage})
+    case RECEIVE_ASSESSMENTSTAGE: {
+      let address = action.address
+      return {
+        ...state,
+        [address]: extend(state[address], {stage: action.stage})
+      }
     }
-  }
-  case RECEIVE_FINALSCORE: {
-    let address = action.address
-    return {
-      ...state,
-      [address]: extend(state[address], {finalScore: action.finalScore})
+    case RECEIVE_FINALSCORE: {
+      let address = action.address
+      return {
+        ...state,
+        [address]: extend(state[address], {finalScore: action.finalScore})
+      }
     }
-  }
-  case REMOVE_ASSESSMENT: {
-    let newStage = {...state}
-    delete newStage[action.address]
-    return newStage
-  }
-  case RECEIVE_ASSESSORS:
-    let address = action.address
-    return {
-      ...state,
-      [address]: extend(state[address], {assessors: action.assessors})
+    case REMOVE_ASSESSMENT: {
+      let newStage = {...state}
+      delete newStage[action.address]
+      return newStage
     }
-  default:
-    return state
+    case RECEIVE_ASSESSORS:
+      let address = action.address
+      return {
+        ...state,
+        [address]: extend(state[address], {assessors: action.assessors})
+      }
+    default:
+      return state
   }
 }
 
