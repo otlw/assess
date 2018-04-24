@@ -1,36 +1,49 @@
+/*
+  Script to save a local deployment from the untracked build-folder to the indexed
+  'deployments'-folder
+  Later: this should be extended to ask for a description and to use versioning
+  Usage: node saveDeployedNetwork.js
+*/
+
 var fs = require('fs')
 var extend = require('xtend')
 
 let networkIDs = {
-  rinkeby: '4'
+  rinkeby: '4',
+  local: '1524484386734'
 }
 
 // can be passed as arg or queried by CLI later on
-let networkToBeCopied = 'rinkeby'
+let networkToBeCopied = 'local'//'rinkeby'
+let networkID = networkIDs[networkToBeCopied]
 
+// read all exising contract objects
 let contractArtifacts = []
 fs.readdirSync('./build/contracts/').forEach(file => {
-  contractArtifacts.push(file)
+  if (file !== 'StandardToken.json' && file !== 'Token.json') {
+    contractArtifacts.push(file)
+  }
 })
 
-let deployment = {}
+// extract their deployment data, create a JSON object
+let deployment = {contracts: {}, metadata: {}}
 for (var artifact of contractArtifacts) {
   let location = '../build/contracts/' + artifact
   let json = require(location)
-  let networkID = networkIDs[networkToBeCopied]
+  let contractName = json.contractName
   if (json.networks.hasOwnProperty(networkID)) {
-    deployment[artifact] = {}
-    deployment[artifact].abi = extend({}, json.abi)
-    deployment[artifact].networkData = extend({}, json.networks[networkID])
-    deployment.date = Date.now()
-    deployment.description = 'test'
+    deployment.contracts[contractName] = {}
+    deployment.contracts[contractName].abi = extend({}, json.abi)
+    deployment.contracts[contractName].networkData = extend({}, json.networks[networkID])
   } else {
-    if (artifact !== 'StandardToken.json' && artifact !== 'Token.json') {
-      console.log('ERROR: Could not find a local deployment data for', artifact, ' on ', networkToBeCopied)
-    }
+    console.log('ERROR: Could not find a local deployment data for', artifact, ' on ', networkToBeCopied)
   }
 }
+// add metadata
+deployment.metadata.date = Date.now()
+deployment.metadata.description = 'test'
 
+// save JSON to deployments-folder
 let targetLocation = './deployments/' + networkToBeCopied + '.json'
 fs.writeFile(targetLocation, JSON.stringify(deployment), (err) => {
   if (err) {
