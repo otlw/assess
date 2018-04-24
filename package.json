@@ -40,6 +40,7 @@
   "dependencies": {
     "bignumber.js": "^6.0.0",
     "ethereumjs-abi": "^0.6.4",
+    "fs": "0.0.1-security",
     "hyperscript": "^2.0.2",
     "react": "^15.5.0",
     "react-dom": "^15.5.0",
