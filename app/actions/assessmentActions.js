@@ -66,27 +66,35 @@ export function fetchAssessmentData (address) {
 
       // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
       let conceptRegistryInstance = getInstance.conceptRegistry(getState())
-      await conceptRegistryInstance.methods.conceptExists(conceptAddress).call()
+      let isGoodConcept = await conceptRegistryInstance.methods.conceptExists(conceptAddress).call()
 
-      // get data from associated concept
-      let conceptInstance = getInstance.concept(getState(), conceptAddress)
-      let conceptData = await conceptInstance.methods.data().call()
-      if (conceptData) {
-        conceptData = Buffer.from(conceptData.slice(2), 'hex').toString('utf8')
+      // if concept is from Registry, go ahead and fetch data, otherwise, add a "wrong registry" assessment object
+      if (isGoodConcept) {
+        // get data from associated concept
+        let conceptInstance = getInstance.concept(getState(), conceptAddress)
+        let conceptData = await conceptInstance.methods.data().call()
+        if (conceptData) {
+          conceptData = Buffer.from(conceptData.slice(2), 'hex').toString('utf8')
+        } else {
+          conceptData = ''
+          console.log('was undefined: conceptData ', conceptData)
+        }
+        dispatch(receiveAssessment({
+          address,
+          cost,
+          size,
+          assessee,
+          userStage,
+          stage,
+          conceptAddress,
+          conceptData
+        }))
       } else {
-        conceptData = ''
-        console.log('was undefined: conceptData ', conceptData)
+        dispatch(receiveAssessment({
+          address: address,
+          conceptData: 'wrongRegistry'
+        }))
       }
-      dispatch(receiveAssessment({
-        address,
-        cost,
-        size,
-        assessee,
-        userStage,
-        stage,
-        conceptAddress,
-        conceptData
-      }))
     } catch (e) {
       console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
       // In case of error, we assume the assessment address is invalid
