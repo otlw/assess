@@ -64,6 +64,10 @@ export function fetchAssessmentData (address) {
       let assessee = await assessmentInstance.methods.assessee().call()
       let conceptAddress = await assessmentInstance.methods.concept().call()
 
+      //get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
+      let conceptRegistryInstance = getInstance.conceptRegistry(getState())
+      await conceptRegistryInstance.methods.conceptExists(conceptAddress).call()
+
       // get data from associated concept
       let conceptInstance = getInstance.concept(getState(), conceptAddress)
       let conceptData = await conceptInstance.methods.data().call()
@@ -89,12 +93,6 @@ export function fetchAssessmentData (address) {
       // conceptData will be used to detect wrong address situation (but could be any other field)
       dispatch(receiveAssessment({
         address: address,
-        cost: 'cost',
-        size: 'size',
-        assessee: 'assessee',
-        userStage: 0,
-        stage: 0,
-        conceptAddress: 'conceptAddress',
         conceptData: 'wrongAddress'
       }))
     }
