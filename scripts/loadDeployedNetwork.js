@@ -9,6 +9,8 @@ var extend = require('xtend')
 let minimalArtifact = { // TODO to be tested
   contractName: '',
   abi: [],
+  bytecode: null,
+  deployedBytecode: null,
   networks: {
     '4': {}
   }
@@ -16,7 +18,7 @@ let minimalArtifact = { // TODO to be tested
 
 let networkIDs = {
   rinkeby: '4',
-  local: '1524484386734'
+  local: '1524617274425'
 }
 // can be passed as arg or queried by CLI later on
 let networkToBeCopied = 'local'//'rinkeby'
@@ -33,27 +35,31 @@ try {
 // console.log('deployemt', Object.keys(deployment))
 
 // overwrite each artifact with data from the deployment
+let success = true
 for (let contractName of Object.keys(deployment.contracts)) {
   let localJson
+  let path = './build/contracts/' + contractName + '.json'
   try {
-    localJson = require('../build/contracts/' + contractName + '.json')
+    localJson = require('.' + path)
   } catch (e) {
     console.log('no artifact found for contract:', contractName, ' -> creating minimal dummy Artifact')
     localJson = extend(minimalArtifact, {contractName: contractName})
   }
   // console.log('localJson',Object.keys(localJson))
   localJson.abi = deployment.contracts[contractName].abi
+  localJson.bytecode = deployment.contracts[contractName].bytecode
+  localJson.deployedBytecode = deployment.contracts[contractName].deployedBytecode
   localJson.networks[networkID] = deployment.contracts[contractName].networkData
   // localJson.bogus = 'ahahahahahahahah'
   // save modified JSON to build-folder
-  fs.writeFile('./build/contracts/' + contractName + '.json', JSON.stringify(localJson), (err) => {
-    if (err) {
-      console.log('ERROR: writing to file failed:', err)
-    } else {
-      console.log('Success! ', contractName, ' successfully modified')
-    }
-  })
+  try {
+    fs.writeFileSync(path, JSON.stringify(localJson))//, (err) => {
+  } catch (e) {
+    console.log('Please check if a /build folder exists. If not run "truffle migrate" once')
+    success = false
+    break
+  }
 }
 
-// console.log('Success!')
+if (success) { console.log('Success: Deployment saved to local build folder.') }
 

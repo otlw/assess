@@ -10,7 +10,7 @@ var extend = require('xtend')
 
 let networkIDs = {
   rinkeby: '4',
-  local: '1524484386734'
+  local: '1524617274425'
 }
 
 // can be passed as arg or queried by CLI later on
@@ -34,6 +34,8 @@ for (var artifact of contractArtifacts) {
   if (json.networks.hasOwnProperty(networkID)) {
     deployment.contracts[contractName] = {}
     deployment.contracts[contractName].abi = extend({}, json.abi)
+    deployment.contracts[contractName].bytecode = extend({}, json.bytecode)
+    deployment.contracts[contractName].deployedBytecode = extend({}, json.deployedBytecode)
     deployment.contracts[contractName].networkData = extend({}, json.networks[networkID])
   } else {
     console.log('ERROR: Could not find a local deployment data for', artifact, ' on ', networkToBeCopied)
