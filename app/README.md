@@ -33,8 +33,12 @@ deployed to the same address, so you can always navigate back to it
 
 To interact with the latest version of the fathom-network that has been deployed to rinkeby, run 
 
-> node scripts/loadDeployedNetwork.js
+> ./scripts/loadDeployment.sh
 
 Similarly, if you have deployed a new version of the network, use the saving script to save it to the deployments-folder:
 
-> node scripts/saveDeployedNetwork.js
+> ./scripts/saveDeployment.sh
+
+By default both of these scripts act on the deployment saved in
+'deployments/rinkeby'. If you want to save or load to/from another directory,
+pass the name as a parameter.
