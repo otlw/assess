@@ -29,11 +29,13 @@ Wheneever you run ganache with your seedwords, assessments & concepts will be
 deployed to the same address, so you can always navigate back to it 
 
 
-## How to test the frontend on a deployed version of the rinkeby-testnet
+## How to interact with deployed version of the fathom-network
 
-To interact with the latest version of the fathom-network that has been deployed to rinkeby, run 
+To interact with the latest version of the fathom-network that has been deployed
+to rinkeby, run
 
 > ./scripts/loadDeployment.sh
+
 
 Similarly, if you have deployed a new version of the network, use the saving script to save it to the deployments-folder:
 
@@ -42,3 +44,8 @@ Similarly, if you have deployed a new version of the network, use the saving scr
 By default both of these scripts act on the deployment saved in
 'deployments/rinkeby'. If you want to save or load to/from another directory,
 pass the name as a parameter.
+
+The script to save also has an optional description parameter that can be used
+to generate a readme.txt in the respective folder
+
+> ./scripts/saveDeployment.sh kovan "super cool latest feature and also some relevant tweaks"
