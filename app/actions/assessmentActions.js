@@ -64,7 +64,7 @@ export function fetchAssessmentData (address) {
       let assessee = await assessmentInstance.methods.assessee().call()
       let conceptAddress = await assessmentInstance.methods.concept().call()
 
-      //get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
+      // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
       let conceptRegistryInstance = getInstance.conceptRegistry(getState())
       await conceptRegistryInstance.methods.conceptExists(conceptAddress).call()
 
