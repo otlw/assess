@@ -9,13 +9,15 @@ var fs = require('fs')
 var extend = require('xtend')
 
 let networkIDs = {
-  rinkeby: '4',
-  local: '1524617274425'
+  rinkeby: '4'
+  // local: '1524617274425'
 }
 
 // can be passed as arg or queried by CLI later on
-let networkToBeCopied = 'local'//'rinkeby'
+let networkToBeCopied = 'rinkeby'
 let networkID = networkIDs[networkToBeCopied]
+
+console.log('Saving local data for ', networkToBeCopied, '-deployment...')
 
 // read all exising contract objects
 let contractArtifacts = []

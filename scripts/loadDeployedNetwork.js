@@ -18,11 +18,13 @@ let minimalArtifact = { // TODO to be tested
 
 let networkIDs = {
   rinkeby: '4',
-  local: '1524617274425'
+  // local: '1524617274425'
 }
 // can be passed as arg or queried by CLI later on
-let networkToBeCopied = 'local'//'rinkeby'
+let networkToBeCopied = 'rinkeby'
 let networkID = networkIDs[networkToBeCopied]
+
+console.log('Loading repository data for ', networkToBeCopied, '-deployment...')
 
 // load deployment data
 let deployment
