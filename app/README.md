@@ -25,16 +25,31 @@ Open http://localhost:8080/ in your browser to see the app, where you can
 - click on an assessment address to see a detailed view of that assessment and interact with it.
 - create more assessments by selecting a concept in the top component and using the "Create Assessment" button.
 
-## How to test the frontend on the rinkeby-testnet
+## How to test the frontend on a testnet
+
+_For sake of readability, this section assume you want to use rinkeby. Support for other testnets is planned but not yet ready _
 
 1. Switch your metamask browser extension to rinkeby
 
-2. Deploy the contracts to rinkeby
+2. Let truffle know where to find the contracts  
+
+You can do this in two different ways:
+
+2.1 Use the latest version from the deployments folder
+
+To interact with the latest version of the fathom-network that has been deployed
+to the your testnet, run
+
+> ./scripts/loadDeployment.sh rinkeby
+
+This will replace the json-files in your local build folder with the artififacts from the deployments folder.
+
+2.1 OR Deploy your own the contracts to rinkeby
 
 > truffle migrate --network rinkeby
 
-(be sure to put your seed words in a secret.js file and list initialMembers -
-see [deployement instructions](https://gitlab.com/fathom/assess/#to-the-rinkeby-or-kovan-testnet) for details)
+(be sure to put your seed words in a secret.js file and provide a list of initialMembers -
+see [deployement instructions](https://gitlab.com/fathom/assess/#to-the-rinkeby-or-kovan-testnet) for more detailed instructions)
 
 3. Run the frontend
 
@@ -48,4 +63,18 @@ Open http://localhost:8080/ in your browser.
 
 Like (3.) above or by running the script with the rinkeby-flag
 
-> node create2concepts2assessments.js rinkeby
+## Saving your deployments
+
+If you don't want to overwrite your local deployment files, use the saveDeployment.sh script to back them up to the deployments folder.
+Optionally, you can also provide some text as a second argument that will be saved in a README.txt.
+For example: 
+
+> ./scripts/saveDeployment.sh myDeployments "testFeatureSet1 on kovan"
+
+To restore them, you would use the 'loadDeployment'-script like this
+
+> ./scripts/loadDeployment.sh myDeployments
+
+
+
+
