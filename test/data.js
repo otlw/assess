@@ -32,12 +32,14 @@ contract('Storing Data on Assessments:', function (accounts) {
     assert.isAbove(calledAssessors.length, size - 1, 'not enough assessors were called')
   })
 
-  it('Only the assessee can store data', async () => {
+  it('The assessee can store data', async () => {
     let meetingString = 'Meet me in the djungle.'
     await assessmentContract.addData(meetingString, {from: assessee})
-    let data = await assessmentContract.data.call()
+    let data = await assessmentContract.data.call(assessee)
     assert.equal(meetingString, data)
+  })
 
+  it('Assessors can not store data before they have confirmed', async () => {
     let response = 'at the palm tree?'
     try {
       await assessmentContract.addData(response, {from: calledAssessors[0]})
@@ -51,12 +53,20 @@ contract('Storing Data on Assessments:', function (accounts) {
     assert(false)
   })
 
-  it('But not after the last assessor has committed', async () => {
+  it('Staked assessors can store data', async () => {
+    await assessmentContract.confirmAssessor({from: calledAssessors[0]})
+    let response = 'at the palm tree?'
+    await assessmentContract.addData(response, {from: calledAssessors[0]})
+    let data = await assessmentContract.data.call(calledAssessors[0])
+    assert.equal(response, data)
+  })
+
+  it('No one can change their data after the last assessor has committed', async () => {
     let hashes = []
     for (let i = 0; i < size; i++) {
       hashes.push(utils.hashScoreAndSalt(i, i.toString()))
     }
-    await assess.confirmAssessors(calledAssessors.slice(0, size), assessmentContract)
+    await assess.confirmAssessors(calledAssessors.slice(1, size), assessmentContract)
     await assess.commitAssessors(calledAssessors.slice(0, size), hashes, assessmentContract)
     let stage = await assessmentContract.assessmentStage.call()
     assert.equal(stage.toNumber(), 3)
