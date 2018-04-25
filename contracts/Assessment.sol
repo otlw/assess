@@ -34,9 +34,9 @@ contract Assessment {
     mapping(address => int128) scores;
     int public finalScore;
     bytes32 public salt; //used for token distribution
-    string[] public data;
+    string public data;
 
-    event DataSet(address _dataSetter, uint _index);
+    event DataChanged(string oldData, string newData);
 
     modifier onlyConcept() {
         require(msg.sender == address(concept));
@@ -70,9 +70,11 @@ contract Assessment {
     }
 
     function addData(string _data) public {
-      require(msg.sender == assessee || assessorState[msg.sender] > State.Called);
-      data.push(_data);
-      DataSet(msg.sender, data.length - 1);
+      require(msg.sender == assessee);
+      require(assessmentStage < State.Done);
+      string oldData = data;
+      data = _data;
+      emit DataChanged(oldData, data);
     }
 
     // ends the assessment, refunds the assessee and all assessors who have not been burned

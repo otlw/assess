@@ -30,14 +30,13 @@ contract('Storing Data on Assessments:', function (accounts) {
 
     assert.isAbove(calledAssessors.length, size - 1, 'not enough assessors were called')
   })
-  it('The assessee can leave data', async () => {
-    let meetingString = 'meet me in the djungle'
-    await assessmentContract.addData(meetingString, {from: assessee})
-    let data = await assessmentContract.data.call(0)
-    assert.equal(meetingString, data)
-  })
 
-  it('Non-confirmed assessors can not leave data', async () => {
+  it('Only the assessee can store data', async () => {
+    let meetingString = 'Meet me in the djungle.'
+    await assessmentContract.addData(meetingString, {from: assessee})
+    let data = await assessmentContract.data.call()
+    assert.equal(meetingString, data)
+
     let response = 'at the palm tree?'
     try {
       await assessmentContract.addData(response, {from: calledAssessors[0]})
@@ -45,18 +44,26 @@ contract('Storing Data on Assessments:', function (accounts) {
       if (e.toString().indexOf('revert') > 0) {
         return assert(true)
       } else {
-        return assert(false, e.toString(), 'a bid with too high a salt could be submitted')
+        return assert(false, e.toString(), 'another error than revert was thrown')
       }
     }
     assert(false)
   })
 
-  it('Once they have staked assessors can too', async () => {
-    await assessmentContract.confirmAssessor({from: calledAssessors[0]})
-    let response = 'at the palm tree?'
-    await assessmentContract.addData(response, {from: calledAssessors[0]})
-    let data = await assessmentContract.data.call(1)
-    assert.equal(response, data)
+  it('But not after the assessment has ended', async () => {
+    await assess.runAssessment(assessmentContract, calledAssessors.slice(0, size), Array(size).fill(100), -1)
+    let stage = await assessmentContract.assessmentStage.call()
+    assert.equal(stage, 4)
+    let response = 'Meet on top of the highest mountain!'
+    try {
+      await assessmentContract.addData(response, {from: calledAssessors[0]})
+    } catch (e) {
+      if (e.toString().indexOf('revert') > 0) {
+        return assert(true)
+      } else {
+        return assert(false, e.toString(), 'another error than revert was thrown')
+      }
+    }
+    assert(false)
   })
 })
-
