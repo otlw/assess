@@ -12,18 +12,18 @@ export class AssessorStatus extends Component {
       4: {function: this.done, text: 'done!'},
       5: {function: this.done, text: 'Burned!'}
     }
-    //state contains local variables that would rerender the component
-    this.state={
-      score : 100,
-      salt : 'hihi'
+    // state contains local variables that would rerender the component
+    this.state = {
+      score: 100,
+      salt: 'hihi'
     }
   }
 
-  setScore(e){
-    let score=Number(e.target.value)
-    if (score>=0&&score<=100){
-      this.setState({score:score})
-    } 
+  setScore (e) {
+    let score = Number(e.target.value)
+    if (score >= 0 && score <= 100) {
+      this.setState({score: score})
+    }
   }
 
   stake () {
@@ -47,14 +47,14 @@ export class AssessorStatus extends Component {
   }
 
   render () {
-    let displayString = 'assessor ' + (this.props.assessorNumber+1) + ': ' + this.props.assessorAddress + '... ->   '
+    let displayString = 'assessor ' + (this.props.assessorNumber + 1) + ': ' + this.props.assessorAddress + '... ->   '
     let active = this.props.assessorStage === this.props.stage
     let button = this.buttonLogic[this.props.assessorStage]
-    let input=null
-    if (this.props.assessorStage===2){
-      input=h("div",{style:{display:"inline-block"}},[
-        h("div",{style:{fontSize:"0.7em",color:"lightgrey",fontStyle:"italic"}},"must be 0 <= score <= 100"),
-        h("input",{value:this.state.score,type:"number",onChange:this.setScore.bind(this)}),
+    let input = null
+    if (this.props.assessorStage === 2) {
+      input = h('div', {style: {display: 'inline-block'}}, [
+        h('div', {style: {fontSize: '0.7em', color: 'lightgrey', fontStyle: 'italic'}}, 'must be 0 <= score <= 100'),
+        h('input', {value: this.state.score, type: 'number', onChange: this.setScore.bind(this)})
       ])
     }
     if (active) {
