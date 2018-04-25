@@ -22,7 +22,7 @@ async function test () {
 
   // detect network and declare variables accordingly
   if (network === 'rinkeby') {
-    let truffleConfig = await require('./truffle.js')
+    let truffleConfig = await require('../truffle.js')
     provider = await truffleConfig.networks.rinkeby.provider
   } else {
     // use Ganache by default (last deployed contract version)
