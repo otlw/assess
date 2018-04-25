@@ -15,7 +15,7 @@ deployed to the same address, so you can always navigate back to them_.
 
 > node create2concepts2assessments.js 
 
-3. Run the frontend to view and create assessments
+4. Run the frontend to view and create assessments
 
 > npm run dev
 
@@ -40,11 +40,11 @@ see [deployement instructions](https://gitlab.com/fathom/assess/#to-the-rinkeby-
 
 > npm run dev
 
-5. View and create assessments 
+4. View and create assessments 
 
 Open http://localhost:8080/ in your browser.
 
-4. Create concepts and assessments
+5. Create concepts and assessments
 
 Like (3.) above or by running the script with the rinkeby-flag
 
