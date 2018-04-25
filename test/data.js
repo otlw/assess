@@ -1,6 +1,7 @@
 var ConceptRegistry = artifacts.require('ConceptRegistry')
 var Assessment = artifacts.require('Assessment')
 
+var utils = require('../js/utils.js')
 var assess = require('../js/assessmentFunctions.js')
 
 var nInitialUsers = 6
@@ -50,10 +51,16 @@ contract('Storing Data on Assessments:', function (accounts) {
     assert(false)
   })
 
-  it('But not after the assessment has ended', async () => {
-    await assess.runAssessment(assessmentContract, calledAssessors.slice(0, size), Array(size).fill(100), -1)
+  it('But not after the last assessor has committed', async () => {
+    let hashes = []
+    for (let i = 0; i < size; i++) {
+      hashes.push(utils.hashScoreAndSalt(i, i.toString()))
+    }
+    await assess.confirmAssessors(calledAssessors.slice(0, size), assessmentContract)
+    await assess.commitAssessors(calledAssessors.slice(0, size), hashes, assessmentContract)
     let stage = await assessmentContract.assessmentStage.call()
-    assert.equal(stage, 4)
+    assert.equal(stage.toNumber(), 3)
+
     let response = 'Meet on top of the highest mountain!'
     try {
       await assessmentContract.addData(response, {from: calledAssessors[0]})

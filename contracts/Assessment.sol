@@ -71,7 +71,7 @@ contract Assessment {
 
     function addData(string _data) public {
       require(msg.sender == assessee);
-      require(assessmentStage < State.Done);
+      require(assessmentStage < State.Committed);
       string oldData = data;
       data = _data;
       emit DataChanged(oldData, data);
