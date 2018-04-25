@@ -34,6 +34,7 @@ contract Assessment {
     mapping(address => int128) scores;
     int public finalScore;
     bytes32 public salt; //used for token distribution
+    bytes[] public data;
 
     modifier onlyConcept() {
         require(msg.sender == address(concept));
@@ -64,6 +65,11 @@ contract Assessment {
 
         fathomToken.notification(assessee, 0); // assessee has started an assessment
         done = 0;
+    }
+
+    function addData(bytes _newData) public {
+      require(msg.sender == assessee || assessorState[msg.sender] > State.Called);
+      data.push(_newData);
     }
 
     // ends the assessment, refunds the assessee and all assessors who have not been burned
