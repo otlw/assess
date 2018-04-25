@@ -1,29 +1,51 @@
 ## How to test the frontend on your local testnet
 
-1. run ganache-cli with your metamask-addresses
+1. Run ganache-cli with your metamask-addresses
 
-> ganache-cli -m "your twelve seeed words "
+> ganache-cli -m "your twelve seed words "
 
-2. deploy the contracts to your network
+_Whenever you run ganache with your seedwords, assessments and concepts will be
+deployed to the same address, so you can always navigate back to them_.
+
+2. Deploy the contracts to your network
 
 > truffle migrate --reset
 
-3. run the frontend
-
-> npm run dev
-
-4. run the script to create local assessments!
+3. Run the script to create local concepts and assessments
 
 > node create2concepts2assessments.js 
 
-5. navigate to the assessment-view
+4. Run the frontend to view and create assessments
 
-copy the assessment address from the scripts output and add it to the url below.
-Like this:
+> npm run dev
 
-http://localhost:8080/#/assessment/<assessmentAddress>
+Open http://localhost:8080/ in your browser to see the app, where you can
 
-6. Bookmark that site!
+- browse tabs to look for your assessments.
+- click on an assessment address to see a detailed view of that assessment and interact with it.
+- create more assessments by selecting a concept in the top component and using the "Create Assessment" button.
 
-Wheneever you run ganache with your seedwords, assessments & concepts will be
-deployed to the same address, so you can always navigate back to it 
+## How to test the frontend on the rinkeby-testnet
+
+1. Switch your metamask browser extension to rinkeby
+
+2. Deploy the contracts to rinkeby
+
+> truffle migrate --network rinkeby
+
+(be sure to put your seed words in a secret.js file and list initialMembers -
+see [deployement instructions](https://gitlab.com/fathom/assess/#to-the-rinkeby-or-kovan-testnet) for details)
+
+3. Run the frontend
+
+> npm run dev
+
+4. View and create assessments 
+
+Open http://localhost:8080/ in your browser.
+
+5. Create concepts and assessments
+
+Like (3.) above or by running the script with the rinkeby-flag
+
+> node create2concepts2assessments.js rinkeby
