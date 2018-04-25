@@ -9,21 +9,48 @@
   "scripts": {
     "compile": "truffle compile",
     "test": "ganache-cli > /dev/null 2>&1 & truffle test",
-    "lint": "standard --verbose | snazzy",
-    "fix": "standard --fix"
+    "lint": "standard --verbose './app/index.js' './app/**/*.js'| snazzy ",
+    "fix": "standard --fix './app/index.js' './app/**/*.js' ",
+    "build": "webpack",
+    "dev": "webpack-dev-server --open"
   },
   "author": "Jared Pereira",
   "license": "MIT",
+  "standard": {
+    "globals": [
+      "it",
+      "contract",
+      "assert",
+      "describe",
+      "artifacts"
+    ]
+  },
   "devDependencies": {
+    "enzyme": "^2.8.2",
     "ethjs-abi": "^0.2.0",
     "ganache-cli": "^6.0.3",
     "snazzy": "^7.1.1",
     "standard": "^11.0.1",
-    "truffle": "4.0.1"
+    "styled-components": "^3.2.5",
+    "truffle": "4.0.1",
+    "webpack": "^4.2.0",
+    "webpack-cli": "^2.0.12",
+    "webpack-dev-server": "^3.1.1"
   },
   "dependencies": {
+    "bignumber.js": "^6.0.0",
     "ethereumjs-abi": "^0.6.4",
+    "fs": "0.0.1-security",
+    "hyperscript": "^2.0.2",
+    "react": "^15.5.0",
+    "react-dom": "^15.5.0",
+    "react-hyperscript": "^3.2.0",
+    "react-redux": "^5.0.5",
+    "react-router-dom": "^4.2.2",
+    "redux": "^3.5.2",
+    "redux-thunk": "^2.2.0",
     "truffle-hdwallet-provider": "0.0.3",
-    "web3": "^1.0.0-beta.18"
+    "web3": "^1.0.0-beta.33",
+    "xtend": "^4.0.1"
   }
 }

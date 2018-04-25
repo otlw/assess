@@ -23,7 +23,7 @@ contract FathomToken is StandardToken{
     /*
       0 = You've started an assessment
       1 = Called As A Potential Assessor
-      2 = Confirmed for assessing, stake has been taken
+     2 = Confirmed for assessing, stake has been taken
       3 = Assessment Cancelled and you have been refunded
       4 = Assessment Has Started
       5 = All have commited; Reveal score

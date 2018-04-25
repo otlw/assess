@@ -48,11 +48,11 @@ library Math {
     or not the remained should be distributed to the others or not (iff they are not in
     the biggest cluster)
   */
-  function getPayout(uint distance, uint stake, uint q) pure public returns(uint payout, bool dissenting){
+  function getPayout(uint distance, uint stake) pure public returns(uint payout, bool dissenting){
       uint xOfRadius = (distance*10000) / consentRadius;
       //if in rewardCluster
       if (distance <= consentRadius) {
-          payout = (q * stake * (10000 - xOfRadius)) / 10000 + stake;
+          payout = (stake * (10000 - xOfRadius)) / 10000 + stake;
       }
       else {
           // cap it to 20000 to prevent underflow
