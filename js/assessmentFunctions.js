@@ -76,6 +76,6 @@ exports.runAssessment = async function (assessmentInstance, assessors, scores, s
   await this.confirmAssessors(assessors, assessmentInstance)
   await utils.evmIncreaseTime(600)
   await this.commitAssessors(assessors, hashes, assessmentInstance)
-  await utils.evmIncreaseTime(60 * 60 * 13) // let 12h challenge period pass
+  await utils.evmIncreaseTime(60 * 60 * 1) // let 12h challenge period pass
   await this.revealAssessors(assessors, scores, salts, assessmentInstance)
 }

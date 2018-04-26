@@ -103,7 +103,7 @@ contract('An assessment where assessors fail to reveal', (accounts) => {
   })
 
   it('should allow assessors to reveal before 24 hours have passed', async () => {
-    utils.evmIncreaseTime(13 * 60 * 60) // wait challenge period
+    utils.evmIncreaseTime(1 * 60 * 60) // wait challenge period
     await chain.revealAssessors(assessors.slice(1, size), scores.slice(1, size), salts.slice(1, size), assessment)
 
     const done = await assessment.done.call()

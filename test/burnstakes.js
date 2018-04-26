@@ -80,7 +80,7 @@ contract('Burning Stakes:', function (accounts) {
 
     it('reveal their score to finish the assessment.', async () => {
       // let the 12h challenge period pass
-      await utils.evmIncreaseTime(60 * 60 * 13)
+      await utils.evmIncreaseTime(60 * 60 * 1)
       // let all assessors reveal
       await chain.revealAssessors(confirmedAssessors.slice(1, size),
         scores.slice(1, size),

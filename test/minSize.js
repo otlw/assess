@@ -10,7 +10,7 @@ contract('Minimum size violations will cancel assessments', (accounts) => {
   let finalBalances
   let initialBalances
 
-  let size = 5
+  let size = 2
   let cost = 50
   let timelimit = 2000
   let assessment
@@ -53,9 +53,9 @@ contract('Minimum size violations will cancel assessments', (accounts) => {
       assert.equal(stage.toNumber(), 2, 'did not reach Confirmed stage')
       assert.equal(done.toNumber(), size - 1)
     })
-
+//irrelevant in dev contracts
     it('the 5th assessors fails to commit in time and the assessment is cancelled', async () => {
-      utils.evmIncreaseTime(timelimit * 1.2)
+      utils.evmIncreaseTime(timelimit * 50)
       commitResult = await assessment.commit(hashes[0])
       events = utils.getNotificationArgsFromReceipt(commitResult.receipt, 3)
       assert.equal(events[0].topic, 3, 'no cancellation event fired')
@@ -97,7 +97,7 @@ contract('Minimum size violations will cancel assessments', (accounts) => {
     it('all five assessors confirm and commit, but only four assessors reveal', async () => {
       await chain.confirmAssessors(assessors.slice(0, size), assessment)
       await chain.commitAssessors(assessors.slice(0, size), hashes, assessment)
-      utils.evmIncreaseTime(13 * 60 * 60) // let challenge period pass
+      utils.evmIncreaseTime(1 * 60 * 60) // let challenge period pass
       await chain.revealAssessors(assessors.slice(1, size), scores.slice(1, size), salts.slice(1, size), assessment)
 
       stage = await assessment.assessmentStage.call()

@@ -41,7 +41,7 @@ contract('Dissenting assessors:', (accounts) => {
     await chain.confirmAssessors(assessors.slice(0, size), assessment)
     utils.evmIncreaseTime(13)
     await chain.commitAssessors(assessors.slice(0, size), hashes, assessment)
-    utils.evmIncreaseTime(13 * 60 * 60) // wait challenge period
+    utils.evmIncreaseTime(1 * 60 * 60) // wait challenge period
     await chain.revealAssessors(assessors.slice(0, size), scores, salts, assessment)
     stage = await assessment.assessmentStage.call()
 
