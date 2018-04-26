@@ -78,15 +78,15 @@ export class Header extends Component {
         // an icon instead of 'Home' would be nice
         h(HomeButton, {to: '/'}, 'Fathom'),
         h(Box, [
-          h("div",{style:{display:"inline-block",marginRight:"2em"}},[
+          h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
             h(lightTitle, 'connection'),
             h(key, 'Network: '),
             h(value, network)
-            ]),
-          h("div",{style:{display:"inline-block",marginRight:"2em"}},[
+          ]),
+          h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
             h(lightTitle, 'user'),
             h(key, 'Your Address: '),
-            h(value, this.props.userAddress.substring(0, 8) + '...'+this.props.userAddress.substring(35, 42)),
+            h(value, this.props.userAddress.substring(0, 8) + '...' + this.props.userAddress.substring(35, 42))
           ]),
           h(key, (this.props.AhaBalance / 1e9).toString().substring(0, 6) + ' AHA')
         ])
