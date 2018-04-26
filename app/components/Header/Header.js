@@ -30,7 +30,7 @@ const HomeButton = styled(Link)`
   display: inline-block
   position: relative;
   top: 50%;
-  transform: translateY(-50%);
+  //transform: translateY(-50%);
 `
 
 const lightTitle = styled('div')`
@@ -55,6 +55,8 @@ const Box = styled('div')`
   border: 0.5px solid lightgrey;
   display: inline-block;
   margin-left:3em;
+  width:70%;
+  text-align:justify;
 `
 
 // const buttonStyle = {border: '1px solid grey', borderRadius: '1em', padding: '0.2em 1em', margin: '0.2em'}
@@ -76,15 +78,17 @@ export class Header extends Component {
         // an icon instead of 'Home' would be nice
         h(HomeButton, {to: '/'}, 'Fathom'),
         h(Box, [
-          h(lightTitle, 'connection'),
-          h(key, 'Network: '),
-          h(value, network)
-        ]),
-        h(Box, [
-          h(lightTitle, 'user'),
-          h(key, 'Your Address: '),
-          h(value, this.props.userAddress.substring(0, 12) + '...'),
-          h(value, (this.props.AhaBalance / 1e9).toString().substring(0, 6) + ' AHA')
+          h("div",{style:{display:"inline-block",marginRight:"2em"}},[
+            h(lightTitle, 'connection'),
+            h(key, 'Network: '),
+            h(value, network)
+            ]),
+          h("div",{style:{display:"inline-block",marginRight:"2em"}},[
+            h(lightTitle, 'user'),
+            h(key, 'Your Address: '),
+            h(value, this.props.userAddress.substring(0, 8) + '...'+this.props.userAddress.substring(35, 42)),
+          ]),
+          h(key, (this.props.AhaBalance / 1e9).toString().substring(0, 6) + ' AHA')
         ])
       ])
     )
