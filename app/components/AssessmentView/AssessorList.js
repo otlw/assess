@@ -5,7 +5,6 @@ var h = require('react-hyperscript')
 // component to display all assessors
 export class AssessorList extends Component {
   render () {
-    this.props.assessors.push({address: 'testAssessor', stage: 1})
     return h('div',
       this.props.assessors.map((assessor, k) => {
         return h(AssessorStatusBox, {

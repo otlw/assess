@@ -3,7 +3,8 @@ import {
   RECEIVE_FINALSCORE,
   RECEIVE_ASSESSMENTSTAGE,
   REMOVE_ASSESSMENT,
-  RECEIVE_ASSESSORS
+  RECEIVE_ASSESSORS,
+  RECEIVE_STORED_DATA
 } from '../actions/assessmentActions'
 
 import extend from 'xtend'
@@ -11,6 +12,29 @@ import extend from 'xtend'
 let initialState = {
   selectedAssessment: ''
 }
+/*
+  further assessments are stored like this:
+
+assessmentAddress : {
+  cost: 0
+  size: 5,
+  assessee: 0x...,
+  stage: [0,4]
+  finalScore: [-127, 127],
+  assessors : [
+    {
+      address,
+      stage,
+    },
+    ...
+  ]
+  storedData: {
+     address: dataString,
+     ...
+  }
+}
+ */
+
 
 function assessments (state = initialState, action) {
   switch (action.type) {
@@ -36,12 +60,21 @@ function assessments (state = initialState, action) {
       delete newStage[action.address]
       return newStage
     }
-    case RECEIVE_ASSESSORS:
+    case RECEIVE_ASSESSORS: {
       let address = action.address
       return {
         ...state,
         [address]: extend(state[address], {assessors: action.assessors})
       }
+    }
+    case RECEIVE_STORED_DATA: {
+      console.log('storing data', action.data)
+      let address = action.address
+      return {
+        ...state,
+        [address]: extend(state[address], {storedData: action.data})
+      }
+    }
     default:
       return state
   }

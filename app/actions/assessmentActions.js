@@ -2,6 +2,7 @@ import { Stage, getInstance } from './utils.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const RECEIVE_FINALSCORE = 'RECEIVE_FINALSCORE'
+export const RECEIVE_STORED_DATA = 'RECEIVE_STORED_DATA'
 export const RECEIVE_ASSESSMENTSTAGE = 'RECEIVE_ASSESSMENTSTAGE'
 export const REMOVE_ASSESSMENT = 'REMOVE_ASSESSMENT'
 export const RECEIVE_ASSESSORS = 'RECEIVE_ASSESSORS'
@@ -106,6 +107,14 @@ export function fetchScoreAndPayout (address) {
   }
 }
 
+// fetches Data for particpants of the assessment as well as the stages of the assessors
+export function fetchAssessmentViewData (address, stage) {
+  return async (dispatch, getState) => {
+    dispatch(fetchAssessors(address, stage))
+    dispatch(fetchStoredData(address))
+  }
+}
+
 // reads all staked assessors from event-logs and reads their stage from the chain
 // if the assessment is in the calling phase one also checks whether the user has been called
 // and if, so he will be added to the list of assessors with his stage set to 1
@@ -133,6 +142,21 @@ export function fetchAssessors (address, stage) {
     } catch (e) {
       console.log('ERROR: fetching assessors from the events did not work!', e)
     }
+  }
+}
+
+// returns the strings that are stored on the assessments
+export function fetchStoredData (address) {
+  return async (dispatch, getState) => {
+    let assessors = getState().assessments[address].assessors || []
+    let assessmentInstance = getInstance.assessment(getState(), address)
+    let data = {}
+    let assessee = await assessmentInstance.methods.assessee().call()
+    data[assessee] = await assessmentInstance.methods.data(assessee).call()
+    for (let i = 0; i < assessors.length; i++) {
+      data[assessors[i]] = await assessmentInstance.methods.data(assessors[i]).call()
+    }
+    dispatch(receiveStoredData(address, data))
   }
 }
 
@@ -222,6 +246,13 @@ export function receiveAssessors (address, assessors) {
   }
 }
 
+export function receiveStoredData (address, data) {
+  return {
+    type: RECEIVE_STORED_DATA,
+    address,
+    data
+  }
+}
 export function receiveAssessment (assessment) {
   return {
     type: RECEIVE_ASSESSMENT,
