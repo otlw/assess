@@ -51,6 +51,26 @@ export function reveal (address, score, salt) {
   }
 }
 
+export function storeData (address, data) {
+  return async (dispatch, getState) => {
+    console.log('storead', address)
+    dispatch(receiveStoredData(address, data + ' (not yet mined)'))
+    dispatch(storeDataOnAssessment(address, data))
+  }
+}
+
+export function storeDataOnAssessment (address, data) {
+  return async (dispatch, getState) => {
+    console.log('dispatching to storedata to contract', data)
+    let userAddress = getState().ethereum.userAddress
+    let assessmentInstance = getInstance.assessment(getState(), address)
+    // this is were a status should be set to "pending...""
+    // also salt should be saved in state
+    let tx = await assessmentInstance.methods.addData(data).send({from: userAddress, gas: 3200000})
+    console.log(tx)
+  }
+}
+
 // fetch assessment data for one given assessment
 export function fetchAssessmentData (address) {
   return async (dispatch, getState) => {
@@ -147,17 +167,18 @@ export function fetchAssessors (address, stage) {
 // returns the strings that are stored on the assessments
 export function fetchStoredData (address) {
   return async (dispatch, getState) => {
-    let assessors = getState().assessments[address].assessors || []
     let assessmentInstance = getInstance.assessment(getState(), address)
-    let data = {}
     let assessee = await assessmentInstance.methods.assessee().call()
-    data[assessee] = await assessmentInstance.methods.data(assessee).call()
-    for (let i = 0; i < assessors.length; i++) {
-      data[assessors[i]] = await assessmentInstance.methods.data(assessors[i]).call()
-    }
+    let data = await assessmentInstance.methods.data(assessee).call()
     dispatch(receiveStoredData(address, data))
   }
 }
+
+// let assessors = getState().assessments[address].assessors || []
+// let data = {}
+// for (let i = 0; i < assessors.length; i++) {
+// data[assessors[i]] = await assessmentInstance.methods.data(assessors[i]).call()
+// }
 
 export function fetchAssessorStages (address, assessors, checkUserAddress = false) {
   return async (dispatch, getState) => {
@@ -245,10 +266,10 @@ export function receiveAssessors (address, assessors) {
   }
 }
 
-export function receiveStoredData (address, data) {
+export function receiveStoredData (assessmentAddress, data) {
   return {
     type: RECEIVE_STORED_DATA,
-    address,
+    assessmentAddress,
     data
   }
 }

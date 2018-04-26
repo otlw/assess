@@ -8,7 +8,7 @@ const MeetingPointForm = props => {
     h('form', {onSubmit: handleSubmit}, [
       h('label', 'Add a Meeting Point: '),
       h(Field, {
-        name: 'firstName',
+        name: 'data',
         component: 'input',
         type: 'text',
         placeholder: 'e.g. a gitlab repo'
@@ -19,5 +19,5 @@ const MeetingPointForm = props => {
 }
 
 export default reduxForm({
-  form: 'meeting' // a unique identifier fob this form
+  form: 'meeting'
 })(MeetingPointForm)

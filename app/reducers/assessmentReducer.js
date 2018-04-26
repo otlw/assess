@@ -68,11 +68,10 @@ function assessments (state = initialState, action) {
       }
     }
     case RECEIVE_STORED_DATA: {
-      console.log('receiving data ', action.data)
-      let address = action.address
+      let address = action.assessmentAddress
       return {
         ...state,
-        [address]: extend(state[address], {storedData: action.data})
+        [address]: extend(state[address], {data: action.data})
       }
     }
     default:
