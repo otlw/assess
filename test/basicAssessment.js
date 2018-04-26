@@ -63,9 +63,9 @@ contract('Assessment', function(accounts) {
     })
 
     describe('Concept', function() {
-      it("should throw if assessmentSize < 5", async () => {
+      it("should throw if assessmentSize < 2", async () => {
         try{
-          await assessedConcept.makeAssessment(cost, 3, waitTime, timeLimit)
+          await assessedConcept.makeAssessment(cost, 1, waitTime, timeLimit)
         } catch (e) {
           if (e.toString().indexOf('revert') > 0) {
             return assert(true)
