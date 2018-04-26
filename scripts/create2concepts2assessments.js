@@ -6,9 +6,9 @@
 // the development network deployed by ganache-cli):
 // Example: 'node create2concepts2assessments.js rinkeby'
 
-let conceptRegArtifact = require('./build/contracts/ConceptRegistry.json')
-let conceptArtifact = require('./build/contracts/Concept.json')
-let fathomTokenArtifact = require('./build/contracts/FathomToken.json')
+let conceptRegArtifact = require('../build/contracts/ConceptRegistry.json')
+let conceptArtifact = require('../build/contracts/Concept.json')
+let fathomTokenArtifact = require('../build/contracts/FathomToken.json')
 
 let conceptRegContract
 let fathomTokenContract
