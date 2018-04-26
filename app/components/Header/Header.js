@@ -13,7 +13,7 @@ const NetworkNames = {
 // styles
 const HeaderBar = styled('div')`
   padding: 0.5em 1em;
-  background-color: #FBFBFB;
+  background-color: ${props => props.theme.primary};
   border: 0.5px solid lightgrey;
   position:relative;
   font-size:0.8em;
@@ -23,7 +23,8 @@ const HomeButton = styled(Link)`
   margin: 0.2em;
   padding: 0.2em 1em;
   text-align: center;
-  border: 0.5px solid lightgrey;
+  background-color:${props => props.theme.light};
+  border: 0.5px solid ${props => props.theme.dark};
   border-radius: 1em;
   text-decoration: none;
   font-size:1.6em;
@@ -34,25 +35,24 @@ const HomeButton = styled(Link)`
 `
 
 const lightTitle = styled('div')`
-  color:lightgrey
+  color:${props => props.theme.lightgrey}
   font-style:italic
   font-size:0.8em
 `
 
 const value = styled('span')`
-  color:#546e7a
+  color:${props => props.theme.primary}
 `
 
 const key = styled('span')`
-  color:#29434e
+  color:${props => props.theme.dark}
   font-style:bold
   font-size:1.1em
 `
 
 const Box = styled('div')`
   padding: 0.5em 1em;
-  background-color: #819ca9;
-  border: 0.5px solid lightgrey;
+  background-color: ${props => props.theme.light};
   display: inline-block;
   margin-left:3em;
   width:70%;
