@@ -21,8 +21,10 @@ render(
     h(HashRouter, [
       h('div', [
         h(Header),
-        h(Route, {exact: true, path: '/', component: Dashboard}),
-        h(Route, {path: '/assessment/:id', component: AssessmentView})
+        h("div",{style:{margin:"8px"}},[
+          h(Route, {exact: true, path: '/', component: Dashboard}),
+          h(Route, {path: '/assessment/:id', component: AssessmentView})
+        ])
       ])
     ])),
   document.getElementById('root')

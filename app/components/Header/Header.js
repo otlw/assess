@@ -33,48 +33,28 @@ const HomeButton = styled(Link)`
   transform: translateY(-50%);
 `
 
-const Box = styled('div')`
-  padding: 0.5em 1em;
-  background-color: white;
-  border: 0.5px solid lightgrey;
-  display: inline-block
-  margin-left:3em;
-`
-
 const lightTitle = styled('div')`
   color:lightgrey
   font-style:italic
   font-size:0.8em
 `
 
-const key = styled('span')`
-  color:#707070
-  font-style:bold
-  font-size:1.1em
-`
-
 const value = styled('span')`
-  color:#9e9e9e
+  color:#546e7a
 `
 
-const key2 = styled('span')`
+const key = styled('span')`
   color:#29434e
   font-style:bold
   font-size:1.1em
 `
 
-const value2 = styled('span')`
-  color:#546e7a
-`
-
-const Box2 = styled('div')`
+const Box = styled('div')`
   padding: 0.5em 1em;
   background-color: #819ca9;
   border: 0.5px solid lightgrey;
   display: inline-block;
-  position:absolute;
-  right:0;
-  margin-right:3em;
+  margin-left:3em;
 `
 
 // const buttonStyle = {border: '1px solid grey', borderRadius: '1em', padding: '0.2em 1em', margin: '0.2em'}
@@ -94,22 +74,17 @@ export class Header extends Component {
     return (
       h(HeaderBar, [
         // an icon instead of 'Home' would be nice
-        h(HomeButton, {to: '/'}, 'Home'),
+        h(HomeButton, {to: '/'}, 'Fathom'),
         h(Box, [
           h(lightTitle, 'connection'),
-          h(key, 'Web3-version: '),
-          h(value, this.props.web3_version),
-          h('br'),
           h(key, 'Network: '),
           h(value, network)
         ]),
-        h(Box2, [
+        h(Box, [
           h(lightTitle, 'user'),
-          h(key2, 'Your Address: '),
-          h(value2, this.props.userAddress.substring(0, 12) + '...'),
-          h('br'),
-          h(key2, 'Balance: '),
-          h(value2, (this.props.AhaBalance / 1e9).toString().substring(0, 6) + ' AHA')
+          h(key, 'Your Address: '),
+          h(value, this.props.userAddress.substring(0, 12) + '...'),
+          h(value, (this.props.AhaBalance / 1e9).toString().substring(0, 6) + ' AHA')
         ])
       ])
     )
