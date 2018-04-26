@@ -6,7 +6,6 @@ export class MeetingPoint extends Component {
 
   storeData (values) {
     this.props.storeData(this.props.address, values.data)
-    console.log('propsIn store', this.props.address)
   }
 
   render () {
