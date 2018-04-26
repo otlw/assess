@@ -99,7 +99,7 @@ async function test () {
 
   // define constants for assessments
   const cost = 10
-  const size = 5
+  const size = 2
   const endTime = 1000000000000
   const startTime = 1000000000
   const assesseeAddress = accounts[0]
