@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import AssessmentData from './AssessmentData'
+import AssessmentData from './AssessmentData/'
 import AssessorList from './AssessorList'
 var h = require('react-hyperscript')
 
@@ -28,7 +28,8 @@ export class AssessmentView extends Component {
             cost: assessment.cost,
             size: assessment.size,
             stage: assessment.stage,
-            assessee: assessment.assessee
+            assessee: assessment.assessee,
+            storedData: assessment.storedData
           }),
           h('div', '============Assessors================================='),
           h(AssessorList, {

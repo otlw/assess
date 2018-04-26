@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import AssessmentView from './AssessmentView.js'
+import AssessmentView from './AssessmentView'
 import {fetchAssessmentData, fetchAssessmentViewData} from '../../actions/assessmentActions'
 
 const mapStateToProps = (state, ownProps) => {

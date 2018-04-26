@@ -144,7 +144,6 @@ export function fetchAssessors (address, stage) {
     }
   }
 }
-
 // returns the strings that are stored on the assessments
 export function fetchStoredData (address) {
   return async (dispatch, getState) => {
