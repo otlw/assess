@@ -14,10 +14,9 @@ const NetworkNames = {
 const HeaderBar = styled('div')`
   padding: 0.5em 0;
   background-color: ${props => props.theme.primary};
-  border: 0.5px solid lightgrey;
+  border-bottom: 0.5px solid ${props => props.theme.light};
   position:relative;
   font-size:0.8em;
-  margin: 0.3em 0
 `
 
 const HomeButton = styled(Link)`
