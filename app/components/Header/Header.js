@@ -12,16 +12,17 @@ const NetworkNames = {
 
 // styles
 const HeaderBar = styled('div')`
-  padding: 0.5em 1em;
+  padding: 0.5em 0;
   background-color: ${props => props.theme.primary};
   border: 0.5px solid lightgrey;
   position:relative;
   font-size:0.8em;
+  margin: 0.3em 0
 `
 
 const HomeButton = styled(Link)`
-  margin: 0.2em;
-  padding: 0.2em 1em;
+  margin: 0.3em 1.25%;
+  padding: 0.2em 1.25%;
   text-align: center;
   background-color:${props => props.theme.light};
   border: 0.5px solid ${props => props.theme.dark};
@@ -30,14 +31,7 @@ const HomeButton = styled(Link)`
   font-size:1.6em;
   display: inline-block
   position: relative;
-  top: 50%;
-  //transform: translateY(-50%);
-`
-
-const lightTitle = styled('div')`
-  color:${props => props.theme.lightgrey}
-  font-style:italic
-  font-size:0.8em
+  width:5%;
 `
 
 const value = styled('span')`
@@ -54,12 +48,9 @@ const Box = styled('div')`
   padding: 0.5em 1em;
   background-color: ${props => props.theme.light};
   display: inline-block;
-  margin-left:3em;
-  width:70%;
-  text-align:justify;
+  width:85%;
+  text-align:center;
 `
-
-// const buttonStyle = {border: '1px solid grey', borderRadius: '1em', padding: '0.2em 1em', margin: '0.2em'}
 
 export class Header extends Component {
   componentWillMount () {
@@ -76,15 +67,13 @@ export class Header extends Component {
     return (
       h(HeaderBar, [
         // an icon instead of 'Home' would be nice
-        h(HomeButton, {to: '/'}, 'Fathom'),
+        h(HomeButton, {to: '/'}, 'F'),
         h(Box, [
           h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
-            h(lightTitle, 'connection'),
             h(key, 'Network: '),
             h(value, network)
           ]),
           h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
-            h(lightTitle, 'user'),
             h(key, 'Your Address: '),
             h(value, this.props.userAddress.substring(0, 8) + '...' + this.props.userAddress.substring(35, 42))
           ]),
