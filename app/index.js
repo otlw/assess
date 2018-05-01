@@ -21,7 +21,7 @@ const theme = {
   primary: '#546e7a',
   light: '#819ca9',
   dark: '#29434e',
-  lightgrey: '#d3d3d3',
+  lightgrey: '#d3d3d3'
 }
 
 render(
