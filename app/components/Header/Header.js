@@ -1,6 +1,7 @@
 import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
+import styled from 'styled-components'
 
 const NetworkNames = {
   4: 'rinkeby',
@@ -9,7 +10,46 @@ const NetworkNames = {
   42: 'kovan'
 }
 
-const buttonStyle = {border: '1px solid grey', borderRadius: '1em', padding: '0.2em 1em', margin: '0.2em'}
+// styles
+const HeaderBar = styled('div')`
+  padding: 0.5em 0;
+  background-color: ${props => props.theme.primary};
+  border-bottom: 0.5px solid ${props => props.theme.light};
+  position:relative;
+  font-size:0.8em;
+`
+
+const HomeButton = styled(Link)`
+  margin: 0.3em 1.25%;
+  padding: 0.2em 1.25%;
+  text-align: center;
+  background-color:${props => props.theme.light};
+  border: 0.5px solid ${props => props.theme.dark};
+  border-radius: 1em;
+  text-decoration: none;
+  font-size:1.6em;
+  display: inline-block
+  position: relative;
+  width:5%;
+`
+
+const value = styled('span')`
+  color:${props => props.theme.primary}
+`
+
+const key = styled('span')`
+  color:${props => props.theme.dark}
+  font-style:bold
+  font-size:1.1em
+`
+
+const Box = styled('div')`
+  padding: 0.5em 1em;
+  background-color: ${props => props.theme.light};
+  display: inline-block;
+  width:85%;
+  text-align:center;
+`
 
 export class Header extends Component {
   componentWillMount () {
@@ -24,23 +64,19 @@ export class Header extends Component {
       network = 'Local or unknown'
     }
     return (
-      h('div', [
-        h(Link, {style: buttonStyle, to: '/'}, 'Home'),
-        h('div', [
-          h('span', 'Web3-version: '),
-          h('span', this.props.web3_version)
-        ]),
-        h('div', [
-          h('span', 'Network: '),
-          h('span', network)
-        ]),
-        h('div', [
-          h('span', 'user-address: '),
-          h('span', this.props.userAddress)
-        ]),
-        h('div', [
-          h('span', 'AHA balance: '),
-          h('span', this.props.AhaBalance)
+      h(HeaderBar, [
+        // an icon instead of 'Home' would be nice
+        h(HomeButton, {to: '/'}, 'F'),
+        h(Box, [
+          h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
+            h(key, 'Network: '),
+            h(value, network)
+          ]),
+          h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
+            h(key, 'Your Address: '),
+            h(value, this.props.userAddress.substring(0, 8) + '...' + this.props.userAddress.substring(35, 42))
+          ]),
+          h(key, (this.props.AhaBalance / 1e9).toString().substring(0, 6) + ' AHA')
         ])
       ])
     )

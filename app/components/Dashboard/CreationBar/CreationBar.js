@@ -1,34 +1,34 @@
 import { Component } from 'react'
 import Dropdown from './Dropdown'
 import styled from 'styled-components'
-var h = require('react-hyperscript')
+import h from 'react-hyperscript'
 
-// this is gonna move to mainStyle object
+// styles
 const CreationBox = styled('div')`
-margin-top: 1em;
-padding: 0.6em;
-text-align: left;
-border: 0.5px solid lightgrey;
+  margin-top: 1em;
+  padding: 0.6em;
+  text-align: left;
+  border: 0.5px solid lightgrey;
 `
 
 const FieldName = styled('div')`
-font-weight: bold;
-display: inline-block
+  font-weight: bold;
+  display: inline-block
 `
 
 const DropdownBox = styled('div')`
-margin-left: 1em;
-border: 1px solid lightblue;
-padding 0.2em;
-display: inline-block;
+  margin-left: 1em;
+  border: 1px solid lightblue;
+  padding 0.2em;
+  display: inline-block;
 `
 
 const Button = styled('div')`
-border-radius: 0.8em;
-border: 1px solid black;
-padding 0.2em 1em;
-display: inline-block
-margin-left: 2em;
+  border-radius: 0.8em;
+  border: 1px solid black;
+  padding 0.2em 1em;
+  display: inline-block
+  margin-left: 2em;
 `
 
 export class AssessmentCreationBar extends Component {
