@@ -20,11 +20,24 @@ export class AssessorStatus extends Component {
       4: {function: this.done, text: 'done!'},
       5: {function: this.done, text: 'Burned!'}
     }
+
+    //get cache/localStorage data in case a score-salt has been commited
+    let cacheCommitData = JSON.parse(window.localStorage.getItem(this.props.assessmentAddress))
+
     // state contains local variables that would rerender the component
-    this.state = {
-      score: 100,
-      salt: 'hihi',
-      wrongScore:false
+    //state is set to default score-salt only if the cache is empty for that assessment address
+    if (cacheCommitData) {
+      this.state = {
+        score: Number(cacheCommitData.score),
+        salt: cacheCommitData.salt,
+        wrongScore:false
+      }
+    } else {
+      this.state = {
+        score: 100,
+        salt: 'hihi',
+        wrongScore:false
+      }
     }
   }
 
@@ -42,8 +55,13 @@ export class AssessorStatus extends Component {
   }
 
   commit () {
+    //commit score+salt (salt is fixed for now)
     window.alert('Please write down your salt:' + this.state.salt)
     this.props.commit(this.props.assessmentAddress, this.state.score, this.state.salt)
+
+    //save salt and score in local storage
+    let cacheCommitData=JSON.stringify({score:this.state.score,salt:this.state.salt})
+    window.localStorage.setItem(this.props.assessmentAddress,cacheCommitData)
   }
 
   reveal () {
