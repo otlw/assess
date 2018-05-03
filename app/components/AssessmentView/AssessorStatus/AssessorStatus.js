@@ -12,22 +12,17 @@ const ActiveButton = styled.button`
 color:${props => props.theme.primary};
 border-color:${props => props.theme.primary};
 background-color:${props => props.theme.light};
+cursor: pointer;
 `
 const StaleButton = styled.span`
 color:lightgrey;
+cursor: auto;
 `
 
 // component to display an individual assessor slot address and options
 export class AssessorStatus extends Component {
   constructor (props) {
     super(props)
-    this.buttonLogic = {
-      1: {function: this.stake, text: 'Stake!'},
-      2: {function: this.commit, text: 'Commit a score!'},
-      3: {function: this.reveal, text: 'Reveal your score!'},
-      4: {function: this.done, text: 'done!'},
-      5: {function: this.done, text: 'Burned!'}
-    }
 
     // get cache/localStorage data in case a score-salt has been commited
     let cacheCommitData = JSON.parse(window.localStorage.getItem(this.props.assessmentAddress))
@@ -80,34 +75,56 @@ export class AssessorStatus extends Component {
     // TODO
   }
 
-  done () {
+
+//function returns good comonents according to stage and user status
+actionComponent(active,stage) {
+
+  //choose the right button depending on the userAddress
+  //let Button;
+  function button (active,text,funct){
+    if (active){
+      return h(ActiveButton, {onClick:funct.bind(this)},text)
+    } else {
+      return h(StaleButton,text)
+    }
   }
 
-  render () {
-    let displayString = 'assessor ' + (this.props.assessorNumber + 1) + ': ' + this.props.assessorAddress + '... ->   '
-    let active = this.props.assessorStage === this.props.stage
-    let actionData = this.buttonLogic[this.props.assessorStage]
-    // dislpay input only if needed
-    let input = null
-    if (this.props.assessorStage === 2 && (this.props.assessorAddress === this.props.userAddress)) {
-      input = h('div', {style: {display: 'inline-block'}}, [
-        h(Feedback, {wrongScore: this.state.wrongScore}, 'must be 0 <= score <= 100'),
-        h('input', {value: this.state.score, type: 'number', onChange: this.setScore.bind(this)})
+  //choose the right form depending on the userAddress
+  switch (stage){
+    case 1:
+      return h(Button, {onClick: this.stake.bind(this)}, 'Stake!');
+    case 2:
+      return h("div", {style: {display: 'inline-block'}},[
+        //input field
+        h('div', {style: {display: 'inline-block'}}, [
+          h(Feedback, {wrongScore: this.state.wrongScore}, 'must be 0 <= score <= 100'),
+          h('input', {value: this.state.score, type: 'number', onChange: this.setScore.bind(this)})
+        ]),
+        //button
+        button(active,'Commit a score!',this.commit)
       ])
-    }
-    // display button according to user pov
-    let buttonComponent = null
-    if (this.props.assessorAddress === this.props.userAddress) {
-      buttonComponent = h(ActiveButton, {onClick: actionData.function.bind(this)}, actionData.text)
-    } else {
-      buttonComponent = h(StaleButton, actionData.text)
-    }
+    case 3:
+      return button(active,'Reveal your score!',this.reveal) 
+    case 4:
+      return button(active,'Done !') 
+    case 1:
+      return button(active,'Burned !')
+    default:
+      return button(active,'wrong stage !') 
+  }
+}
+
+  render () {
+    //display assessor information
+    let displayString = 'assessor ' + (this.props.assessorNumber + 1) + ': ' + this.props.assessorAddress + '... ->   '
+    //determine if assessor is ahead of assessment
+    let active = this.props.assessorStage === this.props.stage
     if (active) {
+      let ActionComponent=this.actionComponent(this.props.assessorAddress === this.props.userAddress,this.props.assessorStage)
       return (
         h('div', [
           h('span', displayString),
-          input,
-          buttonComponent
+          h('span',{} , ActionComponent)
         ])
       )
     } else {
