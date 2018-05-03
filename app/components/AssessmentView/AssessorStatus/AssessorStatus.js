@@ -2,11 +2,11 @@ import { Component } from 'react'
 import h from 'react-hyperscript'
 import styled from 'styled-components'
 
-//styles
+// styles
 const Feedback = styled.div`
 font-size: 0.7em; 
 font-style: italic;
-color:${props => props.wrongScore ? 'red': 'lightgrey'};
+color:${props => props.wrongScore ? 'red' : 'lightgrey'};
 `
 const ActiveButton = styled.button`
 //will add theme colors
@@ -29,22 +29,22 @@ export class AssessorStatus extends Component {
       5: {function: this.done, text: 'Burned!'}
     }
 
-    //get cache/localStorage data in case a score-salt has been commited
+    // get cache/localStorage data in case a score-salt has been commited
     let cacheCommitData = JSON.parse(window.localStorage.getItem(this.props.assessmentAddress))
 
     // state contains local variables that would rerender the component
-    //state is set to default score-salt only if the cache is empty for that assessment address
+    // state is set to default score-salt only if the cache is empty for that assessment address
     if (cacheCommitData) {
       this.state = {
         score: Number(cacheCommitData.score),
         salt: cacheCommitData.salt,
-        wrongScore:false
+        wrongScore: false
       }
     } else {
       this.state = {
         score: 100,
         salt: 'hihi',
-        wrongScore:false
+        wrongScore: false
       }
     }
   }
@@ -52,7 +52,7 @@ export class AssessorStatus extends Component {
   setScore (e) {
     let score = Number(e.target.value)
     if (score >= 0 && score <= 100) {
-      this.setState({score: score,wrongScore:false})
+      this.setState({score: score, wrongScore: false})
     } else {
       this.setState({wrongScore: true})
     }
@@ -63,13 +63,13 @@ export class AssessorStatus extends Component {
   }
 
   commit () {
-    //commit score+salt (salt is fixed for now)
+    // commit score+salt (salt is fixed for now)
     window.alert('Please write down your salt:' + this.state.salt)
     this.props.commit(this.props.assessmentAddress, this.state.score, this.state.salt)
 
-    //save salt and score in local storage
-    let cacheCommitData=JSON.stringify({score:this.state.score,salt:this.state.salt})
-    window.localStorage.setItem(this.props.assessmentAddress,cacheCommitData)
+    // save salt and score in local storage
+    let cacheCommitData = JSON.stringify({score: this.state.score, salt: this.state.salt})
+    window.localStorage.setItem(this.props.assessmentAddress, cacheCommitData)
   }
 
   reveal () {
@@ -87,20 +87,20 @@ export class AssessorStatus extends Component {
     let displayString = 'assessor ' + (this.props.assessorNumber + 1) + ': ' + this.props.assessorAddress + '... ->   '
     let active = this.props.assessorStage === this.props.stage
     let actionData = this.buttonLogic[this.props.assessorStage]
-    //dislpay input only if needed
+    // dislpay input only if needed
     let input = null
-    if (this.props.assessorStage === 2 && (this.props.assessorAddress===this.props.userAddress)) {
+    if (this.props.assessorStage === 2 && (this.props.assessorAddress === this.props.userAddress)) {
       input = h('div', {style: {display: 'inline-block'}}, [
-        h(Feedback, {wrongScore:this.state.wrongScore}, 'must be 0 <= score <= 100'),
+        h(Feedback, {wrongScore: this.state.wrongScore}, 'must be 0 <= score <= 100'),
         h('input', {value: this.state.score, type: 'number', onChange: this.setScore.bind(this)})
       ])
     }
-    //display button according to user pov
+    // display button according to user pov
     let buttonComponent = null
-    if (this.props.assessorAddress===this.props.userAddress){
-      buttonComponent=h(ActiveButton, {onClick: actionData.function.bind(this)}, actionData.text)
+    if (this.props.assessorAddress === this.props.userAddress) {
+      buttonComponent = h(ActiveButton, {onClick: actionData.function.bind(this)}, actionData.text)
     } else {
-      buttonComponent=h(StaleButton, actionData.text)
+      buttonComponent = h(StaleButton, actionData.text)
     }
     if (active) {
       return (
