@@ -3,10 +3,18 @@ import h from 'react-hyperscript'
 import styled from 'styled-components'
 
 //styles
-const feedback = styled.div`
-font-size: '0.7em'; 
-font-style: 'italic';
+const Feedback = styled.div`
+font-size: 0.7em; 
+font-style: italic;
 color:${props => props.wrongScore ? 'red': 'lightgrey'};
+`
+const ActiveButton = styled.button`
+//will add theme colors
+color:blue;
+`
+const StaleButton = styled.span`
+//will add theme colors
+color:lightgrey;
 `
 
 // component to display an individual assessor slot address and options
@@ -78,20 +86,28 @@ export class AssessorStatus extends Component {
   render () {
     let displayString = 'assessor ' + (this.props.assessorNumber + 1) + ': ' + this.props.assessorAddress + '... ->   '
     let active = this.props.assessorStage === this.props.stage
-    let button = this.buttonLogic[this.props.assessorStage]
+    let actionData = this.buttonLogic[this.props.assessorStage]
+    //dislpay input only if needed
     let input = null
-    if (this.props.assessorStage === 2) {
+    if (this.props.assessorStage === 2 && (this.props.assessorAddress===this.props.userAddress)) {
       input = h('div', {style: {display: 'inline-block'}}, [
-        h(feedback, {wrongScore:this.state.wrongScore}, 'must be 0 <= score <= 100'),
+        h(Feedback, {wrongScore:this.state.wrongScore}, 'must be 0 <= score <= 100'),
         h('input', {value: this.state.score, type: 'number', onChange: this.setScore.bind(this)})
       ])
+    }
+    //display button according to user pov
+    let buttonComponent = null
+    if (this.props.assessorAddress===this.props.userAddress){
+      buttonComponent=h(ActiveButton, {onClick: actionData.function.bind(this)}, actionData.text)
+    } else {
+      buttonComponent=h(StaleButton, actionData.text)
     }
     if (active) {
       return (
         h('div', [
           h('span', displayString),
           input,
-          h('button', {onClick: button.function.bind(this)}, button.text)
+          buttonComponent
         ])
       )
     } else {
