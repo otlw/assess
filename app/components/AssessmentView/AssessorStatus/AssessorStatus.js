@@ -75,56 +75,54 @@ export class AssessorStatus extends Component {
     // TODO
   }
 
+  // function returns good comonents according to stage and user status
+  actionComponent (active, stage) {
+  // choose the right button depending on the userAddress
+  // let Button;
+    function button (active, text, funct) {
+      if (active) {
+        return h(ActiveButton, {onClick: funct.bind(this)}, text)
+      } else {
+        return h(StaleButton, text)
+      }
+    }
 
-//function returns good comonents according to stage and user status
-actionComponent(active,stage) {
-
-  //choose the right button depending on the userAddress
-  //let Button;
-  function button (active,text,funct){
-    if (active){
-      return h(ActiveButton, {onClick:funct.bind(this)},text)
-    } else {
-      return h(StaleButton,text)
+    // choose the right form depending on the userAddress
+    switch (stage) {
+      case 1:
+        return button(active, 'Reveal your score!', 'Stake!', this.stake)
+      case 2:
+        return h('div', {style: {display: 'inline-block'}}, [
+        // input field
+          h('div', {style: {display: 'inline-block'}}, [
+            h(Feedback, {wrongScore: this.state.wrongScore}, 'must be 0 <= score <= 100'),
+            h('input', {value: this.state.score, type: 'number', onChange: this.setScore.bind(this)})
+          ]),
+          // button
+          button(active, 'Commit a score!', this.commit)
+        ])
+      case 3:
+        return button(active, 'Reveal your score!', this.reveal)
+      case 4:
+        return button(active, 'Done !')
+      case 5:
+        return button(active, 'Burned !')
+      default:
+        return button(active, 'wrong stage !')
     }
   }
 
-  //choose the right form depending on the userAddress
-  switch (stage){
-    case 1:
-      return h(Button, {onClick: this.stake.bind(this)}, 'Stake!');
-    case 2:
-      return h("div", {style: {display: 'inline-block'}},[
-        //input field
-        h('div', {style: {display: 'inline-block'}}, [
-          h(Feedback, {wrongScore: this.state.wrongScore}, 'must be 0 <= score <= 100'),
-          h('input', {value: this.state.score, type: 'number', onChange: this.setScore.bind(this)})
-        ]),
-        //button
-        button(active,'Commit a score!',this.commit)
-      ])
-    case 3:
-      return button(active,'Reveal your score!',this.reveal) 
-    case 4:
-      return button(active,'Done !') 
-    case 1:
-      return button(active,'Burned !')
-    default:
-      return button(active,'wrong stage !') 
-  }
-}
-
   render () {
-    //display assessor information
+    // display assessor information
     let displayString = 'assessor ' + (this.props.assessorNumber + 1) + ': ' + this.props.assessorAddress + '... ->   '
-    //determine if assessor is ahead of assessment
+    // determine if assessor is ahead of assessment
     let active = this.props.assessorStage === this.props.stage
     if (active) {
-      let ActionComponent=this.actionComponent(this.props.assessorAddress === this.props.userAddress,this.props.assessorStage)
+      let ActionComponent = this.actionComponent(this.props.assessorAddress === this.props.userAddress, this.props.assessorStage)
       return (
         h('div', [
           h('span', displayString),
-          h('span',{} , ActionComponent)
+          h('span', {}, ActionComponent)
         ])
       )
     } else {
