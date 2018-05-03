@@ -1,5 +1,13 @@
 import { Component } from 'react'
-var h = require('react-hyperscript')
+import h from 'react-hyperscript'
+import styled from 'styled-components'
+
+//styles
+const feedback = styled.div`
+font-size: '0.7em'; 
+font-style: 'italic';
+color:${props => props.wrongScore ? 'red': 'lightgrey'};
+`
 
 // component to display an individual assessor slot address and options
 export class AssessorStatus extends Component {
@@ -15,14 +23,17 @@ export class AssessorStatus extends Component {
     // state contains local variables that would rerender the component
     this.state = {
       score: 100,
-      salt: 'hihi'
+      salt: 'hihi',
+      wrongScore:false
     }
   }
 
   setScore (e) {
     let score = Number(e.target.value)
     if (score >= 0 && score <= 100) {
-      this.setState({score: score})
+      this.setState({score: score,wrongScore:false})
+    } else {
+      this.setState({wrongScore: true})
     }
   }
 
@@ -53,7 +64,7 @@ export class AssessorStatus extends Component {
     let input = null
     if (this.props.assessorStage === 2) {
       input = h('div', {style: {display: 'inline-block'}}, [
-        h('div', {style: {fontSize: '0.7em', color: 'lightgrey', fontStyle: 'italic'}}, 'must be 0 <= score <= 100'),
+        h(feedback, {wrongScore:this.state.wrongScore}, 'must be 0 <= score <= 100'),
         h('input', {value: this.state.score, type: 'number', onChange: this.setScore.bind(this)})
       ])
     }
