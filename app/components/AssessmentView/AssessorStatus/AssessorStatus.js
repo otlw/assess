@@ -9,11 +9,11 @@ font-style: italic;
 color:${props => props.wrongScore ? 'red' : 'lightgrey'};
 `
 const ActiveButton = styled.button`
-//will add theme colors
-color:blue;
+color:${props => props.theme.primary};
+border-color:${props => props.theme.primary};
+background-color:${props => props.theme.light};
 `
 const StaleButton = styled.span`
-//will add theme colors
 color:lightgrey;
 `
 
