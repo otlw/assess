@@ -1,5 +1,6 @@
 **/chain_db/
 /build/
+deployments/*.json
 node_modules
 initialMembers.json
 secrets.json
