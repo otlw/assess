@@ -82,7 +82,11 @@ export class AssessorStatus extends Component {
   // let Button;
     let button = (active, text, funct) => {
       if (active) {
-        return h(ActiveButton, {onClick: funct.bind(this)}, text)
+        if (funct){
+          return h(ActiveButton, {onClick: funct.bind(this)}, text)
+        } else {
+          return h(ActiveButton, text)
+        }
       } else {
         return h(StaleButton, text)
       }
