@@ -32,6 +32,7 @@ export class AssessmentView extends Component {
             assessee: assessment.assessee
           }),
           h(MeetingPoint, {
+            editable: this.props.userAddress === assessment.assessee,
             meetingPoint: assessment.data,
             address: assessment.address
           }),

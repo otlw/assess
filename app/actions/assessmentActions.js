@@ -165,6 +165,7 @@ export function fetchAssessors (address, stage) {
   }
 }
 // returns the strings that are stored on the assessments
+// for now, only the data stored by the assessee
 export function fetchStoredData (address) {
   return async (dispatch, getState) => {
     let assessmentInstance = getInstance.assessment(getState(), address)
