@@ -2,7 +2,6 @@ import { Component } from 'react'
 var h = require('react-hyperscript')
 
 export class AssessmentData extends Component {
-
   render () {
     return (
       h('div', [

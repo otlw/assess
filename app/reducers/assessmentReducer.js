@@ -35,7 +35,6 @@ assessmentAddress : {
 }
  */
 
-
 function assessments (state = initialState, action) {
   switch (action.type) {
     case RECEIVE_ASSESSMENT: {
