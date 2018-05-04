@@ -45,7 +45,7 @@ export function reveal (address, score, salt) {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
     // / this is were a status should be set to "pending...""
-    console.log(score,salt)
+    console.log(score, salt)
     let tx = await assessmentInstance.methods.reveal(score, salt).send({from: userAddress, gas: 3200000})
     console.log(tx)
   }
