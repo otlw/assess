@@ -6,7 +6,7 @@ import styled from 'styled-components'
 const Feedback = styled.div`
 font-size: 0.7em; 
 font-style: italic;
-color:${props => props.validScoreRange ? 'red' : 'lightgrey'};
+color:${props => props.invalidScoreRange ? 'red' : 'lightgrey'};
 `
 const ActiveButton = styled.button`
 color:${props => props.theme.primary};
@@ -33,13 +33,13 @@ export class AssessorStatus extends Component {
       this.state = {
         score: Number(cacheCommitData.score),
         salt: cacheCommitData.salt,
-        validScoreRange: false
+        invalidScoreRange: false
       }
     } else {
       this.state = {
         score: 100,
         salt: 'hihi',
-        validScoreRange: false
+        invalidScoreRange: false
       }
     }
   }
@@ -47,9 +47,9 @@ export class AssessorStatus extends Component {
   setScore (e) {
     let score = Number(e.target.value)
     if (score >= 0 && score <= 100) {
-      this.setState({score: score, validScoreRange: false})
+      this.setState({score: score, invalidScoreRange: false})
     } else {
-      this.setState({validScoreRange: true})
+      this.setState({invalidScoreRange: true})
     }
   }
 
@@ -100,7 +100,7 @@ export class AssessorStatus extends Component {
         return h('div', {style: {display: 'inline-block'}}, [
         // input field
           h('div', {style: {display: 'inline-block'}}, [
-            h(Feedback, {validScoreRange: this.state.validScoreRange}, 'must be 0 <= score <= 100'),
+            h(Feedback, {invalidScoreRange: this.state.invalidScoreRange}, 'must be 0 <= score <= 100'),
             h('input', {value: this.state.score, type: 'number', onChange: this.setScore.bind(this)})
           ]),
           // button
