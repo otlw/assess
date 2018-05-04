@@ -79,7 +79,7 @@ export class AssessorStatus extends Component {
   actionComponent (active, stage) {
   // choose the right button depending on the userAddress
   // let Button;
-    function button (active, text, funct) {
+    let button = (active, text, funct) => {
       if (active) {
         return h(ActiveButton, {onClick: funct.bind(this)}, text)
       } else {
@@ -90,7 +90,7 @@ export class AssessorStatus extends Component {
     // choose the right form depending on the userAddress
     switch (stage) {
       case 1:
-        return button(active, 'Reveal your score!', 'Stake!', this.stake)
+        return button(active,'Stake!', this.stake)
       case 2:
         return h('div', {style: {display: 'inline-block'}}, [
         // input field
