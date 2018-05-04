@@ -32,7 +32,7 @@ export function commit (address, score, salt) {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
     // this is were a status should be set to "pending...""
-    // also salt should be saved in state
+    // also salt should be saved in state => I put the saing part in the assessorStatus component
     let tx = await assessmentInstance.methods.commit(
       hashScoreAndSalt(score, salt)
     ).send({from: userAddress, gas: 3200000})
@@ -45,6 +45,7 @@ export function reveal (address, score, salt) {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
     // / this is were a status should be set to "pending...""
+    console.log(score,salt)
     let tx = await assessmentInstance.methods.reveal(score, salt).send({from: userAddress, gas: 3200000})
     console.log(tx)
   }
@@ -194,7 +195,7 @@ function updateExistingAssessment (address) {
     let oldStage = getState().assessments[address].stage
 
     const assessmentInstance = getInstance.assessment(getState(), address)
-    let userStage = assessmentInstance.methods.assessorStages.call(userAddress)
+    let userStage = assessmentInstance.methods.assessorState(userAddress).call()
     let assessmentStage = assessmentInstance.methods.assessmentStage.call()
 
     if (oldStage === Stage.Called) {
