@@ -6,9 +6,9 @@
 // the development network deployed by ganache-cli):
 // Example: 'node create2concepts2assessments.js rinkeby'
 
-let conceptRegArtifact = require('./build/contracts/ConceptRegistry.json')
-let conceptArtifact = require('./build/contracts/Concept.json')
-let fathomTokenArtifact = require('./build/contracts/FathomToken.json')
+let conceptRegArtifact = require('../build/contracts/ConceptRegistry.json')
+let conceptArtifact = require('../build/contracts/Concept.json')
+let fathomTokenArtifact = require('../build/contracts/FathomToken.json')
 
 let conceptRegContract
 let fathomTokenContract
@@ -22,7 +22,7 @@ async function test () {
 
   // detect network and declare variables accordingly
   if (network === 'rinkeby') {
-    let truffleConfig = await require('./truffle.js')
+    let truffleConfig = await require('../truffle.js')
     provider = await truffleConfig.networks.rinkeby.provider
   } else {
     // use Ganache by default (last deployed contract version)
