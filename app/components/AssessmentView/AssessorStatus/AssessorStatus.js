@@ -113,6 +113,7 @@ export class AssessorStatus extends Component {
       case 5:
         return button(active, 'Burned !')
       default:
+        console.log("assessment has unexpected stage !")
         return button(active, 'wrong stage !')
     }
   }
