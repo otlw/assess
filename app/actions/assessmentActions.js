@@ -66,10 +66,10 @@ export function fetchAssessmentData (address) {
 
       // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
       let conceptRegistryInstance = getInstance.conceptRegistry(getState())
-      let isGoodConcept = await conceptRegistryInstance.methods.conceptExists(conceptAddress).call()
+      let isValidConcept = await conceptRegistryInstance.methods.conceptExists(conceptAddress).call()
 
       // if concept is from Registry, go ahead and fetch data, otherwise, add a "wrong registry" assessment object
-      if (isGoodConcept) {
+      if (isValidConcept) {
         // get data from associated concept
         let conceptInstance = getInstance.concept(getState(), conceptAddress)
         let conceptData = await conceptInstance.methods.data().call()
@@ -87,12 +87,14 @@ export function fetchAssessmentData (address) {
           userStage,
           stage,
           conceptAddress,
-          conceptData
+          conceptData,
+          valid: true
         }))
       } else {
+        //if the concept is not linked to concept Registry
         dispatch(receiveAssessment({
           address: address,
-          conceptData: 'wrongRegistry'
+          valid: false
         }))
       }
     } catch (e) {
@@ -101,7 +103,7 @@ export function fetchAssessmentData (address) {
       // conceptData will be used to detect wrong address situation (but could be any other field)
       dispatch(receiveAssessment({
         address: address,
-        conceptData: 'wrongAddress'
+          valid: false
       }))
     }
   }

@@ -11,19 +11,16 @@ export class AssessmentView extends Component {
       // assessment not there -> fetch basic info
       this.props.fetchAssessmentData(selectedAssessment)
       return h('div', '1/2: fetching data from chain...')
-    } else if (!this.props.assessment.hasOwnProperty('assessors') && this.props.assessment.conceptData !== 'wrongAddress') {
+    } else if (!this.props.assessment.valid) {
+      // if wrong assessment address, display relevant view
+      return h('div', '*** Wrong Assessment Address or Wrong Concept Registry ***')
+    } else if (!this.props.assessment.hasOwnProperty('assessors')) {
       // if no assessors and the address of the assessment is correct, fetch assessors
       this.props.fetchAssessors(
         selectedAssessment,
         this.props.assessment.stage
       )
       return h('div', '2/2: fetching assessors from event-logs...')
-    } else if (this.props.assessment.conceptData === 'wrongAddress') {
-      // if wrong assessment address, display relevant view
-      return h('div', '*** Wrong Assessment Address ***')
-    } else if (this.props.assessment.conceptData === 'wrongRegistry') {
-      // if concept is not in current registry, display relevant view
-      return h('div', '*** Wrong Concept Registry ***')
     } else {
       let assessment = this.props.assessment
       return (
