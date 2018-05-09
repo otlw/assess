@@ -91,7 +91,7 @@ export function fetchAssessmentData (address) {
           valid: true
         }))
       } else {
-        //if the concept is not linked to concept Registry
+        // if the concept is not linked to concept Registry
         dispatch(receiveAssessment({
           address: address,
           valid: false
@@ -103,7 +103,7 @@ export function fetchAssessmentData (address) {
       // conceptData will be used to detect wrong address situation (but could be any other field)
       dispatch(receiveAssessment({
         address: address,
-          valid: false
+        valid: false
       }))
     }
   }
