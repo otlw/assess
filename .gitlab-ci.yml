@@ -1,4 +1,4 @@
-image: library/node
+image: library/node:9.11.1
 
 before_script:
   - npm install > /dev/null 2>&1 
