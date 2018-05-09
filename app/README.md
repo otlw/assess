@@ -1,3 +1,9 @@
+## Design Process
+
+We are using [figma](https://www.figma.com) to plan the new features of our app. Check out [this](https://www.figma.com/file/d7IBsgXcicMhsgVmMHLBCRBB/Fathom-App?node-id=63%3A48)
+to see what the next iteration of our app should will look like (requires login!).
+
+
 ## How to test the frontend on your local testnet
 
 1. Run ganache-cli with your metamask-addresses

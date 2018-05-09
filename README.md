@@ -130,6 +130,12 @@ non-development testnet, supply the name of the net as argument:
 > node create2concepts2assessments.js rinkeby
 
 
+Frontend
+==============
+
+see this [Readme](https://gitlab.com/fathom/assess/tree/master/app) in our app-folder.
+
+
 Contributing
 =========
 
