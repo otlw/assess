@@ -12,7 +12,8 @@ export class AssessorList extends Component {
           assessmentAddress: this.props.assessmentAddress,
           assessorNumber: k,
           assessorStage: parseInt(assessor.stage),
-          stage: parseInt(this.props.stage)
+          stage: parseInt(this.props.stage),
+          userAddress: this.props.userAddress
         })
       })
     )

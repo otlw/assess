@@ -105,1420 +105,798 @@
       "type": "function"
     }
   ],
-  "bytecode": "0x6060604052341561000f57600080fd5b6040516060806101a583398101604052808051919060200180519190602001805160009490945550506001556002556101588061004d6000396000f3006060604052600436106100775763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416630ea24e54811461007c5780631f748954146100a1578063213bdfb8146100b45780633ba30806146100cc57806345f2ac3b146100df578063ec118074146100f5575b600080fd5b341561008757600080fd5b61008f61010b565b60405190815260200160405180910390f35b34156100ac57600080fd5b61008f610111565b34156100bf57600080fd5b6100ca600435610117565b005b34156100d757600080fd5b61008f61011c565b34156100ea57600080fd5b6100ca600435610122565b341561010057600080fd5b6100ca600435610127565b60005481565b60015481565b600155565b60025481565b600055565b6002555600a165627a7a723058205efb198c41923ca623b23566849d09896305a95eacd1694a4381a7c8101aa8be0029",
-  "deployedBytecode": "0x6060604052600436106100775763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416630ea24e54811461007c5780631f748954146100a1578063213bdfb8146100b45780633ba30806146100cc57806345f2ac3b146100df578063ec118074146100f5575b600080fd5b341561008757600080fd5b61008f61010b565b60405190815260200160405180910390f35b34156100ac57600080fd5b61008f610111565b34156100bf57600080fd5b6100ca600435610117565b005b34156100d757600080fd5b61008f61011c565b34156100ea57600080fd5b6100ca600435610122565b341561010057600080fd5b6100ca600435610127565b60005481565b60015481565b600155565b60025481565b600055565b6002555600a165627a7a723058205efb198c41923ca623b23566849d09896305a95eacd1694a4381a7c8101aa8be0029",
+  "bytecode": "0x6060604052341561000f57600080fd5b6040516060806101a583398101604052808051919060200180519190602001805160009490945550506001556002556101588061004d6000396000f3006060604052600436106100775763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416630ea24e54811461007c5780631f748954146100a1578063213bdfb8146100b45780633ba30806146100cc57806345f2ac3b146100df578063ec118074146100f5575b600080fd5b341561008757600080fd5b61008f61010b565b60405190815260200160405180910390f35b34156100ac57600080fd5b61008f610111565b34156100bf57600080fd5b6100ca600435610117565b005b34156100d757600080fd5b61008f61011c565b34156100ea57600080fd5b6100ca600435610122565b341561010057600080fd5b6100ca600435610127565b60005481565b60015481565b600155565b60025481565b600055565b6002555600a165627a7a72305820c15ee6a76d6d631a1afaa3986eb989a41c675b7154ae7b7daa5deea3d4aab2550029",
+  "deployedBytecode": "0x6060604052600436106100775763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416630ea24e54811461007c5780631f748954146100a1578063213bdfb8146100b45780633ba30806146100cc57806345f2ac3b146100df578063ec118074146100f5575b600080fd5b341561008757600080fd5b61008f61010b565b60405190815260200160405180910390f35b34156100ac57600080fd5b61008f610111565b34156100bf57600080fd5b6100ca600435610117565b005b34156100d757600080fd5b61008f61011c565b34156100ea57600080fd5b6100ca600435610122565b341561010057600080fd5b6100ca600435610127565b60005481565b60015481565b600155565b60025481565b600055565b6002555600a165627a7a72305820c15ee6a76d6d631a1afaa3986eb989a41c675b7154ae7b7daa5deea3d4aab2550029",
   "sourceMap": "323:709:3:-;;;495:227;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;589:19;:30;;;;-1:-1:-1;;625:23:3;:42;673:24;:44;323:709;;;;;;",
   "deployedSourceMap": "323:709:3:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;346:31;;;;;;;;;;;;;;;;;;;;;;;;;;;386:35;;;;;;;;;;;;821:99;;;;;;;;;;;;;;;;437:36;;;;;;;;;;;;726:91;;;;;;;;;;;;;;924:105;;;;;;;;;;;;;;346:31;;;;:::o;386:35::-;;;;:::o;821:99::-;882:23;:33;821:99::o;437:36::-;;;;:::o;726:91::-;783:19;:29;726:91::o;924:105::-;988:24;:36;924:105::o",
   "source": "pragma solidity ^0.4.18;\n\n/*\n  @type: contract\n  @name: Constants\n  @purpose: To ease development-cyles and testing, all constants will be loaded\n  from this contract, so that we can change them to our needs. NOTE: This is not\n  supposed to be part of the final contract-design, but specifically for testing\n  purposes\n*/\n\ncontract Constants {\n  uint public MIN_ASSESSMENT_SIZE; // 5\n  uint public CHALLENGE_COMMIT_PERIOD; // 12 hours\n  uint public ASSESSORPOOL_SIZE_FACTOR;  // originally 5\n\n  function Constants(uint _minSize, uint _challengePeriod, uint _assessorpoolSize) public {\n    MIN_ASSESSMENT_SIZE = _minSize;\n    CHALLENGE_COMMIT_PERIOD = _challengePeriod;\n    ASSESSORPOOL_SIZE_FACTOR = _assessorpoolSize;\n  }\n\n  function setMinAssessmentSize(uint newSize) public {\n    MIN_ASSESSMENT_SIZE = newSize;\n  }\n\n  function setChallengeCommitPeriod(uint newTime) public {\n    CHALLENGE_COMMIT_PERIOD = newTime;\n  }\n\n  function setAssessorpoolSizeFactor(uint newFactor) public {\n    ASSESSORPOOL_SIZE_FACTOR = newFactor;\n  }\n\n}\n",
-  "sourcePath": "/home/djuju/ethereum/fathom/assess/contracts/Constants.sol",
+  "sourcePath": "/Users/antoineestienne/GitFolder/fathom/assess/contracts/Constants.sol",
   "ast": {
-    "absolutePath": "/home/djuju/ethereum/fathom/assess/contracts/Constants.sol",
-    "exportedSymbols": {
-      "Constants": [
-        2109
-      ]
+    "attributes": {
+      "absolutePath": "/Users/antoineestienne/GitFolder/fathom/assess/contracts/Constants.sol",
+      "exportedSymbols": {
+        "Constants": [
+          2109
+        ]
+      }
     },
-    "id": 2110,
-    "nodeType": "SourceUnit",
-    "nodes": [
+    "children": [
       {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "^",
+            "0.4",
+            ".18"
+          ]
+        },
         "id": 2050,
-        "literals": [
-          "solidity",
-          "^",
-          "0.4",
-          ".18"
-        ],
-        "nodeType": "PragmaDirective",
+        "name": "PragmaDirective",
         "src": "0:24:3"
       },
       {
-        "baseContracts": [],
-        "contractDependencies": [],
-        "contractKind": "contract",
-        "documentation": null,
-        "fullyImplemented": true,
-        "id": 2109,
-        "linearizedBaseContracts": [
-          2109
-        ],
-        "name": "Constants",
-        "nodeType": "ContractDefinition",
-        "nodes": [
+        "attributes": {
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "contract",
+          "documentation": null,
+          "fullyImplemented": true,
+          "linearizedBaseContracts": [
+            2109
+          ],
+          "name": "Constants",
+          "scope": 2110
+        },
+        "children": [
           {
-            "constant": false,
+            "attributes": {
+              "constant": false,
+              "name": "MIN_ASSESSMENT_SIZE",
+              "scope": 2109,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "uint256",
+              "value": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "uint",
+                  "type": "uint256"
+                },
+                "id": 2051,
+                "name": "ElementaryTypeName",
+                "src": "346:4:3"
+              }
+            ],
             "id": 2052,
-            "name": "MIN_ASSESSMENT_SIZE",
-            "nodeType": "VariableDeclaration",
-            "scope": 2109,
-            "src": "346:31:3",
-            "stateVariable": true,
-            "storageLocation": "default",
-            "typeDescriptions": {
-              "typeIdentifier": "t_uint256",
-              "typeString": "uint256"
-            },
-            "typeName": {
-              "id": 2051,
-              "name": "uint",
-              "nodeType": "ElementaryTypeName",
-              "src": "346:4:3",
-              "typeDescriptions": {
-                "typeIdentifier": "t_uint256",
-                "typeString": "uint256"
-              }
-            },
-            "value": null,
-            "visibility": "public"
+            "name": "VariableDeclaration",
+            "src": "346:31:3"
           },
           {
-            "constant": false,
+            "attributes": {
+              "constant": false,
+              "name": "CHALLENGE_COMMIT_PERIOD",
+              "scope": 2109,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "uint256",
+              "value": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "uint",
+                  "type": "uint256"
+                },
+                "id": 2053,
+                "name": "ElementaryTypeName",
+                "src": "386:4:3"
+              }
+            ],
             "id": 2054,
-            "name": "CHALLENGE_COMMIT_PERIOD",
-            "nodeType": "VariableDeclaration",
-            "scope": 2109,
-            "src": "386:35:3",
-            "stateVariable": true,
-            "storageLocation": "default",
-            "typeDescriptions": {
-              "typeIdentifier": "t_uint256",
-              "typeString": "uint256"
-            },
-            "typeName": {
-              "id": 2053,
-              "name": "uint",
-              "nodeType": "ElementaryTypeName",
-              "src": "386:4:3",
-              "typeDescriptions": {
-                "typeIdentifier": "t_uint256",
-                "typeString": "uint256"
-              }
-            },
-            "value": null,
-            "visibility": "public"
+            "name": "VariableDeclaration",
+            "src": "386:35:3"
           },
           {
-            "constant": false,
+            "attributes": {
+              "constant": false,
+              "name": "ASSESSORPOOL_SIZE_FACTOR",
+              "scope": 2109,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "uint256",
+              "value": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "uint",
+                  "type": "uint256"
+                },
+                "id": 2055,
+                "name": "ElementaryTypeName",
+                "src": "437:4:3"
+              }
+            ],
             "id": 2056,
-            "name": "ASSESSORPOOL_SIZE_FACTOR",
-            "nodeType": "VariableDeclaration",
-            "scope": 2109,
-            "src": "437:36:3",
-            "stateVariable": true,
-            "storageLocation": "default",
-            "typeDescriptions": {
-              "typeIdentifier": "t_uint256",
-              "typeString": "uint256"
-            },
-            "typeName": {
-              "id": 2055,
-              "name": "uint",
-              "nodeType": "ElementaryTypeName",
-              "src": "437:4:3",
-              "typeDescriptions": {
-                "typeIdentifier": "t_uint256",
-                "typeString": "uint256"
-              }
-            },
-            "value": null,
-            "visibility": "public"
+            "name": "VariableDeclaration",
+            "src": "437:36:3"
           },
           {
-            "body": {
-              "id": 2077,
-              "nodeType": "Block",
-              "src": "583:139:3",
-              "statements": [
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "id": 2067,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
-                      "argumentTypes": null,
-                      "id": 2065,
-                      "name": "MIN_ASSESSMENT_SIZE",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2052,
-                      "src": "589:19:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "id": 2066,
+            "attributes": {
+              "constant": false,
+              "implemented": true,
+              "isConstructor": true,
+              "modifiers": [
+                null
+              ],
+              "name": "Constants",
+              "payable": false,
+              "scope": 2109,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
                       "name": "_minSize",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2058,
-                      "src": "611:8:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
+                      "scope": 2078,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
                     },
-                    "src": "589:30:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint",
+                          "type": "uint256"
+                        },
+                        "id": 2057,
+                        "name": "ElementaryTypeName",
+                        "src": "514:4:3"
+                      }
+                    ],
+                    "id": 2058,
+                    "name": "VariableDeclaration",
+                    "src": "514:13:3"
                   },
-                  "id": 2068,
-                  "nodeType": "ExpressionStatement",
-                  "src": "589:30:3"
-                },
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "id": 2071,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
-                      "argumentTypes": null,
-                      "id": 2069,
-                      "name": "CHALLENGE_COMMIT_PERIOD",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2054,
-                      "src": "625:23:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "id": 2070,
+                  {
+                    "attributes": {
+                      "constant": false,
                       "name": "_challengePeriod",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2060,
-                      "src": "651:16:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
+                      "scope": 2078,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
                     },
-                    "src": "625:42:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint",
+                          "type": "uint256"
+                        },
+                        "id": 2059,
+                        "name": "ElementaryTypeName",
+                        "src": "529:4:3"
+                      }
+                    ],
+                    "id": 2060,
+                    "name": "VariableDeclaration",
+                    "src": "529:21:3"
                   },
-                  "id": 2072,
-                  "nodeType": "ExpressionStatement",
-                  "src": "625:42:3"
-                },
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "id": 2075,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
-                      "argumentTypes": null,
-                      "id": 2073,
-                      "name": "ASSESSORPOOL_SIZE_FACTOR",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2056,
-                      "src": "673:24:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "id": 2074,
+                  {
+                    "attributes": {
+                      "constant": false,
                       "name": "_assessorpoolSize",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2062,
-                      "src": "700:17:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
+                      "scope": 2078,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
                     },
-                    "src": "673:44:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint",
+                          "type": "uint256"
+                        },
+                        "id": 2061,
+                        "name": "ElementaryTypeName",
+                        "src": "552:4:3"
+                      }
+                    ],
+                    "id": 2062,
+                    "name": "VariableDeclaration",
+                    "src": "552:22:3"
+                  }
+                ],
+                "id": 2063,
+                "name": "ParameterList",
+                "src": "513:62:3"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 2064,
+                "name": "ParameterList",
+                "src": "583:0:3"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "uint256"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 2052,
+                              "type": "uint256",
+                              "value": "MIN_ASSESSMENT_SIZE"
+                            },
+                            "id": 2065,
+                            "name": "Identifier",
+                            "src": "589:19:3"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 2058,
+                              "type": "uint256",
+                              "value": "_minSize"
+                            },
+                            "id": 2066,
+                            "name": "Identifier",
+                            "src": "611:8:3"
+                          }
+                        ],
+                        "id": 2067,
+                        "name": "Assignment",
+                        "src": "589:30:3"
+                      }
+                    ],
+                    "id": 2068,
+                    "name": "ExpressionStatement",
+                    "src": "589:30:3"
                   },
-                  "id": 2076,
-                  "nodeType": "ExpressionStatement",
-                  "src": "673:44:3"
-                }
-              ]
-            },
-            "documentation": null,
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "uint256"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 2054,
+                              "type": "uint256",
+                              "value": "CHALLENGE_COMMIT_PERIOD"
+                            },
+                            "id": 2069,
+                            "name": "Identifier",
+                            "src": "625:23:3"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 2060,
+                              "type": "uint256",
+                              "value": "_challengePeriod"
+                            },
+                            "id": 2070,
+                            "name": "Identifier",
+                            "src": "651:16:3"
+                          }
+                        ],
+                        "id": 2071,
+                        "name": "Assignment",
+                        "src": "625:42:3"
+                      }
+                    ],
+                    "id": 2072,
+                    "name": "ExpressionStatement",
+                    "src": "625:42:3"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "uint256"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 2056,
+                              "type": "uint256",
+                              "value": "ASSESSORPOOL_SIZE_FACTOR"
+                            },
+                            "id": 2073,
+                            "name": "Identifier",
+                            "src": "673:24:3"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 2062,
+                              "type": "uint256",
+                              "value": "_assessorpoolSize"
+                            },
+                            "id": 2074,
+                            "name": "Identifier",
+                            "src": "700:17:3"
+                          }
+                        ],
+                        "id": 2075,
+                        "name": "Assignment",
+                        "src": "673:44:3"
+                      }
+                    ],
+                    "id": 2076,
+                    "name": "ExpressionStatement",
+                    "src": "673:44:3"
+                  }
+                ],
+                "id": 2077,
+                "name": "Block",
+                "src": "583:139:3"
+              }
+            ],
             "id": 2078,
-            "implemented": true,
-            "isConstructor": true,
-            "isDeclaredConst": false,
-            "modifiers": [],
-            "name": "Constants",
-            "nodeType": "FunctionDefinition",
-            "parameters": {
-              "id": 2063,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 2058,
-                  "name": "_minSize",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 2078,
-                  "src": "514:13:3",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 2057,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "514:4:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 2060,
-                  "name": "_challengePeriod",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 2078,
-                  "src": "529:21:3",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 2059,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "529:4:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 2062,
-                  "name": "_assessorpoolSize",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 2078,
-                  "src": "552:22:3",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 2061,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "552:4:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
-              ],
-              "src": "513:62:3"
-            },
-            "payable": false,
-            "returnParameters": {
-              "id": 2064,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "583:0:3"
-            },
-            "scope": 2109,
-            "src": "495:227:3",
-            "stateMutability": "nonpayable",
-            "superFunction": null,
-            "visibility": "public"
+            "name": "FunctionDefinition",
+            "src": "495:227:3"
           },
           {
-            "body": {
-              "id": 2087,
-              "nodeType": "Block",
-              "src": "777:40:3",
-              "statements": [
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "id": 2085,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
-                      "argumentTypes": null,
-                      "id": 2083,
-                      "name": "MIN_ASSESSMENT_SIZE",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2052,
-                      "src": "783:19:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "id": 2084,
+            "attributes": {
+              "constant": false,
+              "implemented": true,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "name": "setMinAssessmentSize",
+              "payable": false,
+              "scope": 2109,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
                       "name": "newSize",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2080,
-                      "src": "805:7:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
+                      "scope": 2088,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
                     },
-                    "src": "783:29:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "id": 2086,
-                  "nodeType": "ExpressionStatement",
-                  "src": "783:29:3"
-                }
-              ]
-            },
-            "documentation": null,
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint",
+                          "type": "uint256"
+                        },
+                        "id": 2079,
+                        "name": "ElementaryTypeName",
+                        "src": "756:4:3"
+                      }
+                    ],
+                    "id": 2080,
+                    "name": "VariableDeclaration",
+                    "src": "756:12:3"
+                  }
+                ],
+                "id": 2081,
+                "name": "ParameterList",
+                "src": "755:14:3"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 2082,
+                "name": "ParameterList",
+                "src": "777:0:3"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "uint256"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 2052,
+                              "type": "uint256",
+                              "value": "MIN_ASSESSMENT_SIZE"
+                            },
+                            "id": 2083,
+                            "name": "Identifier",
+                            "src": "783:19:3"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 2080,
+                              "type": "uint256",
+                              "value": "newSize"
+                            },
+                            "id": 2084,
+                            "name": "Identifier",
+                            "src": "805:7:3"
+                          }
+                        ],
+                        "id": 2085,
+                        "name": "Assignment",
+                        "src": "783:29:3"
+                      }
+                    ],
+                    "id": 2086,
+                    "name": "ExpressionStatement",
+                    "src": "783:29:3"
+                  }
+                ],
+                "id": 2087,
+                "name": "Block",
+                "src": "777:40:3"
+              }
+            ],
             "id": 2088,
-            "implemented": true,
-            "isConstructor": false,
-            "isDeclaredConst": false,
-            "modifiers": [],
-            "name": "setMinAssessmentSize",
-            "nodeType": "FunctionDefinition",
-            "parameters": {
-              "id": 2081,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 2080,
-                  "name": "newSize",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 2088,
-                  "src": "756:12:3",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 2079,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "756:4:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
-              ],
-              "src": "755:14:3"
-            },
-            "payable": false,
-            "returnParameters": {
-              "id": 2082,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "777:0:3"
-            },
-            "scope": 2109,
-            "src": "726:91:3",
-            "stateMutability": "nonpayable",
-            "superFunction": null,
-            "visibility": "public"
+            "name": "FunctionDefinition",
+            "src": "726:91:3"
           },
           {
-            "body": {
-              "id": 2097,
-              "nodeType": "Block",
-              "src": "876:44:3",
-              "statements": [
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "id": 2095,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
-                      "argumentTypes": null,
-                      "id": 2093,
-                      "name": "CHALLENGE_COMMIT_PERIOD",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2054,
-                      "src": "882:23:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "id": 2094,
+            "attributes": {
+              "constant": false,
+              "implemented": true,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "name": "setChallengeCommitPeriod",
+              "payable": false,
+              "scope": 2109,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
                       "name": "newTime",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2090,
-                      "src": "908:7:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
+                      "scope": 2098,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
                     },
-                    "src": "882:33:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "id": 2096,
-                  "nodeType": "ExpressionStatement",
-                  "src": "882:33:3"
-                }
-              ]
-            },
-            "documentation": null,
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint",
+                          "type": "uint256"
+                        },
+                        "id": 2089,
+                        "name": "ElementaryTypeName",
+                        "src": "855:4:3"
+                      }
+                    ],
+                    "id": 2090,
+                    "name": "VariableDeclaration",
+                    "src": "855:12:3"
+                  }
+                ],
+                "id": 2091,
+                "name": "ParameterList",
+                "src": "854:14:3"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 2092,
+                "name": "ParameterList",
+                "src": "876:0:3"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "uint256"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 2054,
+                              "type": "uint256",
+                              "value": "CHALLENGE_COMMIT_PERIOD"
+                            },
+                            "id": 2093,
+                            "name": "Identifier",
+                            "src": "882:23:3"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 2090,
+                              "type": "uint256",
+                              "value": "newTime"
+                            },
+                            "id": 2094,
+                            "name": "Identifier",
+                            "src": "908:7:3"
+                          }
+                        ],
+                        "id": 2095,
+                        "name": "Assignment",
+                        "src": "882:33:3"
+                      }
+                    ],
+                    "id": 2096,
+                    "name": "ExpressionStatement",
+                    "src": "882:33:3"
+                  }
+                ],
+                "id": 2097,
+                "name": "Block",
+                "src": "876:44:3"
+              }
+            ],
             "id": 2098,
-            "implemented": true,
-            "isConstructor": false,
-            "isDeclaredConst": false,
-            "modifiers": [],
-            "name": "setChallengeCommitPeriod",
-            "nodeType": "FunctionDefinition",
-            "parameters": {
-              "id": 2091,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 2090,
-                  "name": "newTime",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 2098,
-                  "src": "855:12:3",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 2089,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "855:4:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
-              ],
-              "src": "854:14:3"
-            },
-            "payable": false,
-            "returnParameters": {
-              "id": 2092,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "876:0:3"
-            },
-            "scope": 2109,
-            "src": "821:99:3",
-            "stateMutability": "nonpayable",
-            "superFunction": null,
-            "visibility": "public"
+            "name": "FunctionDefinition",
+            "src": "821:99:3"
           },
           {
-            "body": {
-              "id": 2107,
-              "nodeType": "Block",
-              "src": "982:47:3",
-              "statements": [
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "id": 2105,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
-                      "argumentTypes": null,
-                      "id": 2103,
-                      "name": "ASSESSORPOOL_SIZE_FACTOR",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2056,
-                      "src": "988:24:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "id": 2104,
-                      "name": "newFactor",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2100,
-                      "src": "1015:9:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "src": "988:36:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "id": 2106,
-                  "nodeType": "ExpressionStatement",
-                  "src": "988:36:3"
-                }
-              ]
-            },
-            "documentation": null,
-            "id": 2108,
-            "implemented": true,
-            "isConstructor": false,
-            "isDeclaredConst": false,
-            "modifiers": [],
-            "name": "setAssessorpoolSizeFactor",
-            "nodeType": "FunctionDefinition",
-            "parameters": {
-              "id": 2101,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 2100,
-                  "name": "newFactor",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 2108,
-                  "src": "959:14:3",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 2099,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "959:4:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
+            "attributes": {
+              "constant": false,
+              "implemented": true,
+              "isConstructor": false,
+              "modifiers": [
+                null
               ],
-              "src": "958:16:3"
+              "name": "setAssessorpoolSizeFactor",
+              "payable": false,
+              "scope": 2109,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "public"
             },
-            "payable": false,
-            "returnParameters": {
-              "id": 2102,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "982:0:3"
-            },
-            "scope": 2109,
-            "src": "924:105:3",
-            "stateMutability": "nonpayable",
-            "superFunction": null,
-            "visibility": "public"
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "newFactor",
+                      "scope": 2108,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint",
+                          "type": "uint256"
+                        },
+                        "id": 2099,
+                        "name": "ElementaryTypeName",
+                        "src": "959:4:3"
+                      }
+                    ],
+                    "id": 2100,
+                    "name": "VariableDeclaration",
+                    "src": "959:14:3"
+                  }
+                ],
+                "id": 2101,
+                "name": "ParameterList",
+                "src": "958:16:3"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 2102,
+                "name": "ParameterList",
+                "src": "982:0:3"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "uint256"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 2056,
+                              "type": "uint256",
+                              "value": "ASSESSORPOOL_SIZE_FACTOR"
+                            },
+                            "id": 2103,
+                            "name": "Identifier",
+                            "src": "988:24:3"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 2100,
+                              "type": "uint256",
+                              "value": "newFactor"
+                            },
+                            "id": 2104,
+                            "name": "Identifier",
+                            "src": "1015:9:3"
+                          }
+                        ],
+                        "id": 2105,
+                        "name": "Assignment",
+                        "src": "988:36:3"
+                      }
+                    ],
+                    "id": 2106,
+                    "name": "ExpressionStatement",
+                    "src": "988:36:3"
+                  }
+                ],
+                "id": 2107,
+                "name": "Block",
+                "src": "982:47:3"
+              }
+            ],
+            "id": 2108,
+            "name": "FunctionDefinition",
+            "src": "924:105:3"
           }
         ],
-        "scope": 2110,
+        "id": 2109,
+        "name": "ContractDefinition",
         "src": "323:709:3"
       }
     ],
-    "src": "0:1033:3"
-  },
-  "legacyAST": {
-    "absolutePath": "/home/djuju/ethereum/fathom/assess/contracts/Constants.sol",
-    "exportedSymbols": {
-      "Constants": [
-        2109
-      ]
-    },
     "id": 2110,
-    "nodeType": "SourceUnit",
-    "nodes": [
-      {
-        "id": 2050,
-        "literals": [
-          "solidity",
-          "^",
-          "0.4",
-          ".18"
-        ],
-        "nodeType": "PragmaDirective",
-        "src": "0:24:3"
-      },
-      {
-        "baseContracts": [],
-        "contractDependencies": [],
-        "contractKind": "contract",
-        "documentation": null,
-        "fullyImplemented": true,
-        "id": 2109,
-        "linearizedBaseContracts": [
-          2109
-        ],
-        "name": "Constants",
-        "nodeType": "ContractDefinition",
-        "nodes": [
-          {
-            "constant": false,
-            "id": 2052,
-            "name": "MIN_ASSESSMENT_SIZE",
-            "nodeType": "VariableDeclaration",
-            "scope": 2109,
-            "src": "346:31:3",
-            "stateVariable": true,
-            "storageLocation": "default",
-            "typeDescriptions": {
-              "typeIdentifier": "t_uint256",
-              "typeString": "uint256"
-            },
-            "typeName": {
-              "id": 2051,
-              "name": "uint",
-              "nodeType": "ElementaryTypeName",
-              "src": "346:4:3",
-              "typeDescriptions": {
-                "typeIdentifier": "t_uint256",
-                "typeString": "uint256"
-              }
-            },
-            "value": null,
-            "visibility": "public"
-          },
-          {
-            "constant": false,
-            "id": 2054,
-            "name": "CHALLENGE_COMMIT_PERIOD",
-            "nodeType": "VariableDeclaration",
-            "scope": 2109,
-            "src": "386:35:3",
-            "stateVariable": true,
-            "storageLocation": "default",
-            "typeDescriptions": {
-              "typeIdentifier": "t_uint256",
-              "typeString": "uint256"
-            },
-            "typeName": {
-              "id": 2053,
-              "name": "uint",
-              "nodeType": "ElementaryTypeName",
-              "src": "386:4:3",
-              "typeDescriptions": {
-                "typeIdentifier": "t_uint256",
-                "typeString": "uint256"
-              }
-            },
-            "value": null,
-            "visibility": "public"
-          },
-          {
-            "constant": false,
-            "id": 2056,
-            "name": "ASSESSORPOOL_SIZE_FACTOR",
-            "nodeType": "VariableDeclaration",
-            "scope": 2109,
-            "src": "437:36:3",
-            "stateVariable": true,
-            "storageLocation": "default",
-            "typeDescriptions": {
-              "typeIdentifier": "t_uint256",
-              "typeString": "uint256"
-            },
-            "typeName": {
-              "id": 2055,
-              "name": "uint",
-              "nodeType": "ElementaryTypeName",
-              "src": "437:4:3",
-              "typeDescriptions": {
-                "typeIdentifier": "t_uint256",
-                "typeString": "uint256"
-              }
-            },
-            "value": null,
-            "visibility": "public"
-          },
-          {
-            "body": {
-              "id": 2077,
-              "nodeType": "Block",
-              "src": "583:139:3",
-              "statements": [
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "id": 2067,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
-                      "argumentTypes": null,
-                      "id": 2065,
-                      "name": "MIN_ASSESSMENT_SIZE",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2052,
-                      "src": "589:19:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "id": 2066,
-                      "name": "_minSize",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2058,
-                      "src": "611:8:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "src": "589:30:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "id": 2068,
-                  "nodeType": "ExpressionStatement",
-                  "src": "589:30:3"
-                },
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "id": 2071,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
-                      "argumentTypes": null,
-                      "id": 2069,
-                      "name": "CHALLENGE_COMMIT_PERIOD",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2054,
-                      "src": "625:23:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "id": 2070,
-                      "name": "_challengePeriod",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2060,
-                      "src": "651:16:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "src": "625:42:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "id": 2072,
-                  "nodeType": "ExpressionStatement",
-                  "src": "625:42:3"
-                },
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "id": 2075,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
-                      "argumentTypes": null,
-                      "id": 2073,
-                      "name": "ASSESSORPOOL_SIZE_FACTOR",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2056,
-                      "src": "673:24:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "id": 2074,
-                      "name": "_assessorpoolSize",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2062,
-                      "src": "700:17:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "src": "673:44:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "id": 2076,
-                  "nodeType": "ExpressionStatement",
-                  "src": "673:44:3"
-                }
-              ]
-            },
-            "documentation": null,
-            "id": 2078,
-            "implemented": true,
-            "isConstructor": true,
-            "isDeclaredConst": false,
-            "modifiers": [],
-            "name": "Constants",
-            "nodeType": "FunctionDefinition",
-            "parameters": {
-              "id": 2063,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 2058,
-                  "name": "_minSize",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 2078,
-                  "src": "514:13:3",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 2057,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "514:4:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 2060,
-                  "name": "_challengePeriod",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 2078,
-                  "src": "529:21:3",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 2059,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "529:4:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 2062,
-                  "name": "_assessorpoolSize",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 2078,
-                  "src": "552:22:3",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 2061,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "552:4:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
-              ],
-              "src": "513:62:3"
-            },
-            "payable": false,
-            "returnParameters": {
-              "id": 2064,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "583:0:3"
-            },
-            "scope": 2109,
-            "src": "495:227:3",
-            "stateMutability": "nonpayable",
-            "superFunction": null,
-            "visibility": "public"
-          },
-          {
-            "body": {
-              "id": 2087,
-              "nodeType": "Block",
-              "src": "777:40:3",
-              "statements": [
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "id": 2085,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
-                      "argumentTypes": null,
-                      "id": 2083,
-                      "name": "MIN_ASSESSMENT_SIZE",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2052,
-                      "src": "783:19:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "id": 2084,
-                      "name": "newSize",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2080,
-                      "src": "805:7:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "src": "783:29:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "id": 2086,
-                  "nodeType": "ExpressionStatement",
-                  "src": "783:29:3"
-                }
-              ]
-            },
-            "documentation": null,
-            "id": 2088,
-            "implemented": true,
-            "isConstructor": false,
-            "isDeclaredConst": false,
-            "modifiers": [],
-            "name": "setMinAssessmentSize",
-            "nodeType": "FunctionDefinition",
-            "parameters": {
-              "id": 2081,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 2080,
-                  "name": "newSize",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 2088,
-                  "src": "756:12:3",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 2079,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "756:4:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
-              ],
-              "src": "755:14:3"
-            },
-            "payable": false,
-            "returnParameters": {
-              "id": 2082,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "777:0:3"
-            },
-            "scope": 2109,
-            "src": "726:91:3",
-            "stateMutability": "nonpayable",
-            "superFunction": null,
-            "visibility": "public"
-          },
-          {
-            "body": {
-              "id": 2097,
-              "nodeType": "Block",
-              "src": "876:44:3",
-              "statements": [
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "id": 2095,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
-                      "argumentTypes": null,
-                      "id": 2093,
-                      "name": "CHALLENGE_COMMIT_PERIOD",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2054,
-                      "src": "882:23:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "id": 2094,
-                      "name": "newTime",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2090,
-                      "src": "908:7:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "src": "882:33:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "id": 2096,
-                  "nodeType": "ExpressionStatement",
-                  "src": "882:33:3"
-                }
-              ]
-            },
-            "documentation": null,
-            "id": 2098,
-            "implemented": true,
-            "isConstructor": false,
-            "isDeclaredConst": false,
-            "modifiers": [],
-            "name": "setChallengeCommitPeriod",
-            "nodeType": "FunctionDefinition",
-            "parameters": {
-              "id": 2091,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 2090,
-                  "name": "newTime",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 2098,
-                  "src": "855:12:3",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 2089,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "855:4:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
-              ],
-              "src": "854:14:3"
-            },
-            "payable": false,
-            "returnParameters": {
-              "id": 2092,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "876:0:3"
-            },
-            "scope": 2109,
-            "src": "821:99:3",
-            "stateMutability": "nonpayable",
-            "superFunction": null,
-            "visibility": "public"
-          },
-          {
-            "body": {
-              "id": 2107,
-              "nodeType": "Block",
-              "src": "982:47:3",
-              "statements": [
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "id": 2105,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
-                      "argumentTypes": null,
-                      "id": 2103,
-                      "name": "ASSESSORPOOL_SIZE_FACTOR",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2056,
-                      "src": "988:24:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "id": 2104,
-                      "name": "newFactor",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 2100,
-                      "src": "1015:9:3",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_uint256",
-                        "typeString": "uint256"
-                      }
-                    },
-                    "src": "988:36:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "id": 2106,
-                  "nodeType": "ExpressionStatement",
-                  "src": "988:36:3"
-                }
-              ]
-            },
-            "documentation": null,
-            "id": 2108,
-            "implemented": true,
-            "isConstructor": false,
-            "isDeclaredConst": false,
-            "modifiers": [],
-            "name": "setAssessorpoolSizeFactor",
-            "nodeType": "FunctionDefinition",
-            "parameters": {
-              "id": 2101,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 2100,
-                  "name": "newFactor",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 2108,
-                  "src": "959:14:3",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 2099,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "959:4:3",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
-              ],
-              "src": "958:16:3"
-            },
-            "payable": false,
-            "returnParameters": {
-              "id": 2102,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "982:0:3"
-            },
-            "scope": 2109,
-            "src": "924:105:3",
-            "stateMutability": "nonpayable",
-            "superFunction": null,
-            "visibility": "public"
-          }
-        ],
-        "scope": 2110,
-        "src": "323:709:3"
-      }
-    ],
+    "name": "SourceUnit",
     "src": "0:1033:3"
   },
   "compiler": {
     "name": "solc",
-    "version": "0.4.21+commit.dfe3193c.Emscripten.clang"
+    "version": "0.4.19+commit.c4cbbb05.Emscripten.clang"
   },
   "networks": {
     "4": {
       "events": {},
       "links": {},
-      "address": "0x78efa52f737511309c35c1e38adec70a12b202e5",
-      "transactionHash": "0xfe36bf772da167753b51a5a415309240acc6d352fcd6c9203adab2075b8a837a"
-    },
-    "1524617849012": {
-      "events": {},
-      "links": {},
-      "address": "0xaf88fadc177212c59fc208d45e5ebea9a396e64a",
-      "transactionHash": "0x122a3ed6d02bc395643320aeaf17b0926b59874bc953e37831d055450e13e0f2"
+      "address": "0xa9974a62623ed63fd7d3172ea3c756b986666dc7"
     }
   },
-  "schemaVersion": "2.0.0",
-  "updatedAt": "2018-04-25T13:52:20.691Z"
+  "schemaVersion": "1.0.1",
+  "updatedAt": "2018-05-04T16:43:50.244Z"
 }

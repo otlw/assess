@@ -216,23 +216,17 @@ contract Assessment {
         }
     }
 
-    //burns stakes of all assessors who are in a certain state
+    // burns stakes of all assessors who are in a certain state
+    // if afterwards, the size is below 5, the assessment is cancelled
     function burnStakes(State _state) private {
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == _state) {
-                burnAssessor(assessors[i]);
+              assessorState[assessors[i]] = State.Burned;
+              size--;
            }
         }
-    }
-
-    /** mark an assessor as burned, reduce size and cancel assessment
-        if the size is below five.
-        @param _assessor address of the assessor to be burned
-    */
-    function burnAssessor(address _assessor) private {
-        assessorState[_assessor] = State.Burned;
-        if (--size < 5) {
-            cancelAssessment();
+        if (size < 5) {
+          cancelAssessment();
         }
     }
 
