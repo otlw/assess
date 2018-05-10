@@ -35,14 +35,13 @@ contract('Assessment', function (accounts) {
   let salts = []
   let hashes = []
 
-  for (i = 0; i < nInitialUsers; i++) {
+  for (let i = 0; i < nInitialUsers; i++) {
     scores.push(score)
     salts.push(i.toString())
     hashes.push(utils.hashScoreAndSalt(scores[i], salts[i]))
   }
 
   let receiptFromMakeAssessment
-  var ethBalancesBefore
   var gasCosts = []
 
   describe('Before the assessment', function () {

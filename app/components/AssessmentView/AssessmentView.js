@@ -1,5 +1,6 @@
 import { Component } from 'react'
-import AssessmentData from './AssessmentData'
+import AssessmentData from './AssessmentData.js'
+import MeetingPoint from './Attachments/'
 import AssessorList from './AssessorList'
 var h = require('react-hyperscript')
 
@@ -13,7 +14,7 @@ export class AssessmentView extends Component {
       return h('div', '1/2: fetching data from chain...')
     } else if (!this.props.assessment.hasOwnProperty('assessors')) {
       // basic data is there, but no assessors
-      this.props.fetchAssessors(
+      this.props.fetchAssessmentViewData(
         selectedAssessment,
         this.props.assessment.stage
       )
@@ -29,6 +30,11 @@ export class AssessmentView extends Component {
             size: assessment.size,
             stage: assessment.stage,
             assessee: assessment.assessee
+          }),
+          h(MeetingPoint, {
+            editable: this.props.userAddress === assessment.assessee,
+            meetingPoint: assessment.data,
+            address: assessment.address
           }),
           h('div', '============Assessors================================='),
           h(AssessorList, {
