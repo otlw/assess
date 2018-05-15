@@ -81,7 +81,7 @@ export function fetchAssessmentData (address) {
       let cost = await assessmentInstance.methods.cost().call()
       let size = await assessmentInstance.methods.size().call()
       let stage = Number(await assessmentInstance.methods.assessmentStage().call())
-      // let finalScore = await assessmentInstance.methods.finalScore().call()
+      let finalScore = Number(await assessmentInstance.methods.finalScore().call())
       let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
       let assessee = await assessmentInstance.methods.assessee().call()
       let conceptAddress = await assessmentInstance.methods.concept().call()
@@ -102,6 +102,7 @@ export function fetchAssessmentData (address) {
         assessee,
         userStage,
         stage,
+        finalScore,
         conceptAddress,
         conceptData
       }))

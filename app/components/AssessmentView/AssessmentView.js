@@ -29,7 +29,8 @@ export class AssessmentView extends Component {
             cost: assessment.cost,
             size: assessment.size,
             stage: assessment.stage,
-            assessee: assessment.assessee
+            assessee: assessment.assessee,
+            finalScore: assessment.finalScore
           }),
           h(MeetingPoint, {
             editable: this.props.userAddress === assessment.assessee,

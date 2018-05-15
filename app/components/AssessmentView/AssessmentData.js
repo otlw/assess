@@ -25,7 +25,11 @@ export class AssessmentData extends Component {
           h('span', 'stage: '),
           h('span', this.props.stage),
           h('span', ' (out of 4)')
-        ])
+        ]),
+        this.props.stage === 4 ? h('div', [
+          h('span', 'final Score: '),
+          h('span', (this.props.finalScore > 50 ? 'Pass (' : 'Fail (') + this.props.finalScore + ' out of 100)')
+        ]) : null
       ])
     )
   }
