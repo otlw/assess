@@ -3,6 +3,7 @@ import { Stage, getInstance } from './utils.js'
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const RECEIVE_FINALSCORE = 'RECEIVE_FINALSCORE'
 export const RECEIVE_STORED_DATA = 'RECEIVE_STORED_DATA'
+export const RECEIVE_PAYOUTS = 'RECEIVE_PAYOUTS'
 export const RECEIVE_ASSESSMENTSTAGE = 'RECEIVE_ASSESSMENTSTAGE'
 export const REMOVE_ASSESSMENT = 'REMOVE_ASSESSMENT'
 export const RECEIVE_ASSESSORS = 'RECEIVE_ASSESSORS'
@@ -133,6 +134,9 @@ export function fetchAssessmentViewData (address, stage) {
   return async (dispatch, getState) => {
     dispatch(fetchAssessors(address, stage))
     dispatch(fetchStoredData(address))
+    if (stage === 4) {
+      dispatch(fetchPayouts(address))
+    }
   }
 }
 
@@ -165,6 +169,33 @@ export function fetchAssessors (address, stage) {
     }
   }
 }
+
+// reads all transfers an assessments to users from event-logs
+export function fetchPayouts (address) {
+  return async (dispatch, getState) => {
+    try {
+      // reading assessors-payouts from events
+      const fathomTokenInstance = getInstance.fathomToken(getState())
+      // NOTE: this piece is a bit tricky, as filtering in the call usually works on the local testnet, but not on rinkeby
+      // for rinkeby one has to get all events and filter locally
+      let pastEvents = await fathomTokenInstance.getPastEvents({fromBlock: 0, toBlock: 'latest'})
+      if (pastEvents.length === []) {
+        console.log('Oddly no Notifications events have been found. Try switching Metamasks network back and forth')
+      }
+      let payouts = {}
+      pastEvents.filter(
+        e =>
+          e.event === 'Transfer' &&
+          e.returnValues['_from'] === address &&
+          (payouts[e.returnValues['_to']] = e.returnValues['_value'])
+      )
+      dispatch(receivePayouts(address, payouts))
+    } catch (e) {
+      console.log('ERROR: fetching payouts from the events did not work!', e)
+    }
+  }
+}
+
 // returns the strings that are stored on the assessments
 // for now, only the data stored by the assessee
 export function fetchStoredData (address) {
@@ -275,6 +306,15 @@ export function receiveStoredData (assessmentAddress, data) {
     data
   }
 }
+
+export function receivePayouts (assessmentAddress, payouts) {
+  return {
+    type: RECEIVE_PAYOUTS,
+    assessmentAddress,
+    payouts
+  }
+}
+
 export function receiveAssessment (assessment) {
   return {
     type: RECEIVE_ASSESSMENT,

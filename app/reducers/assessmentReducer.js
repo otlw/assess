@@ -4,7 +4,8 @@ import {
   RECEIVE_ASSESSMENTSTAGE,
   REMOVE_ASSESSMENT,
   RECEIVE_ASSESSORS,
-  RECEIVE_STORED_DATA
+  RECEIVE_STORED_DATA,
+  RECEIVE_PAYOUTS
 } from '../actions/assessmentActions'
 
 import extend from 'xtend'
@@ -28,9 +29,13 @@ assessmentAddress : {
     },
     ...
   ]
-  storedData: {
+  data: {
      address: dataString,
      ...
+  },
+  payouts: {
+    address1: 20,
+    ...
   }
 }
  */
@@ -71,6 +76,13 @@ function assessments (state = initialState, action) {
       return {
         ...state,
         [address]: extend(state[address], {data: action.data})
+      }
+    }
+    case RECEIVE_PAYOUTS: {
+      let address = action.assessmentAddress
+      return {
+        ...state,
+        [address]: extend(state[address], {payouts: action.payouts})
       }
     }
     default:

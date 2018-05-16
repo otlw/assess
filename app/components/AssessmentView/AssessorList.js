@@ -13,7 +13,10 @@ export class AssessorList extends Component {
           assessorNumber: k,
           assessorStage: parseInt(assessor.stage),
           stage: parseInt(this.props.stage),
-          userAddress: this.props.userAddress
+          userAddress: this.props.userAddress,
+          payout: this.props.payouts
+            ? this.props.payouts[assessor.address] || 0
+            : 'no payout registered'
         })
       })
     )

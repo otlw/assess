@@ -109,7 +109,7 @@ export class AssessorStatus extends Component {
       case 3:
         return button(active, 'Reveal your score!', this.reveal)
       case 4:
-        return button(active, 'Done !')
+        return button(active, 'Done! (Payout: ' + this.props.payout + ')')
       case 5:
         return button(active, 'Burned !')
       default:

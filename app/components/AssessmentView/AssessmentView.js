@@ -41,7 +41,8 @@ export class AssessmentView extends Component {
             userAddress: this.props.userAddress,
             assessmentAddress: selectedAssessment,
             assessors: assessment.assessors,
-            stage: assessment.stage
+            stage: assessment.stage,
+            payouts: assessment.payouts
           })
         ])
       )
