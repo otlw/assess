@@ -20,7 +20,6 @@ const itemStyle = {
 export class AssessmentItem extends Component {
   render () {
     const assessment = this.props.assessment
-    console.log('assessment ', assessment)
     return (
       h('div', {style: itemStyle.frameStyle}, [
         h('br'),

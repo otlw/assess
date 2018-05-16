@@ -29,7 +29,7 @@ export class AssessmentData extends Component {
           h('span', this.props.size)
         ]),
         h('div', [
-          h('span', 'Status: '),
+          h('span', 'Stage: '),
           h('span', stages[this.props.stage])
         ])
       ])
