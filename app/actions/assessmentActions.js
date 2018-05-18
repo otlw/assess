@@ -6,6 +6,7 @@ export const RECEIVE_STORED_DATA = 'RECEIVE_STORED_DATA'
 export const RECEIVE_ASSESSMENTSTAGE = 'RECEIVE_ASSESSMENTSTAGE'
 export const REMOVE_ASSESSMENT = 'REMOVE_ASSESSMENT'
 export const RECEIVE_ASSESSORS = 'RECEIVE_ASSESSORS'
+export const SET_FETCH_FLAG = 'SET_FETCH_FLAG'
 
 const ethereumjsABI = require('ethereumjs-abi')
 
@@ -76,6 +77,7 @@ export function storeDataOnAssessment (address, data) {
 export function fetchAssessmentData (address) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
+    dispatch(setFetchFlag(address, 'data', true))
     try {
       let assessmentInstance = getInstance.assessment(getState(), address)
       let cost = await assessmentInstance.methods.cost().call()
@@ -105,6 +107,7 @@ export function fetchAssessmentData (address) {
         conceptAddress,
         conceptData
       }))
+      dispatch(setFetchFlag(address, 'data', false))
     } catch (e) {
       console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
       // TODO how to end this in case of error?
@@ -142,6 +145,7 @@ export function fetchAssessmentViewData (address, stage) {
 export function fetchAssessors (address, stage) {
   return async (dispatch, getState) => {
     try {
+      dispatch(setFetchFlag(address, 'assessors', true))
       // reading assessors from events
       const fathomTokenInstance = getInstance.fathomToken(getState())
       // NOTE: this piece is a bit tricky, as filtering in the call usually works on the local testnet, but not on rinkeby
@@ -160,6 +164,7 @@ export function fetchAssessors (address, stage) {
       )
       // console.log('asessors after looking for staked Events ', assessors )
       dispatch(fetchAssessorStages(address, assessors, stage === 1))
+      dispatch(setFetchFlag(address, 'assessors', false))
     } catch (e) {
       console.log('ERROR: fetching assessors from the events did not work!', e)
     }
@@ -275,6 +280,16 @@ export function receiveStoredData (assessmentAddress, data) {
     data
   }
 }
+
+export function setFetchFlag (address, target, flag) {
+  return {
+    type: SET_FETCH_FLAG,
+    address,
+    target,
+    flag
+  }
+}
+
 export function receiveAssessment (assessment) {
   return {
     type: RECEIVE_ASSESSMENT,
