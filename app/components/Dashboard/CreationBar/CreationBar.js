@@ -39,6 +39,13 @@ export class AssessmentCreationBar extends Component {
     }
   }
 
+  shouldComponentUpdate (nextProps) {
+    if (nextProps.isConnected && (nextProps.networkID !== this.props.networkID)) {
+      this.props.loadConceptsFromConceptRegistery()
+    }
+    return true
+  }
+
   setConceptKey (key) {
     this.setState({selectedConceptKey: key})
   }

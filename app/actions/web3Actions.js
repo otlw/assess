@@ -32,9 +32,6 @@ export const connect = () => {
           let userBalance = await fathomTokenInstance.methods.balanceOf(accounts[0]).call()
           dispatch(receiveVariable('AhaBalance', userBalance))
         }
-        // and finally call the other actions that fill the state
-        dispatch(loadConceptsFromConceptRegistery())
-        dispatch(fetchLatestAssessments())
       } else {
         dispatch(web3Disconnected())
       }
