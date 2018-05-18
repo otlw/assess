@@ -30,6 +30,13 @@ export class AssessmentFilterView extends Component {
     this.setState({selectedTab: e.target.innerHTML})
   }
 
+  shouldComponentUpdate (nextProps) {
+    if (this.props.isConnected && (nextProps.userAddress && !this.props.userAddress)) {
+      this.props.fetchLatestAssessments()
+    }
+    return true
+  }
+
   render () {
     let userAddress = this.props.userAddress
 
