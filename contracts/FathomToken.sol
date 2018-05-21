@@ -40,7 +40,7 @@ contract FathomToken is StandardToken{
     }
 
     function notification(address user, uint topic) public {
-        Notification(user, msg.sender, topic);
+        emit Notification(user, msg.sender, topic);
     }
 
     //@purpose: To perform payments and staking for assessments
@@ -52,7 +52,7 @@ contract FathomToken is StandardToken{
                 && balances[_to] + _amount > balances[_to]);
         balances[_from] -= _amount;
         balances[_to] += _amount;
-        Transfer(_from, _to, _amount);
+        emit Transfer(_from, _to, _amount);
         return true;
     }
 
@@ -62,7 +62,7 @@ contract FathomToken is StandardToken{
 
         totalSupply += _amount;
         balances[_to] += _amount;
-        Transfer(address(0), _to, _amount);
+        emit Transfer(address(0), _to, _amount);
         return true;
     }
 
@@ -73,7 +73,7 @@ contract FathomToken is StandardToken{
 
     function transferOwnership(address _newOwner) public {
         require(msg.sender == owner);
-        OwnershipTransferred(owner, _newOwner);
+        emit OwnershipTransferred(owner, _newOwner);
         owner = _newOwner;
     }
 }

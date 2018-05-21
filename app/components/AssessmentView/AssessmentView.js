@@ -1,5 +1,6 @@
 import { Component } from 'react'
-import AssessmentData from './AssessmentData'
+import AssessmentData from './AssessmentData.js'
+import MeetingPoint from './Attachments/'
 import AssessorList from './AssessorList'
 var h = require('react-hyperscript')
 
@@ -15,8 +16,8 @@ export class AssessmentView extends Component {
       // if wrong assessment address, display relevant view
       return h('div', '*** Wrong Assessment Address or Wrong Concept Registry ***')
     } else if (!this.props.assessment.hasOwnProperty('assessors')) {
-      // if no assessors and the address of the assessment is correct, fetch assessors
-      this.props.fetchAssessors(
+      // basic data is there, but no assessors
+      this.props.fetchAssessmentViewData(
         selectedAssessment,
         this.props.assessment.stage
       )
@@ -32,6 +33,11 @@ export class AssessmentView extends Component {
             size: assessment.size,
             stage: assessment.stage,
             assessee: assessment.assessee
+          }),
+          h(MeetingPoint, {
+            editable: this.props.userAddress === assessment.assessee,
+            meetingPoint: assessment.data,
+            address: assessment.address
           }),
           h('div', '============Assessors================================='),
           h(AssessorList, {
