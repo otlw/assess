@@ -68,8 +68,13 @@ export function fetchAssessmentData (address) {
       let conceptRegistryInstance = getInstance.conceptRegistry(getState())
       let isValidConcept = await conceptRegistryInstance.methods.conceptExists(conceptAddress).call()
 
-      // if concept is from Registry, go ahead and fetch data, otherwise, add a "wrong registry" assessment object
-      if (isValidConcept) {
+      // check if assessment is from concept
+      let conceptInstance = getInstance.concept(getState(),conceptAddress)
+      let isValidAssessment = await conceptInstance.methods.assessmentsExists(address).call()
+
+      // if concept is from Registry and assessment is from concept, 
+      // go ahead and fetch data, otherwise, add an invalid assessment object
+      if (isValidConcept && isValidAssessment) {
         // get data from associated concept
         let conceptInstance = getInstance.concept(getState(), conceptAddress)
         let conceptData = await conceptInstance.methods.data().call()
