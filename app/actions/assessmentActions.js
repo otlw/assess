@@ -91,10 +91,10 @@ export function fetchAssessmentData (address) {
       let isValidConcept = await conceptRegistryInstance.methods.conceptExists(conceptAddress).call()
 
       // check if assessment is from concept
-      let conceptInstance = getInstance.concept(getState(),conceptAddress)
+      let conceptInstance = getInstance.concept(getState(), conceptAddress)
       let isValidAssessment = await conceptInstance.methods.assessmentExists(address).call()
 
-      // if concept is from Registry and assessment is from concept, 
+      // if concept is from Registry and assessment is from concept,
       // go ahead and fetch data, otherwise, add an invalid assessment object
       if (isValidConcept && isValidAssessment) {
         // get data from associated concept
@@ -135,7 +135,6 @@ export function fetchAssessmentData (address) {
     }
   }
 }
-
 
 export function fetchScoreAndPayout (address) {
   return async (dispatch, getState) => {
