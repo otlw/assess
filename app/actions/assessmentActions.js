@@ -86,52 +86,28 @@ export function fetchAssessmentData (address) {
       let assessee = await assessmentInstance.methods.assessee().call()
       let conceptAddress = await assessmentInstance.methods.concept().call()
 
-      // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
-      let conceptRegistryInstance = getInstance.conceptRegistry(getState())
-      let isValidConcept = await conceptRegistryInstance.methods.conceptExists(conceptAddress).call()
-
-      // check if assessment is from concept
+      // get data from associated concept
       let conceptInstance = getInstance.concept(getState(), conceptAddress)
-      let isValidAssessment = await conceptInstance.methods.assessmentExists(address).call()
-
-      // if concept is from Registry and assessment is from concept,
-      // go ahead and fetch data, otherwise, add an invalid assessment object
-      if (isValidConcept && isValidAssessment) {
-        // get data from associated concept
-        let conceptInstance = getInstance.concept(getState(), conceptAddress)
-        let conceptData = await conceptInstance.methods.data().call()
-        if (conceptData) {
-          conceptData = Buffer.from(conceptData.slice(2), 'hex').toString('utf8')
-        } else {
-          conceptData = ''
-          console.log('was undefined: conceptData ', conceptData)
-        }
-        dispatch(receiveAssessment({
-          address,
-          cost,
-          size,
-          assessee,
-          userStage,
-          stage,
-          conceptAddress,
-          conceptData,
-          valid: true
-        }))
+      let conceptData = await conceptInstance.methods.data().call()
+      if (conceptData) {
+        conceptData = Buffer.from(conceptData.slice(2), 'hex').toString('utf8')
       } else {
-        // if the concept is not linked to concept Registry
-        dispatch(receiveAssessment({
-          address: address,
-          valid: false
-        }))
+        conceptData = ''
+        console.log('was undefined: conceptData ', conceptData)
       }
+      dispatch(receiveAssessment({
+        address,
+        cost,
+        size,
+        assessee,
+        userStage,
+        stage,
+        conceptAddress,
+        conceptData
+      }))
     } catch (e) {
       console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
-      // In case of error, we assume the assessment address is invalid
-      // conceptData will be used to detect wrong address situation (but could be any other field)
-      dispatch(receiveAssessment({
-        address: address,
-        valid: false
-      }))
+      // TODO how to end this in case of error?
     }
   }
 }
