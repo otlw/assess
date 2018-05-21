@@ -51,8 +51,6 @@ export class AssessorStatus extends Component {
     } else {
       this.setState({invalidScoreRange: true})
     }
-<<<<<<< HEAD
-
     // get cache/localStorage data in case a score-salt has been commited
     let cacheCommitData = JSON.parse(window.localStorage.getItem(this.props.assessmentAddress))
 
@@ -80,8 +78,6 @@ export class AssessorStatus extends Component {
     } else {
       this.setState({wrongScore: true})
     }
-=======
->>>>>>> 523bf5430f0aff9ea0ffae8773dbd16ed46667a1
   }
 
   stake () {
@@ -95,18 +91,11 @@ export class AssessorStatus extends Component {
 
     // save salt and score in local storage
     let cacheCommitData = JSON.stringify({score: this.state.score, salt: this.state.salt})
-<<<<<<< HEAD
-    window.localStorage.setItem(this.props.assessmentAddress, cacheCommitData)
-  }
-
-  reveal () {
-=======
     window.localStorage.setItem(this.props.assessmentAddress + this.props.userAddress, cacheCommitData)
   }
 
   reveal () {
     console.log('reveal', this.props.assessmentAddress, this.state.score, this.state.salt)
->>>>>>> 523bf5430f0aff9ea0ffae8773dbd16ed46667a1
     this.props.reveal(this.props.assessmentAddress, this.state.score, this.state.salt)
   }
 
@@ -157,7 +146,6 @@ export class AssessorStatus extends Component {
   }
 
   render () {
-<<<<<<< HEAD
     let displayString = 'assessor ' + (this.props.assessorNumber + 1) + ': ' + this.props.assessorAddress + '... ->   '
     let active = this.props.assessorStage === this.props.stage
     let actionData = this.buttonLogic[this.props.assessorStage]
@@ -176,23 +164,12 @@ export class AssessorStatus extends Component {
     } else {
       buttonComponent = h(StaleButton, actionData.text)
     }
-=======
-    // display assessor information
-    let displayString = 'assessor ' + (this.props.assessorNumber + 1) + ': ' + this.props.assessorAddress + '... ->   '
-    // determine if assessor is ahead of assessment
-    let active = this.props.assessorStage === this.props.stage
->>>>>>> 523bf5430f0aff9ea0ffae8773dbd16ed46667a1
     if (active) {
       let ActionComponent = this.actionComponent(this.props.assessorAddress === this.props.userAddress, this.props.assessorStage)
       return (
         h('div', [
           h('span', displayString),
-<<<<<<< HEAD
-          input,
-          buttonComponent
-=======
           h('span', {}, ActionComponent)
->>>>>>> 523bf5430f0aff9ea0ffae8773dbd16ed46667a1
         ])
       )
     } else {
