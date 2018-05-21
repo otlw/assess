@@ -12,9 +12,6 @@ export class AssessmentView extends Component {
       // assessment not there -> fetch basic info
       this.props.fetchAssessmentData(selectedAssessment)
       return h('div', '1/2: fetching data from chain...')
-    } else if (!this.props.assessment.valid) {
-      // if wrong assessment address, display relevant view
-      return h('div', '*** Wrong Assessment Address or Wrong Concept Registry ***')
     } else if (!this.props.assessment.hasOwnProperty('assessors')) {
       // basic data is there, but no assessors
       this.props.fetchAssessmentViewData(
