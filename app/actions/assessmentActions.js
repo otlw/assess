@@ -2,6 +2,7 @@ import { Stage, getInstance } from './utils.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const RECEIVE_FINALSCORE = 'RECEIVE_FINALSCORE'
+export const RECEIVE_STORED_DATA = 'RECEIVE_STORED_DATA'
 export const RECEIVE_ASSESSMENTSTAGE = 'RECEIVE_ASSESSMENTSTAGE'
 export const REMOVE_ASSESSMENT = 'REMOVE_ASSESSMENT'
 export const RECEIVE_ASSESSORS = 'RECEIVE_ASSESSORS'
@@ -32,7 +33,7 @@ export function commit (address, score, salt) {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
     // this is were a status should be set to "pending...""
-    // also salt should be saved in state
+    // also salt should be saved in state => I put the saing part in the assessorStatus component
     let tx = await assessmentInstance.methods.commit(
       hashScoreAndSalt(score, salt)
     ).send({from: userAddress, gas: 3200000})
@@ -45,7 +46,28 @@ export function reveal (address, score, salt) {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
     // / this is were a status should be set to "pending...""
+    console.log(score, salt)
     let tx = await assessmentInstance.methods.reveal(score, salt).send({from: userAddress, gas: 3200000})
+    console.log(tx)
+  }
+}
+
+export function storeData (address, data) {
+  return async (dispatch, getState) => {
+    console.log('storead', address)
+    dispatch(receiveStoredData(address, data + ' (not yet mined)'))
+    dispatch(storeDataOnAssessment(address, data))
+  }
+}
+
+export function storeDataOnAssessment (address, data) {
+  return async (dispatch, getState) => {
+    console.log('dispatching to storedata to contract', data)
+    let userAddress = getState().ethereum.userAddress
+    let assessmentInstance = getInstance.assessment(getState(), address)
+    // this is were a status should be set to "pending...""
+    // also salt should be saved in state
+    let tx = await assessmentInstance.methods.addData(data).send({from: userAddress, gas: 3200000})
     console.log(tx)
   }
 }
@@ -64,52 +86,28 @@ export function fetchAssessmentData (address) {
       let assessee = await assessmentInstance.methods.assessee().call()
       let conceptAddress = await assessmentInstance.methods.concept().call()
 
-      // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
-      let conceptRegistryInstance = getInstance.conceptRegistry(getState())
-      let isValidConcept = await conceptRegistryInstance.methods.conceptExists(conceptAddress).call()
-
-      // check if assessment is from concept
-      let conceptInstance = getInstance.concept(getState(),conceptAddress)
-      let isValidAssessment = await conceptInstance.methods.assessmentsExists(address).call()
-
-      // if concept is from Registry and assessment is from concept, 
-      // go ahead and fetch data, otherwise, add an invalid assessment object
-      if (isValidConcept && isValidAssessment) {
-        // get data from associated concept
-        let conceptInstance = getInstance.concept(getState(), conceptAddress)
-        let conceptData = await conceptInstance.methods.data().call()
-        if (conceptData) {
-          conceptData = Buffer.from(conceptData.slice(2), 'hex').toString('utf8')
-        } else {
-          conceptData = ''
-          console.log('was undefined: conceptData ', conceptData)
-        }
-        dispatch(receiveAssessment({
-          address,
-          cost,
-          size,
-          assessee,
-          userStage,
-          stage,
-          conceptAddress,
-          conceptData,
-          valid: true
-        }))
+      // get data from associated concept
+      let conceptInstance = getInstance.concept(getState(), conceptAddress)
+      let conceptData = await conceptInstance.methods.data().call()
+      if (conceptData) {
+        conceptData = Buffer.from(conceptData.slice(2), 'hex').toString('utf8')
       } else {
-        // if the concept is not linked to concept Registry
-        dispatch(receiveAssessment({
-          address: address,
-          valid: false
-        }))
+        conceptData = ''
+        console.log('was undefined: conceptData ', conceptData)
       }
+      dispatch(receiveAssessment({
+        address,
+        cost,
+        size,
+        assessee,
+        userStage,
+        stage,
+        conceptAddress,
+        conceptData
+      }))
     } catch (e) {
       console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
-      // In case of error, we assume the assessment address is invalid
-      // conceptData will be used to detect wrong address situation (but could be any other field)
-      dispatch(receiveAssessment({
-        address: address,
-        valid: false
-      }))
+      // TODO how to end this in case of error?
     }
   }
 }
@@ -127,6 +125,14 @@ export function fetchScoreAndPayout (address) {
     } catch (e) {
       console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
     }
+  }
+}
+
+// fetches Data for particpants of the assessment as well as the stages of the assessors
+export function fetchAssessmentViewData (address, stage) {
+  return async (dispatch, getState) => {
+    dispatch(fetchAssessors(address, stage))
+    dispatch(fetchStoredData(address))
   }
 }
 
@@ -159,6 +165,22 @@ export function fetchAssessors (address, stage) {
     }
   }
 }
+// returns the strings that are stored on the assessments
+// for now, only the data stored by the assessee
+export function fetchStoredData (address) {
+  return async (dispatch, getState) => {
+    let assessmentInstance = getInstance.assessment(getState(), address)
+    let assessee = await assessmentInstance.methods.assessee().call()
+    let data = await assessmentInstance.methods.data(assessee).call()
+    dispatch(receiveStoredData(address, data))
+  }
+}
+
+// let assessors = getState().assessments[address].assessors || []
+// let data = {}
+// for (let i = 0; i < assessors.length; i++) {
+// data[assessors[i]] = await assessmentInstance.methods.data(assessors[i]).call()
+// }
 
 export function fetchAssessorStages (address, assessors, checkUserAddress = false) {
   return async (dispatch, getState) => {
@@ -212,13 +234,13 @@ export function updateAssessments (address) {
   }
 }
 
-function updateExistingAssessment (address) { // not use oldStage?
+function updateExistingAssessment (address) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let oldStage = getState().assessments[address].stage
 
     const assessmentInstance = getInstance.assessment(getState(), address)
-    let userStage = assessmentInstance.methods.assessorStages.call(userAddress)
+    let userStage = assessmentInstance.methods.assessorState(userAddress).call()
     let assessmentStage = assessmentInstance.methods.assessmentStage.call()
 
     if (oldStage === Stage.Called) {
@@ -246,6 +268,13 @@ export function receiveAssessors (address, assessors) {
   }
 }
 
+export function receiveStoredData (assessmentAddress, data) {
+  return {
+    type: RECEIVE_STORED_DATA,
+    assessmentAddress,
+    data
+  }
+}
 export function receiveAssessment (assessment) {
   return {
     type: RECEIVE_ASSESSMENT,
