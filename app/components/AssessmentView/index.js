@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
-import AssessmentView from './AssessmentView.js'
-import {fetchAssessmentData, fetchAssessors} from '../../actions/assessmentActions'
+import AssessmentView from './AssessmentView'
+import {fetchAssessmentData, fetchAssessmentViewData} from '../../actions/assessmentActions'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -11,7 +11,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = {
   fetchAssessmentData,
-  fetchAssessors
+  fetchAssessmentViewData
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AssessmentView)

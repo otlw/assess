@@ -37,11 +37,10 @@ contract('Steal Stake:', function (accounts) {
     let conceptReg = await ConceptRegistry.deployed()
     let txResult = await conceptReg.makeConcept(([await conceptReg.mewAddress()]), [500], 60 * 60 * 24, '', '0x0')
     let assessedConceptAddress = txResult.logs[0].args['_concept']
-    assessedConcept = Concept.at(assessedConceptAddress)
     aha = await FathomToken.deployed()
 
     // initiate assessment, save assessors and their initial balance
-    assessmentData = await chain.makeAssessment(assessedConceptAddress, assessee, cost, size, waitTime, timeLimit)
+    let assessmentData = await chain.makeAssessment(assessedConceptAddress, assessee, cost, size, waitTime, timeLimit)
     assessmentContract = Assessment.at(assessmentData.address)
     calledAssessors = assessmentData.calledAssessors
 
@@ -50,12 +49,12 @@ contract('Steal Stake:', function (accounts) {
 
   it('Called assessors stake to confirm.', async () => {
     confirmedAssessors = calledAssessors.slice(0, size)
-    initialBalanceAssessors = await utils.getBalances(confirmedAssessors, aha)
+    let initialBalanceAssessors = await utils.getBalances(confirmedAssessors, aha)
     await chain.confirmAssessors(confirmedAssessors, assessmentContract)
-    balancesAfter = await utils.getBalances(confirmedAssessors, aha)
+    let balancesAfter = await utils.getBalances(confirmedAssessors, aha)
     assert.equal(balancesAfter[0], initialBalanceAssessors[0] - cost, 'stake did not get taken')
 
-    stage = await assessmentContract.assessmentStage.call()
+    let stage = await assessmentContract.assessmentStage.call()
     assert.equal(stage.toNumber(), 2, 'assessment did not move to stage confirmed')
   })
 
@@ -64,7 +63,7 @@ contract('Steal Stake:', function (accounts) {
     await chain.commitAssessors(confirmedAssessors,
       hashes,
       assessmentContract)
-    stage = await assessmentContract.assessmentStage.call()
+    let stage = await assessmentContract.assessmentStage.call()
     assert.equal(stage.toNumber(), 3, 'assessment did not move to stage reveal')
   })
 
@@ -84,9 +83,9 @@ contract('Steal Stake:', function (accounts) {
 
     it('they are marked as done, and the assessment progresses.', async () => {
       await utils.evmIncreaseTime(60 * 60 * 13) // let 12h challenge period pass
-      doneBefore = await assessmentContract.done.call()
+      let doneBefore = await assessmentContract.done.call()
       await assessmentContract.reveal(scores[0], salts[0], {from: confirmedAssessors[0]})
-      doneAfter = await assessmentContract.done.call()
+      let doneAfter = await assessmentContract.done.call()
       assert.equal(doneAfter.toNumber(), doneBefore.toNumber() + 1, 'the assessment did not progress')
     })
   })
@@ -96,23 +95,19 @@ contract('Steal Stake:', function (accounts) {
     it('the assessor is burned and the size of the assessment reduced.', async () => {
       balanceBeforeSteal = await aha.balanceOf.call(outsideUser)
 
-      sizeBeforeSteal = await assessmentContract.size.call()
+      let sizeBeforeSteal = await assessmentContract.size.call()
       await assessmentContract.steal(scores[1], salts[1], confirmedAssessors[1], {from: outsideUser})
-      sizeAfterSteal = await assessmentContract.size.call()
+      let sizeAfterSteal = await assessmentContract.size.call()
       assert.equal(sizeAfterSteal.toNumber(),
         sizeBeforeSteal.toNumber() - 1,
         "the assessment's size did not get reduced.")
 
-      doneAfterSteal = await assessmentContract.done.call()
-      await assessmentContract.reveal(scores[1], salts[1], {from: confirmedAssessors[1]})
-      doneAfterTry = await assessmentContract.done.call()
-      assert.equal(doneAfterTry.toNumber(),
-        doneAfterSteal.toNumber(),
-        'the burned assessor could still advance the assessment.')
+      let burnedAssessorState = await assessmentContract.assessorState.call(confirmedAssessors[1])
+      assert.equal(burnedAssessorState.toNumber(), 5, 'the assessor did not get burned')
     })
 
     it('and his stake is given to the account who revealed it.', async () => {
-      balance = await aha.balanceOf.call(outsideUser)
+      let balance = await aha.balanceOf.call(outsideUser)
       assert.equal(balance.toNumber(),
         balanceBeforeSteal.toNumber() + cost / 2,
         'stake was not given to the stealer')
@@ -122,10 +117,18 @@ contract('Steal Stake:', function (accounts) {
   describe('If an assessors waits too long to reveal his score', async () => {
     it('their stake is burned and the assessment moves on', async () => {
       await utils.evmIncreaseTime(60 * 60 * 130) // let latest revealTime pass
-      sizeBefore = await assessmentContract.size.call()
-      await assessmentContract.reveal(scores[0], salts[0], {from: confirmedAssessors[2]})
-      sizeAfter = await assessmentContract.size.call()
-      assert.isBelow(sizeAfter.toNumber(), sizeBefore.toNumber(), "the assessment's size did not get reduced.")
+      await assessmentContract.reveal(scores[2], salts[2], {from: confirmedAssessors[2]})
+      // the assessor will get burned and as as a result the assessment should be cancelled and the assessmentContract destroyed
+      try {
+        await assessmentContract.size.call()
+      } catch (e) {
+        if (e.toString().indexOf('Attempting') > 0) {
+          return assert(true, 'the contract should have been destroyed')
+        } else {
+          return assert(false, e.toString())
+        }
+      }
+      assert(false)
     })
   })
 })

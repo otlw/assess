@@ -320,6 +320,7 @@
                         "id": 2061,
                         "name": "ElementaryTypeName",
                         "src": "552:4:3"
+<<<<<<< HEAD
                       }
                     ],
                     "id": 2062,
@@ -446,6 +447,160 @@
                     "name": "ExpressionStatement",
                     "src": "625:42:3"
                   },
+=======
+                      }
+                    ],
+                    "id": 2062,
+                    "name": "VariableDeclaration",
+                    "src": "552:22:3"
+                  }
+                ],
+                "id": 2063,
+                "name": "ParameterList",
+                "src": "513:62:3"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 2064,
+                "name": "ParameterList",
+                "src": "583:0:3"
+              },
+              {
+                "children": [
+>>>>>>> 523bf5430f0aff9ea0ffae8773dbd16ed46667a1
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "uint256"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+<<<<<<< HEAD
+                              "referencedDeclaration": 2056,
+                              "type": "uint256",
+                              "value": "ASSESSORPOOL_SIZE_FACTOR"
+                            },
+                            "id": 2073,
+                            "name": "Identifier",
+                            "src": "673:24:3"
+=======
+                              "referencedDeclaration": 2052,
+                              "type": "uint256",
+                              "value": "MIN_ASSESSMENT_SIZE"
+                            },
+                            "id": 2065,
+                            "name": "Identifier",
+                            "src": "589:19:3"
+>>>>>>> 523bf5430f0aff9ea0ffae8773dbd16ed46667a1
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+<<<<<<< HEAD
+                              "referencedDeclaration": 2062,
+                              "type": "uint256",
+                              "value": "_assessorpoolSize"
+                            },
+                            "id": 2074,
+                            "name": "Identifier",
+                            "src": "700:17:3"
+                          }
+                        ],
+                        "id": 2075,
+                        "name": "Assignment",
+                        "src": "673:44:3"
+                      }
+                    ],
+=======
+                              "referencedDeclaration": 2058,
+                              "type": "uint256",
+                              "value": "_minSize"
+                            },
+                            "id": 2066,
+                            "name": "Identifier",
+                            "src": "611:8:3"
+                          }
+                        ],
+                        "id": 2067,
+                        "name": "Assignment",
+                        "src": "589:30:3"
+                      }
+                    ],
+                    "id": 2068,
+                    "name": "ExpressionStatement",
+                    "src": "589:30:3"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "uint256"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 2054,
+                              "type": "uint256",
+                              "value": "CHALLENGE_COMMIT_PERIOD"
+                            },
+                            "id": 2069,
+                            "name": "Identifier",
+                            "src": "625:23:3"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 2060,
+                              "type": "uint256",
+                              "value": "_challengePeriod"
+                            },
+                            "id": 2070,
+                            "name": "Identifier",
+                            "src": "651:16:3"
+                          }
+                        ],
+                        "id": 2071,
+                        "name": "Assignment",
+                        "src": "625:42:3"
+                      }
+                    ],
+                    "id": 2072,
+                    "name": "ExpressionStatement",
+                    "src": "625:42:3"
+                  },
                   {
                     "children": [
                       {
@@ -493,6 +648,7 @@
                         "src": "673:44:3"
                       }
                     ],
+>>>>>>> 523bf5430f0aff9ea0ffae8773dbd16ed46667a1
                     "id": 2076,
                     "name": "ExpressionStatement",
                     "src": "673:44:3"
@@ -894,16 +1050,13 @@
     "4": {
       "events": {},
       "links": {},
-      "address": "0x78efa52f737511309c35c1e38adec70a12b202e5",
-      "transactionHash": "0xfe36bf772da167753b51a5a415309240acc6d352fcd6c9203adab2075b8a837a"
-    },
-    "1524617849012": {
-      "events": {},
-      "links": {},
-      "address": "0xaf88fadc177212c59fc208d45e5ebea9a396e64a",
-      "transactionHash": "0x122a3ed6d02bc395643320aeaf17b0926b59874bc953e37831d055450e13e0f2"
+      "address": "0xa9974a62623ed63fd7d3172ea3c756b986666dc7"
     }
   },
   "schemaVersion": "1.0.1",
+<<<<<<< HEAD
   "updatedAt": "2018-04-26T16:39:28.753Z"
+=======
+  "updatedAt": "2018-05-04T16:43:50.244Z"
+>>>>>>> 523bf5430f0aff9ea0ffae8773dbd16ed46667a1
 }
