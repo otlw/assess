@@ -11,7 +11,7 @@ let initialState = {
   web3_version: 'none',
   isConnected: false,
   userAddress: '',
-  networkID: 4,
+  networkID: null,
   AhaBalance: 0,
   conceptList: []
 }

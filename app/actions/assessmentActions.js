@@ -6,6 +6,7 @@ export const RECEIVE_STORED_DATA = 'RECEIVE_STORED_DATA'
 export const RECEIVE_ASSESSMENTSTAGE = 'RECEIVE_ASSESSMENTSTAGE'
 export const REMOVE_ASSESSMENT = 'REMOVE_ASSESSMENT'
 export const RECEIVE_ASSESSORS = 'RECEIVE_ASSESSORS'
+export const SET_VALID_ASSESSMENT_FLAG = 'SET_VALID_ASSESSMENT_FLAG'
 
 const ethereumjsABI = require('ethereumjs-abi')
 
@@ -72,6 +73,30 @@ export function storeDataOnAssessment (address, data) {
   }
 }
 
+export function isValidAssessmentAddress (address) {
+  return async (dispatch, getState) => {
+    try {
+      console.log('validating')
+      let assessmentInstance = getInstance.assessment(getState(), address)
+      let conceptAddress = await assessmentInstance.methods.concept().call()
+      // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
+      let conceptRegistryInstance = getInstance.conceptRegistry(getState())
+      // this line throws on testnet but works on rinkeby :/
+      console.log('etherconnected', getState().ethereum.userAddress)
+      let isValidConcept = await conceptRegistryInstance.methods.conceptExists(conceptAddress).call()
+      // // check if assessment is from concept
+      // let conceptInstance = getInstance.concept(getState(), conceptAddress)
+      // let isValidAssessment = await conceptInstance.methods.assessmentExists(address).call()
+      // dispatch(setValidAssessmentFlag(isValidAssessment && isValidConcept))
+      dispatch(setValidAssessmentFlag(true))
+      // console.log('setValidAssessmentFlag', isValidAssessment && isValidConcept)
+    } catch (e) {
+      console.log('ERROR while validating address', e)
+      dispatch(setValidAssessmentFlag(false))
+    }
+  }
+}
+
 // fetch assessment data for one given assessment
 export function fetchAssessmentData (address) {
   return async (dispatch, getState) => {
@@ -86,52 +111,27 @@ export function fetchAssessmentData (address) {
       let assessee = await assessmentInstance.methods.assessee().call()
       let conceptAddress = await assessmentInstance.methods.concept().call()
 
-      // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
-      let conceptRegistryInstance = getInstance.conceptRegistry(getState())
-      let isValidConcept = await conceptRegistryInstance.methods.conceptExists(conceptAddress).call()
-
-      // check if assessment is from concept
+      // get data from associated concept
       let conceptInstance = getInstance.concept(getState(), conceptAddress)
-      let isValidAssessment = await conceptInstance.methods.assessmentExists(address).call()
-
-      // if concept is from Registry and assessment is from concept,
-      // go ahead and fetch data, otherwise, add an invalid assessment object
-      if (isValidConcept && isValidAssessment) {
-        // get data from associated concept
-        let conceptInstance = getInstance.concept(getState(), conceptAddress)
-        let conceptData = await conceptInstance.methods.data().call()
-        if (conceptData) {
-          conceptData = Buffer.from(conceptData.slice(2), 'hex').toString('utf8')
-        } else {
-          conceptData = ''
-          console.log('was undefined: conceptData ', conceptData)
-        }
-        dispatch(receiveAssessment({
-          address,
-          cost,
-          size,
-          assessee,
-          userStage,
-          stage,
-          conceptAddress,
-          conceptData,
-          valid: true
-        }))
+      let conceptData = await conceptInstance.methods.data().call()
+      if (conceptData) {
+        conceptData = Buffer.from(conceptData.slice(2), 'hex').toString('utf8')
       } else {
-        // if the concept is not linked to concept Registry
-        dispatch(receiveAssessment({
-          address: address,
-          valid: false
-        }))
+        conceptData = ''
+        console.log('was undefined: conceptData ', conceptData)
       }
+      dispatch(receiveAssessment({
+        address,
+        cost,
+        size,
+        assessee,
+        userStage,
+        stage,
+        conceptAddress,
+        conceptData
+      }))
     } catch (e) {
       console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
-      // In case of error, we assume the assessment address is invalid
-      // conceptData will be used to detect wrong address situation (but could be any other field)
-      dispatch(receiveAssessment({
-        address: address,
-        valid: false
-      }))
     }
   }
 }
@@ -326,5 +326,12 @@ export function removeAssessment (address) {
   return {
     type: REMOVE_ASSESSMENT,
     address
+  }
+}
+
+export function setValidAssessmentFlag (isValid) {
+  return {
+    type: SET_VALID_ASSESSMENT_FLAG,
+    isValid
   }
 }

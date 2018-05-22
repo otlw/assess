@@ -4,13 +4,15 @@ import {
   RECEIVE_ASSESSMENTSTAGE,
   REMOVE_ASSESSMENT,
   RECEIVE_ASSESSORS,
-  RECEIVE_STORED_DATA
+  RECEIVE_STORED_DATA,
+  SET_VALID_ASSESSMENT_FLAG
 } from '../actions/assessmentActions'
 
 import extend from 'xtend'
 
 let initialState = {
-  selectedAssessment: ''
+  selectedAssessment: '',
+  validAssessmentViewAddress: false
 }
 /*
   further assessments are stored like this:
@@ -73,6 +75,11 @@ function assessments (state = initialState, action) {
         [address]: extend(state[address], {data: action.data})
       }
     }
+    case SET_VALID_ASSESSMENT_FLAG:
+      return {
+        ...state,
+        validAssessmentViewAddress: action.isValid
+      }
     default:
       return state
   }
