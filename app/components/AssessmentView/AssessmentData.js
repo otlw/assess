@@ -30,7 +30,8 @@ export class AssessmentData extends Component {
         ]),
         h('div', [
           h('span', 'Stage: '),
-          h('span', stages[this.props.stage])
+          h('span', stages[this.props.stage]),
+          h('span', ' (' + this.props.stage + '/4)')
         ])
       ])
     )
