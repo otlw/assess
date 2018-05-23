@@ -14,10 +14,6 @@ border-color:${props => props.theme.primary};
 background-color:${props => props.theme.light};
 cursor: pointer;
 `
-const StaleButton = styled.span`
-color:lightgrey;
-cursor: auto;
-`
 
 // component to display an individual assessor slot address and options
 export class AssessorStatus extends Component {
@@ -76,59 +72,65 @@ export class AssessorStatus extends Component {
     // TODO
   }
 
-  // function returns good comonents according to stage and user status
-  actionComponent (active, stage) {
-  // choose the right button depending on the userAddress
-  // let Button;
-    let button = (active, text, funct) => {
-      if (active) {
-        if (funct) {
-          return h(ActiveButton, {onClick: funct.bind(this)}, text)
-        } else {
-          return h(ActiveButton, text)
-        }
-      } else {
-        return h(StaleButton, text)
-      }
-    }
-
-    // choose the right form depending on the userAddress
+  // returns a button or status element for the user-assessor
+  statusElementUser (stage) {
     switch (stage) {
       case 1:
-        return button(active, 'Stake!', this.stake)
+        return h(ActiveButton, {onClick: this.stake.bind(this)}, 'Stake!')
       case 2:
         return h('div', {style: {display: 'inline-block'}}, [
-        // input field
+          // input field
           h('div', {style: {display: 'inline-block'}}, [
             h(Feedback, {invalidScoreRange: this.state.invalidScoreRange}, 'must be 0 <= score <= 100'),
             h('input', {value: this.state.score, type: 'number', onChange: this.setScore.bind(this)})
           ]),
           // button
-          button(active, 'Commit a score!', this.commit)
+          h(ActiveButton, {onClick: this.commit.bind(this)}, 'Commit a score!')
         ])
       case 3:
-        return button(active, 'Reveal your score!', this.reveal)
+        return h(ActiveButton, {onClick: this.reveal.bind(this)}, 'Reveal your score!')
       case 4:
-        return button(active, 'Done !')
+        return h('span', 'done')
       case 5:
-        return button(active, 'Burned !')
+        return h('span', 'Burned!')
       default:
-        console.log('assessment has unexpected stage !')
-        return button(active, 'wrong stage !')
+        console.log('assessment has unexpected stage !', stage)
+        return h('span', 'wrong stage !')
+    }
+  }
+
+  // returns the status of an assessor that is not the user
+  statusElementNonUser (stage) {
+    switch (stage) {
+      case 1 :
+        return h('span', 'needs to stake')
+      case 2:
+        return h('span', 'needs to commit')
+      case 3:
+        return h('span', 'needs to reveal')
+      case 4:
+        return h('span', 'done')
+      case 5:
+        return h('span', 'has been burned')
+      default:
+        console.log('assessment has unexpected stage !', stage)
+        return h('span', 'Unknown stage !' + stage)
     }
   }
 
   render () {
     // display assessor information
-    let displayString = 'assessor ' + (this.props.assessorNumber + 1) + ': ' + this.props.assessorAddress + '... ->   '
+    let displayString = 'assessor ' + (this.props.assessorNumber + 1) + ': ' + this.props.assessorAddress + ' ->   '
     // determine if assessor is ahead of assessment
     let active = this.props.assessorStage === this.props.stage
     if (active) {
-      let ActionComponent = this.actionComponent(this.props.assessorAddress === this.props.userAddress, this.props.assessorStage)
+      let statusElement = this.props.assessorAddress === this.props.userAddress
+        ? this.statusElementUser(this.props.assessorStage)
+        : this.statusElementNonUser(this.props.assessorStage)
       return (
         h('div', [
           h('span', displayString),
-          h('span', {}, ActionComponent)
+          statusElement
         ])
       )
     } else {
