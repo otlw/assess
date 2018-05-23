@@ -1,6 +1,13 @@
 import { Component } from 'react'
 var h = require('react-hyperscript')
 
+export const stages = Object.freeze({
+  1: 'Open',
+  2: 'Commit',
+  3: 'Reveal',
+  4: 'Finished'
+})
+
 export class AssessmentData extends Component {
   render () {
     return (
@@ -14,17 +21,17 @@ export class AssessmentData extends Component {
           h('span', this.props.assessee)
         ]),
         h('div', [
-          h('span', 'cost: '),
+          h('span', 'Cost: '),
           h('span', this.props.cost)
         ]),
         h('div', [
-          h('span', 'size: '),
+          h('span', 'Size: '),
           h('span', this.props.size)
         ]),
         h('div', [
-          h('span', 'stage: '),
-          h('span', this.props.stage),
-          h('span', ' (out of 4)')
+          h('span', 'Stage: '),
+          h('span', stages[this.props.stage]),
+          h('span', ' (' + this.props.stage + '/4)')
         ])
       ])
     )

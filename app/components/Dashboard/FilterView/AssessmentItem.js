@@ -1,6 +1,7 @@
 import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
+import { stages } from '../../AssessmentView/AssessmentData'
 
 // styles
 const itemStyle = {
@@ -19,16 +20,24 @@ const itemStyle = {
 export class AssessmentItem extends Component {
   render () {
     const assessment = this.props.assessment
-    return h('div', {style: itemStyle.frameStyle}, [
-      h('br'),
-      h('div', itemStyle.titleStyle, 'Assessment'),
-      h(Link, {to: 'assessment/' + assessment.address}, assessment.address),
-      h('div', itemStyle.titleStyle, 'stage'),
-      h('div', assessment.stage),
-      h('div', itemStyle.titleStyle, 'role'),
-      h('div', assessment.role),
-      h('br')
-    ])
+    return (
+      h('div', {style: itemStyle.frameStyle}, [
+        h('br'),
+        h('div', itemStyle.titleStyle, 'in: ' + assessment.conceptData),
+        h(Link,
+          {to: 'assessment/' + assessment.address},
+          'at: ' + assessment.address.substring(0, 5) + '...' + assessment.address.substring(37)),
+        h('div', [
+          h('span', itemStyle.titleStyle, 'Stage: '),
+          h('span', stages[assessment.stage])
+        ]),
+        h('div', [
+          h('span', itemStyle.titleStyle, 'Role: '),
+          h('span', assessment.assessee === this.props.userAddress ? 'Assessee' : 'Assessor')
+        ]),
+        h('br')
+      ])
+    )
   }
 }
 
