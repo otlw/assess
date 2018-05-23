@@ -24,11 +24,12 @@ let initialState = {}
 function transactions (state = initialState, action) {
   switch (action.type) {
     case SAVE_TRANSACTION:
-      // console.log('saver: ',action )
+      console.log('saver: ',action )
       return {
         ...state,
         [action.txHash]: {
           sender: action.sender,
+          txHash: action.txHash,
           address: action.address,
           stage: action.stage,
           status: 'pending',
@@ -36,7 +37,7 @@ function transactions (state = initialState, action) {
         }
       }
     case UPDATE_TRANSACTION:
-    // console.log('update: ',action )
+    console.log('update: ',action )
       return {
         ...state,
         [action.txHash]: extend(state[action.txHash], {status: action.status})

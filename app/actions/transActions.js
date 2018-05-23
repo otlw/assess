@@ -22,7 +22,7 @@ export function updateTransaction (txHash, status) {
 
 export function removeTransaction (txHash) {
   return {
-    type: UPDATE_TRANSACTION,
+    type: REMOVE_TRANSACTION,
     txHash
   }
 }

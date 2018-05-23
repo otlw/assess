@@ -1,6 +1,7 @@
 import { Component } from 'react'
 import h from 'react-hyperscript'
 import styled from 'styled-components'
+import TxList from './TxList'
 
 // styles
 const Feedback = styled.div`
@@ -130,7 +131,10 @@ export class AssessorStatus extends Component {
       return (
         h('div', [
           h('span', displayString),
-          statusElement
+          statusElement,
+          this.props.transactions
+            ? h(TxList, {transactions: this.props.transactions})
+            : null
         ])
       )
     } else {
