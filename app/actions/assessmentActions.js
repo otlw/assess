@@ -1,4 +1,8 @@
 import { Stage, getInstance } from './utils.js'
+import {
+  saveTransaction,
+  updateTransaction,
+  removeTransaction } from './transActions.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const RECEIVE_FINALSCORE = 'RECEIVE_FINALSCORE'
@@ -23,8 +27,24 @@ export function confirmAssessor (address) {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
     // / this is were a status should be set to "pending...""
-    let tx = await assessmentInstance.methods.confirmAssessor().send({from: userAddress, gas: 3200000})
-    console.log(tx)
+    // let tx = await assessmentInstance.methods.confirmAssessor().send({from: userAddress, gas: 3200000})
+    assessmentInstance.methods.confirmAssessor().send({from: userAddress, gas: 3200000})
+      .on('transactionHash', (hash) => {
+        dispatch(saveTransaction(address, userAddress, Stage.Called, hash))
+        // console.log('onhash', hash)
+      })
+      .on('receipt', (receipt) => {
+        dispatch(updateTransaction(
+          receipt.transactionHash,
+          receipt.status === '0x01' ? 'Success' : 'Fail'
+        ))
+      })
+      .on('error', (err) => {
+        console.log('err', err)
+        // dispatch(updateTransaction(receipt.transactionHash, 'Fail'))
+      })
+    // console.log(tx)
+    // dispatch(saveTransaction(address, userAddress, Stage.Called, tx.transactionHash))
   }
 }
 
