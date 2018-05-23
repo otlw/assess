@@ -41,7 +41,6 @@ export class AssessmentData extends Component {
               : h('span', { style: { 'color': '#f22' } }, 'Fail')),
             h('span', ' (' + this.props.finalScore + ' out of 100)')])
           : null
-        ])
       ])
     )
   }

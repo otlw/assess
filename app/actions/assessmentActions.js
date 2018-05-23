@@ -113,7 +113,7 @@ export function fetchAssessmentData (address) {
           assessee,
           userStage,
           stage,
-          finalScore
+          finalScore,
           conceptAddress,
           conceptData,
           valid: true
