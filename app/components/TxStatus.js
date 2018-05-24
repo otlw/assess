@@ -19,9 +19,10 @@ export class TxStatus extends Component {
 
   render () {
     let tx = this.props.transaction
-    console.log('transaction', this.props.transaction)
+    let targetURL = 'https://' + (this.props.networkID === 4 ? 'rinkeby.' : '') + 'etherscan.io/tx/' + tx.txHash
     return h(txItem, [
-      h('span', {title: tx.txHash}, tx.txHash.substring(0, 5) + '...' + tx.txHash.substring(60)),
+      h('a', {href: targetURL, target: '_blank'},
+        'Transaction sent. txHash: ' + tx.txHash.substring(0, 5) + '...' + tx.txHash.substring(60)),
       h('span', ': ' + tx.status + '  '),
       h('button', {onClick: this.deleteTX.bind(this)}, 'X')
     ])
@@ -29,7 +30,9 @@ export class TxStatus extends Component {
 }
 
 const mapStateToProps = state => {
-  return {}
+  return {
+    networkID: state.ethereum.networkID
+  }
 }
 
 const mapDispatchToProps = {

@@ -21,7 +21,6 @@ export class MeetingPoint extends Component {
   }
 
   render () {
-    console.log('thisprops;', this.props.transactions)
     let meetingPoint = this.props.meetingPoint || '<noMeetingPointSet>  '
     return (
       h('div', [
