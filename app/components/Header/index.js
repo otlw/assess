@@ -1,6 +1,8 @@
 import { connect as connectRedux } from 'react-redux'
 import Header from './Header.js'
 import { connect, receiveVariable } from '../../actions/web3Actions.js'
+import { LoadComponent } from '../hocs/loadComponent.js'
+import { compose } from 'redux'
 
 const mapStateToProps = state => {
   return {
@@ -12,8 +14,13 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-  connect,
+  load: connect,
   receiveVariable
 }
 
-export default connectRedux(mapStateToProps, mapDispatchToProps)(Header)
+let check = compose(
+  connectRedux(mapStateToProps, mapDispatchToProps),
+  LoadComponent
+)(Header)
+
+export default check
