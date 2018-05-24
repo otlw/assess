@@ -1,11 +1,11 @@
 import { Component } from 'react'
 import h from 'react-hyperscript'
 import styled from 'styled-components'
-import TxList from './TxList'
+import TxList from '../../TxList.js'
 
 // styles
 const Feedback = styled.div`
-font-size: 0.7em; 
+font-size: 0.7em;
 font-style: italic;
 color:${props => props.invalidScoreRange ? 'red' : 'lightgrey'};
 `

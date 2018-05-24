@@ -26,12 +26,9 @@ export function confirmAssessor (address) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
-    // / this is were a status should be set to "pending...""
-    // let tx = await assessmentInstance.methods.confirmAssessor().send({from: userAddress, gas: 3200000})
     assessmentInstance.methods.confirmAssessor().send({from: userAddress, gas: 3200000})
       .on('transactionHash', (hash) => {
         dispatch(saveTransaction(address, userAddress, Stage.Called, hash))
-        // console.log('onhash', hash)
       })
       .on('receipt', (receipt) => {
         dispatch(updateTransaction(
@@ -41,10 +38,8 @@ export function confirmAssessor (address) {
       })
       .on('error', (err) => {
         console.log('err', err)
-        // dispatch(updateTransaction(receipt.transactionHash, 'Fail'))
+        // TODO handle error (e.g. out of gas)
       })
-    // console.log(tx)
-    // dispatch(saveTransaction(address, userAddress, Stage.Called, tx.transactionHash))
   }
 }
 
@@ -54,10 +49,22 @@ export function commit (address, score, salt) {
     let assessmentInstance = getInstance.assessment(getState(), address)
     // this is were a status should be set to "pending...""
     // also salt should be saved in state => I put the saing part in the assessorStatus component
-    let tx = await assessmentInstance.methods.commit(
+    assessmentInstance.methods.commit(
       hashScoreAndSalt(score, salt)
     ).send({from: userAddress, gas: 3200000})
-    console.log(tx)
+      .on('transactionHash', (hash) => {
+        dispatch(saveTransaction(address, userAddress, Stage.Confirmed, hash))
+      })
+      .on('receipt', (receipt) => {
+        dispatch(updateTransaction(
+          receipt.transactionHash,
+          receipt.status === '0x01' ? 'Success' : 'Fail'
+        ))
+      })
+      .on('error', (err) => {
+        console.log('err', err)
+        // TODO handle error (e.g. out of gas)
+      })
   }
 }
 
@@ -67,16 +74,20 @@ export function reveal (address, score, salt) {
     let assessmentInstance = getInstance.assessment(getState(), address)
     // / this is were a status should be set to "pending...""
     console.log(score, salt)
-    let tx = await assessmentInstance.methods.reveal(score, salt).send({from: userAddress, gas: 3200000})
-    console.log(tx)
-  }
-}
-
-export function storeData (address, data) {
-  return async (dispatch, getState) => {
-    console.log('storead', address)
-    dispatch(receiveStoredData(address, data + ' (not yet mined)'))
-    dispatch(storeDataOnAssessment(address, data))
+    assessmentInstance.methods.reveal(score, salt).send({from: userAddress, gas: 3200000})
+      .on('transactionHash', (hash) => {
+        dispatch(saveTransaction(address, userAddress, Stage.Committed, hash))
+      })
+      .on('receipt', (receipt) => {
+        dispatch(updateTransaction(
+          receipt.transactionHash,
+          receipt.status === '0x01' ? 'Success' : 'Fail'
+        ))
+      })
+      .on('error', (err) => {
+        console.log('err', err)
+        // TODO handle error (e.g. out of gas)
+      })
   }
 }
 
@@ -87,8 +98,20 @@ export function storeDataOnAssessment (address, data) {
     let assessmentInstance = getInstance.assessment(getState(), address)
     // this is were a status should be set to "pending...""
     // also salt should be saved in state
-    let tx = await assessmentInstance.methods.addData(data).send({from: userAddress, gas: 3200000})
-    console.log(tx)
+    assessmentInstance.methods.addData(data).send({from: userAddress, gas: 3200000})
+      .on('transactionHash', (hash) => {
+        dispatch(saveTransaction(address, userAddress, 'meetingPointChange', hash))
+      })
+      .on('receipt', (receipt) => {
+        dispatch(updateTransaction(
+          receipt.transactionHash,
+          receipt.status === '0x01' ? 'Success' : 'Fail'
+        ))
+      })
+      .on('error', (err) => {
+        console.log('err', err)
+        // TODO handle error (e.g. out of gas)
+      })
   }
 }
 

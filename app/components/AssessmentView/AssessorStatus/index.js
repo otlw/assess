@@ -7,7 +7,7 @@ const mapStateToProps = (state, ownProps) => {
     transactions: Object.values(state.transactions).filter(
       tx => (tx.address === ownProps.assessmentAddress &&
              tx.sender === ownProps.assessorAddress &&
-             tx.stage === ownProps.stage)
+             tx.data === ownProps.stage)
     )
   }
 }

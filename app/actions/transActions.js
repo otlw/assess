@@ -2,12 +2,15 @@ export const SAVE_TRANSACTION = 'SAVE_TRANSACTION'
 export const UPDATE_TRANSACTION = 'UPDATE_TRANSACTION'
 export const REMOVE_TRANSACTION = 'REMOVE_TRANSACTION'
 
-export function saveTransaction (address, sender, stage, txHash) {
+// note: the data parameter can be used to describes the place where the transaction should be displayed.
+// For example the below the assessor-buttons, the data field is expected to be the
+// stage of the assessment during which this transaction should be displayed.
+export function saveTransaction (address, sender, data, txHash) {
   return {
     type: SAVE_TRANSACTION,
     address,
     sender,
-    stage,
+    data,
     txHash
   }
 }

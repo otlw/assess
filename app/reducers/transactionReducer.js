@@ -31,7 +31,7 @@ function transactions (state = initialState, action) {
           sender: action.sender,
           txHash: action.txHash,
           address: action.address,
-          stage: action.stage,
+          data: action.data,
           status: 'pending',
           time: Date.now()
         }
