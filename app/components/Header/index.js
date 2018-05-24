@@ -16,9 +16,7 @@ const mapDispatchToProps = {
   load: connect
 }
 
-let check = compose(
+export default compose(
   connectRedux(mapStateToProps, mapDispatchToProps),
   LoadComponent
 )(Header)
-
-export default check

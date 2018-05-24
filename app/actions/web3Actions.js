@@ -36,9 +36,8 @@ export const connect = () => {
         // set a loop function to check userAddress or network change
         dispatch(loopCheckAddressAndNetwork())
 
-        // and finally call the other actions that fill the state
-        dispatch(loadConceptsFromConceptRegistery())
-        dispatch(fetchLatestAssessments())
+        // dispatch(loadConceptsFromConceptRegistery())
+        // dispatch(fetchLatestAssessments())
       } else {
         dispatch(web3Disconnected())
       }

@@ -1,5 +1,8 @@
 import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { LoadComponent } from '../../hocs/loadComponent.js'
 import FilterView from './FilterView'
+import { fetchLatestAssessments } from '../../../actions/assessmentActions.js'
 
 const mapStateToProps = state => {
   return {
@@ -8,4 +11,7 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps)(FilterView)
+export default compose(
+  connect(mapStateToProps, {load: fetchLatestAssessments}),
+  LoadComponent
+)(FilterView)
