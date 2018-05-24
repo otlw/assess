@@ -1,6 +1,6 @@
 // This script creates one concept, an assessment on it and runs it until a specified stage using specified scores
 // (default is until the end with a perfect score)
-// It uses the latest version of the fathom-network that has been deployed to the testnet by
+// It uses the latest version of the fathom-network that has been deployed to the local testnet by
 // fetching the addresses of the relevant contracts from the build-folder.
 
 // Scores to be submitted can be passed in as arguments

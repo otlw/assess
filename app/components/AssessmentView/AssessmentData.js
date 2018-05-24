@@ -1,12 +1,6 @@
 import { Component } from 'react'
+import { stages } from '../../constants.js'
 var h = require('react-hyperscript')
-
-export const stages = Object.freeze({
-  1: 'Open',
-  2: 'Commit',
-  3: 'Reveal',
-  4: 'Finished'
-})
 
 export class AssessmentData extends Component {
   render () {
