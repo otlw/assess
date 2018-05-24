@@ -13,7 +13,6 @@ let initialState = {
   userAddress: '',
   networkID: 4,
   AhaBalance: 0,
-  conceptList: []
 }
 
 function ethereum (state = initialState, action) {

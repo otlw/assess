@@ -1,12 +1,11 @@
 import { connect as connectRedux } from 'react-redux'
 import Header from './Header.js'
-import { connect, receiveVariable } from '../../actions/web3Actions.js'
+import { connect } from '../../actions/web3Actions.js'
 import { LoadComponent } from '../hocs/loadComponent.js'
 import { compose } from 'redux'
 
 const mapStateToProps = state => {
   return {
-    web3_version: state.ethereum.web3_version,
     userAddress: state.ethereum.userAddress,
     networkID: state.ethereum.networkID,
     AhaBalance: state.ethereum.AhaBalance
@@ -14,8 +13,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-  load: connect,
-  receiveVariable
+  load: connect
 }
 
 let check = compose(
