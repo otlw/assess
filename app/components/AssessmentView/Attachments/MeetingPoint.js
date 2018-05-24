@@ -34,7 +34,7 @@ export class MeetingPoint extends Component {
         this.state.displayMPEdit ? h(MeetingPointForm, {onSubmit: this.storeData.bind(this)}) : null,
         this.props.transactions
           ? h(TxList, {transactions: this.props.transactions})
-        : null
+          : null
       ])
     )
   }

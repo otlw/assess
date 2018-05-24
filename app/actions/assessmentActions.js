@@ -1,8 +1,7 @@
 import { Stage, getInstance } from './utils.js'
 import {
   saveTransaction,
-  updateTransaction,
-  removeTransaction } from './transActions.js'
+  updateTransaction } from './transActions.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const RECEIVE_FINALSCORE = 'RECEIVE_FINALSCORE'

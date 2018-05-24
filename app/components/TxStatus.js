@@ -6,10 +6,7 @@ import { removeTransaction } from '../actions/transActions.js'
 var h = require('react-hyperscript')
 
 const txItem = styled.section`
-color:${props => props.theme.primary};
-border-color:palevioletred;
-background-color: paleyellow;
-cursor: pointer;
+background: papayawhip;
 `
 
 export class TxStatus extends Component {
@@ -21,8 +18,9 @@ export class TxStatus extends Component {
     let tx = this.props.transaction
     let targetURL = 'https://' + (this.props.networkID === 4 ? 'rinkeby.' : '') + 'etherscan.io/tx/' + tx.txHash
     return h(txItem, [
+      h('span', 'Transaction sent: '),
       h('a', {href: targetURL, target: '_blank'},
-        'Transaction sent. txHash: ' + tx.txHash.substring(0, 5) + '...' + tx.txHash.substring(60)),
+        tx.txHash.substring(0, 5) + '...' + tx.txHash.substring(60)),
       h('span', ': ' + tx.status + '  '),
       h('button', {onClick: this.deleteTX.bind(this)}, 'X')
     ])
