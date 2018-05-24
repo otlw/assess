@@ -32,6 +32,10 @@ export const connect = () => {
           let userBalance = await fathomTokenInstance.methods.balanceOf(accounts[0]).call()
           dispatch(receiveVariable('AhaBalance', userBalance))
         }
+
+        // set a loop function to check userAddress or network change
+        dispatch(loopCheckAddressAndNetwork())
+
         // and finally call the other actions that fill the state
         dispatch(loadConceptsFromConceptRegistery())
         dispatch(fetchLatestAssessments())
@@ -44,6 +48,35 @@ export const connect = () => {
       dispatch(web3Connected(w3))
       dispatch(receiveVariable('userAddress', 'publicView'))
     }
+  }
+}
+
+// checks userAddress and networkID every second to detect change and reload app
+export const loopCheckAddressAndNetwork = () => {
+  return async (dispatch, getState) => {
+    setInterval(async function () {
+      let w3 = getState().ethereum.web3
+
+      // get networkID and compare to previous
+      let networkID = await w3.eth.net.getId()
+      if (networkID !== getState().ethereum.networkID) {
+        // if different, just reload the whole app (all the data is changed)
+        // maybe we could call connect() instead but since all components reload its kinda the same...
+        window.location.reload()
+      }
+
+      // get userAddress and compare to previous
+      let accounts = await w3.eth.getAccounts()
+      if (accounts.length === 0) {
+        dispatch(receiveVariable('userAddress', 'pleaseEnterPasswordToUnblockMetamask'))
+      } else {
+        if (accounts[0] !== getState().ethereum.userAddress) {
+          // if different, just reload the whole app (all the data is changed)
+          // maybe we could call connect() instead but since all components reload its kinda the same...
+          window.location.reload()
+        }
+      }
+    }, 1000)
   }
 }
 
