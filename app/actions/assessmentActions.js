@@ -1,4 +1,4 @@
-import { Stage, getInstance } from './utils.js'
+import { Stage, loadingStage, getInstance } from './utils.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const RECEIVE_FINALSCORE = 'RECEIVE_FINALSCORE'
@@ -6,6 +6,8 @@ export const RECEIVE_STORED_DATA = 'RECEIVE_STORED_DATA'
 export const RECEIVE_ASSESSMENTSTAGE = 'RECEIVE_ASSESSMENTSTAGE'
 export const REMOVE_ASSESSMENT = 'REMOVE_ASSESSMENT'
 export const RECEIVE_ASSESSORS = 'RECEIVE_ASSESSORS'
+export const BEGIN_LOADING_ASSESSMENTS = 'BEGIN_LOADING_ASSESSMENTS'
+export const END_LOADING_ASSESSMENTS = 'END_LOADING_ASSESSMENTS'
 
 const ethereumjsABI = require('ethereumjs-abi')
 
@@ -227,25 +229,33 @@ export function fetchAssessorStages (address, assessors, checkUserAddress = fals
 
 export function fetchLatestAssessments () {
   return async (dispatch, getState) => {
-    // get State data
-    let userAddress = getState().ethereum.userAddress
+    if (getState().loading.assessments === loadingStage.None) {
+      // get State data
+      let userAddress = getState().ethereum.userAddress
+      dispatch(beginLoadingAssessments())
 
-    // get notification events from fathomToken contract
-    const fathomTokenInstance = getInstance.fathomToken(getState())
-    let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {filter: {user: userAddress}, fromBlock: 0, toBlock: 'latest'})
-    let assessmentAddresses = pastNotifications.reduce((accumulator, notification) => {
-      let assessment = notification.returnValues.sender
-      if (accumulator.indexOf(assessment) === -1) {
-        accumulator.push(assessment)
-      }
-      return accumulator
-    }, [])
+      // get notification events from fathomToken contract
+      const fathomTokenInstance = getInstance.fathomToken(getState())
+      let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {filter: {user: userAddress}, fromBlock: 0, toBlock: 'latest'})
+      let assessmentAddresses = pastNotifications.reduce((accumulator, notification) => {
+        let assessment = notification.returnValues.sender
+        if (accumulator.indexOf(assessment) === -1) {
+          accumulator.push(assessment)
+        }
+        return accumulator
+      }, [])
 
-    assessmentAddresses.forEach((address) => {
-      dispatch(updateAssessments(address))
-    })
+      assessmentAddresses.forEach((address) => {
+        dispatch(updateAssessments(address))
+      })
+      dispatch(endLoadingAssessments())
+    } else {
+      // TODO
+      console.log('do not fetch all again')
+    }
   }
 }
+
 
 export function updateAssessments (address) {
   return async (dispatch, getState) => {
@@ -260,12 +270,14 @@ export function updateAssessments (address) {
 
 function updateExistingAssessment (address) {
   return async (dispatch, getState) => {
+    console.log('updateExistingAssessment')
     let userAddress = getState().ethereum.userAddress
     let oldStage = getState().assessments[address].stage
 
     const assessmentInstance = getInstance.assessment(getState(), address)
-    let userStage = assessmentInstance.methods.assessorState(userAddress).call()
-    let assessmentStage = assessmentInstance.methods.assessmentStage.call()
+    let userStage = await assessmentInstance.methods.assessorState(userAddress).call()
+    let assessmentStage = await assessmentInstance.methods.assessmentStage().call()
+    // console.log('assessmentStage ', assessmentStage )
 
     if (oldStage === Stage.Called) {
       // only keep assessment around if the user is in it
@@ -326,5 +338,18 @@ export function removeAssessment (address) {
   return {
     type: REMOVE_ASSESSMENT,
     address
+  }
+}
+
+export function beginLoadingAssessments () {
+  console.log('beginLoadingAssessmentsfunction ')
+  return {
+    type: BEGIN_LOADING_ASSESSMENTS
+  }
+}
+
+export function endLoadingAssessments () {
+  return {
+    type: END_LOADING_ASSESSMENTS
   }
 }
