@@ -13,10 +13,10 @@ export const Stage = Object.freeze({
 })
 
 export const loadingStage = Object.freeze({
-  None: 1,
-  Loading: 2,
-  Done: 3,
-  Error: 4
+  None: 0,
+  Loading: 1,
+  Error: 3,
+  Done: 4
 })
 
 function getContractInstance (web3, abi, address) {

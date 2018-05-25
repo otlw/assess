@@ -1,4 +1,10 @@
 import { Component } from 'react'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { LoadComponent } from '../hocs/loadComponent.js'
+import { fetchAssessmentData } from '../../actions/assessmentActions.js'
+import { loadingStage } from '../../actions/utils.js'
+import MeetingPoint from './Attachments/'
 var h = require('react-hyperscript')
 
 export const stages = Object.freeze({
@@ -10,32 +16,48 @@ export const stages = Object.freeze({
 
 export class AssessmentData extends Component {
   render () {
-    return (
-      h('div', [
+    if (this.props.loadedInfo) {
+      let assessment = this.props.assessment
+      return (
         h('div', [
-          h('span', 'Assessment address:  '),
-          h('span', this.props.address)
-        ]),
-        h('div', [
-          h('span', 'Assesseee: '),
-          h('span', this.props.assessee)
-        ]),
-        h('div', [
-          h('span', 'Cost: '),
-          h('span', this.props.cost)
-        ]),
-        h('div', [
-          h('span', 'Size: '),
-          h('span', this.props.size)
-        ]),
-        h('div', [
-          h('span', 'Stage: '),
-          h('span', stages[this.props.stage]),
-          h('span', ' (' + this.props.stage + '/4)')
+          h('div', [
+            h('span', 'Assessment address:  '),
+            h('span', assessment.address)
+          ]),
+          h('div', [
+            h('span', 'Assesseee: '),
+            h('span', assessment.assessee)
+          ]),
+          h('div', [
+            h('span', 'Cost: '),
+            h('span', assessment.cost)
+          ]),
+          h('div', [
+            h('span', 'Size: '),
+            h('span', assessment.size)
+          ]),
+          h('div', [
+            h('span', 'Stage: '),
+            h('span', stages[assessment.stage]),
+            h('span', ' (' + assessment.stage + '/4)')
+          ]),
+          h(MeetingPoint, {assessee: assessment.assessee})
         ])
-      ])
-    )
+      )
+    } else {
+      return h('div', 'Loading Data')
+    }
   }
 }
 
-export default AssessmentData
+const mapStateToProps = (state) => {
+  return {
+    loadedInfo: (state.loading.assessmentDetail.info === loadingStage.Done),
+    assessment: state.assessments[state.assessments.selectedAssessment]
+  }
+}
+
+export default compose(
+  connect(mapStateToProps, {load: fetchAssessmentData}),
+  LoadComponent
+)(AssessmentData)

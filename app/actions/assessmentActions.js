@@ -8,6 +8,9 @@ export const REMOVE_ASSESSMENT = 'REMOVE_ASSESSMENT'
 export const RECEIVE_ASSESSORS = 'RECEIVE_ASSESSORS'
 export const BEGIN_LOADING_ASSESSMENTS = 'BEGIN_LOADING_ASSESSMENTS'
 export const END_LOADING_ASSESSMENTS = 'END_LOADING_ASSESSMENTS'
+export const SET_ASSESSMENT = 'SET_ASSESSMENT'
+export const BEGIN_LOADING_DETAIL = 'BEGIN_LOADING_DETAIL'
+export const END_LOADING_DETAIL = 'END_LOADING_DETAIL'
 
 const ethereumjsABI = require('ethereumjs-abi')
 
@@ -57,7 +60,6 @@ export function reveal (address, score, salt) {
 export function storeData (address, data) {
   return async (dispatch, getState) => {
     console.log('storead', address)
-    dispatch(receiveStoredData(address, data + ' (not yet mined)'))
     dispatch(storeDataOnAssessment(address, data))
   }
 }
@@ -69,15 +71,29 @@ export function storeDataOnAssessment (address, data) {
     let assessmentInstance = getInstance.assessment(getState(), address)
     // this is were a status should be set to "pending...""
     // also salt should be saved in state
-    let tx = await assessmentInstance.methods.addData(data).send({from: userAddress, gas: 3200000})
-    console.log(tx)
+    assessmentInstance.methods.addData(data).send({from: userAddress, gas: 3200000})
+      .on('receipt', (receipt) => {
+        if (receipt.status === '0x01') {
+          dispatch(fetchStoredData(address))
+        }
+      })
   }
 }
 
 // fetch assessment data for one given assessment
-export function fetchAssessmentData (address) {
+export function fetchAssessmentData (assessmentAddress) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
+    let address = assessmentAddress || getState().assessments.selectedAssessment
+    // if (getState().assessments[address]) {
+    //   console.log('only updateing stage')
+    //   // TODO only update stage
+    //   let assessmentInstance = getInstance.assessment(getState(), address)
+    //   let stage = Number(await assessmentInstance.methods.assessmentStage().call())
+    //   dispatch(receiveAssessmentStage(address, stage))
+    //   return
+    // }
+    dispatch(beginLoadingDetail('info'))
     try {
       let assessmentInstance = getInstance.assessment(getState(), address)
       let cost = await assessmentInstance.methods.cost().call()
@@ -135,6 +151,7 @@ export function fetchAssessmentData (address) {
         valid: false
       }))
     }
+    dispatch(endLoadingDetail('info'))
   }
 }
 
@@ -157,8 +174,25 @@ export function fetchScoreAndPayout (address) {
 // fetches Data for particpants of the assessment as well as the stages of the assessors
 export function fetchAssessmentViewData (address, stage) {
   return async (dispatch, getState) => {
-    dispatch(fetchAssessors(address, stage))
-    dispatch(fetchStoredData(address))
+    let assessment = getState().assessments[address]
+    if (!assessment) {
+      // 1st display: fetch everything
+      dispatch(fetchAssessmentData(address))
+      dispatch(fetchAssessors(address, stage))
+      dispatch(fetchStoredData(address))
+    } else if (!assessment.hasOwnProperty('assessors')) {
+      // 1st detailed-look: fetch assessors + stages, stored data
+      dispatch(fetchAssessors(address, stage))
+      dispatch(fetchStoredData(address))
+    } else {
+      // re-visit: fetch only latest assessmentStage, assessorStages, stored Data
+      dispatch(updateAssessment(address))
+    }
+  }
+}
+
+export function updateAssessment (address) {
+  return async (dispatch, getState) => {
   }
 }
 
@@ -193,12 +227,15 @@ export function fetchAssessors (address, stage) {
 }
 // returns the strings that are stored on the assessments
 // for now, only the data stored by the assessee
-export function fetchStoredData (address) {
+export function fetchStoredData (selectedAssessment) {
   return async (dispatch, getState) => {
+    dispatch(beginLoadingDetail('attachments'))
+    let address = selectedAssessment || getState().assessments.selectedAssessment
     let assessmentInstance = getInstance.assessment(getState(), address)
     let assessee = await assessmentInstance.methods.assessee().call()
     let data = await assessmentInstance.methods.data(assessee).call()
     dispatch(receiveStoredData(address, data))
+    dispatch(endLoadingDetail('attachments'))
   }
 }
 
@@ -255,7 +292,6 @@ export function fetchLatestAssessments () {
     }
   }
 }
-
 
 export function updateAssessments (address) {
   return async (dispatch, getState) => {
@@ -342,7 +378,6 @@ export function removeAssessment (address) {
 }
 
 export function beginLoadingAssessments () {
-  console.log('beginLoadingAssessmentsfunction ')
   return {
     type: BEGIN_LOADING_ASSESSMENTS
   }
@@ -351,5 +386,26 @@ export function beginLoadingAssessments () {
 export function endLoadingAssessments () {
   return {
     type: END_LOADING_ASSESSMENTS
+  }
+}
+
+export function beginLoadingDetail (detail) {
+  return {
+    type: BEGIN_LOADING_DETAIL,
+    detail
+  }
+}
+
+export function endLoadingDetail (detail) {
+  return {
+    type: END_LOADING_DETAIL,
+    detail
+  }
+}
+
+export function setAssessment (address) {
+  return {
+    type: SET_ASSESSMENT,
+    address
   }
 }
