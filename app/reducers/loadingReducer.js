@@ -2,7 +2,8 @@ import {
   BEGIN_LOADING_ASSESSMENTS,
   BEGIN_LOADING_DETAIL,
   END_LOADING_ASSESSMENTS,
-  END_LOADING_DETAIL
+  END_LOADING_DETAIL,
+  RESET_LOADED_DETAILS
 } from '../actions/assessmentActions.js'
 
 import {loadingStage} from '../actions/utils.js'
@@ -52,6 +53,9 @@ function loading (state = initialState, action) {
         }
       }
     }
+    case RESET_LOADED_DETAILS:
+      console.log('initialState', initialState)
+      return initialState
     default:
       return state
   }

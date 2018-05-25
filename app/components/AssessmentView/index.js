@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import AssessmentView from './AssessmentView'
-import {setAssessment} from '../../actions/assessmentActions'
+import {setAssessment, resetLoadedDetails} from '../../actions/assessmentActions'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -9,7 +9,8 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = {
-  setAssessment
+  setAssessment,
+  resetLoadedDetails
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AssessmentView)

@@ -12,7 +12,7 @@ let initialState = {
   isConnected: false,
   userAddress: '',
   networkID: 4,
-  AhaBalance: 0,
+  AhaBalance: 0
 }
 
 function ethereum (state = initialState, action) {

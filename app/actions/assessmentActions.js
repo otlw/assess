@@ -11,6 +11,7 @@ export const END_LOADING_ASSESSMENTS = 'END_LOADING_ASSESSMENTS'
 export const SET_ASSESSMENT = 'SET_ASSESSMENT'
 export const BEGIN_LOADING_DETAIL = 'BEGIN_LOADING_DETAIL'
 export const END_LOADING_DETAIL = 'END_LOADING_DETAIL'
+export const RESET_LOADED_DETAILS = 'RESET_LOADED_DETAILS'
 
 const ethereumjsABI = require('ethereumjs-abi')
 
@@ -199,9 +200,11 @@ export function updateAssessment (address) {
 // reads all staked assessors from event-logs and reads their stage from the chain
 // if the assessment is in the calling phase one also checks whether the user has been called
 // and if, so he will be added to the list of assessors with his stage set to 1
-export function fetchAssessors (address, stage) {
+export function fetchAssessors (selectedAssessment) {
   return async (dispatch, getState) => {
     try {
+      let address = selectedAssessment || getState().assessments.selectedAssessment
+      dispatch(beginLoadingDetail('assessors'))
       // reading assessors from events
       const fathomTokenInstance = getInstance.fathomToken(getState())
       // NOTE: this piece is a bit tricky, as filtering in the call usually works on the local testnet, but not on rinkeby
@@ -218,24 +221,11 @@ export function fetchAssessors (address, stage) {
           e.returnValues['topic'] === '2' &&
           assessors.push(e.returnValues['user'])
       )
-      // console.log('asessors after looking for staked Events ', assessors )
+      let stage = getState().assessments[address].stage
       dispatch(fetchAssessorStages(address, assessors, stage === 1))
     } catch (e) {
       console.log('ERROR: fetching assessors from the events did not work!', e)
     }
-  }
-}
-// returns the strings that are stored on the assessments
-// for now, only the data stored by the assessee
-export function fetchStoredData (selectedAssessment) {
-  return async (dispatch, getState) => {
-    dispatch(beginLoadingDetail('attachments'))
-    let address = selectedAssessment || getState().assessments.selectedAssessment
-    let assessmentInstance = getInstance.assessment(getState(), address)
-    let assessee = await assessmentInstance.methods.assessee().call()
-    let data = await assessmentInstance.methods.data(assessee).call()
-    dispatch(receiveStoredData(address, data))
-    dispatch(endLoadingDetail('attachments'))
   }
 }
 
@@ -261,9 +251,23 @@ export function fetchAssessorStages (address, assessors, checkUserAddress = fals
       }
     }
     dispatch(receiveAssessors(address, assessorStages))
+    dispatch(endLoadingDetail('assessors'))
   }
 }
 
+// returns the strings that are stored on the assessments
+// for now, only the data stored by the assessee
+export function fetchStoredData (selectedAssessment) {
+  return async (dispatch, getState) => {
+    dispatch(beginLoadingDetail('attachments'))
+    let address = selectedAssessment || getState().assessments.selectedAssessment
+    let assessmentInstance = getInstance.assessment(getState(), address)
+    let assessee = await assessmentInstance.methods.assessee().call()
+    let data = await assessmentInstance.methods.data(assessee).call()
+    dispatch(receiveStoredData(address, data))
+    dispatch(endLoadingDetail('attachments'))
+  }
+}
 export function fetchLatestAssessments () {
   return async (dispatch, getState) => {
     if (getState().loading.assessments === loadingStage.None) {
@@ -407,5 +411,11 @@ export function setAssessment (address) {
   return {
     type: SET_ASSESSMENT,
     address
+  }
+}
+
+export function resetLoadedDetails () {
+  return {
+    type: RESET_LOADED_DETAILS
   }
 }

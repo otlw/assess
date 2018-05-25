@@ -2,9 +2,10 @@ import { Component } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { LoadComponent } from '../hocs/loadComponent.js'
-import { fetchAssessmentData } from '../../actions/assessmentActions.js'
 import { loadingStage } from '../../actions/utils.js'
+import { fetchAssessmentData } from '../../actions/assessmentActions.js'
 import MeetingPoint from './Attachments/'
+import AssessorList from './AssessorList'
 var h = require('react-hyperscript')
 
 export const stages = Object.freeze({
@@ -41,7 +42,9 @@ export class AssessmentData extends Component {
             h('span', stages[assessment.stage]),
             h('span', ' (' + assessment.stage + '/4)')
           ]),
-          h(MeetingPoint, {assessee: assessment.assessee})
+          h(MeetingPoint, {assessee: assessment.assessee}),
+          h('div', '============Assessors================================='),
+          h(AssessorList)//, {
         ])
       )
     } else {
