@@ -1,12 +1,6 @@
 import { Component } from 'react'
+import { stages } from '../../constants.js'
 var h = require('react-hyperscript')
-
-export const stages = Object.freeze({
-  1: 'Open',
-  2: 'Commit',
-  3: 'Reveal',
-  4: 'Finished'
-})
 
 export class AssessmentData extends Component {
   render () {
@@ -32,7 +26,15 @@ export class AssessmentData extends Component {
           h('span', 'Stage: '),
           h('span', stages[this.props.stage]),
           h('span', ' (' + this.props.stage + '/4)')
-        ])
+        ]),
+        // display final score only if assessment is done
+        this.props.stage === 4
+          ? h('div', [h('span', 'final Score: '),
+            (this.props.finalScore > 50
+              ? h('span', { style: { 'color': '#2f2' } }, 'Pass')
+              : h('span', { style: { 'color': '#f22' } }, 'Fail')),
+            h('span', ' (' + this.props.finalScore + ' out of 100)')])
+          : null
       ])
     )
   }
