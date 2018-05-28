@@ -14,7 +14,6 @@ export class AssessmentView extends Component {
 
   render () {
     if (this.props.selectedAssessment) {
-      console.log('trigger render of assessmnetdata with', this.props.selectedAssessment)
       return (
         h('div', [
           h('div', '============AssessmentData================================='),

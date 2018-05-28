@@ -25,11 +25,8 @@ export function hashScoreAndSalt (_score, _salt) {
 // ============== async actions ===================
 
 export function confirmAssessor (address) {
-  console.log('address',address)
   return async (dispatch, getState) => {
-    console.log('confirmAssessor ')
     let userAddress = getState().ethereum.userAddress
-    console.log('userAddress ',userAddress )
     let assessmentInstance = getInstance.assessment(getState(), address)
     // / this is were a status should be set to "pending...""
     let tx = await assessmentInstance.methods.confirmAssessor().send({from: userAddress, gas: 3200000})
@@ -63,7 +60,6 @@ export function reveal (address, score, salt) {
 
 export function storeData (address, data) {
   return async (dispatch, getState) => {
-    console.log('storead', address)
     dispatch(storeDataOnAssessment(address, data))
   }
 }
@@ -94,12 +90,10 @@ export function fetchAssessmentData (assessmentAddress) {
       let assessmentInstance = getInstance.assessment(getState(), address)
       let stage = Number(await assessmentInstance.methods.assessmentStage().call())
       if (stage !== getState().assessments[address].stage) {
-        console.log('only updateing stage')
         dispatch(receiveAssessmentStage(address, stage))
       }
       // mark info as loaded
       dispatch(endLoadingDetail('info'))
-      return
     } else {
       dispatch(beginLoadingDetail('info'))
       try {
@@ -180,26 +174,6 @@ export function fetchScoreAndPayout (address) {
   }
 }
 
-// fetches Data for particpants of the assessment as well as the stages of the assessors
-export function fetchAssessmentViewData (address, stage) {
-  return async (dispatch, getState) => {
-    let assessment = getState().assessments[address]
-    if (!assessment) {
-      // 1st display: fetch everything
-      dispatch(fetchAssessmentData(address))
-      dispatch(fetchAssessors(address, stage))
-      dispatch(fetchStoredData(address))
-    } else if (!assessment.hasOwnProperty('assessors')) {
-      // 1st detailed-look: fetch assessors + stages, stored data
-      dispatch(fetchAssessors(address, stage))
-      dispatch(fetchStoredData(address))
-    } else {
-      // re-visit: fetch only latest assessmentStage, assessorStages, stored Data
-      dispatch(updateAssessment(address))
-    }
-  }
-}
-
 // export function updateAssessment (address) {
 //   return async (dispatch, getState) => {
 //   }
@@ -230,7 +204,7 @@ export function fetchAssessors (selectedAssessment) {
           assessors.push(e.returnValues['user'])
       )
       let stage = getState().assessments[address].stage
-      dispatch(fetchAssessorStages(address, assessors, stage === 1))
+      dispatch(fetchAssessorStages(address, assessors, stage === 1)) // TODO use constant
     } catch (e) {
       console.log('ERROR: fetching assessors from the events did not work!', e)
     }
@@ -254,7 +228,7 @@ export function fetchAssessorStages (address, assessors, checkUserAddress = fals
     if (checkUserAddress) {
       let userAddress = getState().ethereum.userAddress
       let userStage = await assessmentInstance.methods.assessorState(userAddress).call()
-      if (userStage === '1') {
+      if (userStage === '1') { // TODO use constant
         assessorStages.push({address: userAddress, stage: userStage})
       }
     }
@@ -318,19 +292,17 @@ export function updateAssessments (address) {
 
 function updateExistingAssessment (address) {
   return async (dispatch, getState) => {
-    console.log('updateExistingAssessment')
     let userAddress = getState().ethereum.userAddress
     let oldStage = getState().assessments[address].stage
 
     const assessmentInstance = getInstance.assessment(getState(), address)
-    let userStage = await assessmentInstance.methods.assessorState(userAddress).call()
-    let assessmentStage = await assessmentInstance.methods.assessmentStage().call()
+    let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
+    let assessmentStage = Number(await assessmentInstance.methods.assessmentStage().call())
 
     // if the assessment is no longer available to the user:
     if (oldStage === Stage.Called &&
         assessmentStage > Stage.Called &&
         userStage < Stage.Confirmed) {
-      console.log('removeAssessment')
       dispatch(removeAssessment(address))
     }
 

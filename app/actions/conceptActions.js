@@ -66,4 +66,3 @@ export function endLoadingConcepts () {
     type: END_LOADING_CONCEPTS
   }
 }
-

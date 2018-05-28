@@ -16,7 +16,6 @@ import {loadingStage} from '../actions/utils.js'
 let initialState = {
   assessments: loadingStage.None,
   concepts: loadingStage.None,
-  web3: loadingStage.None,
   assessmentDetail: {
     info: loadingStage.None,
     assessors: loadingStage.None,
@@ -50,7 +49,7 @@ function loading (state = initialState, action) {
       }
     }
     case BEGIN_LOADING_DETAIL: {
-      console.log('began loading', action.detail)
+      // console.log('began loading', action.detail)
       return {
         ...state,
         assessmentDetail: {
@@ -60,7 +59,7 @@ function loading (state = initialState, action) {
       }
     }
     case END_LOADING_DETAIL: {
-      console.log('ended loading', action.detail)
+      // console.log('ended loading', action.detail)
       return {
         ...state,
         assessmentDetail: {
@@ -70,8 +69,10 @@ function loading (state = initialState, action) {
       }
     }
     case RESET_LOADED_DETAILS:
-      console.log('reset loaded details to ',initialState)
-      return initialState
+      return {
+        ...state,
+        assessmentDetail: initialState.assessmentDetail
+      }
     default:
       return state
   }

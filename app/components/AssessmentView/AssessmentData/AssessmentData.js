@@ -12,7 +12,6 @@ export const stages = Object.freeze({
 
 export class AssessmentData extends Component {
   render () {
-    // console.log('render assData' )
     if (this.props.loadedInfo) {
       let assessment = this.props.assessment
       return (
