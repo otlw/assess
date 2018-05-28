@@ -4,10 +4,9 @@ import { confirmAssessor, commit, reveal } from '../../../actions/assessmentActi
 
 const mapStateToProps = state => {
   return {
-    asessmentAddress: state.assessments.selectedAssessment,
+    assessmentAddress: state.assessments.selectedAssessment,
     userAddress: state.ethereum.userAddress,
     stage: state.assessments[state.assessments.selectedAssessment].stage
-
   }
 }
 

@@ -1,8 +1,11 @@
 import { getInstance } from './utils.js'
 export const RECEIVE_CONCEPTS = 'RECEIVE_CONCEPTS'
+export const BEGIN_LOADING_CONCEPTS = 'BEGIN_LOADING_CONCEPTS'
+export const END_LOADING_CONCEPTS = 'END_LOADING_CONCEPTS'
 
 export function loadConceptsFromConceptRegistery () {
   return async (dispatch, getState) => {
+    dispatch(beginLoadingConcepts())
     const conceptRegistryInstance = getInstance.conceptRegistry(getState())
 
     // get concepts from registry
@@ -21,6 +24,7 @@ export function loadConceptsFromConceptRegistery () {
       return (concepts[address] = decodedConceptData)
     }))
     dispatch(receiveConcepts(concepts))
+    dispatch(endLoadingConcepts())
   }
 }
 
@@ -50,3 +54,16 @@ export function loadConceptContractAndCreateAssessment (address) {
     // this is were a status should be set to "assessment created"
   }
 }
+
+export function beginLoadingConcepts () {
+  return {
+    type: BEGIN_LOADING_CONCEPTS
+  }
+}
+
+export function endLoadingConcepts () {
+  return {
+    type: END_LOADING_CONCEPTS
+  }
+}
+

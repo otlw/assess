@@ -1,10 +1,15 @@
 import {
   BEGIN_LOADING_ASSESSMENTS,
-  BEGIN_LOADING_DETAIL,
   END_LOADING_ASSESSMENTS,
+  BEGIN_LOADING_DETAIL,
   END_LOADING_DETAIL,
   RESET_LOADED_DETAILS
 } from '../actions/assessmentActions.js'
+
+import {
+  BEGIN_LOADING_CONCEPTS,
+  END_LOADING_CONCEPTS
+} from '../actions/conceptActions.js'
 
 import {loadingStage} from '../actions/utils.js'
 
@@ -33,6 +38,17 @@ function loading (state = initialState, action) {
         assessments: loadingStage.Done
       }
     }
+    case BEGIN_LOADING_CONCEPTS:
+      return {
+        ...state,
+        concepts: loadingStage.Loading
+      }
+    case END_LOADING_CONCEPTS: {
+      return {
+        ...state,
+        concepts: loadingStage.Done
+      }
+    }
     case BEGIN_LOADING_DETAIL: {
       console.log('began loading', action.detail)
       return {
@@ -54,7 +70,7 @@ function loading (state = initialState, action) {
       }
     }
     case RESET_LOADED_DETAILS:
-      console.log('initialState', initialState)
+      console.log('reset loaded details to ',initialState)
       return initialState
     default:
       return state

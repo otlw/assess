@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import AssessmentView from './AssessmentView'
+import AssessmentView from './ViewContainer.js'
 import {setAssessment, resetLoadedDetails} from '../../actions/assessmentActions'
 
 const mapStateToProps = (state, ownProps) => {

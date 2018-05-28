@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import AssessmentData from './AssessmentData.js'
+import AssessmentData from './AssessmentData'
 var h = require('react-hyperscript')
 
 export class AssessmentView extends Component {
@@ -7,8 +7,9 @@ export class AssessmentView extends Component {
     this.props.setAssessment(this.props.match.params.id)
   }
 
-  componentWillUnMount () {
-    this.props.resetAssessmentDetails()
+  componentWillUnmount () {
+    console.log('componentWillUnMount ')
+    this.props.resetLoadedDetails()
   }
 
   render () {

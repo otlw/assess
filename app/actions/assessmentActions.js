@@ -25,8 +25,11 @@ export function hashScoreAndSalt (_score, _salt) {
 // ============== async actions ===================
 
 export function confirmAssessor (address) {
+  console.log('address',address)
   return async (dispatch, getState) => {
+    console.log('confirmAssessor ')
     let userAddress = getState().ethereum.userAddress
+    console.log('userAddress ',userAddress )
     let assessmentInstance = getInstance.assessment(getState(), address)
     // / this is were a status should be set to "pending...""
     let tx = await assessmentInstance.methods.confirmAssessor().send({from: userAddress, gas: 3200000})
@@ -82,77 +85,82 @@ export function storeDataOnAssessment (address, data) {
 }
 
 // fetch assessment data for one given assessment
+// if that assessment is already in state, it only fetches what could have changed (stage)
 export function fetchAssessmentData (assessmentAddress) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let address = assessmentAddress || getState().assessments.selectedAssessment
-    // if (getState().assessments[address]) {
-    //   console.log('only updateing stage')
-    //   // TODO only update stage
-    //   let assessmentInstance = getInstance.assessment(getState(), address)
-    //   let stage = Number(await assessmentInstance.methods.assessmentStage().call())
-    //   dispatch(receiveAssessmentStage(address, stage))
-    //   return
-    // }
-    dispatch(beginLoadingDetail('info'))
-    try {
+    if (getState().assessments[address]) {
       let assessmentInstance = getInstance.assessment(getState(), address)
-      let cost = await assessmentInstance.methods.cost().call()
-      let size = await assessmentInstance.methods.size().call()
       let stage = Number(await assessmentInstance.methods.assessmentStage().call())
-      // let finalScore = await assessmentInstance.methods.finalScore().call()
-      let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
-      let assessee = await assessmentInstance.methods.assessee().call()
-      let conceptAddress = await assessmentInstance.methods.concept().call()
+      if (stage !== getState().assessments[address].stage) {
+        console.log('only updateing stage')
+        dispatch(receiveAssessmentStage(address, stage))
+      }
+      // mark info as loaded
+      dispatch(endLoadingDetail('info'))
+      return
+    } else {
+      dispatch(beginLoadingDetail('info'))
+      try {
+        let assessmentInstance = getInstance.assessment(getState(), address)
+        let cost = await assessmentInstance.methods.cost().call()
+        let size = await assessmentInstance.methods.size().call()
+        let stage = Number(await assessmentInstance.methods.assessmentStage().call())
+        // let finalScore = await assessmentInstance.methods.finalScore().call()
+        let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
+        let assessee = await assessmentInstance.methods.assessee().call()
+        let conceptAddress = await assessmentInstance.methods.concept().call()
 
-      // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
-      let conceptRegistryInstance = getInstance.conceptRegistry(getState())
-      let isValidConcept = await conceptRegistryInstance.methods.conceptExists(conceptAddress).call()
+        // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
+        let conceptRegistryInstance = getInstance.conceptRegistry(getState())
+        let isValidConcept = await conceptRegistryInstance.methods.conceptExists(conceptAddress).call()
 
-      // check if assessment is from concept
-      let conceptInstance = getInstance.concept(getState(), conceptAddress)
-      let isValidAssessment = await conceptInstance.methods.assessmentExists(address).call()
-
-      // if concept is from Registry and assessment is from concept,
-      // go ahead and fetch data, otherwise, add an invalid assessment object
-      if (isValidConcept && isValidAssessment) {
-        // get data from associated concept
+        // check if assessment is from concept
         let conceptInstance = getInstance.concept(getState(), conceptAddress)
-        let conceptData = await conceptInstance.methods.data().call()
-        if (conceptData) {
-          conceptData = Buffer.from(conceptData.slice(2), 'hex').toString('utf8')
+        let isValidAssessment = await conceptInstance.methods.assessmentExists(address).call()
+
+        // if concept is from Registry and assessment is from concept,
+        // go ahead and fetch data, otherwise, add an invalid assessment object
+        if (isValidConcept && isValidAssessment) {
+          // get data from associated concept
+          let conceptInstance = getInstance.concept(getState(), conceptAddress)
+          let conceptData = await conceptInstance.methods.data().call()
+          if (conceptData) {
+            conceptData = Buffer.from(conceptData.slice(2), 'hex').toString('utf8')
+          } else {
+            conceptData = ''
+            console.log('was undefined: conceptData ', conceptData)
+          }
+          dispatch(receiveAssessment({
+            address,
+            cost,
+            size,
+            assessee,
+            userStage,
+            stage,
+            conceptAddress,
+            conceptData,
+            valid: true
+          }))
         } else {
-          conceptData = ''
-          console.log('was undefined: conceptData ', conceptData)
+          // if the concept is not linked to concept Registry
+          dispatch(receiveAssessment({
+            address: address,
+            valid: false
+          }))
         }
-        dispatch(receiveAssessment({
-          address,
-          cost,
-          size,
-          assessee,
-          userStage,
-          stage,
-          conceptAddress,
-          conceptData,
-          valid: true
-        }))
-      } else {
-        // if the concept is not linked to concept Registry
+      } catch (e) {
+        console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
+        // In case of error, we assume the assessment address is invalid
+        // conceptData will be used to detect wrong address situation (but could be any other field)
         dispatch(receiveAssessment({
           address: address,
           valid: false
         }))
       }
-    } catch (e) {
-      console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
-      // In case of error, we assume the assessment address is invalid
-      // conceptData will be used to detect wrong address situation (but could be any other field)
-      dispatch(receiveAssessment({
-        address: address,
-        valid: false
-      }))
+      dispatch(endLoadingDetail('info'))
     }
-    dispatch(endLoadingDetail('info'))
   }
 }
 
@@ -192,10 +200,10 @@ export function fetchAssessmentViewData (address, stage) {
   }
 }
 
-export function updateAssessment (address) {
-  return async (dispatch, getState) => {
-  }
-}
+// export function updateAssessment (address) {
+//   return async (dispatch, getState) => {
+//   }
+// }
 
 // reads all staked assessors from event-logs and reads their stage from the chain
 // if the assessment is in the calling phase one also checks whether the user has been called
@@ -317,13 +325,13 @@ function updateExistingAssessment (address) {
     const assessmentInstance = getInstance.assessment(getState(), address)
     let userStage = await assessmentInstance.methods.assessorState(userAddress).call()
     let assessmentStage = await assessmentInstance.methods.assessmentStage().call()
-    // console.log('assessmentStage ', assessmentStage )
 
-    if (oldStage === Stage.Called) {
-      // only keep assessment around if the user is in it
-      if (userStage < Stage.Confirmed) {
-        dispatch(removeAssessment(address))
-      }
+    // if the assessment is no longer available to the user:
+    if (oldStage === Stage.Called &&
+        assessmentStage > Stage.Called &&
+        userStage < Stage.Confirmed) {
+      console.log('removeAssessment')
+      dispatch(removeAssessment(address))
     }
 
     if (assessmentStage === Stage.Done) {
