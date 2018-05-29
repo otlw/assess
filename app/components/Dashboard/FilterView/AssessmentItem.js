@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
-import { stages } from '../../AssessmentView/AssessmentData/AssessmentData.js'
+import { stages } from '../../../constants.js'
 
 // styles
 const itemStyle = {

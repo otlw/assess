@@ -37,6 +37,14 @@ export class AssessmentData extends Component {
             h('span', stages[assessment.stage]),
             h('span', ' (' + assessment.stage + '/4)')
           ]),
+          // display final score only if assessment is done
+          (assessment.stage === 4
+            ? h('div', [h('span', 'final Score: '),
+              (assessment.finalScore > 50
+                ? h('span', { style: { 'color': '#2f2' } }, 'Pass')
+                : h('span', { style: { 'color': '#f22' } }, 'Fail')),
+              h('span', ' (' + assessment.finalScore + ' out of 100)')])
+            : null),
           h(MeetingPoint, {assessee: assessment.assessee}),
           h('div', '============Assessors================================='),
           h(AssessorList)//, {

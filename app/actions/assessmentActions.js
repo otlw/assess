@@ -101,7 +101,7 @@ export function fetchAssessmentData (assessmentAddress) {
         let cost = await assessmentInstance.methods.cost().call()
         let size = await assessmentInstance.methods.size().call()
         let stage = Number(await assessmentInstance.methods.assessmentStage().call())
-        // let finalScore = await assessmentInstance.methods.finalScore().call()
+        let finalScore = Number(await assessmentInstance.methods.finalScore().call())
         let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
         let assessee = await assessmentInstance.methods.assessee().call()
         let conceptAddress = await assessmentInstance.methods.concept().call()
@@ -133,6 +133,7 @@ export function fetchAssessmentData (assessmentAddress) {
             assessee,
             userStage,
             stage,
+            finalScore,
             conceptAddress,
             conceptData,
             valid: true
@@ -148,10 +149,6 @@ export function fetchAssessmentData (assessmentAddress) {
         console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
         // In case of error, we assume the assessment address is invalid
         // conceptData will be used to detect wrong address situation (but could be any other field)
-        dispatch(receiveAssessment({
-          address: address,
-          valid: false
-        }))
       }
       dispatch(endLoadingDetail('info'))
     }
