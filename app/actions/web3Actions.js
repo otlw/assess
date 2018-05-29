@@ -1,7 +1,5 @@
 import Web3 from 'web3'
 import { getInstance } from './utils.js'
-import {fetchLatestAssessments} from './assessmentActions'
-import {loadConceptsFromConceptRegistery} from './conceptActions'
 
 export const WEB3_CONNECTED = 'WEB3_CONNECTED'
 export const WEB3_DISCONNECTED = 'WEB3_DISCONNECTED'
@@ -36,9 +34,8 @@ export const connect = () => {
         // set a loop function to check userAddress or network change
         dispatch(loopCheckAddressAndNetwork())
 
-        // and finally call the other actions that fill the state
-        dispatch(loadConceptsFromConceptRegistery())
-        dispatch(fetchLatestAssessments())
+        // dispatch(loadConceptsFromConceptRegistery())
+        // dispatch(fetchLatestAssessments())
       } else {
         dispatch(web3Disconnected())
       }
