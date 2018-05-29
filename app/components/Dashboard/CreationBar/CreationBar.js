@@ -50,17 +50,21 @@ export class AssessmentCreationBar extends Component {
   }
 
   render () {
-    let conceptNames = Object.values(this.props.concepts)
-    return h(CreationBox, [
-      h(FieldName, 'Select Concept :'),
-      h(DropdownBox, [
-        h(Dropdown, {
-          conceptNames: conceptNames,
-          selectedID: this.state.selectedConceptKey,
-          set: this.setConceptKey.bind(this)})]
-      ),
-      h(Button, {onClick: this.createAssessment.bind(this)}, 'Create Assessment')
-    ])
+    if (this.props.loadedConcepts) {
+      let conceptNames = Object.values(this.props.concepts)
+      return h(CreationBox, [
+        h(FieldName, 'Select Concept :'),
+        h(DropdownBox, [
+          h(Dropdown, {
+            conceptNames: conceptNames,
+            selectedID: this.state.selectedConceptKey,
+            set: this.setConceptKey.bind(this)})]
+        ),
+        h(Button, {onClick: this.createAssessment.bind(this)}, 'Create Assessment')
+      ])
+    } else {
+      return h('div', 'Loading Concepts')
+    }
   }
 }
 

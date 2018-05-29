@@ -50,6 +50,7 @@ export class AssessorStatus extends Component {
   }
 
   stake () {
+    console.log('assessmentAddress', this.props.assessmentAddress)
     this.props.confirmAssessor(this.props.assessmentAddress)
   }
 

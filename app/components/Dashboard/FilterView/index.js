@@ -1,6 +1,10 @@
 import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { LoadComponent } from '../../hocs/loadComponent.js'
 import FilterView from './FilterView'
+
 import {setDashboardTab} from '../../../actions/navigationActions.js'
+import { fetchLatestAssessments } from '../../../actions/assessmentActions.js'
 
 const mapStateToProps = state => {
   return {
@@ -11,7 +15,11 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-  setDashboardTab
+  setDashboardTab,
+  load: fetchLatestAssessments
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(FilterView)
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  LoadComponent
+)(FilterView)
