@@ -19,15 +19,8 @@ const filterViewStyles = {
 }
 
 export class AssessmentFilterView extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      selectedTab: 'Current'
-    }
-  }
-
   setTab (e) {
-    this.setState({selectedTab: e.target.innerHTML})
+    this.props.setDashboardTab(e.target.innerHTML)
   }
 
   render () {
@@ -40,7 +33,7 @@ export class AssessmentFilterView extends Component {
 
     // map tab components according to selected tab
     let tabs = ['Past', 'Current', 'Potential'].map((tabName) => {
-      if (tabName === this.state.selectedTab) {
+      if (tabName === this.props.selectedTab) {
         return h('a', {style: {...filterViewStyles.tabStyle, color: 'blue'}, onClick: this.setTab.bind(this)}, tabName)
       } else {
         return h('a', {style: filterViewStyles.tabStyle, onClick: this.setTab.bind(this)}, tabName)
@@ -50,7 +43,7 @@ export class AssessmentFilterView extends Component {
     // return view
     return h('div', {style: filterViewStyles.mainFrameStyle}, [
       h('div', tabs),
-      h(AssessmentList, {assessmentList: assessmentList, userAddress: userAddress, selectedTab: this.state.selectedTab})
+      h(AssessmentList, {assessmentList: assessmentList, userAddress: userAddress, selectedTab: this.props.selectedTab})
     ])
   }
 }
