@@ -29,10 +29,7 @@ assessmentAddress : {
     },
     ...
   ]
-  storedData: {
-     address: dataString,
-     ...
-  }
+  data: dataString
 }
  */
 

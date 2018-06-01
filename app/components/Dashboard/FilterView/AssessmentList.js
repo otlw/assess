@@ -47,7 +47,12 @@ export class AssessmentList extends Component {
       return h('div', {style: assessmentListStyle.frame}, 'No ' + this.props.selectedTab + ' Assessments')
     } else {
       return h('div', {style: assessmentListStyle.frame}, filteredList.map((assessment, k) => {
-        return h(AssessmentItem, {assessment, userAddress: this.props.userAddress, selectedTab: this.props.selectedTab})
+        return h(AssessmentItem, {
+          assessment, 
+          userAddress: this.props.userAddress, 
+          selectedTab: this.props.selectedTab, 
+          networkID:this.props.networkID,
+        })
       }))
     }
   }

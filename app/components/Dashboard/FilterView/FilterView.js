@@ -43,7 +43,7 @@ export class AssessmentFilterView extends Component {
     // return view
     return h('div', {style: filterViewStyles.mainFrameStyle}, [
       h('div', tabs),
-      h(AssessmentList, {assessmentList: assessmentList, userAddress: userAddress, selectedTab: this.props.selectedTab})
+      h(AssessmentList, {assessmentList: assessmentList, userAddress: userAddress, selectedTab: this.props.selectedTab, networkID:this.props.networkID})
     ])
   }
 }

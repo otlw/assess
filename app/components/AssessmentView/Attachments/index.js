@@ -10,7 +10,7 @@ const mapStateToProps = (state, ownProps) => {
     editable: state.ethereum.userAddress === ownProps.assessee,
     address: state.assessments.selectedAssessment,
     loadedMeetingPoint: state.loading.assessmentDetail.attachments === loadingStage.Done,
-    meetingPoint: state.assessments[state.assessments.selectedAssessment].data
+    meetingPoint: state.assessments[state.assessments.selectedAssessment].data || state.assessments[ownProps.assessmentAddress].data
   }
 }
 
