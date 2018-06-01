@@ -72,23 +72,23 @@ export function storeDataOnAssessment (address, data) {
     // this is were a status should be set to "pending...""
     // @dju I guess this is handled by both the hoc and the transaction component that should be added later
 
-    // also salt should be saved in state 
-    //@dju what do you mean by that, is that comment still relevant?
+    // also salt should be saved in state
+    // @dju what do you mean by that, is that comment still relevant?
 
     assessmentInstance.methods.addData(data).send({from: userAddress, gas: 3200000})
-      //this is where we will put the transaction logic (savetransaction, update transaction...) when/if we add the transaction for this action
-      //.on('receipt', (receipt) => {
+      // this is where we will put the transaction logic (savetransaction, update transaction...) when/if we add the transaction for this action
+      // .on('receipt', (receipt) => {
       //   if (receipt.status === '0x01') {
       //     //updateTransaction
       //   }
       // })
       .on('confirmation', (confirmationNumber, receipt) => {
-        if (confirmationNumber===8){
-          if (receipt.status === '0x01' ||receipt.status === '0x1') {
+        if (confirmationNumber === 8) {
+          if (receipt.status === '0x01' || receipt.status === '0x1') {
             dispatch(fetchStoredData(address))
-            //updateTransaction
+            // updateTransaction
           } else {
-            //todo:handle transaction failure with updateTransaction
+            // todo:handle transaction failure with updateTransaction
           }
         }
       })
