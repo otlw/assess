@@ -8,7 +8,7 @@ import { loadingStage } from '../../../actions/utils.js'
 const mapStateToProps = (state, ownProps) => {
   return {
     transactions: Object.values(state.transactions).filter(
-      tx => (tx.address === ownProps.address &&
+      tx => (tx.address === state.assessments.selectedAssessment &&
              // tx.sender === ownProps.assessorAddress &&
              tx.data === 'meetingPointChange')
     ),

@@ -76,7 +76,6 @@ export function storeData (address, data) {
 
 export function storeDataOnAssessment (address, data) {
   return async (dispatch, getState) => {
-    console.log('dispatching to storedata to contract', data)
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
     // also salt should be saved in state
@@ -86,6 +85,7 @@ export function storeDataOnAssessment (address, data) {
       'meetingPointChange',
       userAddress,
       address
+      // {method: fetchStoredData, args: [address]}
     )
     // TODO: react with dispatch(fetchStoredData(address))
   }
@@ -254,6 +254,7 @@ export function fetchStoredData (selectedAssessment) {
     let assessmentInstance = getInstance.assessment(getState(), address)
     let assessee = await assessmentInstance.methods.assessee().call()
     let data = await assessmentInstance.methods.data(assessee).call()
+    console.log('data ', data)
     dispatch(receiveStoredData(address, data))
     dispatch(endLoadingDetail('attachments'))
   }
@@ -282,7 +283,7 @@ export function fetchLatestAssessments () {
       dispatch(endLoadingAssessments())
     } else {
       // TODO
-      console.log('do not fetch all again')
+      // console.log('do not fetch all again')
     }
   }
 }

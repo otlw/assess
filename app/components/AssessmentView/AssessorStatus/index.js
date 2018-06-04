@@ -5,9 +5,9 @@ import { confirmAssessor, commit, reveal } from '../../../actions/assessmentActi
 const mapStateToProps = (state, ownProps) => {
   return {
     transactions: Object.values(state.transactions).filter(
-      tx => (tx.address === ownProps.assessmentAddress &&
+      tx => (tx.address === state.assessments.selectedAssessment &&
              tx.sender === ownProps.assessorAddress &&
-             tx.data === ownProps.stage)
+             tx.data === state.assessments[state.assessments.selectedAssessment].stage)
     ),
     assessmentAddress: state.assessments.selectedAssessment,
     userAddress: state.ethereum.userAddress,
