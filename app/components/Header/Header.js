@@ -52,10 +52,6 @@ const Box = styled('div')`
 `
 
 export class Header extends Component {
-  componentWillMount () {
-    this.props.connect()
-  }
-
   render () {
     let network
     if (NetworkNames[this.props.networkID]) {

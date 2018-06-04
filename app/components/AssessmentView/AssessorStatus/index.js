@@ -8,7 +8,10 @@ const mapStateToProps = (state, ownProps) => {
       tx => (tx.address === ownProps.assessmentAddress &&
              tx.sender === ownProps.assessorAddress &&
              tx.data === ownProps.stage)
-    )
+    ),
+    assessmentAddress: state.assessments.selectedAssessment,
+    userAddress: state.ethereum.userAddress,
+    stage: state.assessments[state.assessments.selectedAssessment].stage
   }
 }
 

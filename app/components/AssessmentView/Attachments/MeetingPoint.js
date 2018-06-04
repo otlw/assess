@@ -1,6 +1,5 @@
 import { Component } from 'react'
 import MeetingPointForm from './MeetingPointForm.js'
-import TxList from '../../TxList'
 var h = require('react-hyperscript')
 
 export class MeetingPoint extends Component {
@@ -21,22 +20,23 @@ export class MeetingPoint extends Component {
   }
 
   render () {
-    let meetingPoint = this.props.meetingPoint || '<noMeetingPointSet>  '
-    return (
-      h('div', [
-        h('span', 'Meeting Point: '),
-        h('span', meetingPoint + '   '),
-        h('button', {
-          onClick: this.toggleMPeditability.bind(this),
-          title: 'this only works if you\'re the assessee',
-          disabled: !this.props.editable
-        }, 'edit'),
-        this.state.displayMPEdit ? h(MeetingPointForm, {onSubmit: this.storeData.bind(this)}) : null,
-        this.props.transactions
-          ? h(TxList, {transactions: this.props.transactions})
-          : null
-      ])
-    )
+    if (this.props.loadedMeetingPoint) {
+      let meetingPoint = this.props.meetingPoint || '<noMeetingPointSet>  '
+      return (
+        h('div', [
+          h('span', 'Meeting Point: '),
+          h('span', meetingPoint + '   '),
+          h('button', {
+            onClick: this.toggleMPeditability.bind(this),
+            title: 'this only works if you\'re the assessee',
+            disabled: !this.props.editable
+          }, 'edit'),
+          this.state.displayMPEdit ? h(MeetingPointForm, {onSubmit: this.storeData.bind(this)}) : null
+        ])
+      )
+    } else {
+      return h('div', 'Loading meeting point...')
+    }
   }
 }
 
