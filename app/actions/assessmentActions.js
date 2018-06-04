@@ -1,7 +1,9 @@
 import { Stage, getInstance } from './utils.js'
 import {
   saveTransaction,
-  updateTransaction } from './transActions.js'
+  updateTransaction,
+  sendAndReactToTransaction
+} from './transActions.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const RECEIVE_FINALSCORE = 'RECEIVE_FINALSCORE'
@@ -25,20 +27,14 @@ export function confirmAssessor (address) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
-    assessmentInstance.methods.confirmAssessor().send({from: userAddress, gas: 3200000})
-      .on('transactionHash', (hash) => {
-        dispatch(saveTransaction(address, userAddress, Stage.Called, hash))
-      })
-      .on('receipt', (receipt) => {
-        dispatch(updateTransaction(
-          receipt.transactionHash,
-          receipt.status === '0x01' ? 'Success' : 'Fail'
-        ))
-      })
-      .on('error', (err) => {
-        console.log('err', err)
-        // TODO handle error (e.g. out of gas)
-      })
+    // also salt should be saved in state => I put the saing part in the assessorStatus component
+    sendAndReactToTransaction(
+      dispatch,
+      {method: assessmentInstance.methods.confirmAssessor, args: []},
+      Stage.Called,
+      userAddress,
+      address
+    )
   }
 }
 
@@ -46,24 +42,13 @@ export function commit (address, score, salt) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
-    // this is were a status should be set to "pending...""
-    // also salt should be saved in state => I put the saing part in the assessorStatus component
-    assessmentInstance.methods.commit(
-      hashScoreAndSalt(score, salt)
-    ).send({from: userAddress, gas: 3200000})
-      .on('transactionHash', (hash) => {
-        dispatch(saveTransaction(address, userAddress, Stage.Confirmed, hash))
-      })
-      .on('receipt', (receipt) => {
-        dispatch(updateTransaction(
-          receipt.transactionHash,
-          receipt.status === '0x01' ? 'Success' : 'Fail'
-        ))
-      })
-      .on('error', (err) => {
-        console.log('err', err)
-        // TODO handle error (e.g. out of gas)
-      })
+    sendAndReactToTransaction(
+      dispatch,
+      {method: assessmentInstance.methods.commit, args: [hashScoreAndSalt(score, salt)]},
+      Stage.Confirmed,
+      userAddress,
+      address
+    )
   }
 }
 
@@ -71,22 +56,13 @@ export function reveal (address, score, salt) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
-    // / this is were a status should be set to "pending...""
-    console.log(score, salt)
-    assessmentInstance.methods.reveal(score, salt).send({from: userAddress, gas: 3200000})
-      .on('transactionHash', (hash) => {
-        dispatch(saveTransaction(address, userAddress, Stage.Committed, hash))
-      })
-      .on('receipt', (receipt) => {
-        dispatch(updateTransaction(
-          receipt.transactionHash,
-          receipt.status === '0x01' ? 'Success' : 'Fail'
-        ))
-      })
-      .on('error', (err) => {
-        console.log('err', err)
-        // TODO handle error (e.g. out of gas)
-      })
+    sendAndReactToTransaction(
+      dispatch,
+      {method: assessmentInstance.methods.reveal, args: [score, salt]},
+      Stage.Committed,
+      userAddress,
+      address
+    )
   }
 }
 
@@ -95,22 +71,14 @@ export function storeDataOnAssessment (address, data) {
     console.log('dispatching to storedata to contract', data)
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
-    // this is were a status should be set to "pending...""
     // also salt should be saved in state
-    assessmentInstance.methods.addData(data).send({from: userAddress, gas: 3200000})
-      .on('transactionHash', (hash) => {
-        dispatch(saveTransaction(address, userAddress, 'meetingPointChange', hash))
-      })
-      .on('receipt', (receipt) => {
-        dispatch(updateTransaction(
-          receipt.transactionHash,
-          receipt.status === '0x01' ? 'Success' : 'Fail'
-        ))
-      })
-      .on('error', (err) => {
-        console.log('err', err)
-        // TODO handle error (e.g. out of gas)
-      })
+    sendAndReactToTransaction(
+      dispatch,
+      {method: assessmentInstance.methods.addData, args: [data]},
+      'meetingPointChange',
+      userAddress,
+      address
+    )
   }
 }
 
