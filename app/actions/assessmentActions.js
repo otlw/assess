@@ -1,4 +1,5 @@
 import { Stage, loadingStage, getInstance } from './utils.js'
+import { sendAndReactToTransaction } from './transActions.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const RECEIVE_FINALSCORE = 'RECEIVE_FINALSCORE'
@@ -28,9 +29,14 @@ export function confirmAssessor (address) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
-    // / this is were a status should be set to "pending...""
-    let tx = await assessmentInstance.methods.confirmAssessor().send({from: userAddress, gas: 3200000})
-    console.log(tx)
+    // also salt should be saved in state => I put the saing part in the assessorStatus component
+    sendAndReactToTransaction(
+      dispatch,
+      {method: assessmentInstance.methods.confirmAssessor, args: []},
+      Stage.Called,
+      userAddress,
+      address
+    )
   }
 }
 
@@ -38,12 +44,13 @@ export function commit (address, score, salt) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
-    // this is were a status should be set to "pending...""
-    // also salt should be saved in state => I put the saing part in the assessorStatus component
-    let tx = await assessmentInstance.methods.commit(
-      hashScoreAndSalt(score, salt)
-    ).send({from: userAddress, gas: 3200000})
-    console.log(tx)
+    sendAndReactToTransaction(
+      dispatch,
+      {method: assessmentInstance.methods.commit, args: [hashScoreAndSalt(score, salt)]},
+      Stage.Confirmed,
+      userAddress,
+      address
+    )
   }
 }
 
@@ -51,10 +58,13 @@ export function reveal (address, score, salt) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
-    // / this is were a status should be set to "pending...""
-    console.log(score, salt)
-    let tx = await assessmentInstance.methods.reveal(score, salt).send({from: userAddress, gas: 3200000})
-    console.log(tx)
+    sendAndReactToTransaction(
+      dispatch,
+      {method: assessmentInstance.methods.reveal, args: [score, salt]},
+      Stage.Committed,
+      userAddress,
+      address
+    )
   }
 }
 
@@ -66,17 +76,17 @@ export function storeData (address, data) {
 
 export function storeDataOnAssessment (address, data) {
   return async (dispatch, getState) => {
-    console.log('dispatching to storedata to contract', data)
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
-    // this is were a status should be set to "pending...""
     // also salt should be saved in state
-    assessmentInstance.methods.addData(data).send({from: userAddress, gas: 3200000})
-      .on('receipt', (receipt) => {
-        if (receipt.status === '0x01') {
-          dispatch(fetchStoredData(address))
-        }
-      })
+    sendAndReactToTransaction(
+      dispatch,
+      {method: assessmentInstance.methods.addData, args: [data]},
+      'meetingPointChange',
+      userAddress,
+      address
+      // {method: fetchStoredData, args: [address]}
+    )
   }
 }
 
@@ -243,6 +253,7 @@ export function fetchStoredData (selectedAssessment) {
     let assessmentInstance = getInstance.assessment(getState(), address)
     let assessee = await assessmentInstance.methods.assessee().call()
     let data = await assessmentInstance.methods.data(assessee).call()
+    console.log('data ', data)
     dispatch(receiveStoredData(address, data))
     dispatch(endLoadingDetail('attachments'))
   }
@@ -271,7 +282,7 @@ export function fetchLatestAssessments () {
       dispatch(endLoadingAssessments())
     } else {
       // TODO
-      console.log('do not fetch all again')
+      // console.log('do not fetch all again')
     }
   }
 }
