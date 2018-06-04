@@ -52,7 +52,7 @@ export function sendAndReactToTransaction (dispatch, act, saveData, userAddress,
     .on('confirmation', (confirmationNumber, receipt) => {
       if (react && confirmationNumber === 2 &&
           (receipt.status === '0x01' || receipt.status === '0x1')) {
-        console.log('confirmed! Now dispatching ', react)
+        // console.log('confirmed! Now dispatching ', react)
         dispatch(react.method(...react.args))
       }
     })

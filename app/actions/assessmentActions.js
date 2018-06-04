@@ -87,7 +87,6 @@ export function storeDataOnAssessment (address, data) {
       address
       // {method: fetchStoredData, args: [address]}
     )
-    // TODO: react with dispatch(fetchStoredData(address))
   }
 }
 
