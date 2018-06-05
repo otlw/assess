@@ -280,7 +280,6 @@ export function fetchStoredData (selectedAssessment) {
   }
 }
 
-
 export function fetchLatestAssessments () {
   return async (dispatch, getState) => {
     if (getState().loading.assessments === loadingStage.None) {
