@@ -97,7 +97,10 @@ export function fetchAssessmentData (assessmentAddress) {
     } else {
       dispatch(beginLoadingDetail('info'))
       try {
+        //get assessment Intance
         let assessmentInstance = getInstance.assessment(getState(), address)
+
+        //get assessment infos
         let cost = await assessmentInstance.methods.cost().call()
         let size = await assessmentInstance.methods.size().call()
         let stage = Number(await assessmentInstance.methods.assessmentStage().call())
@@ -105,8 +108,7 @@ export function fetchAssessmentData (assessmentAddress) {
         let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
         let assessee = await assessmentInstance.methods.assessee().call()
         let conceptAddress = await assessmentInstance.methods.concept().call()
-
-        dispatch(fetchStoredData(assessmentAddress))
+        let data = await assessmentInstance.methods.data(assessee).call()
 
         // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
         let conceptRegistryInstance = getInstance.conceptRegistry(getState())
@@ -138,6 +140,7 @@ export function fetchAssessmentData (assessmentAddress) {
             finalScore,
             conceptAddress,
             conceptData,
+            data,
             valid: true
           }))
         } else {
@@ -236,20 +239,23 @@ export function fetchAssessorStages (address, assessors, checkUserAddress = fals
   }
 }
 
+//part of fetchAssessmentData now
+
 // returns the strings that are stored on the assessments
 // for now, only the data stored by the assessee
-export function fetchStoredData (selectedAssessment) {
-  console.log('fetchStoredData', selectedAssessment)
-  return async (dispatch, getState) => {
-    dispatch(beginLoadingDetail('attachments'))
-    let address = selectedAssessment || getState().assessments.selectedAssessment
-    let assessmentInstance = getInstance.assessment(getState(), address)
-    let assessee = await assessmentInstance.methods.assessee().call()
-    let data = await assessmentInstance.methods.data(assessee).call()
-    dispatch(receiveStoredData(address, data))
-    dispatch(endLoadingDetail('attachments'))
-  }
-}
+// export function fetchStoredData (selectedAssessment) {
+//   console.log('fetchStoredData', selectedAssessment)
+//   return async (dispatch, getState) => {
+//     dispatch(beginLoadingDetail('attachments'))
+//     let address = selectedAssessment || getState().assessments.selectedAssessment
+//     let assessmentInstance = getInstance.assessment(getState(), address)
+//     let assessee = await assessmentInstance.methods.assessee().call()
+//     let data = await assessmentInstance.methods.data(assessee).call()
+//     dispatch(receiveStoredData(address, data))
+//     dispatch(endLoadingDetail('attachments'))
+//   }
+// }
+
 export function fetchLatestAssessments () {
   return async (dispatch, getState) => {
     if (getState().loading.assessments === loadingStage.None) {
