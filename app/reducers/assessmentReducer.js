@@ -5,7 +5,8 @@ import {
   REMOVE_ASSESSMENT,
   RECEIVE_ASSESSORS,
   RECEIVE_STORED_DATA,
-  RECEIVE_PAYOUTS
+  RECEIVE_PAYOUTS,
+  SET_ASSESSMENT
 } from '../actions/assessmentActions'
 
 import extend from 'xtend'
@@ -83,6 +84,12 @@ function assessments (state = initialState, action) {
       return {
         ...state,
         [address]: extend(state[address], {payouts: action.payouts})
+      }
+    }
+    case SET_ASSESSMENT: {
+      return {
+        ...state,
+        selectedAssessment: action.address
       }
     }
     default:
