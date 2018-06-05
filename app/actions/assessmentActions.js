@@ -106,6 +106,8 @@ export function fetchAssessmentData (assessmentAddress) {
         let assessee = await assessmentInstance.methods.assessee().call()
         let conceptAddress = await assessmentInstance.methods.concept().call()
 
+        dispatch(fetchStoredData(assessmentAddress))
+
         // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
         let conceptRegistryInstance = getInstance.conceptRegistry(getState())
         let isValidConcept = await conceptRegistryInstance.methods.conceptExists(conceptAddress).call()

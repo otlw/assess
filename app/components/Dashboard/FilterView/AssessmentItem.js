@@ -32,7 +32,7 @@ const AssesseeAddress =styled('a')`
 export class AssessmentItem extends Component {
   render () {
     const assessment = this.props.assessment
-    console.log(assessment)
+    console.log('assessment in Item ', assessment.data)
     return (
       h(itemFrame, [
         h(Box,[
@@ -43,8 +43,8 @@ export class AssessmentItem extends Component {
           },"assessee: "+assessment.assessee.substring(0,8)+"..."+assessment.assessee.substring(30,42))
         ]),
         h(Box,
-          h(MeetingPoint, {assessee: assessment.assessee, assessmentAddress:assessment.address})
-        ),
+         assessment.data || ' NoMeetingPointSet '
+         ),
         h(Box,
           "hoho"
         )
