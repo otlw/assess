@@ -48,10 +48,10 @@ export class AssessmentList extends Component {
     } else {
       return h('div', {style: assessmentListStyle.frame}, filteredList.map((assessment, k) => {
         return h(AssessmentItem, {
-          assessment, 
-          userAddress: this.props.userAddress, 
-          selectedTab: this.props.selectedTab, 
-          networkID:this.props.networkID,
+          assessment,
+          userAddress: this.props.userAddress,
+          selectedTab: this.props.selectedTab,
+          networkID: this.props.networkID
         })
       }))
     }

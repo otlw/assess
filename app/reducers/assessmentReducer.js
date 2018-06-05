@@ -36,7 +36,8 @@ assessmentAddress : {
 function assessments (state = initialState, action) {
   switch (action.type) {
     case RECEIVE_ASSESSMENT: {
-      return extend(state, {[action.assessment.address]: action.assessment})
+      let address = action.assessment.address
+      return extend(state, {[address]: extend(state[address], action.assessment)})
     }
     case RECEIVE_ASSESSMENTSTAGE: {
       let address = action.address
@@ -65,6 +66,7 @@ function assessments (state = initialState, action) {
       }
     }
     case RECEIVE_STORED_DATA: {
+      console.log('STORED', action)
       let address = action.assessmentAddress
       return {
         ...state,
