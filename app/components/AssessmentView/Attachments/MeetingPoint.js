@@ -20,7 +20,6 @@ export class MeetingPoint extends Component {
   }
 
   render () {
-    if (this.props.loadedMeetingPoint) {
       let meetingPoint = this.props.meetingPoint || '<noMeetingPointSet>  '
       return (
         h('div', [
@@ -34,9 +33,6 @@ export class MeetingPoint extends Component {
           this.state.displayMPEdit ? h(MeetingPointForm, {onSubmit: this.storeData.bind(this)}) : null
         ])
       )
-    } else {
-      return h('div', 'Loading meeting point...')
-    }
   }
 }
 
