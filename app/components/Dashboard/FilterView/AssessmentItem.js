@@ -1,11 +1,10 @@
 import { Component } from 'react'
 import h from 'react-hyperscript'
-import {Link} from 'react-router-dom'
-import { stages } from '../../../constants.js'
+// import {Link} from 'react-router-dom'
+// import { stages } from '../../../constants.js'
 import styled from 'styled-components'
 
-import MeetingPoint from '../../AssessmentView/Attachments/'
-
+// import MeetingPoint from '../../AssessmentView/Attachments/'
 
 const itemFrame = styled('div')`
   border:2px solid ${props => props.theme.dark};
@@ -15,16 +14,16 @@ const itemFrame = styled('div')`
   text-align:left;
 `
 
-const Box =styled('div')`
+const Box = styled('div')`
   display:inline-block;
 `
 
-const ConceptName =styled('div')`
+const ConceptName = styled('div')`
   color:${props => props.theme.dark};
   font-size:1.8em;
 `
 
-const AssesseeAddress =styled('a')`
+const AssesseeAddress = styled('a')`
   color:${props => props.theme.dark};
   font-size:0.8em;
 `
@@ -35,38 +34,37 @@ export class AssessmentItem extends Component {
     console.log('assessment in Item ', assessment.data)
     return (
       h(itemFrame, [
-        h(Box,[
-          h(ConceptName,assessment.conceptData),
-          h(AssesseeAddress,{
-            href:'https://' + (this.props.networkID === 4 ? 'rinkeby.' : '') + 'etherscan.io/address/'+assessment.assessee,
-            target:"_blank"
-          },"assessee: "+assessment.assessee.substring(0,8)+"..."+assessment.assessee.substring(30,42))
+        h(Box, [
+          h(ConceptName, assessment.conceptData),
+          h(AssesseeAddress, {
+            href: 'https://' + (this.props.networkID === 4 ? 'rinkeby.' : '') + 'etherscan.io/address/' + assessment.assessee,
+            target: '_blank'
+          }, 'assessee: ' + assessment.assessee.substring(0, 8) + '...' + assessment.assessee.substring(30, 42))
         ]),
         h(Box,
-         assessment.data || ' NoMeetingPointSet '
-         ),
+          assessment.data || ' NoMeetingPointSet '
+        ),
         h(Box,
-          "hoho"
+          'hoho'
         )
       ])
     )
   }
 }
 
-        // h('br'),
-        // h('div', itemStyle.titleStyle, 'in: ' + assessment.conceptData),
-        // h(Link,
-        //   {to: 'assessment/' + assessment.address},
-        //   'at: ' + assessment.address.substring(0, 5) + '...' + assessment.address.substring(37)),
-        // h('div', [
-        //   h('span', itemStyle.titleStyle, 'Stage: '),
-        //   h('span', stages[assessment.stage])
-        // ]),
-        // h('div', [
-        //   h('span', itemStyle.titleStyle, 'Role: '),
-        //   h('span', assessment.assessee === this.props.userAddress ? 'Assessee' : 'Assessor')
-        // ]),
-        // h('br')
-
+// h('br'),
+// h('div', itemStyle.titleStyle, 'in: ' + assessment.conceptData),
+// h(Link,
+//   {to: 'assessment/' + assessment.address},
+//   'at: ' + assessment.address.substring(0, 5) + '...' + assessment.address.substring(37)),
+// h('div', [
+//   h('span', itemStyle.titleStyle, 'Stage: '),
+//   h('span', stages[assessment.stage])
+// ]),
+// h('div', [
+//   h('span', itemStyle.titleStyle, 'Role: '),
+//   h('span', assessment.assessee === this.props.userAddress ? 'Assessee' : 'Assessor')
+// ]),
+// h('br')
 
 export default AssessmentItem
