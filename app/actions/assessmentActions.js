@@ -215,6 +215,7 @@ export function fetchAssessors (selectedAssessment) {
 // reads all transfers an assessments to users from event-logs
 export function fetchPayouts (address) {
   return async (dispatch, getState) => {
+    dispatch(beginLoadingDetail('payouts'))
     try {
       // reading assessors-payouts from events
       const fathomTokenInstance = getInstance.fathomToken(getState())
@@ -235,17 +236,7 @@ export function fetchPayouts (address) {
     } catch (e) {
       console.log('ERROR: fetching payouts from the events did not work!', e)
     }
-  }
-}
-
-// returns the strings that are stored on the assessments
-// for now, only the data stored by the assessee
-export function fetchStoredData (address) {
-  return async (dispatch, getState) => {
-    let assessmentInstance = getInstance.assessment(getState(), address)
-    let assessee = await assessmentInstance.methods.assessee().call()
-    let data = await assessmentInstance.methods.data(assessee).call()
-    dispatch(receiveStoredData(address, data))
+    dispatch(endLoadingDetail('payouts'))
   }
 }
 
@@ -288,6 +279,7 @@ export function fetchStoredData (selectedAssessment) {
     dispatch(endLoadingDetail('attachments'))
   }
 }
+
 export function fetchLatestAssessments () {
   return async (dispatch, getState) => {
     if (getState().loading.assessments === loadingStage.None) {

@@ -11,7 +11,8 @@ export class AssessorList extends Component {
           return h(AssessorStatusBox, {
             assessorAddress: assessor.address,
             assessorNumber: k,
-            assessorStage: parseInt(assessor.stage)
+            assessorStage: parseInt(assessor.stage),
+            payout: assessor.stage === '4' ? this.props.payouts[assessor.address] : ''
           })
         })
       )
