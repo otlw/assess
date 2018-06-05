@@ -9,7 +9,8 @@ const mapStateToProps = (state) => {
   return {
     loadedAssessors: (state.loading.assessmentDetail.assessors === loadingStage.Done),
     assessors: state.assessments[state.assessments.selectedAssessment].assessors,
-    loading: state.loading
+    loading: state.loading,
+    payouts: state.assessments[state.assessments.selectedAssessment].payouts
   }
 }
 

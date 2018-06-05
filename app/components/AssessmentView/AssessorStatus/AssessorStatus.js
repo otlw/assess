@@ -91,7 +91,7 @@ export class AssessorStatus extends Component {
       case 3:
         return h(ActiveButton, {onClick: this.reveal.bind(this)}, 'Reveal your score!')
       case 4:
-        return h('span', 'done')
+        return h('span', 'done (Payout: ' + this.props.payout + ')')
       case 5:
         return h('span', 'Burned!')
       default:
