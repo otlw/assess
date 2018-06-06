@@ -4,6 +4,7 @@ import { sendAndReactToTransaction } from './transActions.js'
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const RECEIVE_FINALSCORE = 'RECEIVE_FINALSCORE'
 export const RECEIVE_STORED_DATA = 'RECEIVE_STORED_DATA'
+export const RECEIVE_PAYOUTS = 'RECEIVE_PAYOUTS'
 export const RECEIVE_ASSESSMENTSTAGE = 'RECEIVE_ASSESSMENTSTAGE'
 export const REMOVE_ASSESSMENT = 'REMOVE_ASSESSMENT'
 export const RECEIVE_ASSESSORS = 'RECEIVE_ASSESSORS'
@@ -212,9 +213,40 @@ export function fetchAssessors (selectedAssessment) {
       )
       let stage = getState().assessments[address].stage
       dispatch(fetchAssessorStages(address, assessors, stage === 1)) // TODO use constant
+      if (stage === 4) {
+        dispatch(fetchAllPayouts(address))
+      }
     } catch (e) {
       console.log('ERROR: fetching assessors from the events did not work!', e)
     }
+  }
+}
+
+// reads all transfers an assessments to users from event-logs
+export function fetchAllPayouts (address) {
+  return async (dispatch, getState) => {
+    dispatch(beginLoadingDetail('payouts'))
+    try {
+      // reading assessors-payouts from events
+      const fathomTokenInstance = getInstance.fathomToken(getState())
+      // NOTE: this piece is a bit tricky, as filtering in the call usually works on the local testnet, but not on rinkeby
+      // for rinkeby one has to get all events and filter locally
+      let pastEvents = await fathomTokenInstance.getPastEvents({fromBlock: 0, toBlock: 'latest'})
+      if (pastEvents.length === []) {
+        console.log('Oddly no Notifications events have been found. Try switching Metamasks network back and forth')
+      }
+      let payouts = {}
+      pastEvents.filter(
+        e =>
+          e.event === 'Transfer' &&
+          e.returnValues['_from'] === address &&
+          (payouts[e.returnValues['_to']] = e.returnValues['_value'])
+      )
+      dispatch(receivePayouts(address, payouts))
+    } catch (e) {
+      console.log('ERROR: fetching payouts from the events did not work!', e)
+    }
+    dispatch(endLoadingDetail('payouts'))
   }
 }
 
@@ -258,6 +290,7 @@ export function fetchStoredData (selectedAssessment) {
     dispatch(endLoadingDetail('attachments'))
   }
 }
+
 export function fetchLatestAssessments () {
   return async (dispatch, getState) => {
     if (getState().loading.assessments === loadingStage.None) {
@@ -339,6 +372,15 @@ export function receiveStoredData (assessmentAddress, data) {
     data
   }
 }
+
+export function receivePayouts (assessmentAddress, payouts) {
+  return {
+    type: RECEIVE_PAYOUTS,
+    assessmentAddress,
+    payouts
+  }
+}
+
 export function receiveAssessment (assessment) {
   return {
     type: RECEIVE_ASSESSMENT,
