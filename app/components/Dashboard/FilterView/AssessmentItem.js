@@ -29,12 +29,13 @@ const AssesseeAddress = styled('a')`
   font-size:0.8em;
 `
 
+//Meeting Point
+
 const MeetingBox = styled('div')`
   background-color:${props => props.theme.veryLight};
   padding: 0.3em 1em;
   display:inline-block;
 `
-
 const MeetingCaption = styled('div')`
   color:${props => props.theme.dark};
 `
@@ -43,10 +44,37 @@ const MeetingAddress = styled('a')`
   font-size:0.8em;
 `
 
+//assessee/assessor badges
+
+const AssesseeBadge= styled('div')`
+  background-color:blue;
+  border-radius:0.3em;
+  padding:0.1em 0.3em;
+`
+const AssessorBadge= styled('div')`
+  background-color:orange;
+  border-radius:0.3em;
+  padding:0.1em 0.3em;
+`
+
 export class AssessmentItem extends Component {
   render () {
     const assessment = this.props.assessment
     console.log(assessment)
+
+    //set assessee/assessor view
+    let RoleBadge=h(AssessorBadge,"Assessor")
+    let isAssessee= ""
+    if (this.props.userAddress===assessment.assessee){
+      RoleBadge=h(AssesseeBadge,"Assessee")
+      isAssessee=" (you)"
+    }
+    if (assessment.stage===0){
+      RoleBadge=null
+      //isAssessee=""
+    }
+
+    //set meeting point component
     let MeetingPoint= ' NoMeetingPointSet '
     if (assessment.data){
       MeetingPoint=h(MeetingAddress, {
@@ -61,7 +89,10 @@ export class AssessmentItem extends Component {
           h(AssesseeAddress, {
             href: 'https://' + (this.props.networkID === 4 ? 'rinkeby.' : '') + 'etherscan.io/address/' + assessment.assessee,
             target: '_blank'
-          }, 'assessee: ' + assessment.assessee.substring(0, 8) + '...' + assessment.assessee.substring(30, 42))
+          }, 'assessee: ' + assessment.assessee.substring(0, 8) + '...' + assessment.assessee.substring(30, 42) + isAssessee)
+        ]),
+        h(Box, [
+          RoleBadge
         ]),
         h(MeetingBox,[
             h(MeetingCaption,"Meet Assessee at:"),
