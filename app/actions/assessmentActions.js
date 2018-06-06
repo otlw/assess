@@ -204,7 +204,7 @@ export function fetchAssessors (selectedAssessment) {
       let stage = getState().assessments[address].stage
       dispatch(fetchAssessorStages(address, assessors, stage === 1)) // TODO use constant
       if (stage === 4) {
-        dispatch(fetchPayouts(address))
+        dispatch(fetchAllPayouts(address))
       }
     } catch (e) {
       console.log('ERROR: fetching assessors from the events did not work!', e)
@@ -213,7 +213,7 @@ export function fetchAssessors (selectedAssessment) {
 }
 
 // reads all transfers an assessments to users from event-logs
-export function fetchPayouts (address) {
+export function fetchAllPayouts (address) {
   return async (dispatch, getState) => {
     dispatch(beginLoadingDetail('payouts'))
     try {
