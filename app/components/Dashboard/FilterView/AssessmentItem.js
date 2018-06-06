@@ -16,6 +16,7 @@ const itemFrame = styled('div')`
 
 const Box = styled('div')`
   display:inline-block;
+  margin-right:3em;
 `
 
 const ConceptName = styled('div')`
@@ -28,10 +29,31 @@ const AssesseeAddress = styled('a')`
   font-size:0.8em;
 `
 
+const MeetingBox = styled('div')`
+  background-color:${props => props.theme.veryLight};
+  padding: 0.3em 1em;
+  display:inline-block;
+`
+
+const MeetingCaption = styled('div')`
+  color:${props => props.theme.dark};
+`
+const MeetingAddress = styled('a')`
+  color:${props => props.theme.blue};
+  font-size:0.8em;
+`
+
 export class AssessmentItem extends Component {
   render () {
     const assessment = this.props.assessment
-    console.log('assessment in Item ', assessment.data)
+    console.log(assessment)
+    let MeetingPoint= ' NoMeetingPointSet '
+    if (assessment.data){
+      MeetingPoint=h(MeetingAddress, {
+                href: assessment.data,
+                target: '_blank'
+      }, assessment.data)
+    }
     return (
       h(itemFrame, [
         h(Box, [
@@ -41,11 +63,10 @@ export class AssessmentItem extends Component {
             target: '_blank'
           }, 'assessee: ' + assessment.assessee.substring(0, 8) + '...' + assessment.assessee.substring(30, 42))
         ]),
-        h(Box,
-          assessment.data || ' NoMeetingPointSet '
-        ),
-        h(Box,
-          'hoho'
+        h(MeetingBox,[
+            h(MeetingCaption,"Meet Assessee at:"),
+            MeetingPoint
+          ]
         )
       ])
     )
