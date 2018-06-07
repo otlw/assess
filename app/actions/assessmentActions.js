@@ -110,6 +110,9 @@ export function fetchAssessmentData (assessmentAddress) {
       try {
         let assessmentInstance = getInstance.assessment(getState(), address)
         let cost = await assessmentInstance.methods.cost().call()
+        let endTime = await assessmentInstance.methods.endTime().call()
+        // checkpoint -> keeps track of timelimits for 1) latest possible time to confirm and 2) earliest time to reveal
+        let checkpoint = await assessmentInstance.methods.checkpoint().call()
         let size = await assessmentInstance.methods.size().call()
         let stage = Number(await assessmentInstance.methods.assessmentStage().call())
         let finalScore = Number(await assessmentInstance.methods.finalScore().call())
@@ -140,6 +143,8 @@ export function fetchAssessmentData (assessmentAddress) {
           dispatch(receiveAssessment({
             address,
             cost,
+            checkpoint,
+            endTime,
             size,
             assessee,
             userStage,

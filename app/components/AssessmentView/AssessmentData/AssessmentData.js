@@ -1,6 +1,7 @@
 import { Component } from 'react'
 import MeetingPoint from '../Attachments/'
 import AssessorList from '../AssessorList'
+import { Stage } from '../../../actions/utils.js'
 var h = require('react-hyperscript')
 
 export const stages = Object.freeze({
@@ -9,6 +10,11 @@ export const stages = Object.freeze({
   3: 'Reveal',
   4: 'Finished'
 })
+
+const convertDate = (unixTimestamp) => {
+  let date = new Date(unixTimestamp * 1000) // input in milliseconds
+  return date.toString()
+}
 
 export class AssessmentData extends Component {
   render () {
@@ -27,6 +33,16 @@ export class AssessmentData extends Component {
           h('div', [
             h('span', 'Cost: '),
             h('span', assessment.cost)
+          ]),
+          assessment.stage === Stage.Called
+            ? (h('div', [
+              h('span', 'expires: '),
+              h('span', convertDate(assessment.checkpoint))
+            ]))
+            : null,
+          h('div', [
+            h('span', 'ends: '),
+            h('span', convertDate(assessment.endTime))
           ]),
           h('div', [
             h('span', 'Size: '),
