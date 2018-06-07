@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import MeetingPointForm from './MeetingPointForm.js'
+import TxList from '../../TxList.js'
 var h = require('react-hyperscript')
 
 export class MeetingPoint extends Component {
@@ -30,7 +31,10 @@ export class MeetingPoint extends Component {
             title: 'this only works if you\'re the assessee',
             disabled: !this.props.editable
           }, 'edit'),
-          this.state.displayMPEdit ? h(MeetingPointForm, {onSubmit: this.storeData.bind(this)}) : null
+          this.state.displayMPEdit ? h(MeetingPointForm, {onSubmit: this.storeData.bind(this)}) : null,
+          this.props.transactions
+            ? h(TxList, {transactions: this.props.transactions})
+            : null
         ])
       )
   }
