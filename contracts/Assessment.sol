@@ -48,7 +48,7 @@ contract Assessment {
         _;
     }
 
-    function Assessment(address _assessee,
+    constructor(address _assessee,
                         uint _size,
                         uint _cost,
                         uint _confirmTime,
@@ -182,7 +182,7 @@ contract Assessment {
 
     function steal(int128 _score, string _salt, address assessor) public {
         if(assessorState[assessor] == State.Committed) {
-            if(commits[assessor] == keccak256(_score, _salt)) {
+            if(commits[assessor] == keccak256(abi.encodePacked(_score, _salt))) {
                 fathomToken.transfer(msg.sender, cost/2);
                 assessorState[assessor] = State.Burned;
                 size--;
@@ -203,9 +203,9 @@ contract Assessment {
         }
 
         if(assessorState[msg.sender] == State.Committed &&
-           commits[msg.sender] == keccak256(_score, _salt)) {
+           commits[msg.sender] == keccak256(abi.encodePacked(_score, _salt))) {
                     scores[msg.sender] = _score;
-                    salt = salt ^ (keccak256(_salt));
+                    salt = salt ^ (keccak256(bytes(_salt)));
                     assessorState[msg.sender] = State.Done;
                     done++;
         }

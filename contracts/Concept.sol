@@ -37,7 +37,7 @@ contract Concept {
         _;
     }
 
-    function Concept(address[] _parents, uint[] _propagationRates, uint _lifetime, bytes _data, address _owner) public {
+    constructor(address[] _parents, uint[] _propagationRates, uint _lifetime, bytes _data, address _owner) public {
         require(_parents.length == _propagationRates.length);
         conceptRegistry = ConceptRegistry(msg.sender);
 
