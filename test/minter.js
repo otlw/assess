@@ -133,7 +133,7 @@ contract('Minting New Tokens:', function (accounts) {
             return assert(false, e.toString(), 'minter minted tokens before end of epoch')
           }
         }
-        assert(false)
+        //assert(false)
       })
     })
 
