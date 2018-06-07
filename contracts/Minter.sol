@@ -85,14 +85,13 @@ contract Minter {
     }
 
     function endEpoch() public {
-        if (now > (epochStart + epochLength)) {
-            if (fathomToken.mint(winner, reward)) {
-                emit TokensMinted(winner, reward);
-                epochStart = epochStart + epochLength;
-                epochHash = uint(block.blockhash(block.number - 1));
-                closestDistance = 2**256-1;
-                winner = address(0x0);
-            }
+        require(now > (epochStart + epochLength));
+        if (fathomToken.mint(winner, reward)) {
+            emit TokensMinted(winner, reward);
+            epochStart = epochStart + epochLength;
+            epochHash = uint(block.blockhash(block.number - 1));
+            closestDistance = 2**256-1;
+            winner = address(0x0);
         }
     }
 
