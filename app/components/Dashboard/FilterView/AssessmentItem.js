@@ -1,14 +1,11 @@
 import { Component } from 'react'
 import h from 'react-hyperscript'
-// import {Link} from 'react-router-dom'
-// import { stages } from '../../../constants.js'
+import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 
-// import MeetingPoint from '../../AssessmentView/Attachments/'
-
-const itemFrame = styled('div')`
-  border:2px solid ${props => props.theme.dark};
-  padding: 0.2em 0.5em;
+const ItemFrame = styled('div')`
+  border:2px solid ${props => props.active ? props.theme.yellow : props.theme.dark};
+  padding: 0.5em 1em;
   margin: 0.2em 0;
   background-color:${props => props.theme.light};
   text-align:left;
@@ -33,7 +30,7 @@ const AssesseeAddress = styled('a')`
 
 const MeetingBox = styled('div')`
   background-color:${props => props.theme.veryLight};
-  padding: 0.3em 1em;
+  padding: 0.5em 1em;
   display:inline-block;
 `
 const MeetingCaption = styled('div')`
@@ -57,10 +54,33 @@ const AssessorBadge= styled('div')`
   padding:0.1em 0.3em;
 `
 
+//link to action/assessmentView
+
+const LinkBox = styled('div')`
+  float: right;
+  margin-right:1.2em;
+  //margin-top:0.5em;
+`
+const LinkButton = styled(Link)`
+  display:block;
+  background-color:green;
+  color:${props => props.theme.dark};
+  text-decoration:none;
+  padding: 1em 1.5em;
+  width:4em;
+  text-align:center;
+  border: ${(props) => props.active ? '1px solid '+props.theme.yellow : 'none'}
+`
+
+const LinkSubtitle= styled('div')`
+  color:${props => props.theme.lightgrey};
+  font-size:0.6em;
+  text-align:center;
+`
+
 export class AssessmentItem extends Component {
   render () {
     const assessment = this.props.assessment
-    console.log(assessment)
 
     //set assessee/assessor view
     let RoleBadge=h(AssessorBadge,"Assessor")
@@ -71,7 +91,6 @@ export class AssessmentItem extends Component {
     }
     if (assessment.stage===0){
       RoleBadge=null
-      //isAssessee=""
     }
 
     //set meeting point component
@@ -82,8 +101,36 @@ export class AssessmentItem extends Component {
                 target: '_blank'
       }, assessment.data)
     }
+
+    //look if user is required to make an action
+    let active=true
+    let actionTexts={
+      0:"On going",
+      1:"Stake",
+      2:"Commit",
+      3:"Reveal",
+      4:"Done",
+      5:"Burned"
+    }
+    let actionText=actionTexts[assessment.userStage]
+    if (assessment.stage<assessment.userStage
+      ||assessment.userStage===0
+      ||assessment.userStage===4
+      ||assessment.userStage===5){
+      active=false
+    }
+    if (assessment.stage<assessment.userStage){
+      actionText="Waiting..."
+    }
+    if (assessment.stage===4){
+      actionText="Done"
+    }
+    if (assessment.stage===5){
+      actionText="Burned"
+    }
+
     return (
-      h(itemFrame, [
+      h(ItemFrame,{active}, [
         h(Box, [
           h(ConceptName, assessment.conceptData),
           h(AssesseeAddress, {
@@ -98,25 +145,14 @@ export class AssessmentItem extends Component {
             h(MeetingCaption,"Meet Assessee at:"),
             MeetingPoint
           ]
-        )
+        ),
+        h(LinkBox,[
+          h(LinkSubtitle,"click here for details"),
+          h(LinkButton,{to:'assessment/' + assessment.address,active},actionText)
+        ])
       ])
     )
   }
 }
-
-// h('br'),
-// h('div', itemStyle.titleStyle, 'in: ' + assessment.conceptData),
-// h(Link,
-//   {to: 'assessment/' + assessment.address},
-//   'at: ' + assessment.address.substring(0, 5) + '...' + assessment.address.substring(37)),
-// h('div', [
-//   h('span', itemStyle.titleStyle, 'Stage: '),
-//   h('span', stages[assessment.stage])
-// ]),
-// h('div', [
-//   h('span', itemStyle.titleStyle, 'Role: '),
-//   h('span', assessment.assessee === this.props.userAddress ? 'Assessee' : 'Assessor')
-// ]),
-// h('br')
 
 export default AssessmentItem

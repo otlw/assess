@@ -13,7 +13,8 @@ const theme = {
   veryLight:'#b8cad3',
   dark: '#29434e',
   lightgrey: '#d3d3d3',
-  blue:'#2F80ED'
+  blue:'#2F80ED',
+  yellow:"#fff700"
 }
 
 // the main frame on which everything is displayed.
