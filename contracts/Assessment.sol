@@ -34,9 +34,9 @@ contract Assessment {
     mapping(address => int128) scores;
     int public finalScore;
     bytes32 public salt; //used for token distribution
-    mapping (address => string) public data;
+    mapping (address => bytes) public data;
 
-    event DataChanged(address user, string oldData, string newData);
+    event DataChanged(address user, bytes oldData, bytes newData);
 
     modifier onlyConcept() {
         require(msg.sender == address(concept));
@@ -69,10 +69,10 @@ contract Assessment {
         done = 0;
     }
 
-    function addData(string _data) public {
+    function addData(bytes _data) public {
       require(msg.sender == assessee || assessorState[msg.sender] > State.Called);
       require(assessmentStage < State.Committed);
-      string memory oldData = data[msg.sender];
+      bytes memory oldData = data[msg.sender];
       data[msg.sender] = _data;
       emit DataChanged(msg.sender, oldData, _data);
     }
