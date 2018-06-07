@@ -80,8 +80,10 @@ Its content should look like this:
 >'{"accounts": ["0xaccount1...", "0xaccount2...", ... ]}'
 
 It must hold at least one account, which will the one that will receive all the
-AHA-tokens. To modify the amount, open `/migrations/2_deploy_contracts.js` and
-set the variable `initialAmount` to the desired value.
+AHA-tokens. If you want them to get funded too, make sure to put your first
+MetaMask-address in the first position of that list. To modify the
+amount, open `/migrations/2_deploy_contracts.js` and set the variable
+`initialAmount` to the desired value.
 
 #### 2) Specify an initial set of users and distribute tokens to them
 

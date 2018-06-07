@@ -1,0 +1,28 @@
+import { Component } from 'react'
+import AssessmentData from './AssessmentData'
+var h = require('react-hyperscript')
+
+export class AssessmentView extends Component {
+  componentWillMount () {
+    this.props.setAssessment(this.props.match.params.id)
+  }
+
+  componentWillUnmount () {
+    this.props.resetLoadedDetails()
+  }
+
+  render () {
+    if (this.props.selectedAssessment) {
+      return (
+        h('div', [
+          h('div', '============AssessmentData================================='),
+          h(AssessmentData)
+        ])
+      )
+    } else {
+      return h('div', 'Fetching address from url')
+    }
+  }
+}
+
+export default AssessmentView

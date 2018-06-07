@@ -36,6 +36,9 @@ contract Assessment {
     mapping(address => int128) scores;
     int public finalScore;
     bytes32 public salt; //used for token distribution
+    mapping (address => string) public data;
+
+    event DataChanged(address user, string oldData, string newData);
 
     modifier onlyConcept() {
         require(msg.sender == address(concept));
@@ -67,6 +70,14 @@ contract Assessment {
 
         fathomToken.notification(assessee, 0); // assessee has started an assessment
         done = 0;
+    }
+
+    function addData(string _data) public {
+      require(msg.sender == assessee || assessorState[msg.sender] > State.Called);
+      require(assessmentStage < State.Committed);
+      string memory oldData = data[msg.sender];
+      data[msg.sender] = _data;
+      emit DataChanged(msg.sender, oldData, _data);
     }
 
     // ends the assessment, refunds the assessee and all assessors who have not been burned
@@ -208,21 +219,15 @@ contract Assessment {
         }
     }
 
-    //burns stakes of all assessors who are in a certain state
+    // burns stakes of all assessors who are in a certain state
+    // if afterwards, the size is below 5, the assessment is cancelled
     function burnStakes(State _state) private {
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == _state) {
-                burnAssessor(assessors[i]);
+              assessorState[assessors[i]] = State.Burned;
+              size--;
            }
         }
-    }
-
-    /** mark an assessor as burned, reduce size and cancel assessment
-        if the size is below five.
-        @param _assessor address of the assessor to be burned
-    */
-    function burnAssessor(address _assessor) private {
-        assessorState[_assessor] = State.Burned;
         if (--size < constants.MIN_ASSESSMENT_SIZE()) {
             cancelAssessment();
         }
@@ -285,8 +290,7 @@ contract Assessment {
         // pay out the majority-assessors their share of stake + the remainders of any dissenting assessors
         for (uint j = 0; j < inAssessorPayout.length; j++) {
             if (inAssessor[j]) {
-                fathomToken.transfer(assessors[j],
-                                                    inAssessorPayout[j] + dissentBonus/finalClusterLength);
+                fathomToken.transfer(assessors[j], inAssessorPayout[j] + dissentBonus/finalClusterLength);
                 fathomToken.notification(assessors[j], 6); //Consensus reached; Tokens paid out
             }
         }

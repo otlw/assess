@@ -35,7 +35,7 @@ contract ConceptRegistry {
         Concept newConcept = new Concept(parentList, _propagationRates, _lifetime, _data, _owner);
 
         conceptExists[address(newConcept)] = true;
-        ConceptCreation(address(newConcept));
+        emit ConceptCreation(address(newConcept));
         return address(newConcept);
     }
 }

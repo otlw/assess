@@ -123,6 +123,7 @@ async function test () {
   // deploy an assessment from concept 2
   console.log('Creating second assessment....')
   const txResultAssessment2 = await conceptContract2.methods.makeAssessment(cost, size, startTime, endTime).send({from: accounts[0], gas: 3200000})
+  // console.log('txResultAssessment2 ',txResultAssessment2 )
   // use token events to get assessment address
   let events2 = await fathomTokenContract.getPastEvents({fromBlock: 0, toBlock: 'latest'})
   const assessmentAddress2 = events2[events2.length - 1].returnValues.sender

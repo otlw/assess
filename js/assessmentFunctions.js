@@ -3,9 +3,9 @@ var Concept = artifacts.require('Concept')
 var Assessment = artifacts.require('Assessment')
 
 exports.confirmAssessors = async function (_assessors, _assessmentInstance) {
-  for (i = 0; i < _assessors.length; i++) {
-    stage = await _assessmentInstance.assessmentStage.call()
-    if (stage.toNumber() == 1) {
+  for (let i = 0; i < _assessors.length; i++) {
+    let stage = await _assessmentInstance.assessmentStage.call()
+    if (stage.toNumber() === 1) {
       await _assessmentInstance.confirmAssessor({from: _assessors[i]})
     } else {
       console.log('wrong stage! ' + i + "'-th assessor should not confirm")
@@ -14,9 +14,9 @@ exports.confirmAssessors = async function (_assessors, _assessmentInstance) {
 }
 
 exports.commitAssessors = async function (_assessors, _hashes, _assessmentInstance) {
-  for (i = 0; i < _assessors.length; i++) {
-    stage = await _assessmentInstance.assessmentStage.call()
-    if (stage.toNumber() == 2) {
+  for (let i = 0; i < _assessors.length; i++) {
+    let stage = await _assessmentInstance.assessmentStage.call()
+    if (stage.toNumber() === 2) {
       await _assessmentInstance.commit(_hashes[i], {from: _assessors[i]})
     } else {
       console.log('wrong stage! ' + i + "'-th assessor should not confirm")
@@ -25,9 +25,9 @@ exports.commitAssessors = async function (_assessors, _hashes, _assessmentInstan
 }
 
 exports.revealAssessors = async function (_assessors, _scores, _salts, _assessmentInstance) {
-  for (i = 0; i < _assessors.length; i++) {
-    stage = await _assessmentInstance.assessmentStage.call()
-    if (stage.toNumber() == 3) {
+  for (let i = 0; i < _assessors.length; i++) {
+    let stage = await _assessmentInstance.assessmentStage.call()
+    if (stage.toNumber() === 3) {
       await _assessmentInstance.reveal(_scores[i], _salts[i], {from: _assessors[i]})
     } else {
       console.log('wrong stage! ' + i + "'-th assessor should not reveal")
@@ -50,7 +50,7 @@ exports.createAndRunAssessment = async function (conceptAddress, assesseeAddress
   let assessmentData = await this.makeAssessment(conceptAddress, assesseeAddress, cost, size, startTime, endTime)
   let assessmentContract = Assessment.at(assessmentData.address)
   assessmentData['instance'] = assessmentContract
-  let result = await this.runAssessment(assessmentContract, assessmentData.calledAssessors.slice(0, size), scores.slice(0, size), salts)
+  await this.runAssessment(assessmentContract, assessmentData.calledAssessors.slice(0, size), scores.slice(0, size), salts)
   return assessmentData
 }
 
@@ -65,7 +65,7 @@ exports.createAndRunAssessment = async function (conceptAddress, assesseeAddress
 exports.runAssessment = async function (assessmentInstance, assessors, scores, salts = -1) {
   let hashes = []
   if (salts === -1) {
-    var salts = []
+    salts = []
     for (let i = 0; i < assessors.length; i++) {
       salts.push(i.toString())
     }

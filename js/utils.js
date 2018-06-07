@@ -23,7 +23,7 @@ exports.getNotificationArgsFromReceipt = function (_receipt, _topic) {
   }
   for (i = 0; i < _receipt.logs.length; i++) {
     // check whether event-signature (topic 0) matches the Notification-Event:
-    if (_receipt.logs[i].topics[0] == '0xe41f8f86e0c2a4bb86f57d2698c1704cd23b5f42a84336cdb49377cdca96d876') {
+    if (_receipt.logs[i].topics[0] === '0xe41f8f86e0c2a4bb86f57d2698c1704cd23b5f42a84336cdb49377cdca96d876') {
       let decodedEvent = abi.decodeLogItem(FathomToken.abi[notificationIndex], _receipt.logs[i])
       if (decodedEvent.topic.toNumber() === _topic) {
         events.push(decodedEvent)
