@@ -5,6 +5,7 @@ import {
   REMOVE_ASSESSMENT,
   RECEIVE_ASSESSORS,
   RECEIVE_STORED_DATA,
+  RECEIVE_PAYOUTS,
   SET_ASSESSMENT
 } from '../actions/assessmentActions'
 
@@ -29,7 +30,14 @@ assessmentAddress : {
     },
     ...
   ]
-  data: dataString
+  data: {
+     address: dataString,
+     ...
+  },
+  payouts: {
+    address1: 20,
+    ...
+  }
 }
  */
 
@@ -71,6 +79,13 @@ function assessments (state = initialState, action) {
       return {
         ...state,
         [address]: extend(state[address], {data: action.data})
+      }
+    }
+    case RECEIVE_PAYOUTS: {
+      let address = action.assessmentAddress
+      return {
+        ...state,
+        [address]: extend(state[address], {payouts: action.payouts})
       }
     }
     case SET_ASSESSMENT: {

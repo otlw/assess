@@ -1,10 +1,11 @@
 import { Component } from 'react'
 import h from 'react-hyperscript'
 import styled from 'styled-components'
+import TxList from '../../TxList.js'
 
 // styles
 const Feedback = styled.div`
-font-size: 0.7em; 
+font-size: 0.7em;
 font-style: italic;
 color:${props => props.invalidScoreRange ? 'red' : 'lightgrey'};
 `
@@ -91,7 +92,7 @@ export class AssessorStatus extends Component {
       case 3:
         return h(ActiveButton, {onClick: this.reveal.bind(this)}, 'Reveal your score!')
       case 4:
-        return h('span', 'done')
+        return h('span', 'done (Payout: ' + this.props.payout + ')')
       case 5:
         return h('span', 'Burned!')
       default:
@@ -110,7 +111,7 @@ export class AssessorStatus extends Component {
       case 3:
         return h('span', 'needs to reveal')
       case 4:
-        return h('span', 'done')
+        return h('span', 'done (Payout: ' + this.props.payout + ')')
       case 5:
         return h('span', 'has been burned')
       default:
@@ -131,7 +132,10 @@ export class AssessorStatus extends Component {
       return (
         h('div', [
           h('span', displayString),
-          statusElement
+          statusElement,
+          this.props.transactions
+            ? h(TxList, {transactions: this.props.transactions})
+            : null
         ])
       )
     } else {

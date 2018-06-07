@@ -287,8 +287,7 @@ contract Assessment {
         // pay out the majority-assessors their share of stake + the remainders of any dissenting assessors
         for (uint j = 0; j < inAssessorPayout.length; j++) {
             if (inAssessor[j]) {
-                fathomToken.transfer(assessors[j],
-                                                    inAssessorPayout[j] + dissentBonus/finalClusterLength);
+                fathomToken.transfer(assessors[j], inAssessorPayout[j] + dissentBonus/finalClusterLength);
                 fathomToken.notification(assessors[j], 6); //Consensus reached; Tokens paid out
             }
         }
