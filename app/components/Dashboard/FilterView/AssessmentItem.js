@@ -26,7 +26,7 @@ const AssesseeAddress = styled('a')`
   font-size:0.8em;
 `
 
-//Meeting Point
+// Meeting Point
 
 const MeetingBox = styled('div')`
   background-color:${props => props.theme.veryLight};
@@ -41,20 +41,20 @@ const MeetingAddress = styled('a')`
   font-size:0.8em;
 `
 
-//assessee/assessor badges
+// assessee/assessor badges
 
-const AssesseeBadge= styled('div')`
+const AssesseeBadge = styled('div')`
   background-color:blue;
   border-radius:0.3em;
   padding:0.1em 0.3em;
 `
-const AssessorBadge= styled('div')`
+const AssessorBadge = styled('div')`
   background-color:orange;
   border-radius:0.3em;
   padding:0.1em 0.3em;
 `
 
-//link to action/assessmentView
+// link to action/assessmentView
 
 const LinkBox = styled('div')`
   float: right;
@@ -69,10 +69,10 @@ const LinkButton = styled(Link)`
   padding: 1em 1.5em;
   width:4em;
   text-align:center;
-  border: ${(props) => props.active ? '1px solid '+props.theme.yellow : 'none'}
+  border: ${(props) => props.active ? '1px solid ' + props.theme.yellow : 'none'}
 `
 
-const LinkSubtitle= styled('div')`
+const LinkSubtitle = styled('div')`
   color:${props => props.theme.lightgrey};
   font-size:0.6em;
   text-align:center;
@@ -82,55 +82,55 @@ export class AssessmentItem extends Component {
   render () {
     const assessment = this.props.assessment
 
-    //set assessee/assessor view
-    let RoleBadge=h(AssessorBadge,"Assessor")
-    let isAssessee= ""
-    if (this.props.userAddress===assessment.assessee){
-      RoleBadge=h(AssesseeBadge,"Assessee")
-      isAssessee=" (you)"
+    // set assessee/assessor view
+    let RoleBadge = h(AssessorBadge, 'Assessor')
+    let isAssessee = ''
+    if (this.props.userAddress === assessment.assessee) {
+      RoleBadge = h(AssesseeBadge, 'Assessee')
+      isAssessee = ' (you)'
     }
-    if (assessment.stage===0){
-      RoleBadge=null
+    if (assessment.stage === 0) {
+      RoleBadge = null
     }
 
-    //set meeting point component
-    let MeetingPoint= ' NoMeetingPointSet '
-    if (assessment.data){
-      MeetingPoint=h(MeetingAddress, {
-                href: assessment.data,
-                target: '_blank'
+    // set meeting point component
+    let MeetingPoint = ' NoMeetingPointSet '
+    if (assessment.data) {
+      MeetingPoint = h(MeetingAddress, {
+        href: assessment.data,
+        target: '_blank'
       }, assessment.data)
     }
 
-    //look if user is required to make an action
-    let active=true
-    let actionTexts={
-      0:"On going",
-      1:"Stake",
-      2:"Commit",
-      3:"Reveal",
-      4:"Done",
-      5:"Burned"
+    // look if user is required to make an action
+    let active = true
+    let actionTexts = {
+      0: 'On going',
+      1: 'Stake',
+      2: 'Commit',
+      3: 'Reveal',
+      4: 'Done',
+      5: 'Burned'
     }
-    let actionText=actionTexts[assessment.userStage]
-    if (assessment.stage<assessment.userStage
-      ||assessment.userStage===0
-      ||assessment.userStage===4
-      ||assessment.userStage===5){
-      active=false
+    let actionText = actionTexts[assessment.userStage]
+    if (assessment.stage < assessment.userStage ||
+      assessment.userStage === 0 ||
+      assessment.userStage === 4 ||
+      assessment.userStage === 5) {
+      active = false
     }
-    if (assessment.stage<assessment.userStage){
-      actionText="Waiting..."
+    if (assessment.stage < assessment.userStage) {
+      actionText = 'Waiting...'
     }
-    if (assessment.stage===4){
-      actionText="Done"
+    if (assessment.stage === 4) {
+      actionText = 'Done'
     }
-    if (assessment.stage===5){
-      actionText="Burned"
+    if (assessment.stage === 5) {
+      actionText = 'Burned'
     }
 
     return (
-      h(ItemFrame,{active}, [
+      h(ItemFrame, {active}, [
         h(Box, [
           h(ConceptName, assessment.conceptData),
           h(AssesseeAddress, {
@@ -141,14 +141,14 @@ export class AssessmentItem extends Component {
         h(Box, [
           RoleBadge
         ]),
-        h(MeetingBox,[
-            h(MeetingCaption,"Meet Assessee at:"),
-            MeetingPoint
-          ]
+        h(MeetingBox, [
+          h(MeetingCaption, 'Meet Assessee at:'),
+          MeetingPoint
+        ]
         ),
-        h(LinkBox,[
-          h(LinkSubtitle,"click here for details"),
-          h(LinkButton,{to:'assessment/' + assessment.address,active},actionText)
+        h(LinkBox, [
+          h(LinkSubtitle, 'click here for details'),
+          h(LinkButton, {to: 'assessment/' + assessment.address, active}, actionText)
         ])
       ])
     )

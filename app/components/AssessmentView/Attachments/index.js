@@ -1,8 +1,7 @@
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { storeData, fetchStoredData } from '../../../actions/assessmentActions'
+import { storeData } from '../../../actions/assessmentActions'
 import MeetingPoint from './MeetingPoint.js'
-import { loadingStage } from '../../../actions/utils.js'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -17,5 +16,5 @@ const mapDispatchToProps = {
 }
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  connect(mapStateToProps, mapDispatchToProps)
 )(MeetingPoint)

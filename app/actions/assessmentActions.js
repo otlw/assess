@@ -72,11 +72,11 @@ export function storeDataOnAssessment (address, data) {
     // this is were a status should be set to "pending...""
     // also salt should be saved in state
     assessmentInstance.methods.addData(data).send({from: userAddress, gas: 3200000})
-      .on('receipt', (receipt) => {
-        if (receipt.status === '0x01') {
-          dispatch(fetchStoredData(address))
-        }
-      })
+    // .on('receipt', (receipt) => {
+    //   if (receipt.status === '0x01') {
+    //     dispatch(fetchStoredData(address))
+    //   }
+    // })
   }
 }
 
@@ -97,10 +97,10 @@ export function fetchAssessmentData (assessmentAddress) {
     } else {
       dispatch(beginLoadingDetail('info'))
       try {
-        //get assessment Intance
+        // get assessment Intance
         let assessmentInstance = getInstance.assessment(getState(), address)
 
-        //get assessment infos
+        // get assessment infos
         let cost = await assessmentInstance.methods.cost().call()
         let size = await assessmentInstance.methods.size().call()
         let stage = Number(await assessmentInstance.methods.assessmentStage().call())
@@ -239,7 +239,7 @@ export function fetchAssessorStages (address, assessors, checkUserAddress = fals
   }
 }
 
-//part of fetchAssessmentData now
+// part of fetchAssessmentData now
 
 // returns the strings that are stored on the assessments
 // for now, only the data stored by the assessee
