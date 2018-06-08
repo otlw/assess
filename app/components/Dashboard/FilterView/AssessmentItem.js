@@ -65,7 +65,7 @@ const LinkButton = styled(Link)`
   background-color:green;
   color:${props => props.theme.lightgrey};
   text-decoration:none;
-  padding: ${(props) => props.userStage===4 ? '0.5em' : '1em'} 1.5em;
+  padding: ${(props) => props.stage===4 ? '0.5em' : '1em'} 1.5em;
   width:4em;
   text-align:center;
   border: ${(props) => props.activeButton ? '1px solid ' + props.theme.yellow : 'none'}
@@ -81,6 +81,7 @@ export class AssessmentItem extends Component {
   render () {
     const assessment = this.props.assessment
     let userStage=assessment.userStage
+    let stage=assessment.stage
 
     // set assessee/assessor view
     let RoleBadge = h(AssessorBadge, 'Assessor')
@@ -89,7 +90,7 @@ export class AssessmentItem extends Component {
       RoleBadge = h(AssesseeBadge, 'Assessee')
       isAssessee = ' (you)'
     }
-    if (assessment.stage === 0) {
+    if (stage === 0) {
       RoleBadge = null
     }
 
@@ -113,17 +114,17 @@ export class AssessmentItem extends Component {
       5: 'Burned'
     }
     let actionText = actionTexts[userStage]
-    if (assessment.stage < userStage ||
+    if (stage < userStage ||
       userStage === 0 ||
       userStage === 4 ||
       userStage === 5) {
       activeButton = false
     }
-    if (assessment.stage < userStage) {
+    if (stage < userStage) {
       actionText = 'Waiting...'
     }
     //if assessment stage is finished, set good message (an assessee would have userStage===0)
-    if (assessment.stage === 4) {
+    if (stage === 4) {
       //display score for assessee and payout for assessor
       if (isAssessee===""){
         actionText= h('div',[
@@ -137,7 +138,7 @@ export class AssessmentItem extends Component {
         ])
       }
     }
-    if (assessment.stage === 5) {
+    if (stage === 5) {
       actionText = 'Burned'
     }
 
@@ -160,7 +161,7 @@ export class AssessmentItem extends Component {
         ),
         h(LinkBox, [
           h(LinkSubtitle, 'click here for details'),
-          h(LinkButton, {to: 'assessment/' + assessment.address, activeButton,userStage }, actionText)
+          h(LinkButton, {to: 'assessment/' + assessment.address, activeButton,stage }, actionText)
         ])
       ])
     )
