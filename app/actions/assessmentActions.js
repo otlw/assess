@@ -80,9 +80,10 @@ export function storeDataOnAssessment (address, data) {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
     // also salt should be saved in state
+    let dataAsBytes = getState().ethereum.web3.utils.utf8ToHex(data)
     sendAndReactToTransaction(
       dispatch,
-      {method: assessmentInstance.methods.addData, args: [data]},
+      {method: assessmentInstance.methods.addData, args: [dataAsBytes]},
       'meetingPointChange',
       userAddress,
       address
@@ -285,8 +286,10 @@ export function fetchStoredData (selectedAssessment) {
     let assessmentInstance = getInstance.assessment(getState(), address)
     let assessee = await assessmentInstance.methods.assessee().call()
     let data = await assessmentInstance.methods.data(assessee).call()
-    console.log('data ', data)
-    dispatch(receiveStoredData(address, data))
+    if (data) {
+      let decodedData = getState().ethereum.web3.utils.hexToUtf8(data)
+      dispatch(receiveStoredData(address, decodedData))
+    }
     dispatch(endLoadingDetail('attachments'))
   }
 }

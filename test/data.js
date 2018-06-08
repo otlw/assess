@@ -34,9 +34,9 @@ contract('Storing Data on Assessments:', function (accounts) {
 
   it('The assessee can store data', async () => {
     let meetingString = 'Meet me in the djungle.'
-    await assessmentContract.addData(meetingString, {from: assessee})
+    await assessmentContract.addData(web3.fromAscii(meetingString), {from: assessee})
     let data = await assessmentContract.data.call(assessee)
-    assert.equal(meetingString, data)
+    assert.equal(meetingString, web3.toAscii(data))
   })
 
   it('Assessors can not store data before they have confirmed', async () => {
@@ -56,9 +56,9 @@ contract('Storing Data on Assessments:', function (accounts) {
   it('Staked assessors can store data', async () => {
     await assessmentContract.confirmAssessor({from: calledAssessors[0]})
     let response = 'at the palm tree?'
-    await assessmentContract.addData(response, {from: calledAssessors[0]})
+    await assessmentContract.addData(web3.fromAscii(response), {from: calledAssessors[0]})
     let data = await assessmentContract.data.call(calledAssessors[0])
-    assert.equal(response, data)
+    assert.equal(response, web3.toAscii(data))
   })
 
   it('No one can change their data after the last assessor has committed', async () => {
