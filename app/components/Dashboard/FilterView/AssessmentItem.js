@@ -65,7 +65,7 @@ const LinkButton = styled(Link)`
   background-color:green;
   color:${props => props.theme.lightgrey};
   text-decoration:none;
-  padding: ${(props) => props.stage===4 ? '0.5em' : '1em'} 1.5em;
+  padding: ${(props) => props.stage === 4 ? '0.5em' : '1em'} 1.5em;
   width:4em;
   text-align:center;
   border: ${(props) => props.activeButton ? '1px solid ' + props.theme.yellow : 'none'}
@@ -80,8 +80,8 @@ const LinkSubtitle = styled('div')`
 export class AssessmentItem extends Component {
   render () {
     const assessment = this.props.assessment
-    let userStage=assessment.userStage
-    let stage=assessment.stage
+    let userStage = assessment.userStage
+    let stage = assessment.stage
 
     // set assessee/assessor view
     let RoleBadge = h(AssessorBadge, 'Assessor')
@@ -123,18 +123,18 @@ export class AssessmentItem extends Component {
     if (stage < userStage) {
       actionText = 'Waiting...'
     }
-    //if assessment stage is finished, set good message (an assessee would have userStage===0)
+    // if assessment stage is finished, set good message (an assessee would have userStage===0)
     if (stage === 4) {
-      //display score for assessee and payout for assessor
-      if (isAssessee===""){
-        actionText= h('div',[
-          h('div',"Payout :"),
-          h('div',"+5 AHA"),
+      // display score for assessee and payout for assessor
+      if (isAssessee === '') {
+        actionText = h('div', [
+          h('div', 'Payout :'),
+          h('div', '+5 AHA')
         ])
       } else {
-        actionText= h('div',[
-          h('div',"Score :"),
-          h('div',"87%"),
+        actionText = h('div', [
+          h('div', 'Score :'),
+          h('div', '87%')
         ])
       }
     }
@@ -161,7 +161,7 @@ export class AssessmentItem extends Component {
         ),
         h(LinkBox, [
           h(LinkSubtitle, 'click here for details'),
-          h(LinkButton, {to: 'assessment/' + assessment.address, activeButton,stage }, actionText)
+          h(LinkButton, { to: 'assessment/' + assessment.address, activeButton, stage }, actionText)
         ])
       ])
     )
