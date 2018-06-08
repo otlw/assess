@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 
 const ItemFrame = styled('div')`
-  border:2px solid ${props => props.active ? props.theme.yellow : props.theme.dark};
+  border:2px solid ${props => props.activeButton ? props.theme.yellow : props.theme.dark};
   padding: 0.5em 1em;
   margin: 0.2em 0;
   background-color:${props => props.theme.light};
@@ -59,17 +59,16 @@ const AssessorBadge = styled('div')`
 const LinkBox = styled('div')`
   float: right;
   margin-right:1.2em;
-  //margin-top:0.5em;
 `
 const LinkButton = styled(Link)`
   display:block;
   background-color:green;
-  color:${props => props.theme.dark};
+  color:${props => props.theme.lightgrey};
   text-decoration:none;
-  padding: 1em 1.5em;
+  padding: ${(props) => props.userStage===4 ? '0.5em' : '1em'} 1.5em;
   width:4em;
   text-align:center;
-  border: ${(props) => props.active ? '1px solid ' + props.theme.yellow : 'none'}
+  border: ${(props) => props.activeButton ? '1px solid ' + props.theme.yellow : 'none'}
 `
 
 const LinkSubtitle = styled('div')`
@@ -81,6 +80,7 @@ const LinkSubtitle = styled('div')`
 export class AssessmentItem extends Component {
   render () {
     const assessment = this.props.assessment
+    let userStage=assessment.userStage
 
     // set assessee/assessor view
     let RoleBadge = h(AssessorBadge, 'Assessor')
@@ -103,7 +103,7 @@ export class AssessmentItem extends Component {
     }
 
     // look if user is required to make an action
-    let active = true
+    let activeButton = true
     let actionTexts = {
       0: 'On going',
       1: 'Stake',
@@ -112,25 +112,37 @@ export class AssessmentItem extends Component {
       4: 'Done',
       5: 'Burned'
     }
-    let actionText = actionTexts[assessment.userStage]
-    if (assessment.stage < assessment.userStage ||
-      assessment.userStage === 0 ||
-      assessment.userStage === 4 ||
-      assessment.userStage === 5) {
-      active = false
+    let actionText = actionTexts[userStage]
+    if (assessment.stage < userStage ||
+      userStage === 0 ||
+      userStage === 4 ||
+      userStage === 5) {
+      activeButton = false
     }
-    if (assessment.stage < assessment.userStage) {
+    if (assessment.stage < userStage) {
       actionText = 'Waiting...'
     }
+    //if assessment stage is finished, set good message (an assessee would have userStage===0)
     if (assessment.stage === 4) {
-      actionText = 'Done'
+      //display score for assessee and payout for assessor
+      if (isAssessee===""){
+        actionText= h('div',[
+          h('div',"Payout :"),
+          h('div',"+5 AHA"),
+        ])
+      } else {
+        actionText= h('div',[
+          h('div',"Score :"),
+          h('div',"87%"),
+        ])
+      }
     }
     if (assessment.stage === 5) {
       actionText = 'Burned'
     }
 
     return (
-      h(ItemFrame, {active}, [
+      h(ItemFrame, {activeButton}, [
         h(Box, [
           h(ConceptName, assessment.conceptData),
           h(AssesseeAddress, {
@@ -148,7 +160,7 @@ export class AssessmentItem extends Component {
         ),
         h(LinkBox, [
           h(LinkSubtitle, 'click here for details'),
-          h(LinkButton, {to: 'assessment/' + assessment.address, active}, actionText)
+          h(LinkButton, {to: 'assessment/' + assessment.address, activeButton,userStage }, actionText)
         ])
       ])
     )
