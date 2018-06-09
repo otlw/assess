@@ -1,6 +1,6 @@
-import { Stage, loadingStage, getInstance } from './utils.js'
+import { getInstance } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
-
+import { Stage, LoadingStage } from '../constants.js'
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const RECEIVE_FINALSCORE = 'RECEIVE_FINALSCORE'
 export const RECEIVE_STORED_DATA = 'RECEIVE_STORED_DATA'
@@ -216,9 +216,9 @@ export function fetchAssessors (selectedAssessment) {
           e.returnValues['topic'] === '2' &&
           assessors.push(e.returnValues['user'])
       )
-      let stage = getState().assessments[address].stage
-      dispatch(fetchAssessorStages(address, assessors, stage === 1)) // TODO use constant
-      if (stage === 4) {
+      let stage = Number(getState().assessments[address].stage)
+      dispatch(fetchAssessorStages(address, assessors, Number(stage) === Stage.Called))
+      if (stage === Stage.Done) {
         dispatch(fetchAllPayouts(address))
       }
     } catch (e) {
@@ -271,8 +271,8 @@ export function fetchAssessorStages (address, assessors, checkUserAddress = fals
     }
     if (checkUserAddress) {
       let userAddress = getState().ethereum.userAddress
-      let userStage = await assessmentInstance.methods.assessorState(userAddress).call()
-      if (userStage === '1') { // TODO use constant
+      let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
+      if (userStage === Stage.Called) {
         assessorStages.push({address: userAddress, stage: userStage})
       }
     }
@@ -290,7 +290,6 @@ export function fetchStoredData (selectedAssessment) {
     let assessmentInstance = getInstance.assessment(getState(), address)
     let assessee = await assessmentInstance.methods.assessee().call()
     let data = await assessmentInstance.methods.data(assessee).call()
-    console.log('data ', data)
     dispatch(receiveStoredData(address, data))
     dispatch(endLoadingDetail('attachments'))
   }
@@ -298,7 +297,7 @@ export function fetchStoredData (selectedAssessment) {
 
 export function fetchLatestAssessments () {
   return async (dispatch, getState) => {
-    if (getState().loading.assessments === loadingStage.None) {
+    if (getState().loading.assessments === LoadingStage.None) {
       // get State data
       let userAddress = getState().ethereum.userAddress
       dispatch(beginLoadingAssessments())

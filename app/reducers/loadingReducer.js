@@ -11,16 +11,16 @@ import {
   END_LOADING_CONCEPTS
 } from '../actions/conceptActions.js'
 
-import {loadingStage} from '../actions/utils.js'
+import {LoadingStage} from '../constants.js'
 
 let initialState = {
-  assessments: loadingStage.None,
-  concepts: loadingStage.None,
+  assessments: LoadingStage.None,
+  concepts: LoadingStage.None,
   assessmentDetail: {
-    info: loadingStage.None,
-    assessors: loadingStage.None,
-    attachments: loadingStage.None,
-    payouts: loadingStage.None
+    info: LoadingStage.None,
+    assessors: LoadingStage.None,
+    attachments: LoadingStage.None,
+    payouts: LoadingStage.None
   }
 }
 
@@ -29,23 +29,23 @@ function loading (state = initialState, action) {
     case BEGIN_LOADING_ASSESSMENTS:
       return {
         ...state,
-        assessments: loadingStage.Loading
+        assessments: LoadingStage.Loading
       }
     case END_LOADING_ASSESSMENTS: {
       return {
         ...state,
-        assessments: loadingStage.Done
+        assessments: LoadingStage.Done
       }
     }
     case BEGIN_LOADING_CONCEPTS:
       return {
         ...state,
-        concepts: loadingStage.Loading
+        concepts: LoadingStage.Loading
       }
     case END_LOADING_CONCEPTS: {
       return {
         ...state,
-        concepts: loadingStage.Done
+        concepts: LoadingStage.Done
       }
     }
     case BEGIN_LOADING_DETAIL: {
@@ -54,7 +54,7 @@ function loading (state = initialState, action) {
         ...state,
         assessmentDetail: {
           ...state.assessmentDetail,
-          [action.detail]: loadingStage.Loading
+          [action.detail]: LoadingStage.Loading
         }
       }
     }
@@ -64,7 +64,7 @@ function loading (state = initialState, action) {
         ...state,
         assessmentDetail: {
           ...state.assessmentDetail,
-          [action.detail]: loadingStage.Done
+          [action.detail]: LoadingStage.Done
         }
       }
     }
