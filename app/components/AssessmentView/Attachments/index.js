@@ -20,6 +20,4 @@ const mapDispatchToProps = {
   storeData
 }
 
-export default compose(
-  connect(mapStateToProps, mapDispatchToProps)
-)(MeetingPoint)
+export default connect(mapStateToProps, mapDispatchToProps)(MeetingPoint)
