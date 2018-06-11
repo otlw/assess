@@ -46,12 +46,15 @@ export function sendAndReactToTransaction (dispatch, act, saveData, userAddress,
     .on('receipt', (receipt) => {
       dispatch(updateTransaction(
         receipt.transactionHash,
-        receipt.status ? 'Success' : 'Fail'
+        receipt.status ? 'Tx Published' : 'Tx Fail'
       ))
     })
     .on('confirmation', (confirmationNumber, receipt) => {
-      if (react && confirmationNumber === 2 && receipt.status) {
-        // console.log('confirmed! Now dispatching ', react)
+      if (react && confirmationNumber === 7 && receipt.status) {
+        dispatch(updateTransaction(
+          receipt.transactionHash,
+          receipt.status ? 'Tx Confirmed' : 'Tx Fail'
+        ))
         dispatch(react.method(...react.args))
       }
     })
