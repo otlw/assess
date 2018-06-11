@@ -1,7 +1,9 @@
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { storeData } from '../../../actions/assessmentActions'
+import { LoadComponent } from '../../hocs/loadComponent.js'
+import { storeData, fetchStoredData } from '../../../actions/assessmentActions'
 import MeetingPoint from './MeetingPoint.js'
+import { LoadingStage } from '../../../constants.js'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -12,14 +14,17 @@ const mapStateToProps = (state, ownProps) => {
     ),
     editable: state.ethereum.userAddress === ownProps.assessee,
     address: state.assessments.selectedAssessment,
+    loadedMeetingPoint: state.loading.assessmentDetail.attachments === LoadingStage.Done,
     meetingPoint: state.assessments[state.assessments.selectedAssessment].data
   }
 }
 
 const mapDispatchToProps = {
+  load: fetchStoredData,
   storeData
 }
 
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps),
+  LoadComponent
 )(MeetingPoint)

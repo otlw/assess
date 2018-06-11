@@ -12,24 +12,24 @@ import h from 'react-hyperscript'
 // or stay here to be more easily reused
 
 const dropdownContent = styled.div`
-  display: ${(props) => props.hover ? 'block' : 'none'};
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 8em;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+display: ${(props) => props.hover ? 'block' : 'none'};
+position: absolute;
+background-color: #f9f9f9;
+min-width: 8em;
+box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+z-index: 1;
 `
 const StyledDropdown = styled.div`
-  position: relative;
-  display: inline-block;
-  text-align: left;
+position: relative;
+display: inline-block;
+text-align: left;
 `
 
 const StyledButton = styled.div`color: red;`
 const StyledItem = styled.div`
-  border: 1px solid red;
-  padding 0.3em;
-  ${props => props.hover ? 'color:blue; \n padding: 0.3em;' : ''}
+border: 1px solid red;
+padding 0.3em;
+${props => props.hover ? 'color:blue; \n padding: 0.3em;' : ''}
 `
 export class Dropdown extends Component {
   // the state determines if the dropdown is displayed or not
