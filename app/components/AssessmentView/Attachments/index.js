@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { compose } from 'redux'
 import { storeData } from '../../../actions/assessmentActions'
 import MeetingPoint from './MeetingPoint.js'
 

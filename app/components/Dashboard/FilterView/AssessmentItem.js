@@ -2,7 +2,7 @@ import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
-import { StageDisplayNames , Stage } from '../../../constants.js'
+import { StageDisplayNames, Stage } from '../../../constants.js'
 
 const ItemFrame = styled('div')`
   border:2px solid ${props => props.activeButton ? props.theme.yellow : props.theme.dark};
@@ -62,7 +62,7 @@ const LinkBox = styled('div')`
   margin-right:1.2em;
 `
 
-const LinkUnstyled=styled(Link)`
+const LinkUnstyled = styled(Link)`
   text-decoration:none;
 `
 
@@ -82,7 +82,6 @@ const LinkSubtitle = styled('div')`
   font-size:0.6em;
   text-align:center;
 `
-
 
 export class AssessmentItem extends Component {
   render () {
@@ -137,7 +136,7 @@ export class AssessmentItem extends Component {
         ])
       }
     }
-    //use constants for all those cases
+    // use constants for all those cases
     if (stage === Stage.Burned) {
       actionText = 'Burned'
     }
@@ -149,7 +148,7 @@ export class AssessmentItem extends Component {
           h(AssesseeAddress, {
             href: 'https://' + (this.props.networkID === 4 ? 'rinkeby.' : '') + 'etherscan.io/address/' + assessment.assessee,
             target: '_blank',
-            title:'est'
+            title: 'est'
           }, 'assessee: ' + assessment.assessee.substring(0, 8) + '...' + assessment.assessee.substring(30, 42) + isAssessee)
         ]),
         h(Box, [
@@ -162,8 +161,8 @@ export class AssessmentItem extends Component {
         ),
         h(LinkBox, [
           h(LinkSubtitle, 'click here for details'),
-          h(LinkUnstyled,{ to: 'assessment/' + assessment.address},
-            h(LinkButton,{ activeButton, stage }, 
+          h(LinkUnstyled, { to: 'assessment/' + assessment.address },
+            h(LinkButton, { activeButton, stage },
               actionText
             )
           )
