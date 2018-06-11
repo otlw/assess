@@ -74,6 +74,7 @@ function assessments (state = initialState, action) {
       }
     }
     case RECEIVE_STORED_DATA: {
+      console.log('STORED', action)
       let address = action.assessmentAddress
       return {
         ...state,
