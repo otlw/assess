@@ -42,6 +42,8 @@ export const connect = () => {
         let providerAddress = networkID === 4 ? 'wss://rinkeby.infura.io/ws' : 'ws://localhost:8545'
         console.log('providerAddress ', providerAddress )
         const eventProvider = new Web3.providers.WebsocketProvider(providerAddress)
+         eventProvider.on('error', e => console.error('WS Error', e))
+        eventProvider.on('end', e => console.error('WS End', e))
         web3events.setProvider(eventProvider)
         dispatch(web3EventsConnected(web3events))
         // web3events.setProvider(Ganache.provider())
