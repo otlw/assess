@@ -124,7 +124,10 @@ export function fetchAssessmentData (assessmentAddress) {
         let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
         let assessee = await assessmentInstance.methods.assessee().call()
         let conceptAddress = await assessmentInstance.methods.concept().call()
-        let data = await assessmentInstance.methods.data(assessee).call()
+
+        //get the data (meeting point) and convert it from bytes32 to string
+        let bytesData = await assessmentInstance.methods.data(assessee).call()
+        let data = getState().ethereum.web3.utils.hexToUtf8(bytesData)
 
         // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
         let conceptRegistryInstance = getInstance.conceptRegistry(getState())
