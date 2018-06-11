@@ -1,7 +1,7 @@
 import Web3 from 'web3'
 import { getInstance } from './utils.js'
 // import Ganache from 'ganache-core'
-
+var Dagger = require('eth-dagger')
 export const WEB3_CONNECTED = 'WEB3_CONNECTED'
 export const WEB3EVENTS_CONNECTED = 'WEB3EVENTS_CONNECTED'
 export const WEB3_DISCONNECTED = 'WEB3_DISCONNECTED'
@@ -38,15 +38,20 @@ export const connect = () => {
         // set a second web3 instance to subscribe to events via websocket
         // var Ganache = require('ganache-core')
         // console.log('Ganache ', Ganache )
-        let web3events = new Web3()
-        let providerAddress = networkID === 4 ? 'wss://rinkeby.infura.io/ws' : 'ws://localhost:8545'
-        console.log('providerAddress ', providerAddress )
-        const eventProvider = new Web3.providers.WebsocketProvider(providerAddress)
-         eventProvider.on('error', e => console.error('WS Error', e))
-        eventProvider.on('end', e => console.error('WS End', e))
-        web3events.setProvider(eventProvider)
-        dispatch(web3EventsConnected(web3events))
-        // web3events.setProvider(Ganache.provider())
+
+        if (networkID === 42) {
+          dispatch(web3EventsConnected({})) // to set isConnectedVariable to true
+        } else {
+          // rinkeby or local testnet
+          let web3events = new Web3()
+          let providerAddress = networkID === 4 ? 'wss://rinkeby.infura.io/ws' : 'ws://localhost:8545'
+          console.log('providerAddress ', providerAddress )
+          const eventProvider = new Web3.providers.WebsocketProvider(providerAddress)
+          eventProvider.on('error', e => console.error('WS Error', e))
+          eventProvider.on('end', e => console.error('WS End', e))
+          web3events.setProvider(eventProvider)
+          dispatch(web3EventsConnected(web3events))
+        }
 
         // set a loop function to check userAddress or network change
         dispatch(loopCheckAddressAndNetwork())

@@ -1,4 +1,5 @@
 import { Stage, loadingStage, getInstance } from './utils.js'
+var Dagger = require('eth-dagger')
 import { sendAndReactToTransaction } from './transActions.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
@@ -297,18 +298,35 @@ export function fetchStoredData (selectedAssessment) {
 export function fetchLatestAssessments () {
   return async (dispatch, getState) => {
 
-    // subscribe to all events
-    let web3WS = getState().ethereum.web3events
-    const fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
-    let ahadress = fathomTokenArtifact.networks[getState().ethereum.networkID].address
-    web3WS.eth.subscribe('logs', {
-      address: ahadress
-    }, (error, event) => {
-      if (error) {
-        console.log('event subscirption error!:')
-      }
-      console.log('event found', event)
-    })
+    let networkID = getState().ethereum.networkID
+    // subscribe to all events: testnet / rinkeby
+    if (networkID === 42) {
+      // kovan
+      const dagger = new Dagger('wss://kovan.dagger.matic.network')
+      console.log('dagger ', dagger )
+      const fathomTokenInstance = getInstance.fathomToken(getState())
+      let fathomTokenDagger = dagger.contract(fathomTokenInstance)
+      var filter = fathomTokenDagger.events.Notification({
+        room: 'latest'
+      })
+      filter.watch((data, removed) => {
+        console.log('dagger-event found', data)
+      })
+    } else {
+      const dagger = new Dagger('wss://rinkeby.dagger.matic.network')
+      console.log('dagger ', dagger )
+      let web3WS = getState().ethereum.web3events
+      const fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
+      let ahadress = fathomTokenArtifact.networks[getState().ethereum.networkID].address
+      web3WS.eth.subscribe('logs', {
+        address: ahadress
+      }, (error, event) => {
+        if (error) {
+          console.log('event subscirption error!:')
+        }
+        console.log('WS-event found', event)
+      })
+    }
 
     if (getState().loading.assessments === loadingStage.None) {
       // get State data
