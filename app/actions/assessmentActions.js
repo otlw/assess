@@ -109,6 +109,17 @@ export function fetchAssessmentData (assessmentAddress) {
     } else {
       dispatch(beginLoadingDetail('info'))
       try {
+        let web3WS = getState().ethereum.web3events
+        const fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
+        let ahadress = fathomTokenArtifact.networks[getState().ethereum.networkID].address
+        web3WS.eth.subscribe('logs', {
+          address: ahadress
+        }, (error, event) => {
+          if (error) {
+            console.log(error)
+          }
+          console.log('event found', event)
+        })
         let assessmentInstance = getInstance.assessment(getState(), address)
         let cost = await assessmentInstance.methods.cost().call()
         let size = await assessmentInstance.methods.size().call()

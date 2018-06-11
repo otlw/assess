@@ -1,7 +1,9 @@
 import Web3 from 'web3'
 import { getInstance } from './utils.js'
+// import Ganache from 'ganache-core'
 
 export const WEB3_CONNECTED = 'WEB3_CONNECTED'
+export const WEB3EVENTS_CONNECTED = 'WEB3EVENTS_CONNECTED'
 export const WEB3_DISCONNECTED = 'WEB3_DISCONNECTED'
 export const RECEIVE_VARIABLE = 'RECEIVE_VARIABLE'
 
@@ -10,6 +12,8 @@ export const connect = () => {
   return async (dispatch, getState) => {
     // get web3 object with right provider
     if (typeof window.web3 !== 'undefined') {
+
+      // set first web3 instance to do read and write calls via Metamask
       let w3 = new Web3(window.web3.currentProvider)
       // after web3 is instanciated, fetch networkID and user address
       if (w3) {
@@ -31,11 +35,20 @@ export const connect = () => {
           dispatch(receiveVariable('AhaBalance', userBalance))
         }
 
+        // set a second web3 instance to subscribe to events via websocket
+        // var Ganache = require('ganache-core')
+        // console.log('Ganache ', Ganache )
+        let web3events = new Web3()
+        let providerAddress = networkID === 4 ? 'wss://rinkeby.infura.io/ws' : 'ws://localhost:8545'
+        console.log('providerAddress ', providerAddress )
+        const eventProvider = new Web3.providers.WebsocketProvider(providerAddress)
+        web3events.setProvider(eventProvider)
+        dispatch(web3EventsConnected(web3events))
+        // web3events.setProvider(Ganache.provider())
+
         // set a loop function to check userAddress or network change
         dispatch(loopCheckAddressAndNetwork())
 
-        // dispatch(loadConceptsFromConceptRegistery())
-        // dispatch(fetchLatestAssessments())
       } else {
         dispatch(web3Disconnected())
       }
@@ -88,6 +101,15 @@ export function web3Connected (web3) {
   }
 }
 
+// action to save the websocket web3-instance in state
+export function web3EventsConnected (web3) {
+  return {
+    type: WEB3EVENTS_CONNECTED,
+    payload: {
+      web3events: web3
+    }
+  }
+}
 // to save in state that one could not connect
 export function web3Disconnected () {
   return {
