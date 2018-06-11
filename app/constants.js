@@ -1,8 +1,10 @@
 export const StageDisplayNames = Object.freeze({
-  1: 'Open',
+  0: 'Open',
+  1: 'Stake',
   2: 'Commit',
   3: 'Reveal',
-  4: 'Finished'
+  4: 'Done',
+  5: 'Burned'
 })
 
 export const Stage = Object.freeze({

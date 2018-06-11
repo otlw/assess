@@ -2,7 +2,7 @@ import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
-import { StageDisplayNames } from '../../../constants.js'
+import { StageDisplayNames , Stage } from '../../../constants.js'
 
 const ItemFrame = styled('div')`
   border:2px solid ${props => props.activeButton ? props.theme.yellow : props.theme.dark};
@@ -66,7 +66,7 @@ const LinkButton = styled(Link)`
   background-color:green;
   color:${props => props.theme.lightgrey};
   text-decoration:none;
-  padding: ${(props) => props.stage === 4 ? '0.5em' : '1em'} 1.5em;
+  padding: ${(props) => props.stage === Stage.Done ? '0.5em' : '1em'} 1.5em;
   width:4em;
   text-align:center;
   border: ${(props) => props.activeButton ? '1px solid ' + props.theme.yellow : 'none'}
@@ -92,7 +92,7 @@ export class AssessmentItem extends Component {
       RoleBadge = h(AssesseeBadge, 'Assessee')
       isAssessee = ' (you)'
     }
-    if (stage === 0) {
+    if (stage === Stage.None) {
       RoleBadge = null
     }
 
@@ -107,15 +107,7 @@ export class AssessmentItem extends Component {
 
     // look if user is required to make an action
     let activeButton = true
-    let actionTexts = {
-      0: 'On going',
-      1: 'Stake',
-      2: 'Commit',
-      3: 'Reveal',
-      4: 'Done',
-      5: 'Burned'
-    }
-    let actionText = actionTexts[userStage]
+    let actionText = StageDisplayNames[userStage]
     if (stage < userStage ||
       userStage === 0 ||
       userStage === 4 ||
@@ -126,7 +118,7 @@ export class AssessmentItem extends Component {
       actionText = 'Waiting...'
     }
     // if assessment stage is finished, set good message (an assessee would have userStage===0)
-    if (stage === 4) {
+    if (stage === Stage.Done) {
       // display score for assessee and payout for assessor
       if (isAssessee === '') {
         actionText = h('div', [
@@ -141,7 +133,7 @@ export class AssessmentItem extends Component {
       }
     }
     //use constants for all those cases
-    if (stage === 5) {
+    if (stage === Stage.Burned) {
       actionText = 'Burned'
     }
 
