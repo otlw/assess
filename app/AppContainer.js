@@ -10,11 +10,8 @@ import {ThemeProvider} from 'styled-components'
 const theme = {
   primary: '#546e7a',
   light: '#819ca9',
-  veryLight: '#b8cad3',
   dark: '#29434e',
-  lightgrey: '#d3d3d3',
-  blue: '#2F80ED',
-  yellow: '#fff700'
+  lightgrey: '#d3d3d3'
 }
 
 // the main frame on which everything is displayed.
