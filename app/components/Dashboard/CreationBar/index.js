@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { LoadComponent } from '../../hocs/loadComponent.js'
-import { loadingStage } from '../../../actions/utils.js'
+import { LoadingStage } from '../../../constants.js'
 import CreationBar from './CreationBar.js'
 import {
   loadConceptContractAndCreateAssessment,
@@ -10,7 +10,7 @@ import {
 const mapStateToProps = state => {
   return {
     concepts: state.concepts,
-    loadedConcepts: (state.loading.concepts === loadingStage.Done),
+    loadedConcepts: (state.loading.concepts === LoadingStage.Done),
     loading: state.loading
   }
 }

@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
-import { stages } from '../../../constants.js'
+import { StageDisplayNames } from '../../../constants.js'
 
 // styles
 const itemStyle = {
@@ -29,7 +29,7 @@ export class AssessmentItem extends Component {
           'at: ' + assessment.address.substring(0, 5) + '...' + assessment.address.substring(37)),
         h('div', [
           h('span', itemStyle.titleStyle, 'Stage: '),
-          h('span', stages[assessment.stage])
+          h('span', StageDisplayNames[assessment.stage])
         ]),
         h('div', [
           h('span', itemStyle.titleStyle, 'Role: '),
