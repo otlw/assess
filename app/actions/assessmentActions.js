@@ -313,18 +313,29 @@ export function fetchLatestAssessments () {
         console.log('dagger-event found', data)
       })
     } else {
-      const dagger = new Dagger('wss://rinkeby.dagger.matic.network')
-      console.log('dagger ', dagger )
-      let web3WS = getState().ethereum.web3events
       const fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
+      let web3WS = getState().ethereum.web3events
+      let notificationJSON = fathomTokenArtifact.abi.filter(x => x.name === 'Notification')[0]
+      console.log('notificationJSON', notificationJSON)
       let ahadress = fathomTokenArtifact.networks[getState().ethereum.networkID].address
       web3WS.eth.subscribe('logs', {
-        address: ahadress
-      }, (error, event) => {
+        address: ahadress,
+        topics: ['0xe41f8f86e0c2a4bb86f57d2698c1704cd23b5f42a84336cdb49377cdca96d876']
+      }, (error, log) => {
         if (error) {
           console.log('event subscirption error!:')
         }
-        console.log('WS-event found', event)
+        // if is Notification-event
+        console.log('WS-event found', log) //, log.data, log.topics.length)
+        let decodedLog = web3WS.eth.abi.decodeLog(
+          notificationJSON.inputs,
+          log.data,
+          log.topics.slice(1, 4)
+        )
+        let userAddress = getState().ethereum.userAddress
+        if (decodedLog.user === userAddress) {
+          dispatch(updateAssessments(decodedLog.sender))
+        }
       })
     }
 
