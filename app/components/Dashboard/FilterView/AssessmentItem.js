@@ -2,6 +2,7 @@ import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
+import { StageDisplayNames } from '../../../constants.js'
 
 const ItemFrame = styled('div')`
   border:2px solid ${props => props.activeButton ? props.theme.yellow : props.theme.dark};
@@ -77,6 +78,7 @@ const LinkSubtitle = styled('div')`
   text-align:center;
 `
 
+
 export class AssessmentItem extends Component {
   render () {
     const assessment = this.props.assessment
@@ -138,6 +140,7 @@ export class AssessmentItem extends Component {
         ])
       }
     }
+    //use constants for all those cases
     if (stage === 5) {
       actionText = 'Burned'
     }

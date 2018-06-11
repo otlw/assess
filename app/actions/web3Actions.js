@@ -1,5 +1,5 @@
 import Web3 from 'web3'
-import { getInstance } from './utils.js'
+import { getInstance } from '../utils.js'
 
 export const WEB3_CONNECTED = 'WEB3_CONNECTED'
 export const WEB3_DISCONNECTED = 'WEB3_DISCONNECTED'
