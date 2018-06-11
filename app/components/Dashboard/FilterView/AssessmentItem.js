@@ -61,7 +61,12 @@ const LinkBox = styled('div')`
   float: right;
   margin-right:1.2em;
 `
-const LinkButton = styled(Link)`
+
+const LinkUnstyled=styled(Link)`
+  text-decoration:none;
+`
+
+const LinkButton = styled('div')`
   display:block;
   background-color:green;
   color:${props => props.theme.lightgrey};
@@ -120,7 +125,7 @@ export class AssessmentItem extends Component {
     // if assessment stage is finished, set good message (an assessee would have userStage===0)
     if (stage === Stage.Done) {
       // display score for assessee and payout for assessor
-      if (isAssessee === '') {
+      if (!isAssessee) {
         actionText = h('div', [
           h('div', 'Payout :'),
           h('div', '+5 AHA')
@@ -143,7 +148,8 @@ export class AssessmentItem extends Component {
           h(ConceptName, assessment.conceptData),
           h(AssesseeAddress, {
             href: 'https://' + (this.props.networkID === 4 ? 'rinkeby.' : '') + 'etherscan.io/address/' + assessment.assessee,
-            target: '_blank'
+            target: '_blank',
+            title:'est'
           }, 'assessee: ' + assessment.assessee.substring(0, 8) + '...' + assessment.assessee.substring(30, 42) + isAssessee)
         ]),
         h(Box, [
@@ -156,7 +162,11 @@ export class AssessmentItem extends Component {
         ),
         h(LinkBox, [
           h(LinkSubtitle, 'click here for details'),
-          h(LinkButton, { to: 'assessment/' + assessment.address, activeButton, stage }, actionText)
+          h(LinkUnstyled,{ to: 'assessment/' + assessment.address},
+            h(LinkButton,{ activeButton, stage }, 
+              actionText
+            )
+          )
         ])
       ])
     )
