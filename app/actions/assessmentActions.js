@@ -37,8 +37,8 @@ export function confirmAssessor (address) {
       Stage.Called,
       userAddress,
       address,
-      //for testing purposes, should be properly done for all functions in another issue
-      {method: function(){console.log("feedback")} , args: []}
+      // for testing purposes, should be properly done for all functions in another issue
+      {method: function () { console.log('feedback') }, args: []}
     )
   }
 }
@@ -89,7 +89,7 @@ export function storeDataOnAssessment (address, data) {
       'meetingPointChange',
       userAddress,
       address
-      //let's not forget to handle this after we decide about fetchStoredData
+      // let's not forget to handle this after we decide about fetchStoredData
       // {method: fetchStoredData, args: [address]}
     )
   }
