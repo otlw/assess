@@ -45,7 +45,7 @@ const MeetingAddress = styled('a')`
 // assessee/assessor badges
 
 const AssesseeBadge = styled('div')`
-  background-color:blue;
+  background-color:${props => props.theme.lightblue};
   border-radius:0.3em;
   padding:0.1em 0.3em;
 `
