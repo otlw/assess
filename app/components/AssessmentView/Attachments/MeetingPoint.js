@@ -21,26 +21,22 @@ export class MeetingPoint extends Component {
   }
 
   render () {
-    if (this.props.loadedMeetingPoint) {
-      let meetingPoint = this.props.meetingPoint || '<noMeetingPointSet>  '
-      return (
-        h('div', [
-          h('span', 'Meeting Point: '),
-          h('span', meetingPoint + '   '),
-          h('button', {
-            onClick: this.toggleMPeditability.bind(this),
-            title: 'this only works if you\'re the assessee',
-            disabled: !this.props.editable
-          }, 'edit'),
-          this.state.displayMPEdit ? h(MeetingPointForm, {onSubmit: this.storeData.bind(this)}) : null,
-          this.props.transactions
-            ? h(TxList, {transactions: this.props.transactions})
-            : null
-        ])
-      )
-    } else {
-      return h('div', 'Loading meeting point...')
-    }
+    let meetingPoint = this.props.meetingPoint || '<noMeetingPointSet>  '
+    return (
+      h('div', [
+        h('span', 'Meeting Point: '),
+        h('span', meetingPoint + '   '),
+        h('button', {
+          onClick: this.toggleMPeditability.bind(this),
+          title: 'this only works if you\'re the assessee',
+          disabled: !this.props.editable
+        }, 'edit'),
+        this.state.displayMPEdit ? h(MeetingPointForm, {onSubmit: this.storeData.bind(this)}) : null,
+        this.props.transactions
+          ? h(TxList, {transactions: this.props.transactions})
+          : null
+      ])
+    )
   }
 }
 
