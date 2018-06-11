@@ -125,7 +125,7 @@ export function fetchAssessmentData (assessmentAddress) {
         let assessee = await assessmentInstance.methods.assessee().call()
         let conceptAddress = await assessmentInstance.methods.concept().call()
 
-        //get the data (meeting point) and convert it from bytes32 to string
+        // get the data (meeting point) and convert it from bytes32 to string
         let bytesData = await assessmentInstance.methods.data(assessee).call()
         let data = getState().ethereum.web3.utils.hexToUtf8(bytesData)
 
