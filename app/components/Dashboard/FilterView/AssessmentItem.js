@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { StageDisplayNames, Stage } from '../../../constants.js'
 
 const ItemFrame = styled('div')`
-  border:2px solid ${props => props.activeButton ? props.theme.yellow : props.theme.dark};
+  border:2px solid ${props => props.userActionRequired ? props.theme.yellow : props.theme.dark};
   padding: 0.5em 1em;
   margin: 0.2em 0;
   background-color:${props => props.theme.light};
@@ -74,7 +74,7 @@ const LinkButton = styled('div')`
   padding: ${(props) => props.stage === Stage.Done ? '0.5em' : '1em'} 1.5em;
   width:4em;
   text-align:center;
-  border: ${(props) => props.activeButton ? '1px solid ' + props.theme.yellow : 'none'}
+  border: ${(props) => props.userActionRequired ? '1px solid ' + props.theme.yellow : 'none'}
 `
 
 const LinkSubtitle = styled('div')`
@@ -110,13 +110,13 @@ export class AssessmentItem extends Component {
     }
 
     // look if user is required to make an action
-    let activeButton = true
+    let userActionRequired = true
     let actionText = StageDisplayNames[userStage]
     if (stage < userStage ||
       userStage === 0 ||
       userStage === 4 ||
       userStage === 5) {
-      activeButton = false
+      userActionRequired = false
     }
     if (stage < userStage) {
       actionText = 'Waiting...'
@@ -137,10 +137,10 @@ export class AssessmentItem extends Component {
       }
     }
     if (stage === Stage.Burned) {
-      actionText = 'Burned'
+      actionText = 'Canceled'
     }
     return (
-      h(ItemFrame, {activeButton}, [
+      h(ItemFrame, {userActionRequired}, [
         h(Box, [
           h(ConceptName, assessment.conceptData),
           h(AssesseeAddress, {
@@ -160,7 +160,7 @@ export class AssessmentItem extends Component {
         h(LinkBox, [
           h(LinkSubtitle, 'click here for details'),
           h(LinkUnstyled, { to: 'assessment/' + assessment.address },
-            h(LinkButton, { activeButton, stage },
+            h(LinkButton, { userActionRequired, stage },
               actionText
             )
           )
