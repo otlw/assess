@@ -132,14 +132,13 @@ export class AssessmentItem extends Component {
       } else {
         actionText = h('div', [
           h('div', 'Score :'),
-          h('div', assessment.score)
+          h('div', assessment.finalScore+" %")
         ])
       }
     }
     if (stage === Stage.Burned) {
       actionText = 'Burned'
     }
-
     return (
       h(ItemFrame, {activeButton}, [
         h(Box, [

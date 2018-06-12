@@ -125,8 +125,11 @@ export function fetchAssessmentData (assessmentAddress) {
         let conceptAddress = await assessmentInstance.methods.concept().call()
 
         // get the data (meeting point) and convert it from bytes32 to string
+        let data = "no meeting point set"
         let bytesData = await assessmentInstance.methods.data(assessee).call()
-        let data = getState().ethereum.web3.utils.hexToUtf8(bytesData)
+        if (bytesData){
+          data = getState().ethereum.web3.utils.hexToUtf8(bytesData)
+        }
 
         // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
         let conceptRegistryInstance = getInstance.conceptRegistry(getState())
