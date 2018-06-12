@@ -37,8 +37,6 @@ export function confirmAssessor (address) {
       Stage.Called,
       userAddress,
       address,
-      // for testing purposes, should be properly done for all functions in another issue
-      {method: function () { console.log('feedback') }, args: []}
     )
   }
 }
@@ -89,8 +87,7 @@ export function storeDataOnAssessment (address, data) {
       'meetingPointChange',
       userAddress,
       address,
-      {method: fetchStoredData, args: [address]}
-      // let's not forget to handle this after we decide about fetchStoredData
+      // TODO let's not forget to handle this after we decide about fetchStoredData
       // {method: fetchStoredData, args: [address]}
     )
   }
@@ -295,7 +292,6 @@ export function fetchStoredData (selectedAssessment) {
     let assessmentInstance = getInstance.assessment(getState(), address)
     let assessee = await assessmentInstance.methods.assessee().call()
     let data = await assessmentInstance.methods.data(assessee).call()
-    console.log("data",data)
     if (data) {
       let decodedData = getState().ethereum.web3.utils.hexToUtf8(data)
       dispatch(receiveStoredData(address, decodedData))
