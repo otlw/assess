@@ -132,11 +132,10 @@ export class AssessmentItem extends Component {
       } else {
         actionText = h('div', [
           h('div', 'Score :'),
-          h('div', '87%')
+          h('div', assessment.score)
         ])
       }
     }
-    // use constants for all those cases
     if (stage === Stage.Burned) {
       actionText = 'Burned'
     }

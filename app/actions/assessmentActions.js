@@ -110,7 +110,6 @@ export function fetchAssessmentData (assessmentAddress) {
     } else {
       dispatch(beginLoadingDetail('info'))
       try {
-        // get assessment Intance
         let assessmentInstance = getInstance.assessment(getState(), address)
 
         // get assessment infos
