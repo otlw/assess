@@ -36,7 +36,7 @@ export function confirmAssessor (address) {
       {method: assessmentInstance.methods.confirmAssessor, args: []},
       Stage.Called,
       userAddress,
-      address,
+      address
     )
   }
 }
@@ -86,7 +86,7 @@ export function storeDataOnAssessment (address, data) {
       {method: assessmentInstance.methods.addData, args: [dataAsBytes]},
       'meetingPointChange',
       userAddress,
-      address,
+      address
       // TODO let's not forget to handle this after we decide about fetchStoredData
       // {method: fetchStoredData, args: [address]}
     )
