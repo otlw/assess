@@ -153,7 +153,7 @@ export class AssessmentItem extends Component {
           RoleBadge
         ]),
         h(MeetingBox, [
-          h(MeetingCaption, 'Meet Assessee at:'),
+          h(MeetingCaption, 'Meet at:'),
           MeetingPoint
         ]
         ),
