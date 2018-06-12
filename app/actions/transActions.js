@@ -41,19 +41,26 @@ export function removeTransaction (txHash) {
 export function sendAndReactToTransaction (dispatch, act, saveData, userAddress, assessmentAddress, react) {
   act.method(...act.args).send({from: userAddress, gas: 320000})
     .on('transactionHash', (hash) => {
+      console.log("hash",hash)
       dispatch(saveTransaction(assessmentAddress, userAddress, saveData, hash))
+        dispatch(react.method(...react.args))
     })
     .on('receipt', (receipt) => {
+      console.log("receipt")
+      console.log(receipt)
+        dispatch(react.method(...react.args))
       dispatch(updateTransaction(
         receipt.transactionHash,
-        receipt.status ? 'Tx Published' : 'Tx Fail'
+        receipt.status ? 'Tx published' : 'Tx failed'
       ))
     })
     .on('confirmation', (confirmationNumber, receipt) => {
+      console.log(confirmationNumber)
+      console.log(receipt)
       if (react && confirmationNumber === 7 && receipt.status) {
         dispatch(updateTransaction(
           receipt.transactionHash,
-          receipt.status ? 'Tx Confirmed' : 'Tx Fail'
+          receipt.status ? 'Tx confirmed' : 'Tx failed'
         ))
         dispatch(react.method(...react.args))
       }
