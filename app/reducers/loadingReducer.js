@@ -11,7 +11,7 @@ import {
   END_LOADING_CONCEPTS
 } from '../actions/conceptActions.js'
 
-import {loadingStage} from '../actions/utils.js'
+import { loadingStage } from '../actions/utils.js'
 
 let initialState = {
   assessments: loadingStage.None,

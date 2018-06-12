@@ -1,6 +1,6 @@
 import { Stage, loadingStage, getInstance } from './utils.js'
-var Dagger = require('eth-dagger')
 import { sendAndReactToTransaction } from './transActions.js'
+var Dagger = require('eth-dagger')
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const RECEIVE_FINALSCORE = 'RECEIVE_FINALSCORE'
@@ -286,7 +286,8 @@ export function fetchStoredData (selectedAssessment) {
     let address = selectedAssessment || getState().assessments.selectedAssessment
     let assessmentInstance = getInstance.assessment(getState(), address)
     let assessee = await assessmentInstance.methods.assessee().call()
-    let data = await assessmentInstance.methods.data(assessee).call()
+    // let data = await assessmentInstance.methods.data(assessee).call()
+    let data = ''
     if (data) {
       let decodedData = getState().ethereum.web3.utils.hexToUtf8(data)
       dispatch(receiveStoredData(address, decodedData))
@@ -297,48 +298,6 @@ export function fetchStoredData (selectedAssessment) {
 
 export function fetchLatestAssessments () {
   return async (dispatch, getState) => {
-
-    let networkID = getState().ethereum.networkID
-    // subscribe to all events: testnet / rinkeby
-    if (networkID === 42) {
-      // kovan
-      const dagger = new Dagger('wss://kovan.dagger.matic.network')
-      console.log('dagger ', dagger )
-      const fathomTokenInstance = getInstance.fathomToken(getState())
-      let fathomTokenDagger = dagger.contract(fathomTokenInstance)
-      var filter = fathomTokenDagger.events.Notification({
-        room: 'latest'
-      })
-      filter.watch((data, removed) => {
-        console.log('dagger-event found', data)
-      })
-    } else {
-      const fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
-      let web3WS = getState().ethereum.web3events
-      let notificationJSON = fathomTokenArtifact.abi.filter(x => x.name === 'Notification')[0]
-      console.log('notificationJSON', notificationJSON)
-      let ahadress = fathomTokenArtifact.networks[getState().ethereum.networkID].address
-      web3WS.eth.subscribe('logs', {
-        address: ahadress,
-        topics: ['0xe41f8f86e0c2a4bb86f57d2698c1704cd23b5f42a84336cdb49377cdca96d876']
-      }, (error, log) => {
-        if (error) {
-          console.log('event subscirption error!:')
-        }
-        // if is Notification-event
-        console.log('WS-event found', log) //, log.data, log.topics.length)
-        let decodedLog = web3WS.eth.abi.decodeLog(
-          notificationJSON.inputs,
-          log.data,
-          log.topics.slice(1, 4)
-        )
-        let userAddress = getState().ethereum.userAddress
-        if (decodedLog.user === userAddress) {
-          dispatch(updateAssessments(decodedLog.sender))
-        }
-      })
-    }
-
     if (getState().loading.assessments === loadingStage.None) {
       // get State data
       let userAddress = getState().ethereum.userAddress
