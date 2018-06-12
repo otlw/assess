@@ -132,7 +132,7 @@ export class AssessmentItem extends Component {
       } else {
         actionText = h('div', [
           h('div', 'Score :'),
-          h('div', assessment.finalScore+" %")
+          h('div', assessment.finalScore + ' %')
         ])
       }
     }
