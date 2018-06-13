@@ -111,6 +111,8 @@ export function fetchAssessmentData (assessmentAddress) {
       dispatch(beginLoadingDetail('info'))
       try {
         let assessmentInstance = getInstance.assessment(getState(), address)
+
+        // get assessment infos
         let cost = await assessmentInstance.methods.cost().call()
         let endTime = await assessmentInstance.methods.endTime().call()
         // checkpoint -> keeps track of timelimits for 1) latest possible time to confirm and 2) earliest time to reveal
@@ -121,6 +123,13 @@ export function fetchAssessmentData (assessmentAddress) {
         let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
         let assessee = await assessmentInstance.methods.assessee().call()
         let conceptAddress = await assessmentInstance.methods.concept().call()
+
+        // get the data (meeting point) and convert it from bytes32 to string
+        let data = 'no meeting point set'
+        let bytesData = await assessmentInstance.methods.data(assessee).call()
+        if (bytesData) {
+          data = getState().ethereum.web3.utils.hexToUtf8(bytesData)
+        }
 
         // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
         let conceptRegistryInstance = getInstance.conceptRegistry(getState())
@@ -154,6 +163,7 @@ export function fetchAssessmentData (assessmentAddress) {
             finalScore,
             conceptAddress,
             conceptData,
+            data,
             valid: true
           }))
         } else {
@@ -283,22 +293,23 @@ export function fetchAssessorStages (address, assessors, checkUserAddress = fals
   }
 }
 
+// part of fetchAssessmentData now
+
 // returns the strings that are stored on the assessments
 // for now, only the data stored by the assessee
-export function fetchStoredData (selectedAssessment) {
-  return async (dispatch, getState) => {
-    dispatch(beginLoadingDetail('attachments'))
-    let address = selectedAssessment || getState().assessments.selectedAssessment
-    let assessmentInstance = getInstance.assessment(getState(), address)
-    let assessee = await assessmentInstance.methods.assessee().call()
-    let data = await assessmentInstance.methods.data(assessee).call()
-    if (data) {
-      let decodedData = getState().ethereum.web3.utils.hexToUtf8(data)
-      dispatch(receiveStoredData(address, decodedData))
-    }
-    dispatch(endLoadingDetail('attachments'))
-  }
-}
+
+// export function fetchStoredData (selectedAssessment) {
+//   console.log('fetchStoredData', selectedAssessment)
+//   return async (dispatch, getState) => {
+//     dispatch(beginLoadingDetail('attachments'))
+//     let address = selectedAssessment || getState().assessments.selectedAssessment
+//     let assessmentInstance = getInstance.assessment(getState(), address)
+//     let assessee = await assessmentInstance.methods.assessee().call()
+//     let data = await assessmentInstance.methods.data(assessee).call()
+//     dispatch(receiveStoredData(address, data))
+//     dispatch(endLoadingDetail('attachments'))
+//   }
+// }
 
 export function fetchLatestAssessments () {
   return async (dispatch, getState) => {
