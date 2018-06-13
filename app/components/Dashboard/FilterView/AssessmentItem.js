@@ -118,9 +118,8 @@ export class AssessmentItem extends Component {
     }
     if (stage < userStage) {
       actionText = 'Waiting...'
-    }
-    // if assessment stage is finished, set good message (an assessee would have userStage===0)
-    else if (stage === Stage.Done) {
+    } else if (stage === Stage.Done) {
+      // if assessment stage is finished, set good message (an assessee would have userStage===0)
       // display score for assessee and payout for assessor
       if (!isAssessee) {
         actionText = h('div', [
@@ -133,8 +132,7 @@ export class AssessmentItem extends Component {
           h('div', assessment.finalScore + ' %')
         ])
       }
-    }
-    else if (stage === Stage.Burned) {
+    } else if (stage === Stage.Burned) {
       actionText = 'Canceled'
     }
     return (
