@@ -82,6 +82,8 @@ contract Concept {
         if (conceptRegistry.distributorAddress() == msg.sender)
             {
                 this.addWeight(_user, _weight);
+                availableMembers.push(_user);
+                memberData[_user].index = availableMembers.length;
             }
     }
 
