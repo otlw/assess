@@ -3,6 +3,9 @@ import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 
+
+import fathomLogo from '../../assets/fathom_monkey_beret_white.svg'
+
 const NetworkNames = {
   4: 'rinkeby',
   1: 'mainnet',
@@ -30,6 +33,21 @@ const HomeButton = styled(Link)`
   font-size:1.6em;
   display: inline-block
   position: relative;
+  width:5%;
+`
+
+const Logo = styled('img')`
+  margin: 0 1.25%;
+  padding: 0 1.25%;
+  height:2.5em;
+  text-align: center;
+  // background-color:${props => props.theme.light};
+  // border: 0.5px solid ${props => props.theme.dark};
+  // border-radius: 1em;
+  // text-decoration: none;
+  // font-size:1.6em;
+  display: inline-block
+  //position: relative;
   width:5%;
 `
 
@@ -62,7 +80,8 @@ export class Header extends Component {
     return (
       h(HeaderBar, [
         // an icon instead of 'Home' would be nice
-        h(HomeButton, {to: '/'}, 'F'),
+        //h(HomeButton, {to: '/'}, h('img',{alt:"logo",src:fathomLogo,style:{height:"1.5em",width:"1em"}})),
+        h(Logo,{alt:"logo",src:fathomLogo}),
         h(Box, [
           h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
             h(key, 'Network: '),
