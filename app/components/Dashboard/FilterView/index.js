@@ -10,7 +10,8 @@ const mapStateToProps = state => {
   return {
     assessments: state.assessments,
     userAddress: state.ethereum.userAddress,
-    selectedTab: state.navigation.dashboardTab
+    selectedTab: state.navigation.dashboardTab,
+    networkID: state.ethereum.networkID
   }
 }
 
