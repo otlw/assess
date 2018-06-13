@@ -203,11 +203,6 @@ contract Concept {
     }
 
     function addWeight(address _assessee, uint _weight) public onlyConcept() {
-        if (memberData[_assessee].index == 0) {
-            members.push(_assessee);
-            memberData[_assessee].index = members.length;
-        }
-
         uint idx = memberData[_assessee].componentWeightIndex[msg.sender];
         if (idx > 0) {
             memberData[_assessee].weights[idx-1] = ComponentWeight(_weight, now + lifetime);
