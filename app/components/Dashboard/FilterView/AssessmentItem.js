@@ -86,6 +86,7 @@ const LinkSubtitle = styled('div')`
 export class AssessmentItem extends Component {
   render () {
     const assessment = this.props.assessment
+    console.log(assessment)
     let userStage = assessment.userStage
     let stage = assessment.stage
 
@@ -95,9 +96,6 @@ export class AssessmentItem extends Component {
     if (this.props.userAddress === assessment.assessee) {
       RoleBadge = h(AssesseeBadge, 'Assessee')
       isAssessee = ' (you)'
-    }
-    if (stage === Stage.None) {
-      RoleBadge = null
     }
 
     // set meeting point component
