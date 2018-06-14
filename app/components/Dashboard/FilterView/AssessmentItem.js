@@ -139,7 +139,7 @@ export class AssessmentItem extends Component {
         h(Box, [
           h(ConceptName, assessment.conceptData),
           h(AssesseeAddress, {
-            href: 'https://' + (networkName(this.props.networkID)==="Mainnet" ? '' : networkName(this.props.networkID)+'.') + 'etherscan.io/address/' + assessment.assessee,
+            href: 'https://' + (networkName(this.props.networkID) === 'Mainnet' ? '' : networkName(this.props.networkID) + '.') + 'etherscan.io/address/' + assessment.assessee,
             target: '_blank',
             title: 'est'
           }, 'assessee: ' + assessment.assessee.substring(0, 8) + '...' + assessment.assessee.substring(30, 42) + isAssessee)

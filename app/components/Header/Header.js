@@ -3,7 +3,7 @@ import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 
-import {networkName} from "../../constants.js"
+import {networkName} from '../../constants.js'
 
 // styles
 const HeaderBar = styled('div')`

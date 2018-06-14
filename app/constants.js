@@ -23,17 +23,16 @@ export const LoadingStage = Object.freeze({
   Done: 4
 })
 
-
-export function networkName (id){
+export function networkName (id) {
   switch (id) {
     case 1:
-      return 'Mainnet';
+      return 'Mainnet'
     case 3:
-      return 'Ropsten';
+      return 'Ropsten'
     case 4:
-      return 'Rinkeby';
+      return 'Rinkeby'
     case 42:
-      return 'Kovan';
+      return 'Kovan'
     default:
       return 'Local'
   }
