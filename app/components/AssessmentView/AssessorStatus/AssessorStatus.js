@@ -59,7 +59,12 @@ export class AssessorStatus extends Component {
   commit () {
     // commit score+salt (salt is fixed for now)
     window.alert('Please write down your salt:' + this.state.salt)
-    this.props.commit(this.props.assessmentAddress, this.state.score, this.state.salt)
+
+    //convert score to onChain score (FE:0-100, BE: -100,100)
+    let onChainScore= ( this.state.score * 2) - 100
+
+    //call smart contract
+    this.props.commit(this.props.assessmentAddress, onChainScore, this.state.salt)
 
     // save salt and score in local storage
     let cacheCommitData = JSON.stringify({score: this.state.score, salt: this.state.salt})
@@ -68,6 +73,11 @@ export class AssessorStatus extends Component {
 
   reveal () {
     console.log('reveal', this.props.assessmentAddress, this.state.score, this.state.salt)
+
+    //convert score to onChain score (FE:0-100, BE: -100,100)
+    let onChainScore= ( this.state.score * 2) - 100
+
+    //call smart contract
     this.props.reveal(this.props.assessmentAddress, this.state.score, this.state.salt)
   }
 
