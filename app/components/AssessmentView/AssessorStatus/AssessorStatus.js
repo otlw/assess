@@ -5,15 +5,15 @@ import TxList from '../../TxList.js'
 
 // styles
 const Feedback = styled.div`
-font-size: 0.7em;
-font-style: italic;
-color:${props => props.invalidScoreRange ? 'red' : 'lightgrey'};
+  font-size: 0.7em;
+  font-style: italic;
+  color:${props => props.invalidScoreRange ? 'red' : 'lightgrey'};
 `
 const ActiveButton = styled.button`
-color:${props => props.theme.primary};
-border-color:${props => props.theme.primary};
-background-color:${props => props.theme.light};
-cursor: pointer;
+  color:${props => props.theme.primary};
+  border-color:${props => props.theme.primary};
+  background-color:${props => props.theme.light};
+  cursor: pointer;
 `
 
 // component to display an individual assessor slot address and options
@@ -42,8 +42,9 @@ export class AssessorStatus extends Component {
   }
 
   setScore (e) {
-    let score = Number(e.target.value)
-    if (score >= 0 && score <= 100) {
+    //make sure number is a multiple of 0.5%
+    let score = (Math.floor((Number(e.target.value))*2))/2
+    if (score >= 0 && score <= 100 && (((Number(e.target.value))*10)%5)===0 ) {
       this.setState({score: score, invalidScoreRange: false})
     } else {
       this.setState({invalidScoreRange: true})
@@ -83,8 +84,8 @@ export class AssessorStatus extends Component {
         return h('div', {style: {display: 'inline-block'}}, [
           // input field
           h('div', {style: {display: 'inline-block'}}, [
-            h(Feedback, {invalidScoreRange: this.state.invalidScoreRange}, 'must be 0 <= score <= 100'),
-            h('input', {value: this.state.score, type: 'number', onChange: this.setScore.bind(this)})
+            h(Feedback, {invalidScoreRange: this.state.invalidScoreRange}, 'must be 0% <= score <= 100%, 0.5% granularity'),
+            h('input', {value: this.state.score, step:0.5, type: 'number', onChange: this.setScore.bind(this)})
           ]),
           // button
           h(ActiveButton, {onClick: this.commit.bind(this)}, 'Commit a score!')
