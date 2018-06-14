@@ -123,9 +123,9 @@ export function fetchAssessmentData (assessmentAddress) {
         let assessee = await assessmentInstance.methods.assessee().call()
         let conceptAddress = await assessmentInstance.methods.concept().call()
 
-        //convert score to Front End range (FE:0,100%; BE:-100,100)
+        // convert score to Front End range (FE:0,100%; BE:-100,100)
         let onChainScore = Number(await assessmentInstance.methods.finalScore().call())
-        let finalScore = (onChainScore + 100 ) / 2
+        let finalScore = (onChainScore + 100) / 2
 
         // get the data (meeting point) and convert it from bytes32 to string
         let data = 'no meeting point set'
@@ -191,9 +191,9 @@ export function fetchScoreAndPayout (address) {
     try {
       let assessmentInstance = getInstance.assessment(getState(), address)
 
-      //convert score to Front End range (FE:0,100%; BE:-100,100)
+      // convert score to Front End range (FE:0,100%; BE:-100,100)
       let onChainScore = Number(await assessmentInstance.methods.finalScore().call())
-      let finalScore = (onChainScore + 100 ) / 2
+      let finalScore = (onChainScore + 100) / 2
 
       dispatch(receiveFinalScore({
         address,

@@ -42,9 +42,9 @@ export class AssessorStatus extends Component {
   }
 
   setScore (e) {
-    //make sure number is a multiple of 0.5%
-    let score = (Math.floor((Number(e.target.value))*2))/2
-    if (score >= 0 && score <= 100 && (((Number(e.target.value))*10)%5)===0 ) {
+    // make sure number is a multiple of 0.5%
+    let score = (Math.floor((Number(e.target.value)) * 2)) / 2
+    if (score >= 0 && score <= 100 && (((Number(e.target.value)) * 10) % 5) === 0) {
       this.setState({score: score, invalidScoreRange: false})
     } else {
       this.setState({invalidScoreRange: true})
@@ -60,10 +60,10 @@ export class AssessorStatus extends Component {
     // commit score+salt (salt is fixed for now)
     window.alert('Please write down your salt:' + this.state.salt)
 
-    //convert score to onChain score (FE:0-100, BE: -100,100)
-    let onChainScore= ( this.state.score * 2) - 100
+    // convert score to onChain score (FE:0-100, BE: -100,100)
+    let onChainScore = (this.state.score * 2) - 100
 
-    //call smart contract
+    // call smart contract
     this.props.commit(this.props.assessmentAddress, onChainScore, this.state.salt)
 
     // save salt and score in local storage
@@ -74,11 +74,11 @@ export class AssessorStatus extends Component {
   reveal () {
     console.log('reveal', this.props.assessmentAddress, this.state.score, this.state.salt)
 
-    //convert score to onChain score (FE:0-100, BE: -100,100)
-    let onChainScore= ( this.state.score * 2) - 100
+    // convert score to onChain score (FE:0-100, BE: -100,100)
+    let onChainScore = (this.state.score * 2) - 100
 
-    //call smart contract
-    this.props.reveal(this.props.assessmentAddress, this.state.score, this.state.salt)
+    // call smart contract
+    this.props.reveal(this.props.assessmentAddress, onChainScore, this.state.salt)
   }
 
   steal () {
@@ -95,7 +95,7 @@ export class AssessorStatus extends Component {
           // input field
           h('div', {style: {display: 'inline-block'}}, [
             h(Feedback, {invalidScoreRange: this.state.invalidScoreRange}, 'must be 0% <= score <= 100%, 0.5% granularity'),
-            h('input', {value: this.state.score, step:0.5, type: 'number', onChange: this.setScore.bind(this)})
+            h('input', {value: this.state.score, step: 0.5, type: 'number', onChange: this.setScore.bind(this)})
           ]),
           // button
           h(ActiveButton, {onClick: this.commit.bind(this)}, 'Commit a score!')
