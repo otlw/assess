@@ -3,6 +3,8 @@ import h from 'react-hyperscript'
 import styled from 'styled-components'
 import TxList from '../../TxList.js'
 
+import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
+
 // styles
 const Feedback = styled.div`
   font-size: 0.7em;
@@ -61,7 +63,7 @@ export class AssessorStatus extends Component {
     window.alert('Please write down your salt:' + this.state.salt)
 
     // convert score to onChain score (FE:0-100, BE: -100,100)
-    let onChainScore = (this.state.score * 2) - 100
+    let onChainScore = convertFromUIScoreToOnChainScore(this.state.score)
 
     // call smart contract
     this.props.commit(this.props.assessmentAddress, onChainScore, this.state.salt)
@@ -75,7 +77,7 @@ export class AssessorStatus extends Component {
     console.log('reveal', this.props.assessmentAddress, this.state.score, this.state.salt)
 
     // convert score to onChain score (FE:0-100, BE: -100,100)
-    let onChainScore = (this.state.score * 2) - 100
+    let onChainScore = convertFromUIScoreToOnChainScore(this.state.score)
 
     // call smart contract
     this.props.reveal(this.props.assessmentAddress, onChainScore, this.state.salt)
