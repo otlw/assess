@@ -2,7 +2,7 @@ import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
-import { StageDisplayNames, Stage } from '../../../constants.js'
+import { StageDisplayNames, Stage, networkName } from '../../../constants.js'
 
 const ItemFrame = styled('div')`
   border:2px solid ${props => props.userActionRequired ? props.theme.yellow : props.theme.dark};
@@ -139,7 +139,7 @@ export class AssessmentItem extends Component {
         h(Box, [
           h(ConceptName, assessment.conceptData),
           h(AssesseeAddress, {
-            href: 'https://' + (this.props.networkID === 4 ? 'rinkeby.' : '') + 'etherscan.io/address/' + assessment.assessee,
+            href: 'https://' + (networkName(this.props.networkID)==="Mainnet" ? '' : networkName(this.props.networkID)+'.') + 'etherscan.io/address/' + assessment.assessee,
             target: '_blank',
             title: 'est'
           }, 'assessee: ' + assessment.assessee.substring(0, 8) + '...' + assessment.assessee.substring(30, 42) + isAssessee)
