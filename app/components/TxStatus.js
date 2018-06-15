@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { removeTransaction } from '../actions/transActions.js'
 
-import {networkName} from '../../constants.js'
+import {networkName} from '../constants.js'
 
 var h = require('react-hyperscript')
 
