@@ -1,6 +1,7 @@
-import { getInstance } from '../utils.js'
+import { getInstance, convertFromOnChainScoreToUIScore } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
 import { Stage, LoadingStage } from '../constants.js'
+
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const RECEIVE_FINALSCORE = 'RECEIVE_FINALSCORE'
 export const RECEIVE_STORED_DATA = 'RECEIVE_STORED_DATA'
@@ -119,10 +120,13 @@ export function fetchAssessmentData (assessmentAddress) {
         let checkpoint = await assessmentInstance.methods.checkpoint().call()
         let size = await assessmentInstance.methods.size().call()
         let stage = Number(await assessmentInstance.methods.assessmentStage().call())
-        let finalScore = Number(await assessmentInstance.methods.finalScore().call())
         let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
         let assessee = await assessmentInstance.methods.assessee().call()
         let conceptAddress = await assessmentInstance.methods.concept().call()
+
+        // convert score to Front End range (FE:0,100%; BE:-100,100)
+        let onChainScore = Number(await assessmentInstance.methods.finalScore().call())
+        let finalScore = convertFromOnChainScoreToUIScore(onChainScore)
 
         // get the data (meeting point) and convert it from bytes32 to string
         let data = 'no meeting point set'
@@ -187,7 +191,10 @@ export function fetchScoreAndPayout (address) {
   return async (dispatch, getState) => {
     try {
       let assessmentInstance = getInstance.assessment(getState(), address)
-      let finalScore = await assessmentInstance.methods.finalScore().call()
+
+      // convert score to Front End range (FE:0,100%; BE:-100,100)
+      let onChainScore = Number(await assessmentInstance.methods.finalScore().call())
+      let finalScore = convertFromOnChainScoreToUIScore(onChainScore)
 
       dispatch(receiveFinalScore({
         address,
