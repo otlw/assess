@@ -7,6 +7,9 @@ var h = require('react-hyperscript')
 
 export class AssessmentData extends Component {
   render () {
+    if (this.props.invalidAssessment) {
+      return h('div', 'invalid assessment address!! (maybe you are on the wrong network)')
+    }
     if (this.props.loadedInfo) {
       let assessment = this.props.assessment
       return (
