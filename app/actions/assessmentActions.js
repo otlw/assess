@@ -87,7 +87,7 @@ export function storeDataOnAssessment (address, data) {
       'meetingPointChange',
       userAddress,
       address
-      // either put back fetchStoredData that was deprecated in favor of fetchAssessmentData, or use fetchAssessmentData
+      // TODO let's not forget to handle this after we decide about fetchStoredData
       // {method: fetchStoredData, args: [address]}
     )
   }
