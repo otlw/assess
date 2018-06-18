@@ -1,4 +1,5 @@
 import { getInstance } from '../utils.js'
+import { sendAndReactToTransaction } from './transActions.js'
 export const RECEIVE_CONCEPTS = 'RECEIVE_CONCEPTS'
 export const BEGIN_LOADING_CONCEPTS = 'BEGIN_LOADING_CONCEPTS'
 export const END_LOADING_CONCEPTS = 'END_LOADING_CONCEPTS'
@@ -41,17 +42,19 @@ export function loadConceptContractAndCreateAssessment (address) {
     // instanciate Concept Contract
     let userAddress = getState().ethereum.userAddress
     let conceptInstance = getInstance.concept(getState(), address)
-
-    // define constants for assessments => those could be move to a config file
     const cost = 10
-    const size = 2
-    const endTime = 1000000000000
-    const startTime = 1000000000
-    const assesseeAddress = userAddress
-    // this is were a status should be set to "waiting for assessment creation"
-    let tx = await conceptInstance.methods.makeAssessment(cost, size, startTime, endTime).send({from: assesseeAddress, gas: 3200000})
-    console.log(tx)
-    // this is were a status should be set to "assessment created"
+    const size = 5
+    const endTime = 10000000
+    const startTime = 100000
+    sendAndReactToTransaction(
+      dispatch,
+      {method: conceptInstance.methods.makeAssessment, args: [cost, size, startTime, endTime]},
+      'makeAssessment',
+      userAddress,
+      address,
+      '', // no react-method needed. This should be processed by listening to the events
+      3000000 // weirdly, this transaction will only go through with a high gas price (testnet)
+    )
   }
 }
 

@@ -2,6 +2,7 @@ import { Component } from 'react'
 import Dropdown from './Dropdown'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
+import { TxList } from '../../TxList.js'
 
 // styles
 const CreationBox = styled('div')`
@@ -60,7 +61,10 @@ export class AssessmentCreationBar extends Component {
             selectedID: this.state.selectedConceptKey,
             set: this.setConceptKey.bind(this)})]
         ),
-        h(Button, {onClick: this.createAssessment.bind(this)}, 'Create Assessment')
+        h(Button, {onClick: this.createAssessment.bind(this)}, 'Create Assessment'),
+        this.props.transactions
+          ? h(TxList, {transactions: this.props.transactions})
+          : null
       ])
     } else {
       return h('div', 'Loading Concepts')

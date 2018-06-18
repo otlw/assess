@@ -11,7 +11,10 @@ const mapStateToProps = state => {
   return {
     concepts: state.concepts,
     loadedConcepts: (state.loading.concepts === LoadingStage.Done),
-    loading: state.loading
+    loading: state.loading,
+    transactions: Object.values(state.transactions).filter(
+      tx => (tx.data === 'makeAssessment')
+    )
   }
 }
 
