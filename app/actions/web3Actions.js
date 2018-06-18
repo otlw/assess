@@ -59,10 +59,18 @@ export const connect = () => {
         dispatch(web3Disconnected())
       }
     } else {
+
+      //what should we display when no MM??
+
       // if no metamask, use rinkeby and set to public View
-      let w3 = new Web3('https://rinkeby.infura.io/2FBsjXKlWVXGLhKn7PF7')
-      dispatch(web3Connected(w3))
-      dispatch(receiveVariable('userAddress', 'publicView'))
+      //let w3 = new Web3('https://rinkeby.infura.io/2FBsjXKlWVXGLhKn7PF7')
+      // dispatch(web3Connected(w3))
+      // dispatch(receiveVariable('userAddress', 'No Account Connected'))
+
+
+      window.alert("Either you don't have the MetaMask browser extension, or you have it and you need to enter your password.\n"
+        //In the mean time, we'll be showing on-chain data loaded from Infura."
+      )
     }
   }
 }
