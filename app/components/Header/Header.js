@@ -3,12 +3,7 @@ import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 
-const NetworkNames = {
-  4: 'rinkeby',
-  1: 'mainnet',
-  3: 'ropsten',
-  42: 'kovan'
-}
+import {networkName} from '../../constants.js'
 
 // styles
 const HeaderBar = styled('div')`
@@ -53,12 +48,6 @@ const Box = styled('div')`
 
 export class Header extends Component {
   render () {
-    let network
-    if (NetworkNames[this.props.networkID]) {
-      network = NetworkNames[this.props.networkID]
-    } else {
-      network = 'Local or unknown'
-    }
     return (
       h(HeaderBar, [
         // an icon instead of 'Home' would be nice
@@ -66,7 +55,7 @@ export class Header extends Component {
         h(Box, [
           h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
             h(key, 'Network: '),
-            h(value, network)
+            h(value, networkName(this.props.networkID))
           ]),
           h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
             h(key, 'Your Address: '),

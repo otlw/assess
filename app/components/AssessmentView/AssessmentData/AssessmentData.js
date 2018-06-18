@@ -1,14 +1,9 @@
 import { Component } from 'react'
 import MeetingPoint from '../Attachments/'
 import AssessorList from '../AssessorList'
+import { Stage, StageDisplayNames } from '../../../constants.js'
+import { convertDate } from '../../../utils.js'
 var h = require('react-hyperscript')
-
-export const stages = Object.freeze({
-  1: 'Open',
-  2: 'Commit',
-  3: 'Reveal',
-  4: 'Finished'
-})
 
 export class AssessmentData extends Component {
   render () {
@@ -28,13 +23,23 @@ export class AssessmentData extends Component {
             h('span', 'Cost: '),
             h('span', assessment.cost)
           ]),
+          assessment.stage === Stage.Called
+            ? (h('div', [
+              h('span', 'Staking period expires: '),
+              h('span', convertDate(assessment.checkpoint))
+            ]))
+            : null,
+          h('div', [
+            h('span', 'Assessment end: '),
+            h('span', convertDate(assessment.endTime))
+          ]),
           h('div', [
             h('span', 'Size: '),
             h('span', assessment.size)
           ]),
           h('div', [
             h('span', 'Stage: '),
-            h('span', stages[assessment.stage]),
+            h('span', StageDisplayNames[assessment.stage]),
             h('span', ' (' + assessment.stage + '/4)')
           ]),
           // display final score only if assessment is done

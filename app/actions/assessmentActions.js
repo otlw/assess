@@ -1,6 +1,6 @@
-import { Stage, loadingStage, getInstance } from './utils.js'
+import { getInstance, convertFromOnChainScoreToUIScore } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
-var Dagger = require('eth-dagger')
+import { Stage, LoadingStage } from '../constants.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const RECEIVE_FINALSCORE = 'RECEIVE_FINALSCORE'
@@ -88,6 +88,7 @@ export function storeDataOnAssessment (address, data) {
       'meetingPointChange',
       userAddress,
       address
+      // TODO let's not forget to handle this after we decide about fetchStoredData
       // {method: fetchStoredData, args: [address]}
     )
   }
@@ -111,13 +112,28 @@ export function fetchAssessmentData (assessmentAddress) {
       dispatch(beginLoadingDetail('info'))
       try {
         let assessmentInstance = getInstance.assessment(getState(), address)
+
+        // get assessment infos
         let cost = await assessmentInstance.methods.cost().call()
+        let endTime = await assessmentInstance.methods.endTime().call()
+        // checkpoint -> keeps track of timelimits for 1) latest possible time to confirm and 2) earliest time to reveal
+        let checkpoint = await assessmentInstance.methods.checkpoint().call()
         let size = await assessmentInstance.methods.size().call()
         let stage = Number(await assessmentInstance.methods.assessmentStage().call())
-        let finalScore = Number(await assessmentInstance.methods.finalScore().call())
         let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
         let assessee = await assessmentInstance.methods.assessee().call()
         let conceptAddress = await assessmentInstance.methods.concept().call()
+
+        // convert score to Front End range (FE:0,100%; BE:-100,100)
+        let onChainScore = Number(await assessmentInstance.methods.finalScore().call())
+        let finalScore = convertFromOnChainScoreToUIScore(onChainScore)
+
+        // get the data (meeting point) and convert it from bytes32 to string
+        let data = 'no meeting point set'
+        let bytesData = await assessmentInstance.methods.data(assessee).call()
+        if (bytesData) {
+          data = getState().ethereum.web3.utils.hexToUtf8(bytesData)
+        }
 
         // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
         let conceptRegistryInstance = getInstance.conceptRegistry(getState())
@@ -142,6 +158,8 @@ export function fetchAssessmentData (assessmentAddress) {
           dispatch(receiveAssessment({
             address,
             cost,
+            checkpoint,
+            endTime,
             size,
             assessee,
             userStage,
@@ -149,6 +167,7 @@ export function fetchAssessmentData (assessmentAddress) {
             finalScore,
             conceptAddress,
             conceptData,
+            data,
             valid: true
           }))
         } else {
@@ -172,7 +191,10 @@ export function fetchScoreAndPayout (address) {
   return async (dispatch, getState) => {
     try {
       let assessmentInstance = getInstance.assessment(getState(), address)
-      let finalScore = await assessmentInstance.methods.finalScore().call()
+
+      // convert score to Front End range (FE:0,100%; BE:-100,100)
+      let onChainScore = Number(await assessmentInstance.methods.finalScore().call())
+      let finalScore = convertFromOnChainScoreToUIScore(onChainScore)
 
       dispatch(receiveFinalScore({
         address,
@@ -213,9 +235,9 @@ export function fetchAssessors (selectedAssessment) {
           e.returnValues['topic'] === '2' &&
           assessors.push(e.returnValues['user'])
       )
-      let stage = getState().assessments[address].stage
-      dispatch(fetchAssessorStages(address, assessors, stage === 1)) // TODO use constant
-      if (stage === 4) {
+      let stage = Number(getState().assessments[address].stage)
+      dispatch(fetchAssessorStages(address, assessors, Number(stage) === Stage.Called))
+      if (stage === Stage.Done) {
         dispatch(fetchAllPayouts(address))
       }
     } catch (e) {
@@ -268,8 +290,8 @@ export function fetchAssessorStages (address, assessors, checkUserAddress = fals
     }
     if (checkUserAddress) {
       let userAddress = getState().ethereum.userAddress
-      let userStage = await assessmentInstance.methods.assessorState(userAddress).call()
-      if (userStage === '1') { // TODO use constant
+      let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
+      if (userStage === Stage.Called) {
         assessorStages.push({address: userAddress, stage: userStage})
       }
     }
@@ -278,27 +300,26 @@ export function fetchAssessorStages (address, assessors, checkUserAddress = fals
   }
 }
 
+// part of fetchAssessmentData now
+
 // returns the strings that are stored on the assessments
 // for now, only the data stored by the assessee
-export function fetchStoredData (selectedAssessment) {
-  return async (dispatch, getState) => {
-    dispatch(beginLoadingDetail('attachments'))
-    let address = selectedAssessment || getState().assessments.selectedAssessment
-    let assessmentInstance = getInstance.assessment(getState(), address)
-    let assessee = await assessmentInstance.methods.assessee().call()
-    // let data = await assessmentInstance.methods.data(assessee).call()
-    let data = ''
-    if (data) {
-      let decodedData = getState().ethereum.web3.utils.hexToUtf8(data)
-      dispatch(receiveStoredData(address, decodedData))
-    }
-    dispatch(endLoadingDetail('attachments'))
-  }
-}
+// export function fetchStoredData (selectedAssessment) {
+//   console.log('fetchStoredData', selectedAssessment)
+//   return async (dispatch, getState) => {
+//     dispatch(beginLoadingDetail('attachments'))
+//     let address = selectedAssessment || getState().assessments.selectedAssessment
+//     let assessmentInstance = getInstance.assessment(getState(), address)
+//     let assessee = await assessmentInstance.methods.assessee().call()
+//     let data = await assessmentInstance.methods.data(assessee).call()
+//     dispatch(receiveStoredData(address, data))
+//     dispatch(endLoadingDetail('attachments'))
+//   }
+// }
 
 export function fetchLatestAssessments () {
   return async (dispatch, getState) => {
-    if (getState().loading.assessments === loadingStage.None) {
+    if (getState().loading.assessments === LoadingStage.None) {
       // get State data
       let userAddress = getState().ethereum.userAddress
       dispatch(beginLoadingAssessments())

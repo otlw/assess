@@ -31,7 +31,7 @@ function transactions (state = initialState, action) {
           txHash: action.txHash,
           address: action.address,
           data: action.data,
-          status: 'pending',
+          status: 'Tx published',
           time: Date.now()
         }
       }

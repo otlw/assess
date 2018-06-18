@@ -1,7 +1,9 @@
 import Web3 from 'web3'
-import { getInstance, loadingStage } from './utils.js'
+import { getInstance, loadingStage } from '../utils.js'
+import { networkName } from '../constants.js'
 // import { fetchAssessmentData } from './assessmentActions.js' // TODO import function that updates assessments
 var Dagger = require('eth-dagger')
+
 export const WEB3_CONNECTED = 'WEB3_CONNECTED'
 export const WEB3EVENTS_CONNECTED = 'WEB3EVENTS_CONNECTED'
 export const WEB3_DISCONNECTED = 'WEB3_DISCONNECTED'
@@ -35,13 +37,13 @@ export const connect = () => {
         }
 
         // set a second web3 instance to subscribe to events via websocket
-        if (networkID === 42) {
+        if (networkName(networkID) === 'Kovan') {
           dispatch(web3EventsConnected({})) // to set isConnectedVariable to true
         } else {
           // rinkeby or local testnet
           let web3events = new Web3()
-          let providerAddress = networkID === 4 ? 'wss://rinkeby.infura.io/ws' : 'ws://localhost:8545'
-          console.log('providerAddress ', providerAddress )
+          let providerAddress = networkName(networkID) === 'Rinkeby' ? 'wss://rinkeby.infura.io/ws' : 'ws://localhost:8545'
+          console.log('providerAddress ', providerAddress)
           const eventProvider = new Web3.providers.WebsocketProvider(providerAddress)
           eventProvider.on('error', e => console.error('WS Error', e))
           eventProvider.on('end', e => console.error('WS End', e))
