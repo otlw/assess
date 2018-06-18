@@ -1,6 +1,7 @@
 import Web3 from 'web3'
 import { getInstance } from '../utils.js'
 import { networkName, LoadingStage } from '../constants.js'
+import { setMainDisplay } from './navigationActions.js'
 // import { fetchAssessmentData } from './assessmentActions.js' // TODO import function that updates assessments
 var Dagger = require('eth-dagger')
 
@@ -27,13 +28,18 @@ export const connect = () => {
         // get userAddress
         let accounts = await w3.eth.getAccounts()
         if (accounts.length === 0) {
-          dispatch(receiveVariable('userAddress', 'pleaseEnterPasswordToUnblockMetamask'))
+          //this is when MM is locked
+          dispatch(setMainDisplay("UnlockMetaMask"))
         } else {
           dispatch(receiveVariable('userAddress', accounts[0]))
           // get balance from contract
           let fathomTokenInstance = getInstance.fathomToken(getState())
-          let userBalance = await fathomTokenInstance.methods.balanceOf(accounts[0]).call()
-          dispatch(receiveVariable('AhaBalance', userBalance))
+          if (fathomTokenInstance.error){
+            dispatch(setMainDisplay("UndeployedNetwork"))
+          } else {
+            let userBalance = await fathomTokenInstance.methods.balanceOf(accounts[0]).call()
+            dispatch(receiveVariable('AhaBalance', userBalance))
+          }
         }
 
         // set a second web3 instance to subscribe to events via websocket
@@ -67,8 +73,8 @@ export const connect = () => {
       // dispatch(web3Connected(w3))
       // dispatch(receiveVariable('userAddress', 'No Account Connected'))
 
-
-      window.alert("Either you don't have the MetaMask browser extension, or you have it and you need to enter your password.\n"
+      dispatch(setMainDisplay("NoMetaMask"))
+      window.alert("You don't have the MetaMask browser extension."
         //In the mean time, we'll be showing on-chain data loaded from Infura."
       )
     }
