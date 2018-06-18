@@ -12,7 +12,7 @@ export default function navigation (state = initialState, action) {
         ...state,
         dashboardTab: action.tab
       }
-     case SET_MAIN_DISPLAY:
+    case SET_MAIN_DISPLAY:
       return {
         ...state,
         mainDisplay: action.mainDisplay

@@ -28,23 +28,23 @@ export class App extends Component {
     return (
       h(HashRouter, [
         h(ThemeProvider, {theme},
-          this.props.mainDisplay === "Main"?
-          h('div', [
-            h(Header),
-            this.props.loadedWeb3
-              ? (h('div', {style: {margin: '8px'}}, [
-                h(Route, {exact: true, path: '/', component: Dashboard}),
-                h(Route, {path: '/assessment/:id', component: AssessmentView})
-              ]))
-              : h('div', 'Loading web3')
-          ]):
-          this.props.mainDisplay === "UnlockMetaMask"?
-          h('p', "You need to unlock Metamask by entering your password.\n"):
-          this.props.mainDisplay === "NoMetaMask"?
-          h('p', "You don't have the MetaMask browser extension that allows to use this app.\n Please Download it to use the features of this interface"):
-          this.props.mainDisplay === "UndeployedNetwork"?
-          h('p', "You are connected to a network on which you haven't deployed contracts. Please use an appropriate script"):
-          h('p','unexpected view')
+          this.props.mainDisplay === 'Main'
+            ? h('div', [
+              h(Header),
+              this.props.loadedWeb3
+                ? (h('div', {style: {margin: '8px'}}, [
+                  h(Route, {exact: true, path: '/', component: Dashboard}),
+                  h(Route, {path: '/assessment/:id', component: AssessmentView})
+                ]))
+                : h('div', 'Loading web3')
+            ])
+            : this.props.mainDisplay === 'UnlockMetaMask'
+              ? h('p', 'You need to unlock Metamask by entering your password.\n')
+              : this.props.mainDisplay === 'NoMetaMask'
+                ? h('p', "You don't have the MetaMask browser extension that allows to use this app.\n Please Download it to use the features of this interface")
+                : this.props.mainDisplay === 'UndeployedNetwork'
+                  ? h('p', "You are connected to a network on which you haven't deployed contracts. Please use an appropriate script")
+                  : h('p', 'unexpected view')
         )
       ])
     )

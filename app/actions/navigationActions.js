@@ -15,8 +15,8 @@ export function setDashboardTab (tab) {
 }
 
 export function setMainDisplay (mainDisplay) {
-    return {
-      type: SET_MAIN_DISPLAY,
-      mainDisplay
-    }
+  return {
+    type: SET_MAIN_DISPLAY,
+    mainDisplay
+  }
 }

@@ -28,14 +28,14 @@ export const connect = () => {
         // get userAddress
         let accounts = await w3.eth.getAccounts()
         if (accounts.length === 0) {
-          //this is when MM is locked
-          dispatch(setMainDisplay("UnlockMetaMask"))
+          // this is when MM is locked
+          dispatch(setMainDisplay('UnlockMetaMask'))
         } else {
           dispatch(receiveVariable('userAddress', accounts[0]))
           // get balance from contract
           let fathomTokenInstance = getInstance.fathomToken(getState())
-          if (fathomTokenInstance.error){
-            dispatch(setMainDisplay("UndeployedNetwork"))
+          if (fathomTokenInstance.error) {
+            dispatch(setMainDisplay('UndeployedNetwork'))
           } else {
             let userBalance = await fathomTokenInstance.methods.balanceOf(accounts[0]).call()
             dispatch(receiveVariable('AhaBalance', userBalance))
@@ -65,17 +65,16 @@ export const connect = () => {
         dispatch(web3Disconnected())
       }
     } else {
-
-      //what should we display when no MM??
+      // what should we display when no MM??
 
       // if no metamask, use rinkeby and set to public View
-      //let w3 = new Web3('https://rinkeby.infura.io/2FBsjXKlWVXGLhKn7PF7')
+      // let w3 = new Web3('https://rinkeby.infura.io/2FBsjXKlWVXGLhKn7PF7')
       // dispatch(web3Connected(w3))
       // dispatch(receiveVariable('userAddress', 'No Account Connected'))
 
-      dispatch(setMainDisplay("NoMetaMask"))
+      dispatch(setMainDisplay('NoMetaMask'))
       window.alert("You don't have the MetaMask browser extension."
-        //In the mean time, we'll be showing on-chain data loaded from Infura."
+        // In the mean time, we'll be showing on-chain data loaded from Infura."
       )
     }
   }
