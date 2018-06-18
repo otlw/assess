@@ -21,7 +21,6 @@ let initialState = {
 function ethereum (state = initialState, action) {
   switch (action.type) {
     case WEB3_CONNECTED:
-    console.log('action', action)
       return {
         ...state,
         web3: action.payload.web3,

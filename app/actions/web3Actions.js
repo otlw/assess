@@ -1,6 +1,6 @@
 import Web3 from 'web3'
-import { getInstance, loadingStage } from '../utils.js'
-import { networkName } from '../constants.js'
+import { getInstance } from '../utils.js'
+import { networkName, LoadingStage } from '../constants.js'
 // import { fetchAssessmentData } from './assessmentActions.js' // TODO import function that updates assessments
 var Dagger = require('eth-dagger')
 
@@ -76,7 +76,6 @@ const initializeEventWatcher = () => {
     if (networkID === 42) {
       // kovan
       const dagger = new Dagger('wss://kovan.dagger.matic.network')
-      console.log('dagger ', dagger )
       const fathomTokenInstance = getInstance.fathomToken(getState())
       let fathomTokenDagger = dagger.contract(fathomTokenInstance)
       var filter = fathomTokenDagger.events.Notification({
@@ -90,7 +89,7 @@ const initializeEventWatcher = () => {
         // b) the user has already been on the dashboard page once
         if ((getState().assessments[data.returnValues.sender] || data.returnValues.user === userAddress) &&
             (assessmentView === data.returnValues.sender ||
-             getState().loading.assessments >= loadingStage.None)) {
+             getState().loading.assessments >= LoadingStage.None)) {
           // TODO call function to update event
         }
       })
@@ -118,7 +117,7 @@ const initializeEventWatcher = () => {
         // b) the user has already been on the dashboard page once
         if ((getState().assessments[decodedLog.sender] || decodedLog.user === userAddress) &&
             (assessmentView === decodedLog.sender ||
-             getState().loading.assessments >= loadingStage.None)) {
+             getState().loading.assessments >= LoadingStage.None)) {
           // console.log('dispatching update. inlc saying to update all assesssors->', getState().assessments.selectedAssessment === decodedLog.sender) // true -> load information for all assessors
           // TODO call function to update event
         }
