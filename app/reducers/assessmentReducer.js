@@ -1,7 +1,5 @@
 import {
   RECEIVE_ASSESSMENT,
-  RECEIVE_FINALSCORE,
-  RECEIVE_ASSESSMENTSTAGE,
   REMOVE_ASSESSMENT,
   RECEIVE_ASSESSORS,
   RECEIVE_STORED_DATA,
@@ -23,6 +21,7 @@ assessmentAddress : {
   assessee: 0x...,
   stage: [0,4]
   finalScore: [-127, 127],
+  userStage: 0,
   assessors : [
     {
       address,
@@ -47,20 +46,6 @@ function assessments (state = initialState, action) {
       let address = action.assessment.address
       return extend(state, {[address]: extend(state[address], action.assessment)})
     }
-    case RECEIVE_ASSESSMENTSTAGE: {
-      let address = action.address
-      return {
-        ...state,
-        [address]: extend(state[address], {stage: action.stage})
-      }
-    }
-    case RECEIVE_FINALSCORE: {
-      let address = action.address
-      return {
-        ...state,
-        [address]: extend(state[address], {finalScore: action.finalScore})
-      }
-    }
     case REMOVE_ASSESSMENT: {
       let newStage = {...state}
       delete newStage[action.address]
@@ -70,7 +55,7 @@ function assessments (state = initialState, action) {
       let address = action.address
       return {
         ...state,
-        [address]: extend(state[address], {assessors: action.assessors})
+        [address]: extend(state[address], extend(state[address].assessors, {assessors: action.assessors}))
       }
     }
     case RECEIVE_STORED_DATA: {

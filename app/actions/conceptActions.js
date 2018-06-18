@@ -44,7 +44,7 @@ export function loadConceptContractAndCreateAssessment (address) {
 
     // define constants for assessments => those could be move to a config file
     const cost = 10
-    const size = 2
+    const size = 5
     const endTime = 1000000000000
     const startTime = 1000000000
     const assesseeAddress = userAddress

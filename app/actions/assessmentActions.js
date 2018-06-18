@@ -312,7 +312,6 @@ export function fetchAssessorStages (address, assessors, checkUserAddress = fals
 
 // returns the strings that are stored on the assessments
 // for now, only the data stored by the assessee
-
 // export function fetchStoredData (selectedAssessment) {
 //   console.log('fetchStoredData', selectedAssessment)
 //   return async (dispatch, getState) => {

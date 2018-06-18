@@ -24,6 +24,9 @@ async function test () {
   if (network === 'rinkeby') {
     let truffleConfig = await require('../truffle.js')
     provider = await truffleConfig.networks.rinkeby.provider
+  } else if (network === 'kovan') {
+    let truffleConfig = await require('../truffle.js')
+    provider = await truffleConfig.networks.kovan.provider
   } else {
     // use Ganache by default (last deployed contract version)
     provider = 'http://localhost:8545'
@@ -37,7 +40,7 @@ async function test () {
   let accounts = await eth.getAccounts()
   if (accounts.length === 0) {
     // if not on testnet
-    const setup = require('./initialMembers.json')
+    const setup = require('../initialMembers.json')
     accounts = setup.accounts
   }
   console.log('++++++++++= accounts : ')
@@ -105,7 +108,7 @@ async function test () {
   const assesseeAddress = accounts[0]
 
   // check balance of assessee
-  fathomTokenContract = await new web3.eth.Contract(fathomTokenArtifact.abi, fathomTokenArtifact.networks[net].address, {from: accounts[0]})
+  fathomTokenContract = await new web3.eth.Contract(fathomTokenArtifact.abi, fathomTokenArtifact.networks[net].address, {from: assesseeAddress})
   let assesseeInitialBalance = await fathomTokenContract.methods.balanceOf(assesseeAddress).call()
   console.log('Account 0 is : ' + accounts[0])
   console.log('Assessee initial AHA balance ' + Number(assesseeInitialBalance))
@@ -114,7 +117,7 @@ async function test () {
 
   // deploy 1 assessment from concept 1
   console.log('Creating first assessment....')
-  let txResultAssessment1 = await conceptContract1.methods.makeAssessment(cost, size, startTime, endTime).send({from: accounts[0], gas: 3200000})
+  let txResultAssessment1 = await conceptContract1.methods.makeAssessment(cost, size, startTime, endTime).send({from: assesseeAddress, gas: 3200000})
   // use token events to get assessment address
   let events1 = await fathomTokenContract.getPastEvents({fromBlock: 0, toBlock: 'latest'})
   const assessmentAddress1 = events1[events1.length - 1].returnValues.sender
@@ -122,7 +125,7 @@ async function test () {
 
   // deploy an assessment from concept 2
   console.log('Creating second assessment....')
-  const txResultAssessment2 = await conceptContract2.methods.makeAssessment(cost, size, startTime, endTime).send({from: accounts[0], gas: 3200000})
+  const txResultAssessment2 = await conceptContract2.methods.makeAssessment(cost, size, startTime, endTime).send({from: assesseeAddress, gas: 3200000})
   // use token events to get assessment address
   let events2 = await fathomTokenContract.getPastEvents({fromBlock: 0, toBlock: 'latest'})
   const assessmentAddress2 = events2[events2.length - 1].returnValues.sender

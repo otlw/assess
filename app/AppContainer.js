@@ -45,7 +45,7 @@ export class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    loadedWeb3: state.ethereum.isConnected && state.ethereum.userAddress && state.ethereum.networkID
+    loadedWeb3: state.ethereum.isConnected && state.ethereum.userAddress && state.ethereum.networkID && state.ethereum.webSocketIsConnected
   }
 }
 
