@@ -9,6 +9,7 @@ export class AssessmentView extends Component {
 
   componentWillUnmount () {
     this.props.resetLoadedDetails()
+    this.props.setAssessment('')
   }
 
   render () {
