@@ -1,6 +1,6 @@
 import Web3 from 'web3'
 import { getInstance, loadingStage } from './utils.js'
-import { updateAssessments } from './assessmentActions.js'
+// import { fetchAssessmentData } from './assessmentActions.js' // TODO import function that updates assessments
 var Dagger = require('eth-dagger')
 export const WEB3_CONNECTED = 'WEB3_CONNECTED'
 export const WEB3EVENTS_CONNECTED = 'WEB3EVENTS_CONNECTED'
@@ -68,6 +68,8 @@ export const connect = () => {
 const initializeEventWatcher = () => {
   return async (dispatch, getState) => {
     let networkID = getState().ethereum.networkID
+    let userAddress = getState().ethereum.userAddress
+    let assessmentView = getState().assessments.selectedAssessment
     // subscribe to all events: testnet / rinkeby
     if (networkID === 42) {
       // kovan
@@ -80,37 +82,43 @@ const initializeEventWatcher = () => {
       })
       filter.watch((data, removed) => {
         console.log('dagger-event found', data)
+        // updates are only dispatched if
+        // they come from an assessment the user is involved in AND one of the following
+        // a) the user is looking at it
+        // b) the user has already been on the dashboard page once
+        if ((getState().assessments[data.returnValues.sender] || data.returnValues.user === userAddress) &&
+            (assessmentView === data.returnValues.sender ||
+             getState().loading.assessments >= loadingStage.None)) {
+          // TODO call function to update event
+        }
       })
     } else {
       const fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
       let web3WS = getState().ethereum.web3events
       let notificationJSON = fathomTokenArtifact.abi.filter(x => x.name === 'Notification')[0]
-      console.log('notificationJSON', notificationJSON)
       let ahadress = fathomTokenArtifact.networks[getState().ethereum.networkID].address
       web3WS.eth.subscribe('logs', {
         address: ahadress,
-        topics: ['0xe41f8f86e0c2a4bb86f57d2698c1704cd23b5f42a84336cdb49377cdca96d876']
+        topics: ['0xe41f8f86e0c2a4bb86f57d2698c1704cd23b5f42a84336cdb49377cdca96d876'] // notification topic
       }, (error, log) => {
         if (error) {
           console.log('event subscirption error!:')
         }
-        // if is Notification-event
         console.log('WS-event found', log) //, log.data, log.topics.length)
         let decodedLog = web3WS.eth.abi.decodeLog(
           notificationJSON.inputs,
           log.data,
           log.topics.slice(1, 4)
         )
-        let userAddress = getState().ethereum.userAddress
-        let assessmentView = getState().assessments.selectedAssessment
         // updates are only dispatched if
         // they come from an assessment the user is involved in AND one of the following
         // a) the user is looking at it
         // b) the user has already been on the dashboard page once
-        if (decodedLog.user === userAddress &&
+        if ((getState().assessments[decodedLog.sender] || decodedLog.user === userAddress) &&
             (assessmentView === decodedLog.sender ||
              getState().loading.assessments >= loadingStage.None)) {
-          dispatch(updateAssessments(decodedLog.sender))
+          // console.log('dispatching update. inlc saying to update all assesssors->', getState().assessments.selectedAssessment === decodedLog.sender) // true -> load information for all assessors
+          // TODO call function to update event
         }
       })
     }
