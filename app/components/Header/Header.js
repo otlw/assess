@@ -3,15 +3,9 @@ import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 
-// import fathomLogo from '../../assets/fathom_monkey_beret_color.svg'
-import fathomLogo from '../../assets/test.svg'
+import fathomLogo from '../../assets/fathom_monkey_beret_color_cropped.svg'
 
-const NetworkNames = {
-  4: 'rinkeby',
-  1: 'mainnet',
-  3: 'ropsten',
-  42: 'kovan'
-}
+import {networkName} from '../../constants.js'
 
 // styles
 const HeaderBar = styled('div')`
@@ -22,32 +16,11 @@ const HeaderBar = styled('div')`
   font-size:0.8em;
 `
 
-// const HomeButton = styled(Link)`
-//   margin: 0.3em 1.25%;
-//   padding: 0.2em 1.25%;
-//   text-align: center;
-//   background-color:${props => props.theme.light};
-//   border: 0.5px solid ${props => props.theme.dark};
-//   border-radius: 1em;
-//   text-decoration: none;
-//   font-size:1.6em;
-//   display: inline-block
-//   position: relative;
-//   width:5%;
-// `
-
 const Logo = styled('img')`
   margin: 0 1.25% 0 1.25%;
   padding: 0 1.25%;
-  //height:6em;
   text-align: center;
-  // background-color:${props => props.theme.light};
-  // border: 0.5px solid ${props => props.theme.dark};
-  // border-radius: 1em;
-  // text-decoration: none;
-  // font-size:1.6em;
   display: inline-block
-  //position: relative;
   width:5%;
   vertical-align:top;
 `
@@ -74,21 +47,13 @@ const Box = styled('div')`
 
 export class Header extends Component {
   render () {
-    let network
-    if (NetworkNames[this.props.networkID]) {
-      network = NetworkNames[this.props.networkID]
-    } else {
-      network = 'Local or unknown'
-    }
     return (
       h(HeaderBar, [
-        // an icon instead of 'Home' would be nice
-        // h(HomeButton, {to: '/'}, h('img',{alt:"logo",src:fathomLogo,style:{height:"1.5em",width:"1em"}})),
         h(Link, {to: '/'}, h(Logo, {alt: 'logo', src: fathomLogo})),
         h(Box, [
           h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
             h(key, 'Network: '),
-            h(value, network)
+            h(value, networkName(this.props.networkID))
           ]),
           h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
             h(key, 'Your Address: '),

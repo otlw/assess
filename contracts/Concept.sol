@@ -184,7 +184,7 @@ contract Concept {
       if (nMemberInMew < size * 5) {
         newAssessment.callAllFromMew(nMemberInMew, mewAddress);
       } else {
-        newAssessment.setAssessorPool(block.number, address(this), size*5);
+        newAssessment.setAssessorPool(uint(blockhash(block.number)), address(this), size*5);
       }
       return true;
     }

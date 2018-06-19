@@ -30,3 +30,13 @@ export const getInstance = {
     )
   }
 }
+
+// convert score UI/SmartContracts
+
+export function convertFromOnChainScoreToUIScore (x) {
+  return (x + 100) / 2
+}
+
+export function convertFromUIScoreToOnChainScore (x) {
+  return (x * 2) - 100
+}
