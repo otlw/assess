@@ -2,6 +2,7 @@ var HDWalletProvider = require('truffle-hdwallet-provider')
 let mnemonic
 try {
   mnemonic = require('./secrets.json')
+  console.log('using mnemonic stored on disk')
 } catch (e) {
   mnemonic = {seed: 'put your seed words here or in a file called secret. json'}
   console.log('no mnemonic found. Deploying to rinkeby will not work.')

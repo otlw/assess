@@ -2,18 +2,19 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { LoadComponent } from '../../hocs/loadComponent.js'
 import { LoadingStage } from '../../../constants.js'
-import { fetchAssessmentData } from '../../../actions/assessmentActions.js'
+import { validateAndFetchAssessmentData } from '../../../actions/assessmentActions.js'
 import AssessmentData from './AssessmentData'
 
 const mapStateToProps = (state) => {
   return {
     loadedInfo: (state.loading.assessmentDetail.info === LoadingStage.Done),
     assessment: state.assessments[state.assessments.selectedAssessment],
-    loading: state.loading
+    loading: state.loading,
+    invalidAssessment: state.assessments.selectedAssessment === 'invalid'
   }
 }
 
 export default compose(
-  connect(mapStateToProps, {load: fetchAssessmentData}),
+  connect(mapStateToProps, {load: validateAndFetchAssessmentData}),
   LoadComponent
 )(AssessmentData)
