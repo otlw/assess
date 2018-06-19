@@ -3,8 +3,7 @@ import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 
-
-//import fathomLogo from '../../assets/fathom_monkey_beret_color.svg'
+// import fathomLogo from '../../assets/fathom_monkey_beret_color.svg'
 import fathomLogo from '../../assets/test.svg'
 
 const NetworkNames = {
@@ -84,8 +83,8 @@ export class Header extends Component {
     return (
       h(HeaderBar, [
         // an icon instead of 'Home' would be nice
-        //h(HomeButton, {to: '/'}, h('img',{alt:"logo",src:fathomLogo,style:{height:"1.5em",width:"1em"}})),
-        h(Link, {to: '/'},h(Logo,{alt:"logo",src:fathomLogo})),
+        // h(HomeButton, {to: '/'}, h('img',{alt:"logo",src:fathomLogo,style:{height:"1.5em",width:"1em"}})),
+        h(Link, {to: '/'}, h(Logo, {alt: 'logo', src: fathomLogo})),
         h(Box, [
           h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
             h(key, 'Network: '),
