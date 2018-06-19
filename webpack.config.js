@@ -9,7 +9,8 @@ module.exports = {
   devtool: 'source-map',
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: "",
   },
   module : {
     rules : [
@@ -17,10 +18,10 @@ module.exports = {
          test: /\.(png|svg|jpg|gif)$/,
          use: [
            {loader: 'file-loader',
-            options: {
-              name: '[path][name].[ext]',
-              outputPath: 'assets/'
-            }
+            // options: {
+            //   name: '[path][name].[ext]',
+            //   outputPath: 'assets/'
+            // }
           }
          ]
       }
