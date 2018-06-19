@@ -37,7 +37,8 @@ export function confirmAssessor (address) {
       {method: assessmentInstance.methods.confirmAssessor, args: []},
       Stage.Called,
       userAddress,
-      address
+      address,
+      {method: fetchAssessors, args: [address]}
     )
   }
 }
@@ -51,7 +52,8 @@ export function commit (address, score, salt) {
       {method: assessmentInstance.methods.commit, args: [hashScoreAndSalt(score, salt)]},
       Stage.Confirmed,
       userAddress,
-      address
+      address,
+      {method: fetchAssessorStages, args: [address, getState().assessments[address].assessors, false]}
     )
   }
 }
@@ -65,7 +67,8 @@ export function reveal (address, score, salt) {
       {method: assessmentInstance.methods.reveal, args: [score, salt]},
       Stage.Committed,
       userAddress,
-      address
+      address,
+      {method: fetchAssessorStages, args: [address, getState().assessments[address].assessors, false]}
     )
   }
 }
@@ -87,9 +90,8 @@ export function storeDataOnAssessment (address, data) {
       {method: assessmentInstance.methods.addData, args: [dataAsBytes]},
       'meetingPointChange',
       userAddress,
-      address
-      // TODO let's not forget to handle this after we decide about fetchStoredData
-      // {method: fetchStoredData, args: [address]}
+      address,
+      {method: fetchStoredData, args: [address]}
     )
   }
 }
@@ -312,18 +314,22 @@ export function fetchAssessorStages (address, assessors, checkUserAddress = fals
 
 // returns the strings that are stored on the assessments
 // for now, only the data stored by the assessee
-// export function fetchStoredData (selectedAssessment) {
-//   console.log('fetchStoredData', selectedAssessment)
-//   return async (dispatch, getState) => {
-//     dispatch(beginLoadingDetail('attachments'))
-//     let address = selectedAssessment || getState().assessments.selectedAssessment
-//     let assessmentInstance = getInstance.assessment(getState(), address)
-//     let assessee = await assessmentInstance.methods.assessee().call()
-//     let data = await assessmentInstance.methods.data(assessee).call()
-//     dispatch(receiveStoredData(address, data))
-//     dispatch(endLoadingDetail('attachments'))
-//   }
-// }
+
+export function fetchStoredData (selectedAssessment) {
+  console.log('fetchStoredData', selectedAssessment)
+  return async (dispatch, getState) => {
+    dispatch(beginLoadingDetail('attachments'))
+    let address = selectedAssessment || getState().assessments.selectedAssessment
+    let assessmentInstance = getInstance.assessment(getState(), address)
+    let assessee = await assessmentInstance.methods.assessee().call()
+    let data = await assessmentInstance.methods.data(assessee).call()
+    if (data) {
+      data = getState().ethereum.web3.utils.hexToUtf8(data)
+      dispatch(receiveStoredData(address, data))
+    }
+    dispatch(endLoadingDetail('attachments'))
+  }
+}
 
 export function fetchLatestAssessments () {
   return async (dispatch, getState) => {
