@@ -17,7 +17,7 @@ const HeaderBar = styled('div')`
 `
 
 const Logo = styled('img')`
-  margin: 0 1.25% 0 1.25%;
+  margin: 0 1.25%;
   padding: 0 1.25%;
   text-align: center;
   display: inline-block
