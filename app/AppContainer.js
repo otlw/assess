@@ -21,15 +21,39 @@ const theme = {
 // the main frame on which everything is displayed.
 // It will call connect() when mounting the header) and render the other views once
 // the necessary info (web3 instance, networkId, userAddress) is there
+
+// If connect() is unable to instanciate the web3 object (and userAddress) for various reasons, a warning
+// screen will be displayed instead of the App
+
 // The connect() function also listens for changes in metamask and, if any are detected, triggers a reload of
 // the entire window
+
 export class App extends Component {
   render () {
+
+    //use the mainDisplay variable to know wether to display the App or a warning screen
+    let mainDisplay=this.props.mainDisplay
+    let warningScreen=null;
+
+    if (mainDisplay === 'UnlockMetaMask'){
+      //if user needs to enter password
+      warningScreen=h('p', 'You need to unlock Metamask by entering your password.\n')
+
+    } else if (mainDisplay === 'NoMetaMask'){
+      //if user doesn't have MetaMask
+      warningScreen=h('p', "You don't have the MetaMask browser extension that allows to use this app.\n Please Download it to use the features of this interface")
+    
+    } else if (mainDisplay === 'UndeployedNetwork'){
+      //if there arent anydeployed contract on this network
+      warningScreen=h('p', "You are connected to a network on which you haven't deployed contracts. Please use an appropriate script")
+    
+    } //else, just display the normal App
+
     return (
       h(HashRouter, [
         h(ThemeProvider, {theme},
-          this.props.mainDisplay === 'Main'
-            ? h('div', [
+          warningScreen === null? 
+            h('div', [
               h(Header),
               this.props.loadedWeb3
                 ? (h('div', {style: {margin: '8px'}}, [
@@ -37,14 +61,7 @@ export class App extends Component {
                   h(Route, {path: '/assessment/:id', component: AssessmentView})
                 ]))
                 : h('div', 'Loading web3')
-            ])
-            : this.props.mainDisplay === 'UnlockMetaMask'
-              ? h('p', 'You need to unlock Metamask by entering your password.\n')
-              : this.props.mainDisplay === 'NoMetaMask'
-                ? h('p', "You don't have the MetaMask browser extension that allows to use this app.\n Please Download it to use the features of this interface")
-                : this.props.mainDisplay === 'UndeployedNetwork'
-                  ? h('p', "You are connected to a network on which you haven't deployed contracts. Please use an appropriate script")
-                  : h('p', 'unexpected view')
+            ]):warningScreen
         )
       ])
     )
