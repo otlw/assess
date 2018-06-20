@@ -216,7 +216,6 @@ export function fetchAssessmentData (address) {
   the previous value of those also (userPayout, finalScore). Also, it uses
   updateAssessors(address, stage) to fetch the latest changes concerning the
   assessors
-  TODO iff the active view of the app is the assessment in question ??
 */
 export function updateAssessment (address) {
   return async (dispatch, getState) => {
@@ -231,8 +230,8 @@ export function updateAssessment (address) {
       let onChainScore = Number(await assessmentInstance.methods.finalScore().call())
       // convert score to Front End range (FE:0,100%; BE:-100,100)
       finalScore = convertFromOnChainScoreToUIScore(onChainScore)
-      if (userAddress === assessee) {
-        // dispatch(fetchPayouts([userAddress])) //TODO
+      if (userAddress !== assessee) {
+        dispatch(fetchPayouts(address, userAddress))
       }
     }
 
@@ -271,9 +270,6 @@ export function fetchAssessors () {
     if (getState().loading.assessments === LoadingStage.None) {
       let address = getState().assessments.selectedAssessment
       try {
-        // let assessors = [] //getState().assessments[address].assessorStages ? Object.keys(getState().assessments[address].assessorStages) : ''
-        // if (!assessors) {
-        // reading assessors from events
         const fathomTokenInstance = getInstance.fathomToken(getState())
         let pastEvents = await fathomTokenInstance.getPastEvents('Notification', {
           filter: {sender: address, topic: 2},
@@ -322,12 +318,38 @@ export function updateAssessors (address, assessorAddresses = false, checkUserAd
       dispatch(receiveAssessors(address, assessorStages))
       let stage = Number(getState().assessments[address].stage)
       if (stage === Stage.Done) {
-        // dispatch(fetchPayouts(assessors)) //TODO
+        dispatch(fetchPayouts(address))
       }
     } else {
       console.log('no assessors to be updated')
     }
     dispatch(endLoadingDetail('assessors'))
+  }
+}
+
+/*
+  fetches the payouts of one or all assessors of a given assessment
+*/
+export function fetchPayouts (address, user = false) {
+  console.log('fetchPayouts')
+  return async (dispatch, getState) => {
+    // dispatch(beginLoadingDetail('payouts'))
+    const fathomTokenInstance = getInstance.fathomToken(getState())
+    let filter = {
+      filter: { _from: address },
+      fromBlock: 0,
+      toBlock: 'latest'
+    }
+    if (user) {
+      console.log('filtering payout for user', user)
+      filter.filter['_to'] = user
+    }
+    let pastEvents = await fathomTokenInstance.getPastEvents('Transfer', filter)
+    let payouts = {}
+    pastEvents.filter(e =>
+      (payouts[e.returnValues['_to']] = e.returnValues['_value'])
+    )
+    dispatch(receivePayouts(address, payouts))
   }
 }
 

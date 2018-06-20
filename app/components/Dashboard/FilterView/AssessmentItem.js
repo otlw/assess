@@ -121,9 +121,10 @@ export class AssessmentItem extends Component {
       // if assessment stage is finished, set good message (an assessee would have userStage===0)
       // display score for assessee and payout for assessor
       if (!isAssessee) {
+        let gain = this.props.assessment.payouts[this.props.userAddress] - this.props.assessment.cost
         actionText = h('div', [
           h('div', 'Payout :'),
-          h('div', '+5 AHA')
+          h('div', (gain >= 0 ? '+' : '-') + gain.toString() + ' AHA')
         ])
       } else {
         actionText = h('div', [
