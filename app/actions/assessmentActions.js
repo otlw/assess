@@ -224,7 +224,7 @@ export function updateAssessment (address) {
     let assessmentInstance = getInstance.assessment(getState(), address)
     let stage = Number(await assessmentInstance.methods.assessmentStage().call())
     let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
-    let assessee = getState().assessments[address].assessee || await assessmentInstance.methods.assessee().call()
+    let assessee = await assessmentInstance.methods.assessee().call()
 
     let finalScore
     if (stage === Stage.Done) {
@@ -303,7 +303,6 @@ export function updateAssessors (address, assessorAddresses = false, checkUserAd
   return async (dispatch, getState) => {
     let assessmentInstance = getInstance.assessment(getState(), address)
     let assessors = assessorAddresses || (getState().assessments[address].assessorStages ? Object.keys(getState().assessments[address].assessorStages) : '')
-    console.log('assessorAddresses to be updated', assessors )
     let assessorStages = {}
     if (assessors) {
       for (let i = 0; i < assessors.length; i++) {
@@ -332,6 +331,21 @@ export function updateAssessors (address, assessorAddresses = false, checkUserAd
   }
 }
 
+export function processEvent (user, sender, topic) {
+  return async (dispatch, getState) => {
+    if (topic <= 1) {
+      dispatch(fetchAssessmentData(sender))
+    }
+    let userAddress = getState().ethereum.userAddress
+    if (topic === 2) {
+      dispatch(receiveAssessor(sender, user))
+    }
+    if (topic === 4 && user === userAddress) {
+      dispatch(updateAssessment(sender))
+    }
+  }
+}
+
 export function receiveAssessors (address, assessorStages) {
   return {
     type: RECEIVE_ASSESSORS,
@@ -342,7 +356,7 @@ export function receiveAssessors (address, assessorStages) {
 
 export function receiveAssessor (address, assessor) {
   return {
-    type: 'RECEIVE_ASSESSOR',
+    type: RECEIVE_ASSESSOR,
     address,
     assessor
   }

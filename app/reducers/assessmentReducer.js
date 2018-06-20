@@ -64,7 +64,7 @@ function assessments (state = initialState, action) {
         ...state,
         [address]: extend(assessment, {assessorStages: newAssessors})
       }
-      console.log('assessment: ', address, 'before', state[address], ' after', ns[address])
+      // console.log('assessment: ', address, 'before', state[address], ' after', ns[address])
       return ns
     }
     case RECEIVE_STORED_DATA: {

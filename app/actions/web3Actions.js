@@ -1,7 +1,7 @@
 import Web3 from 'web3'
 import { getInstance } from '../utils.js'
 import { networkName, LoadingStage } from '../constants.js'
-// import { fetchAssessmentData } from './assessmentActions.js' // TODO import function that updates assessments
+import { processEvent } from './assessmentActions.js'
 var Dagger = require('eth-dagger')
 
 export const WEB3_CONNECTED = 'WEB3_CONNECTED'
@@ -90,7 +90,11 @@ const initializeEventWatcher = () => {
         if ((getState().assessments[data.returnValues.sender] || data.returnValues.user === userAddress) &&
             (assessmentView === data.returnValues.sender ||
              getState().loading.assessments >= LoadingStage.None)) {
-          // TODO call function to update event
+          dispatch(processEvent(
+            data.returnValues.user,
+            data.returnValues.sender,
+            Number(data.returnValues.topic)
+          ))
         }
       })
     } else {
@@ -119,7 +123,7 @@ const initializeEventWatcher = () => {
             (assessmentView === decodedLog.sender ||
              getState().loading.assessments >= LoadingStage.None)) {
           // console.log('dispatching update. inlc saying to update all assesssors->', getState().assessments.selectedAssessment === decodedLog.sender) // true -> load information for all assessors
-          // TODO call function to update event
+          dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic)))
         }
       })
     }
