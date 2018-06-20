@@ -71,12 +71,6 @@ export function reveal (address, score, salt) {
   }
 }
 
-export function storeData (address, data) {
-  return async (dispatch, getState) => {
-    dispatch(storeDataOnAssessment(address, data))
-  }
-}
-
 export function storeDataOnAssessment (address, data) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
@@ -337,95 +331,6 @@ export function updateAssessors (address, assessorAddresses = false, checkUserAd
     dispatch(endLoadingDetail('assessors'))
   }
 }
-
-// part of fetchAssessmentData now
-
-// returns the strings that are stored on the assessments
-// for now, only the data stored by the assessee
-// export function fetchStoredData (selectedAssessment) {
-//   console.log('fetchStoredData', selectedAssessment)
-//   return async (dispatch, getState) => {
-//     dispatch(beginLoadingDetail('attachments'))
-//     let address = selectedAssessment || getState().assessments.selectedAssessment
-//     let assessmentInstance = getInstance.assessment(getState(), address)
-//     let assessee = await assessmentInstance.methods.assessee().call()
-//     let data = await assessmentInstance.methods.data(assessee).call()
-//     dispatch(receiveStoredData(address, data))
-//     dispatch(endLoadingDetail('attachments'))
-//   }
-// }
-
-
-// reads all transfers an assessments to users from event-logs
-// export function fetchAllPayouts (address) {
-//   return async (dispatch, getState) => {
-//     dispatch(beginLoadingDetail('payouts'))
-//     try {
-//       // reading assessors-payouts from events
-//       const fathomTokenInstance = getInstance.fathomToken(getState())
-//       // NOTE: this piece is a bit tricky, as filtering in the call usually works on the local testnet, but not on rinkeby
-//       // for rinkeby one has to get all events and filter locally
-//       let pastEvents = await fathomTokenInstance.getPastEvents({fromBlock: 0, toBlock: 'latest'})
-//       if (pastEvents.length === []) {
-//         console.log('Oddly no Notifications events have been found. Try switching Metamasks network back and forth')
-//       }
-//       let payouts = {}
-//       pastEvents.filter(
-//         e =>
-//           e.event === 'Transfer' &&
-//           e.returnValues['_from'] === address &&
-//           (payouts[e.returnValues['_to']] = e.returnValues['_value'])
-//       )
-//       dispatch(receivePayouts(address, payouts))
-//     } catch (e) {
-//       console.log('ERROR: fetching payouts from the events did not work!', e)
-//     }
-//     dispatch(endLoadingDetail('payouts'))
-//   }
-// }
-
-// let assessors = getState().assessments[address].assessors || []
-// let data = {}
-// for (let i = 0; i < assessors.length; i++) {
-// data[assessors[i]] = await assessmentInstance.methods.data(assessors[i]).call()
-// }
-
-// export function updateAssessments (address) {
-//   return async (dispatch, getState) => {
-//     let assessments = await getState().assessments
-//     if (Object.keys(assessments).includes(address)) {
-//       dispatch(updateExistingAssessment(address))
-//     } else {
-//       dispatch(fetchAssessmentData(address))
-//     }
-//   }
-// }
-
-// function updateExistingAssessment (address) {
-//   return async (dispatch, getState) => {
-//     let userAddress = getState().ethereum.userAddress
-//     let oldStage = getState().assessments[address].stage
-
-//     const assessmentInstance = getInstance.assessment(getState(), address)
-//     let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
-//     let assessmentStage = Number(await assessmentInstance.methods.assessmentStage().call())
-
-//     // if the assessment is no longer available to the user:
-//     if (oldStage === Stage.Called &&
-//         assessmentStage > Stage.Called &&
-//         userStage < Stage.Confirmed) {
-//       dispatch(removeAssessment(address))
-//     }
-
-//     if (assessmentStage === Stage.Done) {
-//       dispatch(fetchScoreAndPayout(address))
-//     } else {
-//       dispatch(receiveAssessmentStage(address, assessmentStage))
-//     }
-//   }
-// }
-
-// ============== sync actions ===================
 
 export function receiveAssessors (address, assessorStages) {
   return {

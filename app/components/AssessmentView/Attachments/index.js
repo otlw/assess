@@ -1,12 +1,11 @@
 import { connect } from 'react-redux'
-import { storeData } from '../../../actions/assessmentActions'
+import { storeDataOnAssessment } from '../../../actions/assessmentActions'
 import MeetingPoint from './MeetingPoint.js'
 
 const mapStateToProps = (state, ownProps) => {
   return {
     transactions: Object.values(state.transactions).filter(
       tx => (tx.address === state.assessments.selectedAssessment &&
-             // tx.sender === ownProps.assessorAddress &&
              tx.data === 'meetingPointChange')
     ),
     editable: state.ethereum.userAddress === ownProps.assessee,
@@ -16,7 +15,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = {
-  storeData
+  storeData: storeDataOnAssessment
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeetingPoint)
