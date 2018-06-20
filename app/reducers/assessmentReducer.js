@@ -1,5 +1,6 @@
 import {
   RECEIVE_ASSESSMENT,
+  RECEIVE_ASSESSOR,
   REMOVE_ASSESSMENT,
   RECEIVE_ASSESSORS,
   RECEIVE_STORED_DATA,
@@ -22,13 +23,10 @@ assessmentAddress : {
   stage: [0,4]
   finalScore: [-127, 127],
   userStage: 0,
-  assessors : [
-    {
-      address,
-      stage,
-    },
-    ...
-  ]
+  assessorStages : {
+      address: Called
+      ...
+  },
   data: {
      address: dataString,
      ...
@@ -55,8 +53,19 @@ function assessments (state = initialState, action) {
       let address = action.address
       return {
         ...state,
-        [address]: extend(state[address], extend(state[address].assessors, {assessors: action.assessors}))
+        [address]: extend(state[address], extend(state[address].assessorStages, {assessorStages: action.assessorStages}))
       }
+    }
+    case RECEIVE_ASSESSOR: {
+      let address = action.address
+      let assessment = state[address] || {assessorStages: {}}
+      let newAssessors = extend(assessment.assessorStages, {[action.assessor]: ''})
+      let ns = {
+        ...state,
+        [address]: extend(assessment, {assessorStages: newAssessors})
+      }
+      console.log('assessment: ', address, 'before', state[address], ' after', ns[address])
+      return ns
     }
     case RECEIVE_STORED_DATA: {
       let address = action.assessmentAddress

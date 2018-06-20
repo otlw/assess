@@ -6,16 +6,22 @@ var h = require('react-hyperscript')
 export class AssessorList extends Component {
   render () {
     if (this.props.loadedAssessors) {
-      return h('div',
-        this.props.assessors.map((assessor, k) => {
-          return h(AssessorStatusBox, {
-            assessorAddress: assessor.address,
-            assessorNumber: k,
-            assessorStage: parseInt(assessor.stage),
-            payout: assessor.stage === '4' ? this.props.payouts[assessor.address] : ''
-          })
-        })
-      )
+      let assessorLines = []
+      let k = 0
+      if (this.props.assessorStages) {
+        for (let assessor of Object.keys(this.props.assessorStages)) {
+          assessorLines.push(
+            h(AssessorStatusBox, {
+              assessorAddress: assessor,
+              assessorNumber: k,
+              assessorStage: parseInt(this.props.assessorStages[assessor]),
+              payout: assessor.stage === '4' ? this.props.payouts[assessor] : ''
+            })
+          )
+          k++
+        }
+      }
+      return h('div', assessorLines)
     } else {
       return h('div', 'Loading assessors...')
     }
