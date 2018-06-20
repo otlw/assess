@@ -2,6 +2,7 @@ import Web3 from 'web3'
 import { getInstance } from '../utils.js'
 import { networkName, LoadingStage } from '../constants.js'
 import { processEvent } from './assessmentActions.js'
+import { setMainDisplay } from './navigationActions.js'
 var Dagger = require('eth-dagger')
 
 export const WEB3_CONNECTED = 'WEB3_CONNECTED'
@@ -27,13 +28,18 @@ export const connect = () => {
         // get userAddress
         let accounts = await w3.eth.getAccounts()
         if (accounts.length === 0) {
-          dispatch(receiveVariable('userAddress', 'pleaseEnterPasswordToUnblockMetamask'))
+          // this is when MM is locked
+          dispatch(setMainDisplay('UnlockMetaMask'))
         } else {
           dispatch(receiveVariable('userAddress', accounts[0]))
           // get balance from contract
           let fathomTokenInstance = getInstance.fathomToken(getState())
-          let userBalance = await fathomTokenInstance.methods.balanceOf(accounts[0]).call()
-          dispatch(receiveVariable('AhaBalance', userBalance))
+          if (fathomTokenInstance.error) {
+            dispatch(setMainDisplay('UndeployedNetwork'))
+          } else {
+            let userBalance = await fathomTokenInstance.methods.balanceOf(accounts[0]).call()
+            dispatch(receiveVariable('AhaBalance', userBalance))
+          }
         }
 
         // set a second web3 instance to subscribe to events via websocket
@@ -59,10 +65,9 @@ export const connect = () => {
         dispatch(web3Disconnected())
       }
     } else {
-      // if no metamask, use rinkeby and set to public View
-      let w3 = new Web3('https://rinkeby.infura.io/2FBsjXKlWVXGLhKn7PF7')
-      dispatch(web3Connected(w3))
-      dispatch(receiveVariable('userAddress', 'publicView'))
+      // If the user has no MetaMask extension, a different screen will be displayed instead of the App
+      dispatch(setMainDisplay('NoMetaMask'))
+      window.alert("You don't have the MetaMask browser extension.")
     }
   }
 }
