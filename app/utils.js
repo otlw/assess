@@ -16,11 +16,15 @@ export const getInstance = {
   assessment: (state, address) => getContractInstance(state.ethereum.web3, assessmentABI, address),
   concept: (state, address) => getContractInstance(state.ethereum.web3, conceptABI, address),
   fathomToken: (state) => {
-    return getContractInstance(
-      state.ethereum.web3,
-      fathomTokenArtifact.abi,
-      fathomTokenArtifact.networks[state.ethereum.networkID].address
-    )
+    if (fathomTokenArtifact.networks[state.ethereum.networkID] && fathomTokenArtifact.networks[state.ethereum.networkID].address) {
+      return getContractInstance(
+        state.ethereum.web3,
+        fathomTokenArtifact.abi,
+        fathomTokenArtifact.networks[state.ethereum.networkID].address
+      )
+    } else {
+      return {error: true}
+    }
   },
   conceptRegistry: (state) => {
     return getContractInstance(
