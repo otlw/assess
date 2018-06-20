@@ -90,7 +90,9 @@ export function storeDataOnAssessment (address, data) {
 }
 
 /*
-  fetches all data for all assessments (static, dynamic info & assessor-related info)
+  Called ONLY ONCE via the loading-hoc of FilterView-component.
+  Fetches all data for all assessments (static, dynamic info & assessor-related info)
+  and sorts staked assessors to assessments.
 */
 export function fetchLatestAssessments () {
   return async (dispatch, getState) => {
@@ -135,8 +137,10 @@ export function fetchLatestAssessments () {
 }
 
 /*
-  validates whether or not an assessment in the assessmentView is from a legal
-  concept which also knows about the assessment
+  Called via the loading-hoc of AssessmentData.js, every time the assessmentView is mounted.
+  Validates whether or not an assessment in the assessmentView is from a legal
+  concept which also knows about the assessment, and if so
+  calls fetchAssessmentData()
 */
 export function validateAndFetchAssessmentData () {
   return async (dispatch, getState) => {
@@ -165,8 +169,9 @@ export function validateAndFetchAssessmentData () {
 }
 
 /*
-  fetch assessment data for one given assessment if the basic assessment-Data
- is already in state (), it only fetches what could have changed via updateAssessment
+  Fetch assessment data for one given assessment. If the basic assessment-Data
+ is already in state (), it only fetches what could have changed via
+ updateAssessment()
  */
 export function fetchAssessmentData (address) {
   return async (dispatch, getState) => {
@@ -211,10 +216,10 @@ export function fetchAssessmentData (address) {
 }
 
 /*
-  fetches stuff that can change (stage, userStage, meeting Point) and dependent on
+  Fetches assessment-data that can change (stage, userStage, meeting Point) and dependent on
   the previous value of those also (userPayout, finalScore). Also, it uses
   updateAssessors(address, stage) to fetch the latest changes concerning the
-  assessors
+  assessors.
 */
 export function updateAssessment (address) {
   return async (dispatch, getState) => {
@@ -257,11 +262,10 @@ export function updateAssessment (address) {
 }
 
 /*
-  This is the loading-function for the AssessorList-component. It will only fetch Assessors
+  This is the hoc-loading-function for the AssessorList-component. It will only fetch Assessors
   if those have not been loaded already from the Dashboard.
   If there are no assessors, it reads all staked assessors from event-logs.
-  Then updates them by calling updateAssessors
-  @param assessmentAddress address to be updated. If none is given it will use the one in the active view
+  Then updates them by calling updateAssessors.
 */
 export function fetchAssessors () {
   return async (dispatch, getState) => {
@@ -287,7 +291,7 @@ export function fetchAssessors () {
   }
 }
 /*
-  updates a given list of assessors by fetching their stages and (if necessary)
+  Updates a given list of assessors by fetching their stages and (if necessary)
   payouts.
   @param assessorAddresses assessors to be updated, if no assessors are given, the one saved in the assessment will be used
   @param checkUserAddress also checks whether the user has been called and if, so he will be added to the list of assessors with his stage set to 1
@@ -326,6 +330,7 @@ export function updateAssessors (address, assessorAddresses = false, checkUserAd
 
 /*
   fetches the payouts of one or all assessors of a given assessment
+  @param: if given only fetch payout of that one single user
 */
 export function fetchPayouts (address, user = false) {
   return async (dispatch, getState) => {
@@ -347,6 +352,10 @@ export function fetchPayouts (address, user = false) {
   }
 }
 
+/*
+  Updates the store by calling the respective function for each type of event.
+  See web3actions().connect() to see that only user-relevant events call this function
+*/
 export function processEvent (user, sender, topic) {
   return async (dispatch, getState) => {
     if (topic <= 1) {
