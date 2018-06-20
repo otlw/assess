@@ -60,12 +60,10 @@ function assessments (state = initialState, action) {
       let address = action.address
       let assessment = state[address] || {assessorStages: {}}
       let newAssessors = extend(assessment.assessorStages, {[action.assessor]: ''})
-      let ns = {
+      return {
         ...state,
         [address]: extend(assessment, {assessorStages: newAssessors})
       }
-      // console.log('assessment: ', address, 'before', state[address], ' after', ns[address])
-      return ns
     }
     case RECEIVE_STORED_DATA: {
       let address = action.assessmentAddress
@@ -78,7 +76,7 @@ function assessments (state = initialState, action) {
       let address = action.assessmentAddress
       return {
         ...state,
-        [address]: extend(state[address], {payouts: action.payouts})
+        [address]: extend(state[address], extend(state[address].payouts, {payouts: action.payouts}))
       }
     }
     case SET_ASSESSMENT: {

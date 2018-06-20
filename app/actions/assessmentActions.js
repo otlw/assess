@@ -95,7 +95,6 @@ export function storeDataOnAssessment (address, data) {
 export function fetchLatestAssessments () {
   return async (dispatch, getState) => {
     if (getState().loading.assessments === LoadingStage.None) { // only do this once
-      console.log('fetchLatestAssessments ')
       let userAddress = getState().ethereum.userAddress
       dispatch(beginLoadingAssessments())
 
@@ -230,7 +229,9 @@ export function updateAssessment (address) {
       let onChainScore = Number(await assessmentInstance.methods.finalScore().call())
       // convert score to Front End range (FE:0,100%; BE:-100,100)
       finalScore = convertFromOnChainScoreToUIScore(onChainScore)
-      if (userAddress !== assessee) {
+      // only fetch Payout if user is not assesse and payout is not already there
+      if (userAddress !== assessee &&
+          (!getState().assessments.payouts || !getState().assessments.payouts[userAddress])) {
         dispatch(fetchPayouts(address, userAddress))
       }
     }
@@ -250,7 +251,6 @@ export function updateAssessment (address) {
     }))
     dispatch(endLoadingDetail('info'))
     if (getState().assessments.selectedAssessment === address) {
-      console.log('updating assesors from updateassessment')
       dispatch(updateAssessors(address, false, stage === Stage.Called))
     }
   }
@@ -279,13 +279,10 @@ export function fetchAssessors () {
         let assessors = pastEvents.map(x => x.returnValues.user)
         // }
         let stage = Number(getState().assessments[address].stage)
-        console.log('updateAssessors from fetchASsessor')
         dispatch(updateAssessors(address, assessors, Number(stage) === Stage.Called))
       } catch (e) {
         console.log('ERROR: fetching assessors for assessment ', address, ' from the events did not work!', e)
       }
-    } else {
-      console.log('not fetching assesssors, because the dashoard was visited previously')
     }
   }
 }
@@ -314,14 +311,14 @@ export function updateAssessors (address, assessorAddresses = false, checkUserAd
       }
     }
     if (Object.keys(assessorStages).length > 0) {
-      console.log('updateing assessors', assessorStages)
       dispatch(receiveAssessors(address, assessorStages))
       let stage = Number(getState().assessments[address].stage)
-      if (stage === Stage.Done) {
+      // if not already there fetch payouts
+      if (stage === Stage.Done &&
+          (!getState().assessments.payouts ||
+           Object.keys(getState().assessments.payouts).length < 2)) {
         dispatch(fetchPayouts(address))
       }
-    } else {
-      console.log('no assessors to be updated')
     }
     dispatch(endLoadingDetail('assessors'))
   }
@@ -331,9 +328,7 @@ export function updateAssessors (address, assessorAddresses = false, checkUserAd
   fetches the payouts of one or all assessors of a given assessment
 */
 export function fetchPayouts (address, user = false) {
-  console.log('fetchPayouts')
   return async (dispatch, getState) => {
-    // dispatch(beginLoadingDetail('payouts'))
     const fathomTokenInstance = getInstance.fathomToken(getState())
     let filter = {
       filter: { _from: address },
@@ -341,7 +336,6 @@ export function fetchPayouts (address, user = false) {
       toBlock: 'latest'
     }
     if (user) {
-      console.log('filtering payout for user', user)
       filter.filter['_to'] = user
     }
     let pastEvents = await fathomTokenInstance.getPastEvents('Transfer', filter)
