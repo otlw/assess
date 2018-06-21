@@ -39,7 +39,7 @@ export function confirmAssessor (address) {
       Stage.Called,
       userAddress,
       address,
-      {method: fetchAssessors, args: [address]}
+      {method: updateAssessors, args: [address, getState().assessments[address].assessors, false]}
     )
   }
 }
@@ -54,7 +54,7 @@ export function commit (address, score, salt) {
       Stage.Confirmed,
       userAddress,
       address,
-      {method: fetchAssessorStages, args: [address, getState().assessments[address].assessors, false]}
+      {method: updateAssessors, args: [address, getState().assessments[address].assessors, false]}
     )
   }
 }
@@ -69,7 +69,7 @@ export function reveal (address, score, salt) {
       Stage.Committed,
       userAddress,
       address,
-      {method: fetchAssessorStages, args: [address, getState().assessments[address].assessors, false]}
+      {method: updateAssessors, args: [address, getState().assessments[address].assessors, false]}
     )
   }
 }
@@ -301,7 +301,8 @@ export function fetchAssessors () {
 export function updateAssessors (address, assessorAddresses = false, checkUserAddress = false) {
   return async (dispatch, getState) => {
     let assessmentInstance = getInstance.assessment(getState(), address)
-    let assessors = assessorAddresses || (getState().assessments[address].assessorStages ? Object.keys(getState().assessments[address].assessorStages) : '')
+    let assessors = assessorAddresses ||
+        (getState().assessments[address].assessorStages ? Object.keys(getState().assessments[address].assessorStages) : '')
     let assessorStages = {}
     if (assessors) {
       for (let i = 0; i < assessors.length; i++) {
