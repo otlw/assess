@@ -3,29 +3,26 @@ import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 
+import fathomLogo from '../../assets/fathom_monkey_beret_color_cropped.svg'
+
 import {networkName} from '../../constants.js'
 
 // styles
 const HeaderBar = styled('div')`
-  padding: 0.5em 0;
+  padding: 0.8em 0;
   background-color: ${props => props.theme.primary};
   border-bottom: 0.5px solid ${props => props.theme.light};
   position:relative;
   font-size:0.8em;
 `
 
-const HomeButton = styled(Link)`
-  margin: 0.3em 1.25%;
-  padding: 0.2em 1.25%;
+const Logo = styled('img')`
+  margin: 0 1.25%;
+  padding: 0 1.25%;
   text-align: center;
-  background-color:${props => props.theme.light};
-  border: 0.5px solid ${props => props.theme.dark};
-  border-radius: 1em;
-  text-decoration: none;
-  font-size:1.6em;
   display: inline-block
-  position: relative;
   width:5%;
+  vertical-align:top;
 `
 
 const value = styled('span')`
@@ -40,18 +37,19 @@ const key = styled('span')`
 
 const Box = styled('div')`
   padding: 0.5em 1em;
+  margin-top:0.5em;
   background-color: ${props => props.theme.light};
   display: inline-block;
   width:85%;
   text-align:center;
+  vertical-align:top;
 `
 
 export class Header extends Component {
   render () {
     return (
       h(HeaderBar, [
-        // an icon instead of 'Home' would be nice
-        h(HomeButton, {to: '/'}, 'F'),
+        h(Link, {to: '/'}, h(Logo, {alt: 'logo', src: fathomLogo})),
         h(Box, [
           h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
             h(key, 'Network: '),
