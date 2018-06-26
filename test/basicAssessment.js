@@ -223,6 +223,27 @@ contract('Assessment', function (accounts) {
           assert.isAbove(weightInParent.toNumber(), 0, "the assesse doesn't have a weight in the parent")
           assert.equal(weight / 2, weightInParent.toNumber(), "the assessee didn't have half weight in parent")
         })
+
+        it('should not be called for assessments', async () => {
+          let newAssessmentData = await chain.makeAssessment(assessedConcept.address, outsideUser, cost, size, waitTime, timeLimit)
+          let calledAssessors = newAssessmentData.calledAssessors
+          assert.isFalse(calledAssessors.includes(assessee))
+        })
+
+        it('should be called as an assessor if they toggle available', async () => {
+          let mew = await Concept.at(await conceptReg.mewAddress())
+          let txReceipt = await mew.toggleAvailability({from: assessee})
+
+          let newAssessmentData = await chain.makeAssessment(assessedConcept.address, outsideUser, cost, size, waitTime, timeLimit)
+          let calledAssessors = newAssessmentData.calledAssessors
+          assert.isTrue(calledAssessors.includes(assessee))
+
+          // get the mew concept from concept registry
+          // have the assessee toggle availability in the mew concept
+          // create an assessment in that concept with a random assessee
+          // Get the called assessors for that assessment
+          // check if the assessee is among called assessors
+        })
       })
 
       describe('The Assessor', function () {
