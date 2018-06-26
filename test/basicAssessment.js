@@ -25,8 +25,7 @@ contract('Assessment', function (accounts) {
 
   let calledAssessors = []
   let confirmedAssessors = []
-  let assesseeIdx = nInitialUsers + 1
-  let assessee = accounts[assesseeIdx]
+  let assessee = accounts[nInitialUsers + 1]
   let assesseeInitialBalance
   let outsideUser = accounts[nInitialUsers + 2]
 
@@ -75,8 +74,6 @@ contract('Assessment', function (accounts) {
       assert(false)
     })
     it('should initiate an assessment', async () => {
-      ethBalancesBefore = utils.getEthBalances(accounts.slice(0, nInitialUsers + 2))
-
       assessmentData = await chain.makeAssessment(assessedConcept.address, assessee, cost, size, waitTime, timeLimit)
       receiptFromMakeAssessment = assessmentData.txResult.receipt
 
@@ -99,6 +96,7 @@ contract('Assessment', function (accounts) {
 
   describe('In assessment stage', function () {
     let receiptFromLastReveal
+    let assessorInitialBalance
 
     describe('Called', function () {
       it('should call the assessors', async () => {
@@ -107,11 +105,10 @@ contract('Assessment', function (accounts) {
       })
 
       describe('When assessors confirm', async () => {
-        let receiptFromConfirm
         it('they should be rejected if they have not been called', async () => {
-          balanceBefore = await aha.balanceOf.call(outsideUser)
+          let balanceBefore = await aha.balanceOf.call(outsideUser)
           await assessmentContract.confirmAssessor({from: outsideUser})
-          balanceAfter = await aha.balanceOf.call(outsideUser)
+          let balanceAfter = await aha.balanceOf.call(outsideUser)
 
           assert.equal(balanceBefore.toNumber(), balanceAfter.toNumber(), 'an uncalled assessor could stake')
         })
@@ -120,7 +117,7 @@ contract('Assessment', function (accounts) {
           confirmedAssessors = calledAssessors.slice(0, size)
           assessorInitialBalance = await aha.balanceOf.call(confirmedAssessors[0])
           await chain.confirmAssessors(confirmedAssessors, assessmentContract)
-          balanceAfter = await aha.balanceOf.call(confirmedAssessors[0])
+          let balanceAfter = await aha.balanceOf.call(confirmedAssessors[0])
 
           assert.equal(balanceAfter, assessorInitialBalance - cost)
         })
@@ -155,7 +152,7 @@ contract('Assessment', function (accounts) {
       })
 
       it('should move to committed stage when all commited', async () => {
-        txResult = await assessmentContract.commit(hashes[0], {from: confirmedAssessors[0]})
+        let txResult = await assessmentContract.commit(hashes[0], {from: confirmedAssessors[0]})
         receiptFromLastCommit = txResult.receipt
         gasCosts.push({function: 'commit',
           cost: {
@@ -164,7 +161,7 @@ contract('Assessment', function (accounts) {
           }
         })
 
-        stage = await assessmentContract.assessmentStage.call()
+        let stage = await assessmentContract.assessmentStage.call()
         assert.equal(stage.toNumber(), 3, 'assessment did not enter commit stage')
 
         let done = await assessmentContract.done.call()
@@ -175,7 +172,7 @@ contract('Assessment', function (accounts) {
     describe('Committed', function () {
       it('committed assessors can reveal their scores', async () => {
         await utils.evmIncreaseTime(60 * 60 * 13) // let 12h challenge period pass
-        nAssessors = confirmedAssessors.length
+        let nAssessors = confirmedAssessors.length
 
         await chain.revealAssessors(confirmedAssessors.slice(1, nAssessors),
           scores.slice(1, nAssessors),
@@ -199,7 +196,7 @@ contract('Assessment', function (accounts) {
           }
         })
 
-        stage = await assessmentContract.assessmentStage.call()
+        let stage = await assessmentContract.assessmentStage.call()
         assert.equal(stage.toNumber(), 4, 'assessment did not enter done stage')
       })
     })
@@ -214,14 +211,14 @@ contract('Assessment', function (accounts) {
         let weight
 
         it('is added to the concept', async () => {
-          weightInConcept = await assessedConcept.getWeight.call(assessee)
+          let weightInConcept = await assessedConcept.getWeight.call(assessee)
           weight = weightInConcept.toNumber()
           assert.isAbove(weight, 0, "the assesee doesn't have a weight in the concept")
         })
 
         it('is added to the parent at half weight', async () => {
-          parentConcept = await Concept.at(await assessedConcept.parents.call(0))
-          weightInParent = await parentConcept.getWeight.call(assessee)
+          let parentConcept = await Concept.at(await assessedConcept.parents.call(0))
+          let weightInParent = await parentConcept.getWeight.call(assessee)
 
           assert.isAbove(weightInParent.toNumber(), 0, "the assesse doesn't have a weight in the parent")
           assert.equal(weight / 2, weightInParent.toNumber(), "the assessee didn't have half weight in parent")
@@ -230,14 +227,14 @@ contract('Assessment', function (accounts) {
 
       describe('The Assessor', function () {
         it('should be paid', async () => {
-          balanceAfter = await aha.balanceOf.call(confirmedAssessors[0])
+          let balanceAfter = await aha.balanceOf.call(confirmedAssessors[0])
           assert.equal(balanceAfter.toNumber(), assessorInitialBalance.toNumber() + cost, "assessor didn't get paid")
         })
       })
 
       describe('Gast costs', function () {
         it('Analysis:', async () => {
-          stage = await assessmentContract.assessmentStage.call()
+          let stage = await assessmentContract.assessmentStage.call()
           assert.equal(stage.toNumber(), 4, 'gas measured before assessment is done')
           console.log('Assuming GasPrice: ' + gasPrice + '  and 1 ether = $' + etherPrice)
           console.log('gasCosts: ', gasCosts)
