@@ -9,6 +9,7 @@ import { TxList } from '../TxList.js'
 const ConceptHeaderBox = styled('div')`
 background: #F2F2F2;
 width:100%;
+text-align:center;
 `
 const ConceptListBox = styled('div')`
 padding:1.1em 3.5em;
@@ -19,12 +20,8 @@ export class ConceptBoard extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      selectedConceptKey: 0
+      selectedConceptAddress: "0"
     }
-  }
-
-  setConceptKey (key) {
-    this.setState({selectedConceptKey: key})
   }
 
   createAssessment (e) {
@@ -33,20 +30,24 @@ export class ConceptBoard extends Component {
     )
   }
 
+  selectConceptAddress(e){
+    this.setState({selectedConceptAddress:e.target.id})
+  }
+
   render () {
     if (this.props.loadedConcepts) {
-      //let conceptNames = Object.values(this.props.concepts)
-      console.log(this.props.concepts)
+
       let concepts=this.props.concepts
+
+      let ConceptHeader=h('div',"Choose a Concept")
+      if (this.state.selectedConceptAddress!=="0"){
+        ConceptHeader=h('div','create')
+      }
       return h('div', [
         h(ConceptHeaderBox, [
-          // h(Dropdown, {
-          //   conceptNames: conceptNames,
-          //   selectedID: this.state.selectedConceptKey,
-          //   set: this.setConceptKey.bind(this)})
-          h('div',"conceptheader")
+          ConceptHeader
         ]),
-        h(ConceptListBox,[h(ConceptList,{concepts})]),
+        h(ConceptListBox,[h(ConceptList,{concepts,selectConceptAddress:this.selectConceptAddress.bind(this)})]),
         // this.props.transactions
         //   ? h(TxList, {transactions: this.props.transactions})
         //   : null

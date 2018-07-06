@@ -78,7 +78,7 @@ export class ConceptCard extends Component {
         h(BottomPart,[
           h(ConceptDescription,"Concept Description?"),
           h(ButtonGroup,[
-            h(GetAssessedButton,"Get Assessed"),
+            h(GetAssessedButton,{onClick:this.props.selectConcept.bind(this),id:this.props.conceptAddress},"Get Assessed"),
             h(LearnButton,"Learn")
           ])
         ])

@@ -13,7 +13,12 @@ export class ConceptList extends Component {
     let conceptAdresses = Object.keys(this.props.concepts)
     return h('div', [
           conceptAdresses.map((conceptAdress, k) => {
-            return h(ConceptCard,{conceptAddress:conceptAdress,conceptName:this.props.concepts[conceptAdress],key:k})
+            return h(ConceptCard,{
+            	conceptAddress:conceptAdress,
+            	conceptName:this.props.concepts[conceptAdress],
+            	key:k,
+            	selectConcept:this.props.selectConceptAddress.bind(this)
+            })
           })
   	])
   }
