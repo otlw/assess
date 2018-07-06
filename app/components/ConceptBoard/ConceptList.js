@@ -11,7 +11,7 @@ export class ConceptList extends Component {
 
   render () {
     let conceptAdresses = Object.keys(this.props.concepts)
-    return h('div', [
+    return h('div',{style:{textAlign:'center'}}, [
           conceptAdresses.map((conceptAdress, k) => {
             return h(ConceptCard,{
             	conceptAddress:conceptAdress,

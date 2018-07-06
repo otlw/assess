@@ -11,6 +11,7 @@ border-radius: 2px;
 margin: 1.1em 0.6em;
 width:13em;
 display:inline-block;
+text-align:left;
 `
 const ConceptTitleBox = styled('div')`
 background: #C4C4C4;  
@@ -68,7 +69,7 @@ export class ConceptCard extends Component {
   render () {
       return h(ConceptCardFrame, [
         h(ConceptTitleBox,[
-          h(TitleCaption,"CONCEPT CATEGORY"),
+          h(TitleCaption,"CONCEPT"),
           h(ConceptTitle,this.props.conceptName)
         ]),
         h(ChildrenBox,[
