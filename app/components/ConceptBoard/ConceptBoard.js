@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import Dropdown from './Dropdown'
+import ConceptList from './ConceptList'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 import { TxList } from '../TxList.js'
@@ -11,8 +11,8 @@ background: #F2F2F2;
 width:100%;
 `
 const ConceptListBox = styled('div')`
-padding:2.2em 4em;
-background: #E5E5E5;
+padding:1.1em 3.5em;
+background: white;
 `
 
 export class ConceptBoard extends Component {
@@ -35,7 +35,9 @@ export class ConceptBoard extends Component {
 
   render () {
     if (this.props.loadedConcepts) {
-      let conceptNames = Object.values(this.props.concepts)
+      //let conceptNames = Object.values(this.props.concepts)
+      console.log(this.props.concepts)
+      let concepts=this.props.concepts
       return h('div', [
         h(ConceptHeaderBox, [
           // h(Dropdown, {
@@ -44,7 +46,7 @@ export class ConceptBoard extends Component {
           //   set: this.setConceptKey.bind(this)})
           h('div',"conceptheader")
         ]),
-        h(ConceptListBox, 'ConceptList box'),
+        h(ConceptListBox,[h(ConceptList,{concepts})]),
         // this.props.transactions
         //   ? h(TxList, {transactions: this.props.transactions})
         //   : null
