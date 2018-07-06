@@ -16,7 +16,6 @@ export class AssessmentView extends Component {
     if (this.props.selectedAssessment) {
       return (
         h('div', [
-          h('div', '============AssessmentData================================='),
           h(AssessmentData)
         ])
       )

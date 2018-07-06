@@ -151,6 +151,7 @@ export function fetchAssessmentData (assessmentAddress) {
         // checkpoint -> keeps track of timelimits for 1) latest possible time to confirm and 2) earliest time to reveal
         let checkpoint = await assessmentInstance.methods.checkpoint().call()
         let size = await assessmentInstance.methods.size().call()
+        let done = await assessmentInstance.methods.done().call()
         let stage = Number(await assessmentInstance.methods.assessmentStage().call())
         let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
         let assessee = await assessmentInstance.methods.assessee().call()
@@ -181,6 +182,7 @@ export function fetchAssessmentData (assessmentAddress) {
           checkpoint,
           endTime,
           size,
+          done,
           assessee,
           userStage,
           stage,
