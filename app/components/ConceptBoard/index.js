@@ -1,11 +1,11 @@
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { LoadComponent } from '../../hocs/loadComponent.js'
-import { LoadingStage } from '../../../constants.js'
+import { LoadComponent } from '../hocs/loadComponent.js'
+import { LoadingStage } from '../../constants.js'
 import CreationBar from './CreationBar.js'
 import {
   loadConceptContractAndCreateAssessment,
-  loadConceptsFromConceptRegistery } from '../../../actions/conceptActions.js'
+  loadConceptsFromConceptRegistery } from '../../actions/conceptActions.js'
 
 const mapStateToProps = state => {
   return {

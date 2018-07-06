@@ -2,7 +2,7 @@ import { Component } from 'react'
 import Dropdown from './Dropdown'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
-import { TxList } from '../../TxList.js'
+import { TxList } from '../TxList.js'
 
 // styles
 const CreationBox = styled('div')`

@@ -38,11 +38,25 @@ const key = styled('span')`
 const Box = styled('div')`
   padding: 0.5em 1em;
   margin-top:0.5em;
+  margin-left:1em;
   background-color: ${props => props.theme.light};
   display: inline-block;
-  width:85%;
+  width:70%;
   text-align:center;
   vertical-align:top;
+`
+
+const conceptButton= styled('div')`
+  background-color: #C4C4C4;
+  border: 1px solid #444444;
+  box-sizing: border-box;
+  border-radius: 2px;
+  display: inline-block;
+  padding:0.5em 1.6em;
+  color: #444444;
+`
+const LinkUnstyled = styled(Link)`
+  text-decoration:none;
 `
 
 export class Header extends Component {
@@ -50,6 +64,7 @@ export class Header extends Component {
     return (
       h(HeaderBar, [
         h(Link, {to: '/'}, h(Logo, {alt: 'logo', src: fathomLogo})),
+        h(LinkUnstyled, {to: '/concepts'}, h(conceptButton,"Concepts")),
         h(Box, [
           h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
             h(key, 'Network: '),
