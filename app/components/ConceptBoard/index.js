@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { LoadComponent } from '../hocs/loadComponent.js'
 import { LoadingStage } from '../../constants.js'
-import CreationBar from './CreationBar.js'
+import ConceptBoard from './ConceptBoard.js'
 import {
   loadConceptContractAndCreateAssessment,
   loadConceptsFromConceptRegistery } from '../../actions/conceptActions.js'
@@ -26,4 +26,4 @@ const mapDispatchToProps = {
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   LoadComponent
-)(CreationBar)
+)(ConceptBoard)

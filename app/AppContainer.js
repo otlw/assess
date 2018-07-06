@@ -53,7 +53,7 @@ export class App extends Component {
             ? h('div', [
               h(Header),
               this.props.loadedWeb3
-                ? (h('div', {style: {margin: '8px'}}, [
+                ? (h('div', [
                   h(Route, {exact: true, path: '/', component: Dashboard}),
                   h(Route, {exact: true, path: '/concepts', component: ConceptBoard}),
                   h(Route, {path: '/assessment/:id', component: AssessmentView})
