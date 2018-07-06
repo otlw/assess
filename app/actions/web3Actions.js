@@ -93,7 +93,7 @@ const initializeEventWatcher = () => {
         // a) the user is looking at it
         // b) the user has already been on the dashboard page once
         if ((getState().assessments[data.returnValues.sender] || data.returnValues.user === userAddress) &&
-            (assessmentView === data.returnValues.sender ||
+            (getState().assessments.selectedAssessment === data.returnValues.sender ||
              getState().loading.assessments >= LoadingStage.None)) {
           dispatch(processEvent(
             data.returnValues.user,
@@ -114,7 +114,7 @@ const initializeEventWatcher = () => {
         if (error) {
           console.log('event subscirption error!:')
         }
-        console.log('WS-event found', log) //, log.data, log.topics.length)
+        // console.log('WS-event found', log) //, log.data, log.topics.length)
         let decodedLog = web3WS.eth.abi.decodeLog(
           notificationJSON.inputs,
           log.data,
@@ -124,11 +124,19 @@ const initializeEventWatcher = () => {
         // they come from an assessment the user is involved in AND one of the following
         // a) the user is looking at it
         // b) the user has already been on the dashboard page once
+        // console.log('conditions:',
+        //             getState().assessments[decodedLog.sender] ,
+        //             decodedLog.user === userAddress ,
+        //             getState().assessments.selectedAssessment === decodedLog.sender,
+        //             getState().loading.assessments >= LoadingStage.None
+        //            )
         if ((getState().assessments[decodedLog.sender] || decodedLog.user === userAddress) &&
-            (assessmentView === decodedLog.sender ||
+            (getState().assessments.selectedAssessment === decodedLog.sender ||
              getState().loading.assessments >= LoadingStage.None)) {
-          // console.log('dispatching update. inlc saying to update all assesssors->', getState().assessments.selectedAssessment === decodedLog.sender) // true -> load information for all assessors
+          console.log('calling process Event!',Number(decodedLog.topic))//. inlc saying to update all assesssors->', getState().assessments.selectedAssessment === decodedLog.sender) // true -> load information for all assessors
           dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic)))
+        } else {
+          console.log('not updating!')
         }
       })
     }

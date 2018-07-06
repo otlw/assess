@@ -40,15 +40,20 @@ export function removeTransaction (txHash) {
 export function sendAndReactToTransaction (dispatch, act, saveData, userAddress, assessmentAddress, react, gas) {
   act.method(...act.args).send({from: userAddress, gas: gas || 320000})
     .on('transactionHash', (hash) => {
+      console.log('saving tx')
       dispatch(saveTransaction(assessmentAddress, userAddress, saveData, hash))
     })
     .on('confirmation', (confirmationNumber, receipt) => {
       // TODO: choose a good confirmation number (kovan and rinkeby accept 2, but local textnet requires 8)
-      if (react && confirmationNumber === 8 && receipt.status) {
+      if (confirmationNumber === 8 && receipt.status) {
+        console.log('updating tx')
         dispatch(updateTransaction(
           receipt.transactionHash,
           receipt.status ? 'Tx confirmed' : 'Tx failed'
         ))
+      }
+      if (react && confirmationNumber === 9 && receipt.status) {
+        console.log('dispatching reacting')
         dispatch(react.method(...react.args))
       }
     })

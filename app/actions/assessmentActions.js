@@ -1,6 +1,6 @@
 import { getInstance, convertFromOnChainScoreToUIScore } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
-import { Stage, LoadingStage } from '../constants.js'
+import { Stage, LoadingStage, NotificationTopic } from '../constants.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const RECEIVE_FINALSCORE = 'RECEIVE_FINALSCORE'
@@ -39,7 +39,7 @@ export function confirmAssessor (address) {
       Stage.Called,
       userAddress,
       address,
-      {method: updateAssessors, args: [address, getState().assessments[address].assessors, false]}
+      // {method: updateAssessors, args: [address, getState().assessments[address].assessors, false]}
     )
   }
 }
@@ -123,9 +123,7 @@ export function fetchLatestAssessments () {
       // the assessment is one, where the user is involved as assessee
       for (let notification of pastNotifications) {
         let event = notification.returnValues
-        if (event.topic === '2' &&
-            (event.user === userAddress ||
-             assessmentAddresses.indexOf(event.sender > -1))) {
+        if (event.topic === '2' && assessmentAddresses.indexOf(event.sender > -1)) {
           dispatch(receiveAssessor(event.sender, event.user))
         }
       }
@@ -224,6 +222,7 @@ export function fetchAssessmentData (address) {
   assessors.
 */
 export function updateAssessment (address) {
+  console.log('updateAssessment has been calledc' )
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
@@ -249,6 +248,7 @@ export function updateAssessment (address) {
     if (bytesData) {
       data = getState().ethereum.web3.utils.hexToUtf8(bytesData)
     }
+    console.log('updating assessment', address, ' with: ',  stage, userStage, finalScore)
     dispatch(receiveAssessment({
       address,
       stage,
@@ -274,6 +274,7 @@ export function fetchAssessors () {
     // only do this if assessors have not already been loaded when the dashboard was visited
     dispatch(beginLoadingDetail('assessors'))
     if (getState().loading.assessments === LoadingStage.None) {
+      console.log('loading all assessors')
       let address = getState().assessments.selectedAssessment
       try {
         const fathomTokenInstance = getInstance.fathomToken(getState())
@@ -292,6 +293,7 @@ export function fetchAssessors () {
     }
   }
 }
+
 /*
   Updates a given list of assessors by fetching their stages and (if necessary)
   payouts.
@@ -378,16 +380,20 @@ export function fetchPayouts (address, user = false) {
   See web3actions().connect() to see that only user-relevant events call this function
 */
 export function processEvent (user, sender, topic) {
+  console.log('processEvent called' )
   return async (dispatch, getState) => {
-    if (topic <= 1) {
-      dispatch(fetchAssessmentData(sender))
-    }
     let userAddress = getState().ethereum.userAddress
-    if (topic === 2) {
+    if (topic <= NotificationTopic.CalledAsAssessor) {
+      console.log('cond1 -fetch AssessmentData')
+      dispatch(fetchAssessmentData(sender))
+    } else if (topic === NotificationTopic.ConfirmedAsAssessor) { // topic 2
+      console.log('cond2 -add assessors')
       dispatch(receiveAssessor(sender, user))
-    }
-    if (topic === 4 && user === userAddress) {
+    } else if (topic <= NotificationTopic.AssessmentStarted && user === userAddress) { // topic 4-7
+      console.log('cond3 -> update')
       dispatch(updateAssessment(sender))
+    } else {
+      console.log('no condition applied!', user, sender, topic)
     }
   }
 }
