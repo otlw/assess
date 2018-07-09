@@ -1,4 +1,5 @@
 import { Component } from 'react'
+import { TxList } from '../../TxList.js'
 import h from 'react-hyperscript'
 import { Stage } from '../../../constants.js'
 import { ProgressButtonBox, CloseButton, PastOrPresentPhaseButton, FuturePhaseButton, StageName, StageDescriptor, SubmitButton, Feedback, CommitInput } from '../../style.js'
@@ -100,6 +101,7 @@ export class ProgressButtonBar extends Component {
   render () {
     if (this.state.view === 'progressView') {
       // show overview
+      console.log('txs', this.props.transactions)
       return (
         h(ProgressButtonBox, [
           h(PastOrPresentPhaseButton, {
@@ -113,7 +115,10 @@ export class ProgressButtonBar extends Component {
           h(this.props.stage >= Stage.Committed ? PastOrPresentPhaseButton : FuturePhaseButton, {
             onClick: this.setRevealAction.bind(this),
             disabled: !(this.props.stage === Stage.Committed && this.props.stage === this.props.userStage)
-          }, '3. Reveal')
+          }, '3. Reveal'),
+          this.props.transactions
+            ? h(TxList, {transactions: this.props.transactions})
+            : null
         ])
       )
     } else {
