@@ -1,9 +1,10 @@
 import { Component } from 'react'
-import MeetingPoint from '../Attachments/'
+import MeetingPointEditButton from '../Attachments/'
 import AssessorList from '../AssessorList'
+import ProgressButtonBar from '../ProgressButtonBar'
 import { Stage, StageDisplayNames } from '../../../constants.js'
 import { convertDate } from '../../../utils.js'
-import { SuperFrame, Header, Role, ConceptName, SubHeader, StatusIndicator, StatusKey, StatusValue, DataBox, InfoField, InfoKey, AssessorBox, InfoBox, InfoValue, AssessorNames, AssessorsDone, ProgressButtonBox } from './style.js'
+import { SuperFrame, Header, Role, ConceptName, SubHeader, StatusIndicator, StatusKey, StatusValue, DataBox, InfoField, InfoKey, AssessorBox, InfoBox, InfoValue, AssessorNames, AssessorsDone, ProgressButtonBox, MeetingPointButton } from './style.js'
 
 var h = require('react-hyperscript')
 
@@ -14,7 +15,10 @@ export class AssessmentData extends Component {
     }
     if (this.props.loadedInfo) {
       let assessment = this.props.assessment
-
+      console.log('assesment;,', assessment.data === '')
+      let actionRequired = assessment.stage === assessment.userStage
+      let nOtherAssessorsToBeActive = assessment.size - assessment.done - (actionRequired ? 1 : 0)
+        let statusString = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[assessment.stage]
       return (
         h(SuperFrame, [
           // holds role and concept title
@@ -26,7 +30,7 @@ export class AssessmentData extends Component {
           h(SubHeader, [
             h(StatusIndicator, [
               h(StatusKey, 'STATUS'),
-              h(StatusValue, 'Waiting for X to Y') // TODO
+              h(StatusValue, statusString)
             ]),
             h(StatusIndicator, [
               h(StatusKey, 'Due Date:'),
@@ -43,23 +47,31 @@ export class AssessmentData extends Component {
               h(InfoField, [
                 h(InfoKey, 'Fee'),
                 h(InfoValue, assessment.cost + 'AHA')
+              ]),
+              h(InfoField, [
+                h(InfoKey, 'Meeting Point'),
+                h(InfoValue, assessment.data),
+                h(MeetingPointButton, {href: assessment.data, disabled: assessment.data === ''}, 'View'),
+                assessment.assessee === this.props.userAddress
+                  ? h(MeetingPointEditButton, {className: MeetingPointButton, assessee: assessment.assessee}) // TODO make this appear right of GotoMeetingPointButton
+                  : null
               ])
-              // h(MeetingPoint, {assessee: assessment.assessee}),
             ]),
             h(AssessorBox, [
-              h(AssessorsDone, 'Assessors (' + assessment.done + '/' + assessment.size + ' are done)'), // TODO
-              h(AssessorNames, 'AssessorsNames as a list') // TODO {assessors: assessment.assessors})
+              h(AssessorsDone, 'Assessors'),
+              h(AssessorList)
             ])
           ]),
-          h(ProgressButtonBox, [
-            h('span', {style: {'border': '2px solid'}}, 'Stake'),
-            h('span', {style: {'border': '2px solid'}}, 'Commit'),
-            h('span', {style: {'border': '2px solid'}}, 'Reveal')
-            // h(StakeButton), // TODO
+          // progress-buttons
+          h(ProgressButtonBar)
+          // h(ProgressButtonBox, [
+          //   h('span', {style: {'border': '2px solid'}}, 'Stake'),
+          //   h('span', {style: {'border': '2px solid'}}, 'Commit'),
+          //   h('span', {style: {'border': '2px solid'}}, 'Reveal')
+          //   // h(StakeButton), // TODO
             // h(CommitButton),
             // h(RevealButton)
-          ])
-          // progress-buttons
+          // ])
         ])
       )
       /*
