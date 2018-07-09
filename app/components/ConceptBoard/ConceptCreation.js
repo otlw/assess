@@ -8,7 +8,7 @@ import { TxList } from '../TxList.js'
 
 const MainFrame = styled('div')`
 text-align:center;
-padding:4em 0;
+padding:3em 0;
 `
 
 const HeaderTitle = styled('div')`
@@ -92,6 +92,32 @@ width:4em;
 text-align:center;
 `
 
+const NavigationButtonGroup = styled('div')`
+border-radius: 2px
+border: 1px solid #C4C4C4;
+width:33em;
+margin: 2.2em auto;
+padding:0;
+font-size:0.6em;
+`
+const BackButton =styled('div')`
+background-color:#C4C4C4;
+padding: 1em 3.5em;
+display:inline-block;
+width:4em;
+`
+const CancelButton =styled('div')`
+padding: 1em 3.5em;
+display:inline-block;
+width:4em;
+`
+const NextButton =styled('div')`
+background-color:#C4C4C4;
+padding: 1em 3.5em;
+display:inline-block;
+width:4em;
+`
+
 
 export class ConceptCreation extends Component {
   constructor (props) {
@@ -110,6 +136,18 @@ export class ConceptCreation extends Component {
 
   setAmountPerAssessor(e){
     this.setState({amountPerAssessor:e.target.value})
+  }
+
+  backButton(e){
+    console.log("back")
+  }
+
+  cancelButton(e){
+    console.log("cancel")
+  }
+
+  nextButton(e){
+    console.log("next")
   }
 
   render () {
@@ -144,6 +182,11 @@ export class ConceptCreation extends Component {
                 h(TotalAmount,this.state.amountPerAssessor*5+" AHA")
               ])
             ])
+          ]),
+          h(NavigationButtonGroup,[
+            h(BackButton,{onClick:this.backButton.bind(this)},"<- Back"),
+            h(CancelButton,{onClick:this.cancelButton.bind(this)},"Cancel"),
+            h(NextButton,{onClick:this.nextButton.bind(this)},"Next ->")
           ])
         ])
   }
