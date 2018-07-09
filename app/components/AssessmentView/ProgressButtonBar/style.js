@@ -5,6 +5,10 @@ export const ProgressButtonBox = styled('div')`
   border: 2px solid palevioletred;
 `
 
+export const CloseButton = styled('button')`
+  padding: 0.25em 1em;
+  border: 2px solid palevioletred;
+`
 export const ProgressButton = styled('button')`
   padding: 0.25em 1em;
   border: 2px solid palevioletred;
@@ -23,11 +27,31 @@ export const FuturePhaseButton = styled('button')`
 `
 
 export const StageDescriptor = styled('div')`
+  display: inline-block;
   padding: 0.25em 1em;
   border: 2px solid palevioletred;
 `
 
-export const SubmitButton = styled('button')`
+export const StageName = styled('div')`
+  display: inline-block;
   padding: 0.25em 1em;
+  border: 2px solid palevioletred;
+`
+export const SubmitButton = styled('button')`
+  display: inline-block;
+  padding: 0.25em 1em;
+  border: 2px solid palevioletred;
+`
+
+export const Feedback = styled.div`
+  font-size: 0.7em;
+  font-style: italic;
+  color:${props => props.invalidScoreRange ? 'red' : 'lightgrey'};
+`
+
+export const CommitInput = styled('input')`
+  display: inline-block;
+  padding: 0.25em 1em;
+  width: 400px;
   border: 2px solid palevioletred;
 `

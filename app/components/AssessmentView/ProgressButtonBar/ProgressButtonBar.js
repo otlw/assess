@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import h from 'react-hyperscript'
 import { Stage } from '../../../constants.js'
-import { ProgressButtonBox, ProgressButton, PastOrPresentPhaseButton, FuturePhaseButton, StageDescriptor, SubmitButton } from './style.js'
+import { ProgressButtonBox, CloseButton, PastOrPresentPhaseButton, FuturePhaseButton, StageName, StageDescriptor, SubmitButton, Feedback, CommitInput } from './style.js'
 import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
 
 // component to display an individual assessor slot address and options
@@ -24,7 +24,7 @@ export class ProgressButtonBar extends Component {
     } else {
       this.state = {
         view: 'progressView',
-        score: 100,
+        score: 0,
         salt: 'hihi',
         invalidScoreRange: false
       }
@@ -87,9 +87,19 @@ export class ProgressButtonBar extends Component {
     this.setProgressView()
   }
 
+  setScore (e) {
+    // make sure number is a multiple of 0.5%
+    let score = (Math.floor((Number(e.target.value)) * 2)) / 2
+    if (score >= 0 && score <= 100 && (((Number(e.target.value)) * 10) % 5) === 0) {
+      this.setState({score: score, invalidScoreRange: false})
+    } else {
+      this.setState({invalidScoreRange: true})
+    }
+  }
+
   render () {
     if (this.state.view === 'progressView') {
-      console.log('props', this.props)
+      // show overview
       return (
         h(ProgressButtonBox, [
           h(PastOrPresentPhaseButton, {
@@ -107,17 +117,27 @@ export class ProgressButtonBar extends Component {
         ])
       )
     } else {
+      // show stageActionView
       return (
         h(ProgressButtonBox, [
-          h('button', {onClick: this.setProgressView.bind(this)}, 'X'),
-          h(ProgressButton, this.state.view),
-          h(StageDescriptor, this.state.displayText), // TODO, if commit, make it a textfield
+          h(CloseButton, {onClick: this.setProgressView.bind(this)}, 'X'),
+          h(StageName, this.state.view),
+          this.props.stage === Stage.Confirmed
+            ? (
+              h('div', {style: {display: 'inline-block'}}, [
+                h(Feedback, {invalidScoreRange: this.state.invalidScoreRange}, 'must be 0% <= score <= 100%, 0.5% granularity'),
+                h(CommitInput, {
+                  placeholder: 'What score do you want to give the assessee?',
+                  step: 0.5,
+                  type: 'number',
+                  onChange: this.setScore.bind(this)})
+              ]))
+            : h(StageDescriptor, this.state.displayText),
           h(SubmitButton, {onClick: this.state.action.bind(this)}, 'Go')
         ])
       )
     }
   }
 }
-
 
 export default ProgressButtonBar

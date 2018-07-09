@@ -25,7 +25,7 @@ export class MeetingPointEditButton extends Component {
     return (
       h('div', [
         h(MeetingPointButton, {
-          onClick: this.toggleMPeditability.bind(this),
+          onClick: this.toggleMPeditability.bind(this)
         }, 'edit'),
         this.state.displayMPEdit ? h(MeetingPointForm, {onSubmit: this.storeData.bind(this)}) : null,
         this.props.transactions
