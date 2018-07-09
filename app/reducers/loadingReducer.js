@@ -68,11 +68,6 @@ function loading (state = initialState, action) {
         }
       }
     }
-    case RESET_LOADED_DETAILS:
-      return {
-        ...state,
-        assessmentDetail: initialState.assessmentDetail
-      }
     default:
       return state
   }

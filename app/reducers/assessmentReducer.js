@@ -5,13 +5,12 @@ import {
   RECEIVE_ASSESSORS,
   RECEIVE_STORED_DATA,
   RECEIVE_PAYOUTS,
-  SET_ASSESSMENT
+  SET_ASSESSMENT_AS_INVALID
 } from '../actions/assessmentActions'
 
 import extend from 'xtend'
 
 let initialState = {
-  selectedAssessment: ''
 }
 /*
   further assessments are stored like this:
@@ -79,10 +78,9 @@ function assessments (state = initialState, action) {
         [address]: extend(state[address], extend(state[address].payouts, {payouts: action.payouts}))
       }
     }
-    case SET_ASSESSMENT: {
+    case SET_ASSESSMENT_AS_INVALID: {
       return {
         ...state,
-        selectedAssessment: action.address
       }
     }
     default:

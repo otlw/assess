@@ -12,7 +12,7 @@ export const RECEIVE_ASSESSORS = 'RECEIVE_ASSESSORS'
 export const RECEIVE_ASSESSOR = 'RECEIVE_ASSESSOR'
 export const BEGIN_LOADING_ASSESSMENTS = 'BEGIN_LOADING_ASSESSMENTS'
 export const END_LOADING_ASSESSMENTS = 'END_LOADING_ASSESSMENTS'
-export const SET_ASSESSMENT = 'SET_ASSESSMENT'
+export const SET_ASSESSMENT_AS_INVALID = 'SET_ASSESSMENT_AS_INVALID'
 export const BEGIN_LOADING_DETAIL = 'BEGIN_LOADING_DETAIL'
 export const END_LOADING_DETAIL = 'END_LOADING_DETAIL'
 export const RESET_LOADED_DETAILS = 'RESET_LOADED_DETAILS'
@@ -39,7 +39,6 @@ export function confirmAssessor (address) {
       Stage.Called,
       userAddress,
       address,
-      // {method: updateAssessors, args: [address, getState().assessments[address].assessors, false]}
     )
   }
 }
@@ -142,9 +141,8 @@ export function fetchLatestAssessments () {
   concept which also knows about the assessment, and if so
   calls fetchAssessmentData()
 */
-export function validateAndFetchAssessmentData () {
+export function validateAndFetchAssessmentData (address) {
   return async (dispatch, getState) => {
-    let address = getState().assessments.selectedAssessment
     try {
       let assessmentInstance = getInstance.assessment(getState(), address)
       // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
@@ -159,11 +157,11 @@ export function validateAndFetchAssessmentData () {
       if (isValidConcept && isValidAssessment) {
         dispatch(fetchAssessmentData(address))
       } else {
-        dispatch(setAssessment('invalid'))
+        dispatch(setAssessmentAsInvalid(address))
       }
     } catch (e) {
       console.log('error trying tovalidate assessment: ', e)
-      dispatch(setAssessment('invalid'))
+      dispatch(setAssessmentAsInvalid(address))
     }
   }
 }
@@ -248,7 +246,17 @@ export function updateAssessment (address) {
     if (bytesData) {
       data = getState().ethereum.web3.utils.hexToUtf8(bytesData)
     }
-    console.log('updating assessment', address, ' with: ',  stage, userStage, finalScore)
+
+    const fathomTokenInstance = getInstance.fathomToken(getState())
+    let pastEvents = await fathomTokenInstance.getPastEvents('Notification', {
+      filter: {sender: address, topic: 2},
+      fromBlock: 0,
+      toBlock: 'latest'
+    })
+    let assessors = pastEvents.map(x => x.returnValues.user)
+    // }
+    dispatch(updateAssessors(address, assessors, Number(stage) === Stage.Called))
+    console.log('updating assessment', address, ' with: ', stage, userStage, finalScore)
     dispatch(receiveAssessment({
       address,
       stage,
@@ -257,40 +265,7 @@ export function updateAssessment (address) {
       data
     }))
     dispatch(endLoadingDetail('info'))
-    if (getState().assessments.selectedAssessment === address) {
-      dispatch(updateAssessors(address, false, stage === Stage.Called))
-    }
-  }
-}
-
-/*
-  This is the hoc-loading-function for the AssessorList-component. It will only fetch Assessors
-  if those have not been loaded already from the Dashboard.
-  If there are no assessors, it reads all staked assessors from event-logs.
-  Then updates them by calling updateAssessors.
-*/
-export function fetchAssessors () {
-  return async (dispatch, getState) => {
-    // only do this if assessors have not already been loaded when the dashboard was visited
-    dispatch(beginLoadingDetail('assessors'))
-    if (getState().loading.assessments === LoadingStage.None) {
-      console.log('loading all assessors')
-      let address = getState().assessments.selectedAssessment
-      try {
-        const fathomTokenInstance = getInstance.fathomToken(getState())
-        let pastEvents = await fathomTokenInstance.getPastEvents('Notification', {
-          filter: {sender: address, topic: 2},
-          fromBlock: 0,
-          toBlock: 'latest'
-        })
-        let assessors = pastEvents.map(x => x.returnValues.user)
-        // }
-        let stage = Number(getState().assessments[address].stage)
-        dispatch(updateAssessors(address, assessors, Number(stage) === Stage.Called))
-      } catch (e) {
-        console.log('ERROR: fetching assessors for assessment ', address, ' from the events did not work!', e)
-      }
-    }
+    dispatch(updateAssessors(address, false, stage === Stage.Called))
   }
 }
 
@@ -330,24 +305,6 @@ export function updateAssessors (address, assessorAddresses = false, checkUserAd
       }
     }
     dispatch(endLoadingDetail('assessors'))
-  }
-}
-
-// returns the strings that are stored on the assessments
-// for now, only the data stored by the assessee
-export function fetchStoredData (selectedAssessment) {
-  console.log('fetchStoredData', selectedAssessment)
-  return async (dispatch, getState) => {
-    dispatch(beginLoadingDetail('attachments'))
-    let address = selectedAssessment || getState().assessments.selectedAssessment
-    let assessmentInstance = getInstance.assessment(getState(), address)
-    let assessee = await assessmentInstance.methods.assessee().call()
-    let data = await assessmentInstance.methods.data(assessee).call()
-    if (data) {
-      data = getState().ethereum.web3.utils.hexToUtf8(data)
-      dispatch(receiveStoredData(address, data))
-    }
-    dispatch(endLoadingDetail('attachments'))
   }
 }
 
@@ -486,15 +443,9 @@ export function endLoadingDetail (detail) {
   }
 }
 
-export function setAssessment (address) {
+export function setAssessmentAsInvalid (address) {
   return {
-    type: SET_ASSESSMENT,
+    type: SET_ASSESSMENT_AS_INVALID,
     address
-  }
-}
-
-export function resetLoadedDetails () {
-  return {
-    type: RESET_LOADED_DETAILS
   }
 }

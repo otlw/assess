@@ -1,20 +1,25 @@
-import { compose } from 'redux'
-import { connect } from 'react-redux'
-import { LoadComponent } from '../../hocs/loadComponent.js'
-import { fetchAssessors } from '../../../actions/assessmentActions.js'
-import { LoadingStage } from '../../../constants.js'
-import AssessorList from './AssessorList'
+import h from 'react-hyperscript'
+import AssessorStatusBox from '../AssessorStatus'
 
-const mapStateToProps = (state) => {
-  return {
-    loadedAssessors: (state.loading.assessmentDetail.assessors === LoadingStage.Done),
-    assessorStages: state.assessments[state.assessments.selectedAssessment].assessorStages,
-    loading: state.loading,
-    payouts: state.assessments[state.assessments.selectedAssessment].payouts
+export const AssessorList = (props) => {
+  let assessorLines = []
+  let k = 0
+  if (props.assessorStages) {
+    for (let assessor of Object.keys(props.assessorStages)) {
+      assessorLines.push(
+        h(AssessorStatusBox, {
+          assessorAddress: assessor,
+          assessorNumber: k,
+          assessmentAddress: props.address,
+          stage: props.stage,
+          assessorStage: props.assessorStages[assessor],
+          payout: props.payouts ? this.props.payouts[assessor] : ''
+        })
+      )
+      k++
+    }
   }
+  return h('div', assessorLines)
 }
 
-export default compose(
-  connect(mapStateToProps, {load: fetchAssessors}),
-  LoadComponent
-)(AssessorList)
+export default AssessorList

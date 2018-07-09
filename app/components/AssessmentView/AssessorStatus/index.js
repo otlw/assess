@@ -3,15 +3,14 @@ import AssessorStatus from './AssessorStatus.js'
 import { confirmAssessor, commit, reveal } from '../../../actions/assessmentActions'
 
 const mapStateToProps = (state, ownProps) => {
+  let address = ownProps.assessmentAddress
   return {
     transactions: Object.values(state.transactions).filter(
-      tx => (tx.address === state.assessments.selectedAssessment &&
+      tx => (tx.address === address &&
              tx.sender === ownProps.assessorAddress &&
-             tx.data === state.assessments[state.assessments.selectedAssessment].stage)
+             tx.data === state.assessments[address].stage)
     ),
-    assessmentAddress: state.assessments.selectedAssessment,
-    userAddress: state.ethereum.userAddress,
-    stage: state.assessments[state.assessments.selectedAssessment].stage
+    userAddress: state.ethereum.userAddress
   }
 }
 
