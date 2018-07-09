@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import h from 'react-hyperscript'
 import { Stage } from '../../../constants.js'
-import { ProgressButtonBox, CloseButton, PastOrPresentPhaseButton, FuturePhaseButton, StageName, StageDescriptor, SubmitButton, Feedback, CommitInput } from './style.js'
+import { ProgressButtonBox, CloseButton, PastOrPresentPhaseButton, FuturePhaseButton, StageName, StageDescriptor, SubmitButton, Feedback, CommitInput } from '../../style.js'
 import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
 
 // component to display an individual assessor slot address and options
@@ -121,7 +121,7 @@ export class ProgressButtonBar extends Component {
       return (
         h(ProgressButtonBox, [
           h(CloseButton, {onClick: this.setProgressView.bind(this)}, 'X'),
-          h(StageName, this.state.view),
+          h(StageName, this.state.view + ':'),
           this.props.stage === Stage.Confirmed
             ? (
               h('div', {style: {display: 'inline-block'}}, [
