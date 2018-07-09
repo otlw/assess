@@ -162,7 +162,7 @@ export function fetchAssessmentData (assessmentAddress) {
         let finalScore = convertFromOnChainScoreToUIScore(onChainScore)
 
         // get the data (meeting point) and convert it from bytes32 to string
-        let data = '' //no meeting point set'
+        let data = ''
         let bytesData = await assessmentInstance.methods.data(assessee).call()
         if (bytesData) {
           data = getState().ethereum.web3.utils.hexToUtf8(bytesData)

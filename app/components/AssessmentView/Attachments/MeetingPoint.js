@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import MeetingPointForm from './MeetingPointForm.js'
 import TxList from '../../TxList.js'
-import { MeetingPointButton } from '../AssessmentData/style.js'
+import { MeetingPointButton } from '../../style.js'
 var h = require('react-hyperscript')
 
 export class MeetingPointEditButton extends Component {
@@ -25,7 +25,7 @@ export class MeetingPointEditButton extends Component {
     return (
       h('div', [
         h(MeetingPointButton, {
-          onClick: this.toggleMPeditability.bind(this),
+          onClick: this.toggleMPeditability.bind(this)
         }, 'edit'),
         this.state.displayMPEdit ? h(MeetingPointForm, {onSubmit: this.storeData.bind(this)}) : null,
         this.props.transactions
