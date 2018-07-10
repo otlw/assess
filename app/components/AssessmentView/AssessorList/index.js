@@ -12,7 +12,7 @@ export const AssessorList = (props) => {
           assessorNumber: k,
           assessmentAddress: props.address,
           stage: props.stage,
-          assessorStage: props.assessorStages[assessor],
+          userStage: props.assessorStages[assessor],
           payout: props.payouts ? this.props.payouts[assessor] : ''
         })
       )
