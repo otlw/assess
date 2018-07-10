@@ -1,5 +1,6 @@
 import { getInstance, convertFromOnChainScoreToUIScore } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
+import { receiveVariable } from './web3Actions.js'
 import { Stage, LoadingStage, NotificationTopic } from '../constants.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
@@ -114,21 +115,22 @@ export function fetchLatestAssessments () {
         return accumulator
       }, [])
 
+      dispatch(receiveVariable('userAssessments', assessmentAddresses))
       dispatch(endLoadingAssessments())
       // Add assessors to assessments, if
       // either the user has been called OR
       // the assessment is one, where the user is involved as assessee
-      for (let notification of pastNotifications) {
-        let event = notification.returnValues
-        if (event.topic === '2' && assessmentAddresses.indexOf(event.sender > -1)) {
-          dispatch(receiveAssessor(event.sender, event.user))
-        }
-      }
+      // for (let notification of pastNotifications) {
+      //   let event = notification.returnValues
+      //   if (event.topic === '2' && assessmentAddresses.indexOf(event.sender > -1)) {
+      //     dispatch(receiveAssessor(event.sender, event.user))
+      //   }
+      // }
 
       // fetch data for assessments
-      assessmentAddresses.forEach((address) => {
-        dispatch(fetchAssessmentData(address))
-      })
+      // assessmentAddresses.forEach((address) => {
+      //   dispatch(fetchAssessmentData(address))
+      // })
     }
   }
 }

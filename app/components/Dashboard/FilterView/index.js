@@ -8,7 +8,7 @@ import { fetchLatestAssessments } from '../../../actions/assessmentActions.js'
 
 const mapStateToProps = state => {
   return {
-    assessments: state.assessments,
+    assessments: state.ethereum.userAssessments,
     userAddress: state.ethereum.userAddress,
     selectedTab: state.navigation.dashboardTab,
     networkID: state.ethereum.networkID
