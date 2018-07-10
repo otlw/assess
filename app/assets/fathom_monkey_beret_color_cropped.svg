@@ -1,0 +1,126 @@
+<svg width="25" height="25" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="27" width="27" y="-1" x="-1"/>
+  <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
+   <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"/>
+  </g>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <style transform="matrix(0.08798691410196202,0,0,0.08798691410196202,0,0) " type="text/css">.st0{fill:#EF9286;}
+	.st1{fill:#070707;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;}
+	.st2{fill:#050505;}
+	.st3{fill:#D1D5AC;}
+	.st4{fill:none;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-miterlimit:10;}
+	.st5{fill:#EFEFEF;stroke:#050505;stroke-width:2;stroke-miterlimit:10;}
+	.st6{fill:#161515;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-miterlimit:10;}
+	.st7{fill:#D1D5AC;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;}
+	.st8{fill:#F9F4F4;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;}
+	.st9{fill:#232222;stroke:#000000;stroke-miterlimit:10;}
+	.st10{fill:#0C0C0C;}
+	.st11{fill:#F9F9F9;}
+	.st12{fill:#102E42;}
+	.st13{fill:#1B679B;}</style>
+  <g id="svg_32">
+   <g transform="matrix(0.08798691410196202,0,0,0.08798691410196202,0,0) " id="svg_6">
+    <circle id="svg_8" r="142.800003" cy="2273.065308" cx="3295.944775" class="st0"/>
+   </g>
+   <g transform="matrix(0.08798691410196202,0,0,0.08798691410196202,0,0) " id="svg_5">
+    <g id="svg_9">
+     <ellipse id="svg_10" ry="16" rx="12.4" cy="2227.565308" cx="3359.044775" class="st1"/>
+     <ellipse id="svg_11" ry="16" rx="12.4" cy="2226.565308" cx="3235.044775" class="st1"/>
+     <g id="svg_12">
+      <path id="svg_13" d="m3296.144775,2363.565308c-39,0 -70.8,-40.6 -70.8,-90.5s31.8,-90.5 70.8,-90.5s70.8,40.6 70.8,90.5s-31.7,90.5 -70.8,90.5z" class="st2"/>
+      <path id="svg_14" d="m3296.144775,2183.065308c38.8,0 70.3,40.4 70.3,90s-31.5,90 -70.3,90s-70.3,-40.4 -70.3,-90s31.5,-90 70.3,-90m0,-1c-39.4,0 -71.3,40.7 -71.3,91s31.9,91 71.3,91s71.3,-40.7 71.3,-91s-31.9,-91 -71.3,-91l0,0z"/>
+     </g>
+     <g id="svg_15">
+      <path id="svg_16" d="m3296.344775,2282.565308c-23.7,0 -43,-19.3 -43,-43s19.3,-43 43,-43s43,19.3 43,43s-19.3,43 -43,43z" class="st3"/>
+      <path id="svg_17" d="m3296.344775,2197.065308c23.4,0 42.5,19.1 42.5,42.5s-19.1,42.5 -42.5,42.5s-42.5,-19.1 -42.5,-42.5s19.1,-42.5 42.5,-42.5m0,-1c-24,0 -43.5,19.5 -43.5,43.5s19.5,43.5 43.5,43.5s43.5,-19.5 43.5,-43.5s-19.5,-43.5 -43.5,-43.5l0,0z" class="st3"/>
+     </g>
+     <g id="svg_18">
+      <path id="svg_19" d="m3343.544775,2339.065308" class="st4"/>
+     </g>
+     <circle id="svg_20" r="13.5" cy="2231.565308" cx="3280.344775" class="st5"/>
+     <circle id="svg_21" r="3" cy="2231.565308" cx="3280.344775" class="st6"/>
+     <ellipse id="svg_22" ry="11" rx="8.6" cy="2226.565308" cx="3234.944775" class="st7"/>
+     <circle id="svg_23" r="4.5" cy="2253.065308" cx="3296.844775" class="st8"/>
+     <path id="svg_24" d="m3281.344775,2176.565308" class="st9"/>
+     <ellipse id="svg_25" ry="11" rx="8.6" cy="2227.565308" cx="3358.944775" class="st7"/>
+     <path id="svg_26" d="m3353.844775,2319.665308l0,1.4l3,0c1.9,0 3.5,1.6 3.5,3.5l0,29c0,6.9 5.8,12.7 12.7,12.7s12.7,-5.8 12.7,-12.7l0,-11.1c0,-2.5 -2.1,-4.6 -4.6,-4.6s-4.6,2.1 -4.6,4.6l0,11.1c0,2.1 -1.6,3.7 -3.5,3.7c-1.9,0 -3.5,-1.6 -3.5,-3.5l0,-29c0,-6.9 -5.8,-12.7 -12.7,-12.7l-3,0l0,8.3" class="st10"/>
+    </g>
+    <g id="svg_27">
+     <circle id="svg_28" r="12.5" cy="2206.565308" cx="3366.344775" class="st11"/>
+    </g>
+    <path id="svg_29" d="m3305.944775,2237.165308c0.8,0.1 1.1,-0.1 2.4,-0.2l0,0l20.2,-5.6l0,0l7.6,-2.1l0,0l33.3,-9c0.6,-0.1 1,-0.3 1.6,-0.4l0,0l0,0c5.3,-1.8 9.3,-6.6 9.9,-12.5c0.7,-8 -5.2,-15.1 -13.2,-15.9c-2.8,-0.3 -5.4,0.3 -7.8,1.4l0,0l-0.4,0.2c-0.1,0 -0.2,0.1 -0.3,0.1l-55.4,33.2l0,0c-1.7,0.9 -3,2.6 -3.2,4.6c-0.2,3.1 2.2,5.9 5.3,6.2zm61.5,-42.6c6.3,0.6 10.9,6.1 10.3,12.4c-0.6,6.3 -6.1,10.9 -12.4,10.3c-6.3,-0.6 -10.9,-6.1 -10.3,-12.4c0.7,-6.2 6.2,-10.8 12.4,-10.3z" class="st12"/>
+    <circle id="svg_30" r="3.4" cy="2205.665308" cx="3366.544775" class="st6"/>
+    <path id="svg_31" d="m3298.544775,2165.465308l0,-4.4c0,-1.3 -1.1,-2.3 -2.3,-2.3c-1.3,0 -2.3,1.1 -2.3,2.3l0,4.4c-23.4,0.6 -42.1,10.6 -42.1,23.1c0,3.9 1.7,7.4 5,10.6c5.3,-5.3 21,-9.3 39.4,-9.3c18.2,0 33.4,3.8 39.1,8.9c2.9,-3.1 4.6,-6.6 4.6,-10.3c0,-12.1 -18.3,-22.2 -41.4,-23z" class="st13"/>
+   </g>
+  </g>
+  <style transform="matrix(0.07720835789047342,0,0,0.07720835789047342,0,0) " type="text/css">.st0{fill:#EF9286;}
+	.st1{fill:#070707;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;}
+	.st2{fill:#050505;}
+	.st3{fill:#D1D5AC;}
+	.st4{fill:none;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-miterlimit:10;}
+	.st5{fill:#EFEFEF;stroke:#050505;stroke-width:2;stroke-miterlimit:10;}
+	.st6{fill:#161515;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-miterlimit:10;}
+	.st7{fill:#D1D5AC;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;}
+	.st8{fill:#F9F4F4;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;}
+	.st9{fill:#232222;stroke:#000000;stroke-miterlimit:10;}
+	.st10{fill:#0C0C0C;}
+	.st11{fill:#F9F9F9;}
+	.st12{fill:#102E42;}
+	.st13{fill:#1B679B;}</style>
+  <style transform="matrix(0.019302089472618356,0,0,0.019302089472618356,0,0) " type="text/css">.st0{fill:#EF9286;}
+	.st1{fill:#070707;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;}
+	.st2{fill:#050505;}
+	.st3{fill:#D1D5AC;}
+	.st4{fill:none;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-miterlimit:10;}
+	.st5{fill:#EFEFEF;stroke:#050505;stroke-width:2;stroke-miterlimit:10;}
+	.st6{fill:#161515;stroke:#000000;stroke-width:5;stroke-linecap:round;stroke-miterlimit:10;}
+	.st7{fill:#D1D5AC;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;}
+	.st8{fill:#F9F4F4;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-miterlimit:10;}
+	.st9{fill:#232222;stroke:#000000;stroke-miterlimit:10;}
+	.st10{fill:#0C0C0C;}
+	.st11{fill:#F9F9F9;}
+	.st12{fill:#102E42;}
+	.st13{fill:#1B679B;}</style>
+  <g stroke="null" id="svg_96">
+   <g stroke="null" transform="matrix(0.08705011310431919,0,0,0.08705011443425022,-43.80606527521278,-43.807499384742016) " id="svg_70">
+    <circle stroke="null" id="svg_72" r="142.800003" cy="646.073537" cx="646.057093" class="st0"/>
+   </g>
+   <g stroke="null" transform="matrix(0.08705011310431919,0,0,0.08705011443425022,-43.80606527521278,-43.807499384742016) " id="svg_69">
+    <g stroke="null" id="svg_73">
+     <ellipse stroke="null" id="svg_74" ry="16" rx="12.4" cy="600.573537" cx="709.157093" class="st1"/>
+     <ellipse stroke="null" id="svg_75" ry="16" rx="12.4" cy="599.573537" cx="585.157093" class="st1"/>
+     <g stroke="null" id="svg_76">
+      <path stroke="null" id="svg_77" d="m646.257093,736.573537c-39,0 -70.8,-40.6 -70.8,-90.5s31.8,-90.5 70.8,-90.5s70.8,40.6 70.8,90.5s-31.7,90.5 -70.8,90.5z" class="st2"/>
+      <path stroke="null" id="svg_78" d="m646.257093,556.073537c38.8,0 70.3,40.4 70.3,90s-31.5,90 -70.3,90s-70.3,-40.4 -70.3,-90s31.5,-90 70.3,-90m0,-1c-39.4,0 -71.3,40.7 -71.3,91s31.9,91 71.3,91s71.3,-40.7 71.3,-91s-31.9,-91 -71.3,-91l0,0z"/>
+     </g>
+     <g stroke="null" id="svg_79">
+      <path stroke="null" id="svg_80" d="m646.457093,655.573537c-23.7,0 -43,-19.3 -43,-43s19.3,-43 43,-43s43,19.3 43,43s-19.3,43 -43,43z" class="st3"/>
+      <path stroke="null" id="svg_81" d="m646.457093,570.073537c23.4,0 42.5,19.1 42.5,42.5s-19.1,42.5 -42.5,42.5s-42.5,-19.1 -42.5,-42.5s19.1,-42.5 42.5,-42.5m0,-1c-24,0 -43.5,19.5 -43.5,43.5s19.5,43.5 43.5,43.5s43.5,-19.5 43.5,-43.5s-19.5,-43.5 -43.5,-43.5l0,0z" class="st3"/>
+     </g>
+     <g stroke="null" id="svg_82">
+      <path stroke="null" id="svg_83" d="m693.657093,712.073537" class="st4"/>
+     </g>
+     <circle stroke="null" id="svg_84" r="13.5" cy="604.573537" cx="630.457093" class="st5"/>
+     <circle stroke="null" id="svg_85" r="3" cy="604.573537" cx="630.457093" class="st6"/>
+     <ellipse stroke="null" id="svg_86" ry="11" rx="8.6" cy="599.573537" cx="585.057093" class="st7"/>
+     <circle stroke="null" id="svg_87" r="4.5" cy="626.073537" cx="646.957093" class="st8"/>
+     <path stroke="null" id="svg_88" d="m631.457093,549.573537" class="st9"/>
+     <ellipse stroke="null" id="svg_89" ry="11" rx="8.6" cy="600.573537" cx="709.057093" class="st7"/>
+     <path stroke="null" id="svg_90" d="m703.957093,692.673537l0,1.4l3,0c1.9,0 3.5,1.6 3.5,3.5l0,29c0,6.9 5.8,12.7 12.7,12.7s12.7,-5.8 12.7,-12.7l0,-11.1c0,-2.5 -2.1,-4.6 -4.6,-4.6s-4.6,2.1 -4.6,4.6l0,11.1c0,2.1 -1.6,3.7 -3.5,3.7c-1.9,0 -3.5,-1.6 -3.5,-3.5l0,-29c0,-6.9 -5.8,-12.7 -12.7,-12.7l-3,0l0,8.3" class="st10"/>
+    </g>
+    <g stroke="null" id="svg_91">
+     <circle stroke="null" id="svg_92" r="12.5" cy="579.573537" cx="716.457093" class="st11"/>
+    </g>
+    <path stroke="null" id="svg_93" d="m656.057093,610.173537c0.8,0.1 1.1,-0.1 2.4,-0.2l0,0l20.2,-5.6l0,0l7.6,-2.1l0,0l33.3,-9c0.6,-0.1 1,-0.3 1.6,-0.4l0,0l0,0c5.3,-1.8 9.3,-6.6 9.9,-12.5c0.7,-8 -5.2,-15.1 -13.2,-15.9c-2.8,-0.3 -5.4,0.3 -7.8,1.4l0,0l-0.4,0.2c-0.1,0 -0.2,0.1 -0.3,0.1l-55.4,33.2l0,0c-1.7,0.9 -3,2.6 -3.2,4.6c-0.2,3.1 2.2,5.9 5.3,6.2zm61.5,-42.6c6.3,0.6 10.9,6.1 10.3,12.4c-0.6,6.3 -6.1,10.9 -12.4,10.3c-6.3,-0.6 -10.9,-6.1 -10.3,-12.4c0.7,-6.2 6.2,-10.8 12.4,-10.3z" class="st12"/>
+    <circle stroke="null" id="svg_94" r="3.4" cy="578.673537" cx="716.657093" class="st6"/>
+    <path stroke="null" id="svg_95" d="m648.657093,538.473537l0,-4.4c0,-1.3 -1.1,-2.3 -2.3,-2.3c-1.3,0 -2.3,1.1 -2.3,2.3l0,4.4c-23.4,0.6 -42.1,10.6 -42.1,23.1c0,3.9 1.7,7.4 5,10.6c5.3,-5.3 21,-9.3 39.4,-9.3c18.2,0 33.4,3.8 39.1,8.9c2.9,-3.1 4.6,-6.6 4.6,-10.3c0,-12.1 -18.3,-22.2 -41.4,-23z" class="st13"/>
+   </g>
+  </g>
+ </g>
+</svg>
