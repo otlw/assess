@@ -4,7 +4,7 @@ import {
   REMOVE_ASSESSMENT,
   RECEIVE_ASSESSORS,
   RECEIVE_STORED_DATA,
-  RECEIVE_PAYOUTS,
+  RECEIVE_PAYOUT,
   SET_ASSESSMENT_AS_INVALID
 } from '../actions/assessmentActions'
 
@@ -22,18 +22,11 @@ assessmentAddress : {
   stage: [0,4]
   finalScore: [-127, 127],
   userStage: 0,
-  assessorStages : {
-      address: Called
-      ...
-  },
   data: {
      address: dataString,
      ...
   },
-  payouts: {
-    address1: 20,
-    ...
-  }
+  payout: 20,
 }
  */
 
@@ -71,16 +64,16 @@ function assessments (state = initialState, action) {
         [address]: extend(state[address], {data: action.data})
       }
     }
-    case RECEIVE_PAYOUTS: {
+    case RECEIVE_PAYOUT: {
       let address = action.assessmentAddress
       return {
         ...state,
-        [address]: extend(state[address], extend(state[address].payouts, {payouts: action.payouts}))
+        [address]: extend(state[address], {payout: action.payout})
       }
     }
     case SET_ASSESSMENT_AS_INVALID: {
       return {
-        ...state,
+        ...state
       }
     }
     default:

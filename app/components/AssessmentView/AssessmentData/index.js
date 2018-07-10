@@ -6,6 +6,9 @@ var h = require('react-hyperscript')
 
 export const AssessmentData = (props) => {
   let assessment = props.assessment
+  if (!assessment) return h('div', 'loading')
+  if (assessment.invalid) return h('div', 'invalid')
+
   return (
     h('div', [
       h('div', [
@@ -50,10 +53,10 @@ export const AssessmentData = (props) => {
       h(MeetingPoint, {assessee: assessment.assessee, meetingPoint: assessment.data, address: props.address}),
       h('div', '============Assessors================================='),
       h(AssessorList, {
-        assessorStages: assessment.assessorStages,
+        assessors: assessment.assessors,
         address: props.address,
         stage: assessment.stage,
-        payouts: assessment.payouts
+        payouts: assessment.payout
       })
     ])
   )

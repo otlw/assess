@@ -5,7 +5,7 @@ import { Stage, LoadingStage, NotificationTopic } from '../constants.js'
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const RECEIVE_FINALSCORE = 'RECEIVE_FINALSCORE'
 export const RECEIVE_STORED_DATA = 'RECEIVE_STORED_DATA'
-export const RECEIVE_PAYOUTS = 'RECEIVE_PAYOUTS'
+export const RECEIVE_PAYOUT = 'RECEIVE_PAYOUT'
 export const RECEIVE_ASSESSMENTSTAGE = 'RECEIVE_ASSESSMENTSTAGE'
 export const REMOVE_ASSESSMENT = 'REMOVE_ASSESSMENT'
 export const RECEIVE_ASSESSORS = 'RECEIVE_ASSESSORS'
@@ -38,7 +38,7 @@ export function confirmAssessor (address) {
       {method: assessmentInstance.methods.confirmAssessor, args: []},
       Stage.Called,
       userAddress,
-      address,
+      address
     )
   }
 }
@@ -52,8 +52,7 @@ export function commit (address, score, salt) {
       {method: assessmentInstance.methods.commit, args: [hashScoreAndSalt(score, salt)]},
       Stage.Confirmed,
       userAddress,
-      address,
-      {method: updateAssessors, args: [address, getState().assessments[address].assessors, false]}
+      address
     )
   }
 }
@@ -67,8 +66,7 @@ export function reveal (address, score, salt) {
       {method: assessmentInstance.methods.reveal, args: [score, salt]},
       Stage.Committed,
       userAddress,
-      address,
-      {method: updateAssessors, args: [address, getState().assessments[address].assessors, false]}
+      address
     )
   }
 }
@@ -84,8 +82,8 @@ export function storeDataOnAssessment (address, data) {
       {method: assessmentInstance.methods.addData, args: [dataAsBytes]},
       'meetingPointChange',
       userAddress,
-      address,
-      {method: fetchStoredData, args: [address]}
+      address
+      // {method: fetchStoredData, args: [address]}
     )
   }
 }
@@ -173,138 +171,68 @@ export function validateAndFetchAssessmentData (address) {
  */
 export function fetchAssessmentData (address) {
   return async (dispatch, getState) => {
-    if (!getState().assessments[address] || !getState().assessments[address].assessee) {
-      dispatch(beginLoadingDetail('info'))
-      try {
-        // get static assessment info
-        let assessmentInstance = getInstance.assessment(getState(), address)
-        let cost = await assessmentInstance.methods.cost().call()
-        let endTime = await assessmentInstance.methods.endTime().call()
-        // checkpoint -> keeps track of timelimits for 1) latest possible time to confirm and 2) earliest time to reveal
-        let checkpoint = await assessmentInstance.methods.checkpoint().call()
-        let size = await assessmentInstance.methods.size().call()
-        let assessee = await assessmentInstance.methods.assessee().call()
-        let conceptAddress = await assessmentInstance.methods.concept().call()
-        let conceptInstance = getInstance.concept(getState(), conceptAddress)
-        let conceptData = await conceptInstance.methods.data().call()
-        if (conceptData) {
-          conceptData = Buffer.from(conceptData.slice(2), 'hex').toString('utf8')
-        } else {
-          conceptData = ''
-          console.log('was undefined: conceptData ', conceptData)
-        }
-        // send static info to store
-        dispatch(receiveAssessment({
-          address,
-          cost,
-          checkpoint,
-          endTime,
-          size,
-          assessee,
-          conceptAddress,
-          conceptData
-        }))
-      } catch (e) {
-        console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
-      }
-    }
-    // get dynamic Stuff
-    dispatch(updateAssessment(address))
-  }
-}
+    try {
+      // get static assessment info
+      let assessmentInstance = getInstance.assessment(getState(), address)
+      let cost = await assessmentInstance.methods.cost().call()
+      let endTime = await assessmentInstance.methods.endTime().call()
 
-/*
-  Fetches assessment-data that can change (stage, userStage, meeting Point) and dependent on
-  the previous value of those also (userPayout, finalScore). Also, it uses
-  updateAssessors(address, stage) to fetch the latest changes concerning the
-  assessors.
-*/
-export function updateAssessment (address) {
-  console.log('updateAssessment has been calledc' )
-  return async (dispatch, getState) => {
-    let userAddress = getState().ethereum.userAddress
-    let assessmentInstance = getInstance.assessment(getState(), address)
-    let stage = Number(await assessmentInstance.methods.assessmentStage().call())
-    let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
-    let assessee = await assessmentInstance.methods.assessee().call()
+      // checkpoint -> keeps track of timelimits for 1) latest possible time to confirm and 2) earliest time to reveal
+      let checkpoint = await assessmentInstance.methods.checkpoint().call()
+      let size = await assessmentInstance.methods.size().call()
+      let assessee = await assessmentInstance.methods.assessee().call()
+      let conceptAddress = await assessmentInstance.methods.concept().call()
+      let conceptInstance = getInstance.concept(getState(), conceptAddress)
+      let stage = Number(await assessmentInstance.methods.assessmentStage().call())
 
-    let finalScore
-    if (stage === Stage.Done) {
-      let onChainScore = Number(await assessmentInstance.methods.finalScore().call())
-      // convert score to Front End range (FE:0,100%; BE:-100,100)
-      finalScore = convertFromOnChainScoreToUIScore(onChainScore)
-      // only fetch Payout if user is not assesse and payout is not already there
-      if (userAddress !== assessee &&
-          (!getState().assessments.payouts || !getState().assessments.payouts[userAddress])) {
-        dispatch(fetchPayouts(address, userAddress))
-      }
-    }
+      let conceptDataHex = await conceptInstance.methods.data().call()
+      let conceptData = Buffer.from(conceptDataHex.slice(2), 'hex').toString('utf8')
 
-    // get the data (meeting point) and convert it from bytes32 to string
-    let data = 'no meeting point set'
-    let bytesData = await assessmentInstance.methods.data(assessee).call()
-    if (bytesData) {
-      data = getState().ethereum.web3.utils.hexToUtf8(bytesData)
-    }
-
-    const fathomTokenInstance = getInstance.fathomToken(getState())
-    let pastEvents = await fathomTokenInstance.getPastEvents('Notification', {
-      filter: {sender: address, topic: 2},
-      fromBlock: 0,
-      toBlock: 'latest'
-    })
-    let assessors = pastEvents.map(x => x.returnValues.user)
-    // }
-    dispatch(updateAssessors(address, assessors, Number(stage) === Stage.Called))
-    console.log('updating assessment', address, ' with: ', stage, userStage, finalScore)
-    dispatch(receiveAssessment({
-      address,
-      stage,
-      userStage,
-      finalScore,
-      data
-    }))
-    dispatch(endLoadingDetail('info'))
-    dispatch(updateAssessors(address, false, stage === Stage.Called))
-  }
-}
-
-/*
-  Updates a given list of assessors by fetching their stages and (if necessary)
-  payouts.
-  @param assessorAddresses assessors to be updated, if no assessors are given, the one saved in the assessment will be used
-  @param checkUserAddress also checks whether the user has been called and if, so he will be added to the list of assessors with his stage set to 1
-*/
-export function updateAssessors (address, assessorAddresses = false, checkUserAddress = false) {
-  return async (dispatch, getState) => {
-    let assessmentInstance = getInstance.assessment(getState(), address)
-    let assessors = assessorAddresses ||
-        (getState().assessments[address].assessorStages ? Object.keys(getState().assessments[address].assessorStages) : '')
-    let assessorStages = {}
-    if (assessors) {
-      for (let i = 0; i < assessors.length; i++) {
-        let stage = Number(await assessmentInstance.methods.assessorState(assessors[i]).call())
-        assessorStages[assessors[i]] = stage
-      }
-    }
-    if (checkUserAddress) {
+      // Dynamic Info
       let userAddress = getState().ethereum.userAddress
-      let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
-      if (userStage === Stage.Called) {
-        assessorStages[userAddress] = userStage
+      let userStage = (userAddress !== assessee) ? Number(await assessmentInstance.methods.assessorState(userAddress).call()) : null
+
+      let dataBytes = await assessmentInstance.methods.data(assessee).call()
+      let data = dataBytes ? getState().ethereum.web3.utils.hexToUtf8(dataBytes) : ''
+
+      let finalScore
+      if (stage === Stage.Done) {
+        let onChainScore = Number(await assessmentInstance.methods.finalScore().call())
+        // convert score to Front End range (FE:0,100%; BE:-100,100)
+        finalScore = convertFromOnChainScoreToUIScore(onChainScore)
+        // only fetch Payout if user is not assesse and payout is not already there
+        if (userAddress !== assessee) {
+          dispatch(fetchPayout(address, userAddress))
+        }
       }
+
+      const fathomTokenInstance = getInstance.fathomToken(getState())
+      let pastEvents = await fathomTokenInstance.getPastEvents('Notification', {
+        filter: {sender: address, topic: 2},
+        fromBlock: 0, //TODO don't use from 0
+        toBlock: 'latest'
+      })
+      let assessors = pastEvents.map(x => x.returnValues.user)
+      //Meeting Point, Assessors, UserSTage, MAYBE final score and payout
+
+      dispatch(receiveAssessment({
+        address,
+        cost,
+        checkpoint,
+        stage,
+        userStage,
+        endTime,
+        size,
+        assessee,
+        conceptAddress,
+        conceptData,
+        finalScore,
+        data,
+        assessors
+      }))
+    } catch (e) {
+      console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
     }
-    if (Object.keys(assessorStages).length > 0) {
-      dispatch(receiveAssessors(address, assessorStages))
-      let stage = Number(getState().assessments[address].stage)
-      // if not already there fetch payouts
-      if (stage === Stage.Done &&
-          (!getState().assessments.payouts ||
-           Object.keys(getState().assessments.payouts).length < 2)) {
-        dispatch(fetchPayouts(address))
-      }
-    }
-    dispatch(endLoadingDetail('assessors'))
   }
 }
 
@@ -312,23 +240,18 @@ export function updateAssessors (address, assessorAddresses = false, checkUserAd
   fetches the payouts of one or all assessors of a given assessment
   @param: if given only fetch payout of that one single user
 */
-export function fetchPayouts (address, user = false) {
+export function fetchPayout (address, user) {
   return async (dispatch, getState) => {
     const fathomTokenInstance = getInstance.fathomToken(getState())
     let filter = {
-      filter: { _from: address },
-      fromBlock: 0,
+      filter: { _from: address, _to: user },
+      fromBlock: 0, // TODO Don't start from block 0
       toBlock: 'latest'
     }
-    if (user) {
-      filter.filter['_to'] = user
-    }
+
     let pastEvents = await fathomTokenInstance.getPastEvents('Transfer', filter)
-    let payouts = {}
-    pastEvents.filter(e =>
-      (payouts[e.returnValues['_to']] = e.returnValues['_value'])
-    )
-    dispatch(receivePayouts(address, payouts))
+    let payout = pastEvents[0].returnValues['_value']
+    dispatch(receivePayout(address, payout))
   }
 }
 
@@ -337,7 +260,7 @@ export function fetchPayouts (address, user = false) {
   See web3actions().connect() to see that only user-relevant events call this function
 */
 export function processEvent (user, sender, topic) {
-  console.log('processEvent called' )
+  console.log('processEvent called')
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     if (topic <= NotificationTopic.CalledAsAssessor) {
@@ -348,18 +271,10 @@ export function processEvent (user, sender, topic) {
       dispatch(receiveAssessor(sender, user))
     } else if (topic <= NotificationTopic.AssessmentStarted && user === userAddress) { // topic 4-7
       console.log('cond3 -> update')
-      dispatch(updateAssessment(sender))
+      dispatch(updateAssessment(sender)) // Implement event Handler
     } else {
       console.log('no condition applied!', user, sender, topic)
     }
-  }
-}
-
-export function receiveAssessors (address, assessorStages) {
-  return {
-    type: RECEIVE_ASSESSORS,
-    address,
-    assessorStages
   }
 }
 
@@ -379,11 +294,11 @@ export function receiveStoredData (assessmentAddress, data) {
   }
 }
 
-export function receivePayouts (assessmentAddress, payouts) {
+export function receivePayout (assessmentAddress, payout) {
   return {
-    type: RECEIVE_PAYOUTS,
+    type: RECEIVE_PAYOUT,
     assessmentAddress,
-    payouts
+    payout
   }
 }
 
