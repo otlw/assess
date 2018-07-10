@@ -232,17 +232,11 @@ contract('Assessment', function (accounts) {
 
         it('should be called as an assessor if they toggle available', async () => {
           let mew = await Concept.at(await conceptReg.mewAddress())
-          let txReceipt = await mew.toggleAvailability({from: assessee})
+          await mew.toggleAvailability({from: assessee})
 
           let newAssessmentData = await chain.makeAssessment(assessedConcept.address, outsideUser, cost, size, waitTime, timeLimit)
           let calledAssessors = newAssessmentData.calledAssessors
           assert.isTrue(calledAssessors.includes(assessee))
-
-          // get the mew concept from concept registry
-          // have the assessee toggle availability in the mew concept
-          // create an assessment in that concept with a random assessee
-          // Get the called assessors for that assessment
-          // check if the assessee is among called assessors
         })
       })
 
