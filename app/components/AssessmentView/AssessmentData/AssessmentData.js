@@ -4,7 +4,7 @@ import AssessorList from '../AssessorList'
 import ProgressButtonBar from '../ProgressButtonBar'
 import { StageDisplayNames } from '../../../constants.js'
 import { convertDate } from '../../../utils.js'
-import { SuperFrame, Header, Role, ConceptName, SubHeader, StatusIndicator, StatusKey, StatusValue, DataBox, InfoField, InfoKey, AssessorBox, InfoBox, InfoValue, AssessorsDone, MeetingPointButton } from '../../style.js'
+import { SuperFrame, Header, Role, ConceptName, SubHeader, StatusIndicator, StatusKey, StatusValue, DataBox, InfoField, InfoKey, AssessorBox, InfoBox, InfoValue, AssessorsDone, MeetingPointButton } from './style.js'
 
 var h = require('react-hyperscript')
 
