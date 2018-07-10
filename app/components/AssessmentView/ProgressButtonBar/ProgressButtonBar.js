@@ -2,7 +2,7 @@ import { Component } from 'react'
 import { TxList } from '../../TxList.js'
 import h from 'react-hyperscript'
 import { Stage } from '../../../constants.js'
-import { ProgressButtonBox, CloseButton, PastOrPresentPhaseButton, FuturePhaseButton, StageName, StageDescriptor, SubmitButton, Feedback, CommitInput } from '../../style.js'
+import { ProgressButtonBox, CloseButton, PastOrPresentPhaseButton, FuturePhaseButton, StageName, StageDescriptor, SubmitButton, Feedback, CommitInput } from './style.js'
 import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
 
 // component to display an individual assessor slot address and options
@@ -101,7 +101,6 @@ export class ProgressButtonBar extends Component {
   render () {
     if (this.state.view === 'progressView') {
       // show overview
-      console.log('txs', this.props.transactions)
       return (
         h(ProgressButtonBox, [
           h(PastOrPresentPhaseButton, {

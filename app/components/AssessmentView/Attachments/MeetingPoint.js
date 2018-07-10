@@ -1,10 +1,10 @@
 import { Component } from 'react'
+import { MeetingPointButton } from '../AssessmentData/style.js'
 import MeetingPointForm from './MeetingPointForm.js'
 import TxList from '../../TxList.js'
-import { MeetingPointButton } from '../../style.js'
 var h = require('react-hyperscript')
 
-export class MeetingPointEditButton extends Component {
+class MeetingPointEditButton extends Component {
   constructor (props) {
     super(props)
     this.state = {
