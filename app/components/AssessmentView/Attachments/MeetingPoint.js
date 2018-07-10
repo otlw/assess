@@ -1,8 +1,14 @@
 import { Component } from 'react'
 import MeetingPointForm from './MeetingPointForm.js'
 import TxList from '../../TxList.js'
-import { MeetingPointButton } from '../../style.js'
+import styled from 'styled-components'
 var h = require('react-hyperscript')
+
+const MeetingPointButton = styled('button')`
+  display: inline-block;
+  padding: 0.25em 1em;
+  border: 2px solid palevioletred;
+`
 
 export class MeetingPointEditButton extends Component {
   constructor (props) {
