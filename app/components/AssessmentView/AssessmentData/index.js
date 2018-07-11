@@ -9,7 +9,7 @@ const mapStateToProps = (state) => {
   return {
     loadedInfo: (state.loading.assessmentDetail.info === LoadingStage.Done),
     assessment: state.assessments[state.assessments.selectedAssessment],
-    loading: state.loading,
+    userAddress: state.ethereum.userAddress,
     invalidAssessment: state.assessments.selectedAssessment === 'invalid'
   }
 }

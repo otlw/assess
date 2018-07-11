@@ -53,7 +53,7 @@ export function commit (address, score, salt) {
       Stage.Confirmed,
       userAddress,
       address,
-      {method: fetchAssessorStages, args: [address, getState().assessments[address].assessors, false]}
+      {method: fetchAssessorStages, args: [address, getState().assessments[address].assessors]}
     )
   }
 }
@@ -68,7 +68,7 @@ export function reveal (address, score, salt) {
       Stage.Committed,
       userAddress,
       address,
-      {method: fetchAssessorStages, args: [address, getState().assessments[address].assessors, false]}
+      {method: fetchAssessorStages, args: [address, getState().assessments[address].assessors]}
     )
   }
 }
@@ -151,6 +151,7 @@ export function fetchAssessmentData (assessmentAddress) {
         // checkpoint -> keeps track of timelimits for 1) latest possible time to confirm and 2) earliest time to reveal
         let checkpoint = await assessmentInstance.methods.checkpoint().call()
         let size = await assessmentInstance.methods.size().call()
+        let done = await assessmentInstance.methods.done().call()
         let stage = Number(await assessmentInstance.methods.assessmentStage().call())
         let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
         let assessee = await assessmentInstance.methods.assessee().call()
@@ -161,7 +162,7 @@ export function fetchAssessmentData (assessmentAddress) {
         let finalScore = convertFromOnChainScoreToUIScore(onChainScore)
 
         // get the data (meeting point) and convert it from bytes32 to string
-        let data = 'no meeting point set'
+        let data = ''
         let bytesData = await assessmentInstance.methods.data(assessee).call()
         if (bytesData) {
           data = getState().ethereum.web3.utils.hexToUtf8(bytesData)
@@ -181,6 +182,7 @@ export function fetchAssessmentData (assessmentAddress) {
           checkpoint,
           endTime,
           size,
+          done,
           assessee,
           userStage,
           stage,
@@ -221,9 +223,7 @@ export function fetchScoreAndPayout (address) {
 //   }
 // }
 
-// reads all staked assessors from event-logs and reads their stage from the chain
-// if the assessment is in the calling phase one also checks whether the user has been called
-// and if, so he will be added to the list of assessors with his stage set to 1
+// reads all staked assessors from event-logs and their stage from the chain
 export function fetchAssessors (selectedAssessment) {
   return async (dispatch, getState) => {
     try {
@@ -246,7 +246,7 @@ export function fetchAssessors (selectedAssessment) {
           assessors.push(e.returnValues['user'])
       )
       let stage = Number(getState().assessments[address].stage)
-      dispatch(fetchAssessorStages(address, assessors, Number(stage) === Stage.Called))
+      dispatch(fetchAssessorStages(address, assessors))
       if (stage === Stage.Done) {
         dispatch(fetchAllPayouts(address))
       }
@@ -290,20 +290,13 @@ export function fetchAllPayouts (address) {
 // data[assessors[i]] = await assessmentInstance.methods.data(assessors[i]).call()
 // }
 
-export function fetchAssessorStages (address, assessors, checkUserAddress = false) {
+export function fetchAssessorStages (address, assessors) {
   return async (dispatch, getState) => {
     let assessmentInstance = getInstance.assessment(getState(), address)
     let assessorStages = []
     for (let i = 0; i < assessors.length; i++) {
       let stage = await assessmentInstance.methods.assessorState(assessors[i]).call()
       assessorStages.push({address: assessors[i], stage: stage})
-    }
-    if (checkUserAddress) {
-      let userAddress = getState().ethereum.userAddress
-      let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
-      if (userStage === Stage.Called) {
-        assessorStages.push({address: userAddress, stage: userStage})
-      }
     }
     dispatch(receiveAssessors(address, assessorStages))
     dispatch(endLoadingDetail('assessors'))

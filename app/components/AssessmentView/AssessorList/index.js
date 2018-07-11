@@ -8,9 +8,7 @@ import AssessorList from './AssessorList'
 const mapStateToProps = (state) => {
   return {
     loadedAssessors: (state.loading.assessmentDetail.assessors === LoadingStage.Done),
-    assessors: state.assessments[state.assessments.selectedAssessment].assessors,
-    loading: state.loading,
-    payouts: state.assessments[state.assessments.selectedAssessment].payouts
+    assessors: state.assessments[state.assessments.selectedAssessment].assessors
   }
 }
 
