@@ -46,7 +46,7 @@ const Box = styled('div')`
   vertical-align:top;
 `
 
-const conceptButton= styled('div')`
+const conceptButton = styled('div')`
   background-color: #C4C4C4;
   border: 1px solid #444444;
   box-sizing: border-box;
@@ -64,7 +64,7 @@ export class Header extends Component {
     return (
       h(HeaderBar, [
         h(Link, {to: '/'}, h(Logo, {alt: 'logo', src: fathomLogo})),
-        h(LinkUnstyled, {to: '/concepts'}, h(conceptButton,"Concepts")),
+        h(LinkUnstyled, {to: '/concepts'}, h(conceptButton, 'Concepts')),
         h(Box, [
           h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
             h(key, 'Network: '),

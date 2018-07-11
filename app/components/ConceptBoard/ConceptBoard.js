@@ -4,7 +4,6 @@ import h from 'react-hyperscript'
 
 import ConceptList from './ConceptList'
 import ConceptCreation from './ConceptCreation'
-import { TxList } from '../TxList.js'
 
 // styles
 
@@ -23,31 +22,30 @@ export class ConceptBoard extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      selectedConceptAddress: "0"
+      selectedConceptAddress: '0'
     }
   }
 
-  selectConceptAddress(e){
-    this.setState({selectedConceptAddress:e.target.id})
+  selectConceptAddress (e) {
+    this.setState({selectedConceptAddress: e.target.id})
   }
 
-  cancelCreation(){
+  cancelCreation () {
     console.log(this.state)
-    this.setState({selectedConceptAddress:"0"})
+    this.setState({selectedConceptAddress: '0'})
   }
 
   render () {
     if (this.props.loadedConcepts) {
+      let concepts = this.props.concepts
 
-      let concepts=this.props.concepts
-
-      let ConceptHeader=h('div',"Choose a Concept")
-      if (this.state.selectedConceptAddress!=="0"){
-        ConceptHeader=h(ConceptCreation,{
-          conceptName:this.props.concepts[this.state.selectedConceptAddress],
-          conceptAddress:this.state.selectedConceptAddress,
-          loadConceptContractAndCreateAssessment:this.props.loadConceptContractAndCreateAssessment,
-          cancelCreation:this.cancelCreation.bind(this)
+      let ConceptHeader = h('div', 'Choose a Concept')
+      if (this.state.selectedConceptAddress !== '0') {
+        ConceptHeader = h(ConceptCreation, {
+          conceptName: this.props.concepts[this.state.selectedConceptAddress],
+          conceptAddress: this.state.selectedConceptAddress,
+          loadConceptContractAndCreateAssessment: this.props.loadConceptContractAndCreateAssessment,
+          cancelCreation: this.cancelCreation.bind(this)
         })
       }
 
@@ -55,8 +53,8 @@ export class ConceptBoard extends Component {
         h(ConceptHeaderBox, [
           ConceptHeader
         ]),
-        h(ConceptListBox,[
-          h(ConceptList,{concepts,selectConceptAddress:this.selectConceptAddress.bind(this)})
+        h(ConceptListBox, [
+          h(ConceptList, {concepts, selectConceptAddress: this.selectConceptAddress.bind(this)})
         ])
       ])
     } else {

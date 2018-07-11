@@ -61,29 +61,24 @@ text-align:center;
 `
 
 export class ConceptCard extends Component {
-
-  constructor (props) {
-    super(props)
-  }
-
   render () {
-      return h(ConceptCardFrame, [
-        h(ConceptTitleBox,[
-          h(TitleCaption,"CONCEPT"),
-          h(ConceptTitle,this.props.conceptName)
-        ]),
-        h(ChildrenBox,[
-          h("span","CHILD CONCEPTS"),
-          h(ChildConcepts,"3")
-        ]),
-        h(BottomPart,[
-          h(ConceptDescription,"Concept Description?"),
-          h(ButtonGroup,[
-            h(GetAssessedButton,{onClick:this.props.selectConcept.bind(this),id:this.props.conceptAddress},"Get Assessed"),
-            h(LearnButton,"Learn")
-          ])
+    return h(ConceptCardFrame, [
+      h(ConceptTitleBox, [
+        h(TitleCaption, 'CONCEPT'),
+        h(ConceptTitle, this.props.conceptName)
+      ]),
+      h(ChildrenBox, [
+        h('span', 'CHILD CONCEPTS'),
+        h(ChildConcepts, '3')
+      ]),
+      h(BottomPart, [
+        h(ConceptDescription, 'Concept Description?'),
+        h(ButtonGroup, [
+          h(GetAssessedButton, {onClick: this.props.selectConcept.bind(this), id: this.props.conceptAddress}, 'Get Assessed'),
+          h(LearnButton, 'Learn')
         ])
       ])
+    ])
   }
 }
 
