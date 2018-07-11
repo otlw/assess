@@ -2,7 +2,7 @@ import { Component } from 'react'
 import MeetingPointEditBox from '../MeetingPoint/'
 import AssessorList from '../AssessorList.js'
 import ProgressButtonBar from '../ProgressButtonBar'
-import { StageDisplayNames } from '../../../constants.js'
+import { StageDisplayNames, Stage } from '../../../constants.js'
 import { convertDate } from '../../../utils.js'
 import { SuperFrame, Header, Role, ConceptName, SubHeader, StatusIndicator, StatusKey, StatusValue, DataBox, InfoField, InfoKey, AssessorBox, InfoBox, InfoValue, AssessorsDone } from './style.js'
 import { EditMeetingPoint, ViewMeetingPoint } from '../MeetingPoint/MeetingPointEditBox.js'
@@ -16,7 +16,7 @@ export class AssessmentData extends Component {
     if (this.props.assessment) {
       let assessment = this.props.assessment
       let actionRequired = assessment.stage === assessment.userStage
-      let nOtherAssessorsToBeActive = assessment.size - assessment.done - (actionRequired ? 1 : 0)
+      let nOtherAssessorsToBeActive = assessment.size - (assessment.stage === Stage.Called ? assessment.assessors.length : assessment.done) - (actionRequired ? 1 : 0)
       let statusString = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[assessment.stage]
       return (
         h(SuperFrame, [
