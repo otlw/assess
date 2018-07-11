@@ -191,6 +191,7 @@ export function fetchAssessmentData (address) {
       let conceptData = Buffer.from(conceptDataHex.slice(2), 'hex').toString('utf8')
 
       // Dynamic Info
+      let done = Number(await assessmentInstance.methods.done().call())
       let userAddress = getState().ethereum.userAddress
       let userStage = (userAddress !== assessee) ? Number(await assessmentInstance.methods.assessorState(userAddress).call()) : null
 
@@ -211,11 +212,10 @@ export function fetchAssessmentData (address) {
       const fathomTokenInstance = getInstance.fathomToken(getState())
       let pastEvents = await fathomTokenInstance.getPastEvents('Notification', {
         filter: {sender: address, topic: 2},
-        fromBlock: 0, //TODO don't use from 0
+        fromBlock: 0, // TODO don't use from 0
         toBlock: 'latest'
       })
       let assessors = pastEvents.map(x => x.returnValues.user)
-      //Meeting Point, Assessors, UserSTage, MAYBE final score and payout
 
       dispatch(receiveAssessment({
         address,
@@ -224,6 +224,7 @@ export function fetchAssessmentData (address) {
         stage,
         userStage,
         endTime,
+        done,
         size,
         assessee,
         conceptAddress,
@@ -250,10 +251,29 @@ export function fetchPayout (address, user) {
       fromBlock: 0, // TODO Don't start from block 0
       toBlock: 'latest'
     }
-
     let pastEvents = await fathomTokenInstance.getPastEvents('Transfer', filter)
     let payout = pastEvents[0].returnValues['_value']
     dispatch(receivePayout(address, payout))
+  }
+}
+
+// part of fetchAssessmentData now
+
+// returns the strings that are stored on the assessments
+// for now, only the data stored by the assessee
+export function fetchStoredData (selectedAssessment) {
+  console.log('fetchStoredData', selectedAssessment)
+  return async (dispatch, getState) => {
+    dispatch(beginLoadingDetail('attachments'))
+    let address = selectedAssessment || getState().assessments.selectedAssessment
+    let assessmentInstance = getInstance.assessment(getState(), address)
+    let assessee = await assessmentInstance.methods.assessee().call()
+    let data = await assessmentInstance.methods.data(assessee).call()
+    if (data) {
+      data = getState().ethereum.web3.utils.hexToUtf8(data)
+      dispatch(receiveStoredData(address, data))
+    }
+    dispatch(endLoadingDetail('attachments'))
   }
 }
 
@@ -273,7 +293,7 @@ export function processEvent (user, sender, topic) {
       dispatch(receiveAssessor(sender, user))
     } else if (topic <= NotificationTopic.AssessmentStarted && user === userAddress) { // topic 4-7
       console.log('cond3 -> update')
-      dispatch(updateAssessment(sender)) // Implement event Handler
+      // dispatch(updateAssessment(sender)) // Implement event Handler
     } else {
       console.log('no condition applied!', user, sender, topic)
     }

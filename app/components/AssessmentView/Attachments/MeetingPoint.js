@@ -1,9 +1,16 @@
 import { Component } from 'react'
 import MeetingPointForm from './MeetingPointForm.js'
 import TxList from '../../TxList.js'
+import styled from 'styled-components'
 var h = require('react-hyperscript')
 
-export class MeetingPoint extends Component {
+const MeetingPointButton = styled('button')`
+  display: inline-block;
+  padding: 0.25em 1em;
+  border: 2px solid palevioletred;
+`
+
+export class MeetingPointEditButton extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -21,15 +28,10 @@ export class MeetingPoint extends Component {
   }
 
   render () {
-    let meetingPoint = this.props.meetingPoint || '<noMeetingPointSet>  '
     return (
       h('div', [
-        h('span', 'Meeting Point: '),
-        h('span', meetingPoint + '   '),
-        h('button', {
-          onClick: this.toggleMPeditability.bind(this),
-          title: 'this only works if you\'re the assessee',
-          disabled: !this.props.editable
+        h(MeetingPointButton, {
+          onClick: this.toggleMPeditability.bind(this)
         }, 'edit'),
         this.state.displayMPEdit ? h(MeetingPointForm, {onSubmit: this.storeData.bind(this)}) : null,
         this.props.transactions
@@ -40,4 +42,4 @@ export class MeetingPoint extends Component {
   }
 }
 
-export default MeetingPoint
+export default MeetingPointEditButton
