@@ -2,18 +2,18 @@ import { connect } from 'react-redux'
 import ProgressButtonBar from './ProgressButtonBar.js'
 import { confirmAssessor, commit, reveal } from '../../../actions/assessmentActions'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
   return {
     transactions: Object.values(state.transactions).filter(
-      tx => (tx.address === state.assessments.selectedAssessment &&
+      tx => (tx.address === ownProps.address &&
              tx.sender === state.ethereum.userAddress &&
-             tx.data === state.assessments[state.assessments.selectedAssessment].stage)
+             tx.data === state.assessments[ownProps.address].stage)
     ),
-    assessmentAddress: state.assessments.selectedAssessment,
-   userAddress: state.ethereum.userAddress,
-    stage: state.assessments[state.assessments.selectedAssessment].stage,
-    userStage: state.assessments[state.assessments.selectedAssessment].userStage,
-    cost: state.assessments[state.assessments.selectedAssessment].cost
+    assessmentAddress: ownProps.address,
+    userAddress: state.ethereum.userAddress,
+    stage: state.assessments[ownProps.address].stage,
+    userStage: state.assessments[ownProps.address].userStage,
+    cost: state.assessments[ownProps.address].cost
   }
 }
 

@@ -85,6 +85,7 @@ const LinkSubtitle = styled('div')`
 
 export class AssessmentItem extends Component {
   render () {
+    console.log('itemprops', this.props)
     const assessment = this.props.assessment
     let userStage = assessment.userStage
     let stage = assessment.stage
@@ -121,7 +122,7 @@ export class AssessmentItem extends Component {
       // if assessment stage is finished, set good message (an assessee would have userStage===0)
       // display score for assessee and payout for assessor
       if (!isAssessee) {
-        let gain = this.props.assessment.payouts[this.props.userAddress] - this.props.assessment.cost
+        let gain = this.props.assessment.payout - this.props.assessment.cost
         actionText = h('div', [
           h('div', 'Payout :'),
           h('div', (gain >= 0 ? '+' : '-') + gain.toString() + ' AHA')

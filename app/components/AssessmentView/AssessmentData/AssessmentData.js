@@ -1,21 +1,20 @@
 import { Component } from 'react'
-import MeetingPointEditButton from '../Attachments/'
-import AssessorList from '../AssessorList'
+import MeetingPointEditBox from '../MeetingPoint/'
+import AssessorList from '../AssessorList.js'
 import ProgressButtonBar from '../ProgressButtonBar'
 import { StageDisplayNames } from '../../../constants.js'
 import { convertDate } from '../../../utils.js'
 import { SuperFrame, Header, Role, ConceptName, SubHeader, StatusIndicator, StatusKey, StatusValue, DataBox, InfoField, InfoKey, AssessorBox, InfoBox, InfoValue, AssessorsDone } from './style.js'
-
+import { EditMeetingPoint, ViewMeetingPoint } from '../MeetingPoint/MeetingPointEditBox.js'
 var h = require('react-hyperscript')
 
 export class AssessmentData extends Component {
   render () {
-    if (this.props.invalidAssessment) {
+    if (this.props.assessment && this.props.assessment.invalid) {
       return h('div', 'invalid assessment address!! (maybe you are on the wrong network)')
     }
-    if (this.props.loadedInfo) {
+    if (this.props.assessment) {
       let assessment = this.props.assessment
-      console.log('assesment;,', assessment.data === '')
       let actionRequired = assessment.stage === assessment.userStage
       let nOtherAssessorsToBeActive = assessment.size - assessment.done - (actionRequired ? 1 : 0)
       let statusString = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[assessment.stage]
@@ -51,19 +50,23 @@ export class AssessmentData extends Component {
               h(InfoField, [
                 h(InfoKey, 'Meeting Point'),
                 h(InfoValue, assessment.data || '< no meeting point set >'),
-                h(MeetingPointButton, {href: assessment.data, disabled: assessment.data === ''}, 'View'),
+                h(ViewMeetingPoint, {href: assessment.data, disabled: assessment.data === ''}, 'View'),
                 assessment.assessee === this.props.userAddress
-                  ? h(MeetingPointEditButton, {className: MeetingPointButton, assessee: assessment.assessee}) // TODO make this appear right of GotoMeetingPointButton
+                  ? h(MeetingPointEditBox, {
+                    className: EditMeetingPoint,
+                    assessee: assessment.assessee,
+                    address: assessment.address
+                  }) // TODO make this appear right of GotoMeetingPointButton
                   : null
               ])
             ]),
             h(AssessorBox, [
               h(AssessorsDone, 'Assessors'),
-              h(AssessorList)
+              h(AssessorList, {assessors: assessment.assessors})
             ])
           ]),
           // progress-buttons
-          h(ProgressButtonBar)
+          h(ProgressButtonBar, {address: assessment.address})
         ])
       )
     } else {

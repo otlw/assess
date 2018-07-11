@@ -15,7 +15,6 @@ const mapDispatchToProps = {
 
 export const AssessmentLoader = (props) => {
   let address = props.address
-  console.log('props in loader', props)
   if (!props.assessment) props.validateAndFetchAssessmentData(address)
   return h(props.child, extend(props, {address}))
 }

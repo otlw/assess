@@ -73,7 +73,8 @@ function assessments (state = initialState, action) {
     }
     case SET_ASSESSMENT_AS_INVALID: {
       return {
-        ...state
+        ...state,
+        [action.address]: {'invalid': true}
       }
     }
     default:

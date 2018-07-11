@@ -83,8 +83,8 @@ export function storeDataOnAssessment (address, data) {
       {method: assessmentInstance.methods.addData, args: [dataAsBytes]},
       'meetingPointChange',
       userAddress,
-      address
-      // {method: fetchStoredData, args: [address]}
+      address,
+      {method: fetchStoredData, args: [address]}
     )
   }
 }
@@ -116,21 +116,12 @@ export function fetchLatestAssessments () {
       }, [])
 
       dispatch(receiveVariable('userAssessments', assessmentAddresses))
-      dispatch(endLoadingAssessments())
-      // Add assessors to assessments, if
-      // either the user has been called OR
-      // the assessment is one, where the user is involved as assessee
-      // for (let notification of pastNotifications) {
-      //   let event = notification.returnValues
-      //   if (event.topic === '2' && assessmentAddresses.indexOf(event.sender > -1)) {
-      //     dispatch(receiveAssessor(event.sender, event.user))
-      //   }
-      // }
 
       // fetch data for assessments
-      // assessmentAddresses.forEach((address) => {
-      //   dispatch(fetchAssessmentData(address))
-      // })
+      assessmentAddresses.forEach((address) => {
+        dispatch(fetchAssessmentData(address))
+      })
+      dispatch(endLoadingAssessments())
     }
   }
 }
@@ -193,7 +184,7 @@ export function fetchAssessmentData (address) {
       // Dynamic Info
       let done = Number(await assessmentInstance.methods.done().call())
       let userAddress = getState().ethereum.userAddress
-      let userStage = (userAddress !== assessee) ? Number(await assessmentInstance.methods.assessorState(userAddress).call()) : null
+      let userStage = (userAddress !== assessee) ? Number(await assessmentInstance.methods.assessorState(userAddress).call()) : 0
 
       let dataBytes = await assessmentInstance.methods.data(assessee).call()
       let data = dataBytes ? getState().ethereum.web3.utils.hexToUtf8(dataBytes) : ''
