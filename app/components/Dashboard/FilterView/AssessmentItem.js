@@ -85,7 +85,6 @@ const LinkSubtitle = styled('div')`
 
 export class AssessmentItem extends Component {
   render () {
-    console.log('itemprops', this.props)
     const assessment = this.props.assessment
     let userStage = assessment.userStage
     let stage = assessment.stage

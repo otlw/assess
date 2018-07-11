@@ -2,10 +2,8 @@ import {
   RECEIVE_ASSESSMENT,
   RECEIVE_ASSESSOR,
   REMOVE_ASSESSMENT,
-  RECEIVE_ASSESSORS,
-  RECEIVE_STORED_DATA,
-  RECEIVE_PAYOUT,
-  SET_ASSESSMENT_AS_INVALID
+  SET_ASSESSMENT_AS_INVALID,
+  UPDATE_ASSESSMENT_VARIABLE
 } from '../actions/assessmentActions'
 
 import extend from 'xtend'
@@ -41,34 +39,20 @@ function assessments (state = initialState, action) {
       delete newStage[action.address]
       return newStage
     }
-    case RECEIVE_ASSESSORS: {
-      let address = action.address
-      return {
-        ...state,
-        [address]: extend(state[address], extend(state[address].assessorStages, {assessorStages: action.assessorStages}))
-      }
-    }
     case RECEIVE_ASSESSOR: {
       let address = action.address
-      let assessment = state[address] || {assessorStages: {}}
-      let newAssessors = extend(assessment.assessorStages, {[action.assessor]: ''})
+      let assessment = state[address] || {assessors: []}
+      let newAssessors = assessment.assessors.slice(0)
+      newAssessors.push(action.assessor)
       return {
         ...state,
-        [address]: extend(assessment, {assessorStages: newAssessors})
+        [address]: extend(assessment, {assessors: newAssessors})
       }
     }
-    case RECEIVE_STORED_DATA: {
-      let address = action.assessmentAddress
+    case UPDATE_ASSESSMENT_VARIABLE: {
       return {
         ...state,
-        [address]: extend(state[address], {data: action.data})
-      }
-    }
-    case RECEIVE_PAYOUT: {
-      let address = action.assessmentAddress
-      return {
-        ...state,
-        [address]: extend(state[address], {payout: action.payout})
+        [action.address]: extend(state[action.address], {[action.name]: action.value})
       }
     }
     case SET_ASSESSMENT_AS_INVALID: {

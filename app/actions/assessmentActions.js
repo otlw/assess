@@ -4,19 +4,12 @@ import { receiveVariable } from './web3Actions.js'
 import { Stage, LoadingStage, NotificationTopic } from '../constants.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
-export const RECEIVE_FINALSCORE = 'RECEIVE_FINALSCORE'
-export const RECEIVE_STORED_DATA = 'RECEIVE_STORED_DATA'
-export const RECEIVE_PAYOUT = 'RECEIVE_PAYOUT'
-export const RECEIVE_ASSESSMENTSTAGE = 'RECEIVE_ASSESSMENTSTAGE'
 export const REMOVE_ASSESSMENT = 'REMOVE_ASSESSMENT'
-export const RECEIVE_ASSESSORS = 'RECEIVE_ASSESSORS'
 export const RECEIVE_ASSESSOR = 'RECEIVE_ASSESSOR'
 export const BEGIN_LOADING_ASSESSMENTS = 'BEGIN_LOADING_ASSESSMENTS'
 export const END_LOADING_ASSESSMENTS = 'END_LOADING_ASSESSMENTS'
 export const SET_ASSESSMENT_AS_INVALID = 'SET_ASSESSMENT_AS_INVALID'
-export const BEGIN_LOADING_DETAIL = 'BEGIN_LOADING_DETAIL'
-export const END_LOADING_DETAIL = 'END_LOADING_DETAIL'
-export const RESET_LOADED_DETAILS = 'RESET_LOADED_DETAILS'
+export const UPDATE_ASSESSMENT_VARIABLE = 'UPDATE_ASSESSMENT_VARIABLE'
 
 const ethereumjsABI = require('ethereumjs-abi')
 
@@ -39,7 +32,8 @@ export function confirmAssessor (address) {
       {method: assessmentInstance.methods.confirmAssessor, args: []},
       Stage.Called,
       userAddress,
-      address
+      address,
+      () => { dispatch(fetchUserStage(address)) }
     )
   }
 }
@@ -53,7 +47,8 @@ export function commit (address, score, salt) {
       {method: assessmentInstance.methods.commit, args: [hashScoreAndSalt(score, salt)]},
       Stage.Confirmed,
       userAddress,
-      address
+      address,
+      () => { dispatch(fetchUserStage(address)) }
     )
   }
 }
@@ -67,7 +62,8 @@ export function reveal (address, score, salt) {
       {method: assessmentInstance.methods.reveal, args: [score, salt]},
       Stage.Committed,
       userAddress,
-      address
+      address,
+      () => { dispatch(fetchUserStage(address)) }
     )
   }
 }
@@ -84,7 +80,7 @@ export function storeDataOnAssessment (address, data) {
       'meetingPointChange',
       userAddress,
       address,
-      {method: fetchStoredData, args: [address]}
+      () => { dispatch(fetchStoredData(address)) }
     )
   }
 }
@@ -244,7 +240,31 @@ export function fetchPayout (address, user) {
     }
     let pastEvents = await fathomTokenInstance.getPastEvents('Transfer', filter)
     let payout = pastEvents[0].returnValues['_value']
-    dispatch(receivePayout(address, payout))
+    dispatch(updateAssessmentVariable(address, 'payout', payout))
+  }
+}
+
+export function fetchUserStage (address) {
+  console.log('fetchUserStage ')
+  return async (dispatch, getState) => {
+    let assessmentInstance = getInstance.assessment(getState(), address)
+    let userAddress = getState().ethereum.userAddress
+    let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
+    let done = Number(await assessmentInstance.methods.done().call())
+    if (getState().assessments[address].done !== done) {
+      dispatch(updateAssessmentVariable(address, 'done', done))
+    }
+    dispatch(updateAssessmentVariable(address, 'userStage', userStage))
+  }
+}
+
+export function fetchFinalScore (address) {
+  return async (dispatch, getState) => {
+    let assessmentInstance = getInstance.assessment(getState(), address)
+    let onChainScore = Number(await assessmentInstance.methods.finalScore().call())
+    // convert score to Front End range (FE:0,100%; BE:-100,100)
+    let finalScore = convertFromOnChainScoreToUIScore(onChainScore)
+    dispatch(updateAssessmentVariable(address, 'finalScore', finalScore))
   }
 }
 
@@ -255,16 +275,14 @@ export function fetchPayout (address, user) {
 export function fetchStoredData (selectedAssessment) {
   console.log('fetchStoredData', selectedAssessment)
   return async (dispatch, getState) => {
-    dispatch(beginLoadingDetail('attachments'))
     let address = selectedAssessment || getState().assessments.selectedAssessment
     let assessmentInstance = getInstance.assessment(getState(), address)
     let assessee = await assessmentInstance.methods.assessee().call()
     let data = await assessmentInstance.methods.data(assessee).call()
     if (data) {
       data = getState().ethereum.web3.utils.hexToUtf8(data)
-      dispatch(receiveStoredData(address, data))
+      dispatch(updateAssessmentVariable(address, 'data', data))
     }
-    dispatch(endLoadingDetail('attachments'))
   }
 }
 
@@ -279,12 +297,22 @@ export function processEvent (user, sender, topic) {
     if (topic <= NotificationTopic.CalledAsAssessor) {
       console.log('cond1 -fetch AssessmentData')
       dispatch(fetchAssessmentData(sender))
-    } else if (topic === NotificationTopic.ConfirmedAsAssessor) { // topic 2
-      console.log('cond2 -add assessors')
+    } else if (topic === NotificationTopic.ConfirmedAsAssessor) {
+      if (user === userAddress) {
+        dispatch(fetchUserStage(sender))
+      }
       dispatch(receiveAssessor(sender, user))
-    } else if (topic <= NotificationTopic.AssessmentStarted && user === userAddress) { // topic 4-7
-      console.log('cond3 -> update')
-      // dispatch(updateAssessment(sender)) // Implement event Handler
+    } else if (topic === NotificationTopic.AssessmentStarted && user === userAddress) {
+      dispatch(updateAssessmentVariable(sender, 'stage', Stage.Confirmed))
+      dispatch(fetchUserStage(sender))
+    } else if (topic === NotificationTopic.RevealScore && user === userAddress) {
+      dispatch(updateAssessmentVariable(sender, 'stage', Stage.Committed))
+      dispatch(fetchUserStage(sender))
+    } else if (topic >= NotificationTopic.RevealScore && user === userAddress) {
+      dispatch(updateAssessmentVariable(sender, 'stage', Stage.Done))
+      dispatch(fetchUserStage(sender))
+      dispatch(fetchPayout(sender, user))
+      dispatch(fetchFinalScore(sender, user))
     } else {
       console.log('no condition applied!', user, sender, topic)
     }
@@ -299,22 +327,6 @@ export function receiveAssessor (address, assessor) {
   }
 }
 
-export function receiveStoredData (assessmentAddress, data) {
-  return {
-    type: RECEIVE_STORED_DATA,
-    assessmentAddress,
-    data
-  }
-}
-
-export function receivePayout (assessmentAddress, payout) {
-  return {
-    type: RECEIVE_PAYOUT,
-    assessmentAddress,
-    payout
-  }
-}
-
 export function receiveAssessment (assessment) {
   return {
     type: RECEIVE_ASSESSMENT,
@@ -322,19 +334,12 @@ export function receiveAssessment (assessment) {
   }
 }
 
-export function receiveAssessmentStage (address, stage) {
+export function updateAssessmentVariable (address, name, value) {
   return {
-    type: RECEIVE_ASSESSMENTSTAGE,
+    type: UPDATE_ASSESSMENT_VARIABLE,
     address,
-    stage
-  }
-}
-
-export function receiveFinalScore (address, finalScore) {
-  return {
-    type: RECEIVE_ASSESSMENTSTAGE,
-    address,
-    finalScore
+    name,
+    value
   }
 }
 
@@ -354,20 +359,6 @@ export function beginLoadingAssessments () {
 export function endLoadingAssessments () {
   return {
     type: END_LOADING_ASSESSMENTS
-  }
-}
-
-export function beginLoadingDetail (detail) {
-  return {
-    type: BEGIN_LOADING_DETAIL,
-    detail
-  }
-}
-
-export function endLoadingDetail (detail) {
-  return {
-    type: END_LOADING_DETAIL,
-    detail
   }
 }
 

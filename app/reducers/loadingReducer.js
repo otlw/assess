@@ -1,9 +1,6 @@
 import {
   BEGIN_LOADING_ASSESSMENTS,
-  END_LOADING_ASSESSMENTS,
-  BEGIN_LOADING_DETAIL,
-  END_LOADING_DETAIL,
-  RESET_LOADED_DETAILS
+  END_LOADING_ASSESSMENTS
 } from '../actions/assessmentActions.js'
 
 import {
@@ -46,26 +43,6 @@ function loading (state = initialState, action) {
       return {
         ...state,
         concepts: LoadingStage.Done
-      }
-    }
-    case BEGIN_LOADING_DETAIL: {
-      // console.log('began loading', action.detail)
-      return {
-        ...state,
-        assessmentDetail: {
-          ...state.assessmentDetail,
-          [action.detail]: LoadingStage.Loading
-        }
-      }
-    }
-    case END_LOADING_DETAIL: {
-      // console.log('ended loading', action.detail)
-      return {
-        ...state,
-        assessmentDetail: {
-          ...state.assessmentDetail,
-          [action.detail]: LoadingStage.Done
-        }
       }
     }
     default:

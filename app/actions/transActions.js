@@ -35,7 +35,7 @@ export function removeTransaction (txHash) {
    @dispatch is needed to send the updates to state
    @act: an object describing the transaction to be sent: {method: functionToBeCalled, args: parameters to be passed}
    @userAddress, @assessmentAddress and @saveData are used to mark the place where the transaction was triggered
-   @react: an object describing the method to be called once the first transaction was confirmed
+   @react: an function clojure to be called once be called once the transaction was confirmed
 */
 export function sendAndReactToTransaction (dispatch, act, saveData, userAddress, assessmentAddress, react, gas) {
   act.method(...act.args).send({from: userAddress, gas: gas || 320000})
@@ -54,7 +54,7 @@ export function sendAndReactToTransaction (dispatch, act, saveData, userAddress,
       }
       if (react && confirmationNumber === 9 && receipt.status) {
         console.log('dispatching reacting')
-        dispatch(react.method(...react.args))
+        react()
       }
     })
     .on('error', (err) => {
