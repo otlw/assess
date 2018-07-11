@@ -37,12 +37,11 @@ export function receiveConcepts (concepts) {
 }
 
 // combination of two functions above for directly creating assessments from conceptList
-export function loadConceptContractAndCreateAssessment (address) {
+export function loadConceptContractAndCreateAssessment (address,cost) {
   return async (dispatch, getState) => {
     // instanciate Concept Contract
     let userAddress = getState().ethereum.userAddress
     let conceptInstance = getInstance.concept(getState(), address)
-    const cost = 10
     const size = 5
     const endTime = 10000000
     const startTime = 100000
@@ -52,7 +51,8 @@ export function loadConceptContractAndCreateAssessment (address) {
       'makeAssessment',
       userAddress,
       address,
-      '', // no react-method needed. This should be processed by listening to the events
+      //we probably need a callback method to display something on the UI but lets discuss this in next issue
+      "", // no react-method needed. This should be processed by listening to the events
       3000000 // weirdly, this transaction will only go through with a high gas price (testnet)
     )
   }

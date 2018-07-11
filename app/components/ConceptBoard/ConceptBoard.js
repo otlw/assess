@@ -31,6 +31,11 @@ export class ConceptBoard extends Component {
     this.setState({selectedConceptAddress:e.target.id})
   }
 
+  cancelCreation(){
+    console.log(this.state)
+    this.setState({selectedConceptAddress:"0"})
+  }
+
   render () {
     if (this.props.loadedConcepts) {
 
@@ -38,7 +43,12 @@ export class ConceptBoard extends Component {
 
       let ConceptHeader=h('div',"Choose a Concept")
       if (this.state.selectedConceptAddress!=="0"){
-        ConceptHeader=h(ConceptCreation,{conceptName:this.props.concepts[this.state.selectedConceptAddress]})
+        ConceptHeader=h(ConceptCreation,{
+          conceptName:this.props.concepts[this.state.selectedConceptAddress],
+          conceptAddress:this.state.selectedConceptAddress,
+          loadConceptContractAndCreateAssessment:this.props.loadConceptContractAndCreateAssessment,
+          cancelCreation:this.cancelCreation.bind(this)
+        })
       }
 
       return h('div', [
@@ -47,10 +57,7 @@ export class ConceptBoard extends Component {
         ]),
         h(ConceptListBox,[
           h(ConceptList,{concepts,selectConceptAddress:this.selectConceptAddress.bind(this)})
-        ]),
-        // this.props.transactions
-        //   ? h(TxList, {transactions: this.props.transactions})
-        //   : null
+        ])
       ])
     } else {
       return h('div', 'Loading Concepts')
