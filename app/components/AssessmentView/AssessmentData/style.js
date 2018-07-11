@@ -82,3 +82,9 @@ export const AssessorNames = styled('div')`
   padding: 0.25em 1em;
   border: 2px solid palevioletred;
 `
+
+export const MeetingPointButton = styled('button')`
+  display: inline-block;
+  padding: 0.25em 1em;
+  border: 2px solid palevioletred;
+`

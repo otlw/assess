@@ -15,7 +15,6 @@ export class AssessmentData extends Component {
     }
     if (this.props.loadedInfo) {
       let assessment = this.props.assessment
-      console.log('assesment;,', assessment.data === '')
       let actionRequired = assessment.stage === assessment.userStage
       let nOtherAssessorsToBeActive = assessment.size - assessment.done - (actionRequired ? 1 : 0)
       let statusString = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[assessment.stage]

@@ -101,7 +101,6 @@ export class ProgressButtonBar extends Component {
   render () {
     if (this.state.view === 'progressView') {
       // show overview
-      console.log('txs', this.props.transactions)
       return (
         h(ProgressButtonBox, [
           h(PastOrPresentPhaseButton, {
