@@ -27,11 +27,11 @@ export class ConceptBoard extends Component {
   }
 
   selectConceptAddress (e) {
+    window.scrollTo(0, 0)
     this.setState({selectedConceptAddress: e.target.id})
   }
 
   cancelCreation () {
-    console.log(this.state)
     this.setState({selectedConceptAddress: '0'})
   }
 

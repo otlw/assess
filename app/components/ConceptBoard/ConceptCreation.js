@@ -45,7 +45,10 @@ const ConceptTitle = styled('div')`
 color: #444444;
 font-size:1.1em;
 `
-const BottomPart = styled('div')`
+
+// step 0
+
+const BottomPart0 = styled('div')`
 padding: 1.3em 1.1em;
 `
 const Question1 = styled('div')`
@@ -90,9 +93,9 @@ width:4em;
 text-align:center;
 `
 
-// step 2
+// step 1
 
-const BottomPart2 = styled('div')`
+const BottomPart1 = styled('div')`
 padding: 5.3em 3em 1.3em 3em;
 text-align:center;
 font-size:0.6em;
@@ -105,6 +108,16 @@ margin:0.5em 0 0.9em 0;
 const BottomCaption = styled('div')`
 margin-top:5.5em;
 `
+
+//step 2
+
+const BottomPart2 = styled('div')`
+padding: 8em 3em;
+text-align:center;
+font-size:0.6em;
+`
+
+
 // step 3
 
 const BottomPart3 = styled('div')`
@@ -152,8 +165,9 @@ export class ConceptCreation extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      step: 1,
-      amountPerAssessor: 5
+      step: 0,
+      amountPerAssessor: 5,
+      creationStatus:"none"
     }
   }
 
@@ -163,6 +177,10 @@ export class ConceptCreation extends Component {
 
   backButton () {
     let step = this.state.step
+    // step 2 => go back to step 1
+    if (step === 2) {
+      this.setState({step: 1})
+    }
     // step 2 => go back to step 1
     if (step === 2) {
       this.setState({step: 1})
@@ -179,27 +197,29 @@ export class ConceptCreation extends Component {
 
   nextButton () {
     let step = this.state.step
-    // step 1 => confirm
-    if (step === 1) {
-      this.setState({step: 2})
+    // step 0 => confirm
+    if (step === 0) {
+      this.setState({step: 1})
     }
-    // step 2 => send transaction
-    if (step === 2) {
-      console.log('create', this.props.conceptAddress,
-        this.state.amountPerAssessor)
+    // step 1 => sendMetamask
+    if (step === 1) {
+      //let setState=this.setState
       this.props.loadConceptContractAndCreateAssessment(
         this.props.conceptAddress,
-        this.state.amountPerAssessor
+        this.state.amountPerAssessor,
+        (status)=>{
+          this.setState({step: 3,creationStatus:status})
+        }
       )
-      this.setState({step: 3})
+      this.setState({step: 2})
     }
   }
 
   render () {
     let BottomPartContent = null
 
-    if (this.state.step === 1) {
-      BottomPartContent = h(BottomPart, [
+    if (this.state.step === 0) {
+      BottomPartContent = h(BottomPart0, [
         h(Question1, 'How much do you wish to pay each assessor?'),
         h(ButtonCaptionBox, [
           h('span', 'PAY'),
@@ -218,23 +238,21 @@ export class ConceptCreation extends Component {
           h(TotalAmount, this.state.amountPerAssessor * 5 + ' AHA')
         ])
       ])
-    } else if (this.state.step === 2) {
-      BottomPartContent = h(BottomPart2, [
+    } else if (this.state.step === 1) {
+      BottomPartContent = h(BottomPart1, [
         h('div', 'TOTAL COST'),
         h(TotalCost, this.state.amountPerAssessor * 5 + ' AHA'),
         h('div', 'Distributed between 5 Assessors'),
         h(BottomCaption, 'Clicking “Next” will launch MetaMask so you can complete the transaction')
       ])
+    } else if (this.state.step === 2) {
+      BottomPartContent = h(BottomPart2, 'Please confirm MetaMask Transaction and wait for confirmation')
     } else if (this.state.step === 3) {
       BottomPartContent = h(BottomPart3, [
+        //TODO update this text with confirmation or error
         h(Step3Title, 'Success & Pending'),
         h(P1, 'Your assessment has been sent to the Ethereum blockchain and is pending confirmation.'),
         h('div', 'We’ll notify you once the transaction has been confirmed & your assessment is created.')
-
-        // we could have transaction display here
-        // this.props.transactions
-        //   ? h(TxList, {transactions: this.props.transactions})
-        //   : null
       ])
     }
 
