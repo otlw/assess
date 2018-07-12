@@ -17,6 +17,9 @@ const ConceptListBox = styled('div')`
 padding:1.1em 3.5em;
 background: white;
 `
+const ConceptHeaderDefault = styled('div')`
+`
+
 
 export class ConceptBoard extends Component {
   constructor (props) {
@@ -39,7 +42,7 @@ export class ConceptBoard extends Component {
     if (this.props.loadedConcepts) {
       let concepts = this.props.concepts
 
-      let ConceptHeader = h('div', 'Choose a Concept')
+      let ConceptHeader = h(ConceptHeaderDefault, 'Choose a Concept')
       if (this.state.selectedConceptAddress !== '0') {
         ConceptHeader = h(ConceptCreation, {
           conceptName: this.props.concepts[this.state.selectedConceptAddress],

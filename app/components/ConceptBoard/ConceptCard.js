@@ -14,7 +14,7 @@ display:inline-block;
 text-align:left;
 `
 const ConceptTitleBox = styled('div')`
-background: #C4C4C4;  
+background: #C4C4C4;
 padding:1.9em;
 `
 const TitleCaption = styled('div')`
@@ -24,16 +24,6 @@ font-size:0.6em;
 const ConceptTitle = styled('div')`
 color: #444444;
 font-size:1.1em;
-`
-const ChildrenBox = styled('div')`
-background: #DEDEDE;  
-padding:1em 0.5em;
-font-size:0.6em;
-color: #444444;
-`
-const ChildConcepts = styled('span')`
-float:right;
-margin-right:1em;
 `
 const BottomPart = styled('div')`
 padding: 0.5em 0.25em;
@@ -67,14 +57,12 @@ export class ConceptCard extends Component {
         h(TitleCaption, 'CONCEPT'),
         h(ConceptTitle, this.props.conceptName)
       ]),
-      h(ChildrenBox, [
-        h('span', 'CHILD CONCEPTS'),
-        h(ChildConcepts, '3')
-      ]),
       h(BottomPart, [
+        //TODO handle concept description
         h(ConceptDescription, 'Concept Description?'),
         h(ButtonGroup, [
           h(GetAssessedButton, {onClick: this.props.selectConcept.bind(this), id: this.props.conceptAddress}, 'Get Assessed'),
+          //TODO add link from concept description JSON
           h(LearnButton, 'Learn')
         ])
       ])
