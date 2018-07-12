@@ -3,6 +3,7 @@ stages:
   - setup
   - prebuild
   - build
+  - deploy
 
 install: 
   stage: setup
@@ -24,9 +25,24 @@ compile:
 
 webPackBuild:
   stage: build
-  script: npm run build
+  script:
+    - bash scripts/loadDeployment.sh
+    - npm run build
+  artifacts:
+    paths:
+      - dist
 
 runTests:
   stage: build
   script:
     - npm test
+
+pages:
+  stage: deploy
+  script:
+    - cp -r dist public
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
