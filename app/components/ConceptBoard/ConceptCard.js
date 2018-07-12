@@ -2,6 +2,28 @@ import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 
+export class ConceptCard extends Component {
+  render () {
+    return h(ConceptCardFrame, [
+      h(ConceptTitleBox, [
+        h(TitleCaption, 'CONCEPT'),
+        h(ConceptTitle, this.props.conceptName)
+      ]),
+      h(BottomPart, [
+        //TODO handle concept description
+        h(ConceptDescription, 'Concept Description?'),
+        h(ButtonGroup, [
+          h(GetAssessedButton, {onClick: this.props.selectConcept.bind(this), id: this.props.conceptAddress}, 'Get Assessed'),
+          //TODO add link from concept description JSON
+          h(LearnButton, 'Learn')
+        ])
+      ])
+    ])
+  }
+}
+
+export default ConceptCard
+
 // styles
 
 const ConceptCardFrame = styled('div')`
@@ -49,25 +71,3 @@ padding: 0.5em 0.25em;
 width:5em;
 text-align:center;
 `
-
-export class ConceptCard extends Component {
-  render () {
-    return h(ConceptCardFrame, [
-      h(ConceptTitleBox, [
-        h(TitleCaption, 'CONCEPT'),
-        h(ConceptTitle, this.props.conceptName)
-      ]),
-      h(BottomPart, [
-        //TODO handle concept description
-        h(ConceptDescription, 'Concept Description?'),
-        h(ButtonGroup, [
-          h(GetAssessedButton, {onClick: this.props.selectConcept.bind(this), id: this.props.conceptAddress}, 'Get Assessed'),
-          //TODO add link from concept description JSON
-          h(LearnButton, 'Learn')
-        ])
-      ])
-    ])
-  }
-}
-
-export default ConceptCard

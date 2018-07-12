@@ -1,8 +1,126 @@
 import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
-// import { TxList } from '../TxList.js'
 
+export class ConceptCreation extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      step: 0,
+      amountPerAssessor: 5,
+      creationStatus:"none"
+    }
+  }
+
+  setAmountPerAssessor (e) {
+    this.setState({amountPerAssessor: e.target.value})
+  }
+
+  backButton () {
+    let step = this.state.step
+    // step 2 => go back to step 1
+    if (step === 2) {
+      this.setState({step: 1})
+    }
+    // step 2 => go back to step 1
+    if (step === 2) {
+      this.setState({step: 1})
+    }
+    // step 2 => go back to step 2
+    if (step === 3) {
+      this.setState({step: 2})
+    }
+  }
+
+  cancelButton () {
+    this.props.cancelCreation()
+  }
+
+  nextButton () {
+    let step = this.state.step
+    // step 0 => confirm
+    if (step === 0) {
+      this.setState({step: 1})
+    }
+    // step 1 => sendMetamask
+    if (step === 1) {
+      //let setState=this.setState
+      this.props.loadConceptContractAndCreateAssessment(
+        this.props.conceptAddress,
+        this.state.amountPerAssessor,
+        (status)=>{
+          this.setState({step: 3,creationStatus:status})
+        }
+      )
+      this.setState({step: 2})
+    }
+  }
+
+  render () {
+    let BottomPartContent = null
+
+    if (this.state.step === 0) {
+      BottomPartContent = h(BottomPart0, [
+        h(Question1, 'How much do you wish to pay each assessor?'),
+        h(ButtonCaptionBox, [
+          h('span', 'PAY'),
+          h(RightCaption, 'TOTAL COST')
+        ]),
+        h(ButtonGroup, [
+          h('span', [
+            h(AmountPerAssessor, {
+              onChange: this.setAmountPerAssessor.bind(this),
+              value: this.state.amountPerAssessor,
+              type: 'number',
+              step: 1
+            }),
+            h(AHAUnit, 'AHA')
+          ]),
+          h(TotalAmount, this.state.amountPerAssessor * 5 + ' AHA')
+        ])
+      ])
+    } else if (this.state.step === 1) {
+      BottomPartContent = h(BottomPart1, [
+        h('div', 'TOTAL COST'),
+        h(TotalCost, this.state.amountPerAssessor * 5 + ' AHA'),
+        h('div', 'Distributed between 5 Assessors'),
+        h(BottomCaption, 'Clicking “Next” will launch MetaMask so you can complete the transaction')
+      ])
+    } else if (this.state.step === 2) {
+      BottomPartContent = h(BottomPart2, 'Please confirm MetaMask Transaction and wait for confirmation')
+    } else if (this.state.step === 3) {
+      BottomPartContent = h(BottomPart3, [
+        //TODO update this text with confirmation or error
+        h(Step3Title, 'Success & Pending'),
+        h(P1, 'Your assessment has been sent to the Ethereum blockchain and is pending confirmation.'),
+        h('div', 'We’ll notify you once the transaction has been confirmed & your assessment is created.')
+      ])
+    }
+
+    return h(MainFrame, [
+      h(HeaderTitle, "LET'S CREATE YOUR ASSESSMENT"),
+      h(StepBox, [
+        h(Step, {underlined: this.state.step === 1}, 'STEP 1'),
+        h(Step, {underlined: this.state.step === 2}, 'STEP 2'),
+        h(Step, {underlined: this.state.step === 3}, 'STEP 3')
+      ]),
+      h(ConceptCreationCardFrame, [
+        h(ConceptTitleBox, [
+          h(TitleCaption, 'CONCEPT'),
+          h(ConceptTitle, this.props.conceptName)
+        ]),
+        BottomPartContent
+      ]),
+      h(NavigationButtonGroup, [
+        h(BackButton, {onClick: this.backButton.bind(this)}, '<- Back'),
+        h(CancelButton, {onClick: this.cancelButton.bind(this)}, 'Cancel'),
+        h(NextButton, {onClick: this.nextButton.bind(this)}, 'Next ->')
+      ])
+    ])
+  }
+}
+
+export default ConceptCreation
 // styles
 
 const MainFrame = styled('div')`
@@ -160,123 +278,3 @@ padding: 1em 3.5em;
 display:inline-block;
 width:4em;
 `
-
-export class ConceptCreation extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      step: 0,
-      amountPerAssessor: 5,
-      creationStatus:"none"
-    }
-  }
-
-  setAmountPerAssessor (e) {
-    this.setState({amountPerAssessor: e.target.value})
-  }
-
-  backButton () {
-    let step = this.state.step
-    // step 2 => go back to step 1
-    if (step === 2) {
-      this.setState({step: 1})
-    }
-    // step 2 => go back to step 1
-    if (step === 2) {
-      this.setState({step: 1})
-    }
-    // step 2 => go back to step 2
-    if (step === 3) {
-      this.setState({step: 2})
-    }
-  }
-
-  cancelButton () {
-    this.props.cancelCreation()
-  }
-
-  nextButton () {
-    let step = this.state.step
-    // step 0 => confirm
-    if (step === 0) {
-      this.setState({step: 1})
-    }
-    // step 1 => sendMetamask
-    if (step === 1) {
-      //let setState=this.setState
-      this.props.loadConceptContractAndCreateAssessment(
-        this.props.conceptAddress,
-        this.state.amountPerAssessor,
-        (status)=>{
-          this.setState({step: 3,creationStatus:status})
-        }
-      )
-      this.setState({step: 2})
-    }
-  }
-
-  render () {
-    let BottomPartContent = null
-
-    if (this.state.step === 0) {
-      BottomPartContent = h(BottomPart0, [
-        h(Question1, 'How much do you wish to pay each assessor?'),
-        h(ButtonCaptionBox, [
-          h('span', 'PAY'),
-          h(RightCaption, 'TOTAL COST')
-        ]),
-        h(ButtonGroup, [
-          h('span', [
-            h(AmountPerAssessor, {
-              onChange: this.setAmountPerAssessor.bind(this),
-              value: this.state.amountPerAssessor,
-              type: 'number',
-              step: 1
-            }),
-            h(AHAUnit, 'AHA')
-          ]),
-          h(TotalAmount, this.state.amountPerAssessor * 5 + ' AHA')
-        ])
-      ])
-    } else if (this.state.step === 1) {
-      BottomPartContent = h(BottomPart1, [
-        h('div', 'TOTAL COST'),
-        h(TotalCost, this.state.amountPerAssessor * 5 + ' AHA'),
-        h('div', 'Distributed between 5 Assessors'),
-        h(BottomCaption, 'Clicking “Next” will launch MetaMask so you can complete the transaction')
-      ])
-    } else if (this.state.step === 2) {
-      BottomPartContent = h(BottomPart2, 'Please confirm MetaMask Transaction and wait for confirmation')
-    } else if (this.state.step === 3) {
-      BottomPartContent = h(BottomPart3, [
-        //TODO update this text with confirmation or error
-        h(Step3Title, 'Success & Pending'),
-        h(P1, 'Your assessment has been sent to the Ethereum blockchain and is pending confirmation.'),
-        h('div', 'We’ll notify you once the transaction has been confirmed & your assessment is created.')
-      ])
-    }
-
-    return h(MainFrame, [
-      h(HeaderTitle, "LET'S CREATE YOUR ASSESSMENT"),
-      h(StepBox, [
-        h(Step, {underlined: this.state.step === 1}, 'STEP 1'),
-        h(Step, {underlined: this.state.step === 2}, 'STEP 2'),
-        h(Step, {underlined: this.state.step === 3}, 'STEP 3')
-      ]),
-      h(ConceptCreationCardFrame, [
-        h(ConceptTitleBox, [
-          h(TitleCaption, 'CONCEPT'),
-          h(ConceptTitle, this.props.conceptName)
-        ]),
-        BottomPartContent
-      ]),
-      h(NavigationButtonGroup, [
-        h(BackButton, {onClick: this.backButton.bind(this)}, '<- Back'),
-        h(CancelButton, {onClick: this.cancelButton.bind(this)}, 'Cancel'),
-        h(NextButton, {onClick: this.nextButton.bind(this)}, 'Next ->')
-      ])
-    ])
-  }
-}
-
-export default ConceptCreation

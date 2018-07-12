@@ -5,21 +5,6 @@ import h from 'react-hyperscript'
 import ConceptList from './ConceptList'
 import ConceptCreation from './ConceptCreation'
 
-// styles
-
-const ConceptHeaderBox = styled('div')`
-background: #F2F2F2;
-width:100%;
-text-align:center;
-`
-
-const ConceptListBox = styled('div')`
-padding:1.1em 3.5em;
-background: white;
-`
-const ConceptHeaderDefault = styled('div')`
-`
-
 
 export class ConceptBoard extends Component {
   constructor (props) {
@@ -67,3 +52,18 @@ export class ConceptBoard extends Component {
 }
 
 export default ConceptBoard
+
+// styles
+
+const ConceptHeaderBox = styled('div')`
+background: #F2F2F2;
+width:100%;
+text-align:center;
+`
+
+const ConceptListBox = styled('div')`
+padding:1.1em 3.5em;
+background: white;
+`
+const ConceptHeaderDefault = styled('div')`
+`
