@@ -1,4 +1,3 @@
-import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
@@ -6,15 +5,6 @@ import styled from 'styled-components'
 import fathomLogo from '../../assets/fathom_monkey_beret_color_cropped.svg'
 
 import {networkName} from '../../constants.js'
-
-// styles
-const HeaderBar = styled('div')`
-  padding: 0.8em 0;
-  background-color: ${props => props.theme.primary};
-  border-bottom: 0.5px solid ${props => props.theme.light};
-  position:relative;
-  font-size:0.8em;
-`
 
 const Logo = styled('img')`
   margin: 0 1.25%;
@@ -25,45 +15,43 @@ const Logo = styled('img')`
   vertical-align:top;
 `
 
-const value = styled('span')`
-  color:${props => props.theme.primary}
-`
+export const Header = (props) => {
+  let address = props.userAddress.substring(0, 8) + '...' + props.userAddress.substring(35, 42)
+  let balance = (props.AhaBalance / 1e9).toString().substring(0, 6) + ' AHA'
+  let network = networkName(props.networkID)
 
-const key = styled('span')`
-  color:${props => props.theme.dark}
-  font-style:bold
-  font-size:1.1em
-`
-
-const Box = styled('div')`
-  padding: 0.5em 1em;
-  margin-top:0.5em;
-  background-color: ${props => props.theme.light};
-  display: inline-block;
-  width:85%;
-  text-align:center;
-  vertical-align:top;
-`
-
-export class Header extends Component {
-  render () {
-    return (
-      h(HeaderBar, [
-        h(Link, {to: '/'}, h(Logo, {alt: 'logo', src: fathomLogo})),
-        h(Box, [
-          h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
-            h(key, 'Network: '),
-            h(value, networkName(this.props.networkID))
-          ]),
-          h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
-            h(key, 'Your Address: '),
-            h(value, this.props.userAddress.substring(0, 8) + '...' + this.props.userAddress.substring(35, 42))
-          ]),
-          h(key, (this.props.AhaBalance / 1e9).toString().substring(0, 6) + ' AHA')
-        ])
-      ])
+  return (
+    h('div',
+      {className: 'flex w-100 bg-dark-blue'},
+      [
+        h('ul',
+          {className: 'list flex content-around flex-row w-100 pa2 ma0 items-end'},
+          [
+            h(Link, {to: '/'}, h(Logo, {alt: 'logo', src: fathomLogo})),
+            h(HeaderItem, {name: 'Address', value: address}),
+            h(HeaderItem, {name: 'Balance', value: balance}),
+            h(HeaderItem, {name: 'Network', value: network})
+          ]
+        )
+      ]
     )
-  }
+  )
+}
+
+const HeaderItem = (props) => {
+  return (
+    h('li',
+      {className: 'flex self-end content-end pr3'},
+      [
+        h('div',
+          {className: 'flex ba br1 b--dark-purple lightest-blue'},
+          [
+            h('div', {className: 'ph3 pv2'}, props.name),
+            h('div', {className: 'bg-lightest-blue dark-blue ph3 pv2'}, props.value)
+          ])
+      ]
+    )
+  )
 }
 
 export default Header
