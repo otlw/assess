@@ -8,7 +8,7 @@ export class ConceptCreation extends Component {
     this.state = {
       step: 0,
       amountPerAssessor: 5,
-      creationStatus:"none"
+      creationStatus: 'none'
     }
   }
 
@@ -44,12 +44,12 @@ export class ConceptCreation extends Component {
     }
     // step 1 => sendMetamask
     if (step === 1) {
-      //let setState=this.setState
+      // let setState=this.setState
       this.props.loadConceptContractAndCreateAssessment(
         this.props.conceptAddress,
         this.state.amountPerAssessor,
-        (status)=>{
-          this.setState({step: 3,creationStatus:status})
+        (status) => {
+          this.setState({step: 3, creationStatus: status})
         }
       )
       this.setState({step: 2})
@@ -90,7 +90,7 @@ export class ConceptCreation extends Component {
       BottomPartContent = h(BottomPart2, 'Please confirm MetaMask Transaction and wait for confirmation')
     } else if (this.state.step === 3) {
       BottomPartContent = h(BottomPart3, [
-        //TODO update this text with confirmation or error
+        // TODO update this text with confirmation or error
         h(Step3Title, 'Success & Pending'),
         h(P1, 'Your assessment has been sent to the Ethereum blockchain and is pending confirmation.'),
         h('div', 'We’ll notify you once the transaction has been confirmed & your assessment is created.')
@@ -227,14 +227,13 @@ const BottomCaption = styled('div')`
 margin-top:5.5em;
 `
 
-//step 2
+// step 2
 
 const BottomPart2 = styled('div')`
 padding: 8em 3em;
 text-align:center;
 font-size:0.6em;
 `
-
 
 // step 3
 

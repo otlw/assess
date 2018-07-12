@@ -10,11 +10,11 @@ export class ConceptCard extends Component {
         h(ConceptTitle, this.props.conceptName)
       ]),
       h(BottomPart, [
-        //TODO handle concept description
+        // TODO handle concept description
         h(ConceptDescription, 'Concept Description?'),
         h(ButtonGroup, [
           h(GetAssessedButton, {onClick: this.props.selectConcept.bind(this), id: this.props.conceptAddress}, 'Get Assessed'),
-          //TODO add link from concept description JSON
+          // TODO add link from concept description JSON
           h(LearnButton, 'Learn')
         ])
       ])

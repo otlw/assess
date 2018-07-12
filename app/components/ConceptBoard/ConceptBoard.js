@@ -5,7 +5,6 @@ import h from 'react-hyperscript'
 import ConceptList from './ConceptList'
 import ConceptCreation from './ConceptCreation'
 
-
 export class ConceptBoard extends Component {
   constructor (props) {
     super(props)
