@@ -2,6 +2,7 @@ import { Component } from 'react'
 import MeetingPointEditBox from './MeetingPoint/'
 import AssessorList from './AssessorList.js'
 import ProgressButtonBar from './ProgressButtonBar'
+import FinalResultBar from './FinalResultBar.js'
 import { StageDisplayNames, Stage } from '../../constants.js'
 import { convertDate } from '../../utils.js'
 import { EditMeetingPoint, ViewMeetingPoint } from './MeetingPoint/MeetingPointEditBox.js'
@@ -31,7 +32,7 @@ export class AssessmentData extends Component {
           h(SubHeader, [
             h(StatusIndicator, [
               h(StatusKey, 'STATUS'),
-              h(StatusValue, statusString)
+              h(StatusValue, assessment.stage === Stage.Done ? 'Assessment Complete' : statusString)
             ]),
             h(StatusIndicator, [
               h(StatusKey, assessment.stage === Stage.Done ? 'Completed on: ' : 'Due Date:'),
@@ -69,10 +70,14 @@ export class AssessmentData extends Component {
           ]),
           // progress-buttons
           assessment.stage === Stage.Done
-            ? h(ScoreBar, {
+            ? h(FinalResultBar, {
+              address: assessment.address,
               userAddress: this.props.userAddress,
+              userStage: assessment.userStage,
               assessee: assessment.assessee,
-              payout: assessment.payout
+              payout: assessment.payout,
+              finalScore: assessment.finalScore,
+              cost: assessment.cost
             })
             : h(ProgressButtonBar, {address: assessment.address})
         ])
