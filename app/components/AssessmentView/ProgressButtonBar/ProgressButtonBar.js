@@ -63,7 +63,6 @@ export class ProgressButtonBar extends Component {
   }
 
   stake () {
-    console.log('assessmentAddress', this.props.assessmentAddress)
     this.props.confirmAssessor(this.props.assessmentAddress)
     this.setProgressView()
   }

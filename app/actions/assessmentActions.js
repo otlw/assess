@@ -245,7 +245,6 @@ export function fetchPayout (address, user) {
 }
 
 export function fetchUserStage (address) {
-  console.log('fetchUserStage ')
   return async (dispatch, getState) => {
     let assessmentInstance = getInstance.assessment(getState(), address)
     let userAddress = getState().ethereum.userAddress
@@ -273,7 +272,6 @@ export function fetchFinalScore (address) {
 // returns the strings that are stored on the assessments
 // for now, only the data stored by the assessee
 export function fetchStoredData (selectedAssessment) {
-  console.log('fetchStoredData', selectedAssessment)
   return async (dispatch, getState) => {
     let address = selectedAssessment || getState().assessments.selectedAssessment
     let assessmentInstance = getInstance.assessment(getState(), address)
@@ -290,7 +288,6 @@ export function fetchStoredData (selectedAssessment) {
   Updates the store by calling the respective function for each type of event.
 */
 export function processEvent (user, sender, topic) {
-  console.log('processEvent called')
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     switch (topic) {

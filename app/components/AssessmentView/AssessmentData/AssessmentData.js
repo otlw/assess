@@ -17,7 +17,9 @@ export class AssessmentData extends Component {
       let assessment = this.props.assessment
       let actionRequired = assessment.stage === assessment.userStage
       let nOtherAssessorsToBeActive = assessment.size - (assessment.stage === Stage.Called ? assessment.assessors.length : assessment.done) - (actionRequired ? 1 : 0)
-      let statusString = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[assessment.stage]
+      let statusString = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive +
+          (nOtherAssessorsToBeActive !== 1 ? ' assessors' : 'assessor') +
+          ' to ' + StageDisplayNames[assessment.stage]
       return (
         h(SuperFrame, [
           // holds role and concept title
