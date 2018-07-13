@@ -16,7 +16,7 @@ class FinalResultBar extends Component {
       }
     } else {
       this.state = {
-        score: '??'
+        score: null
       }
     }
   }
@@ -31,7 +31,9 @@ class FinalResultBar extends Component {
       let gain = this.props.payout - this.props.cost
       return (
         h(FinalResultBox, [
-          h(AssessorScore, 'Your score was: ' + this.state.score || '?'),
+          (this.state.score
+            ? h(AssessorScore, 'Your score was: ' + this.state.score)
+            : null), // user has used a different way or machine to enter the score than our app
           h(FinalScoreField, 'Final score is:' + scoreString),
           h(EarnedReward, 'You earned ' + (gain >= 0 ? '+' : '-') + gain.toString() + ' AHA')
         ])

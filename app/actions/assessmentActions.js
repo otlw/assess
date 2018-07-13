@@ -184,17 +184,6 @@ export function fetchAssessmentData (address) {
       let dataBytes = await assessmentInstance.methods.data(assessee).call()
       let data = dataBytes ? getState().ethereum.web3.utils.hexToUtf8(dataBytes) : ''
 
-      let finalScore
-      if (stage === Stage.Done) {
-        let onChainScore = Number(await assessmentInstance.methods.finalScore().call())
-        // convert score to Front End range (FE:0,100%; BE:-100,100)
-        finalScore = convertFromOnChainScoreToUIScore(onChainScore)
-        // only fetch Payout if user is not assesse and payout is not already there
-        if (userAddress !== assessee) {
-          dispatch(fetchPayout(address, userAddress))
-        }
-      }
-
       const fathomTokenInstance = getInstance.fathomToken(getState())
       let pastEvents = await fathomTokenInstance.getPastEvents('Notification', {
         filter: {sender: address, topic: 2},
@@ -202,6 +191,23 @@ export function fetchAssessmentData (address) {
         toBlock: 'latest'
       })
       let assessors = pastEvents.map(x => x.returnValues.user)
+
+      let finalScore, payout
+      if (stage === Stage.Done) {
+        let onChainScore = Number(await assessmentInstance.methods.finalScore().call())
+        // convert score to Front End range (FE:0,100%; BE:-100,100)
+        finalScore = convertFromOnChainScoreToUIScore(onChainScore)
+        // only fetch Payout if user is not assesse and payout is not already there
+        if (assessors.includes(userAddress)) {
+          let filter = {
+            filter: { _from: address, _to: userAddress },
+            fromBlock: 0,
+            toBlock: 'latest'
+          }
+          let pastEvents = await fathomTokenInstance.getPastEvents('Transfer', filter)
+          payout = pastEvents[0].returnValues['_value']
+        }
+      }
 
       dispatch(receiveAssessment({
         address,
@@ -217,7 +223,8 @@ export function fetchAssessmentData (address) {
         conceptData,
         finalScore,
         data,
-        assessors
+        assessors,
+        payout
       }))
     } catch (e) {
       console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
@@ -289,37 +296,39 @@ export function fetchStoredData (selectedAssessment) {
 export function processEvent (user, sender, topic) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
+    let isUser = user === userAddress
     switch (topic) {
       case NotificationTopic.AssessmentCreated:
       case NotificationTopic.CalledAsAssessor:
         dispatch(fetchAssessmentData(sender))
         break
       case NotificationTopic.ConfirmedAsAssessor:
-        if (user === userAddress) dispatch(fetchUserStage(sender))
+        if (isUser) dispatch(fetchUserStage(sender))
         dispatch(receiveAssessor(sender, user))
         break
       case NotificationTopic.AssessmentStarted:
-        if (user === userAddress) {
+        if (isUser) {
           dispatch(updateAssessmentVariable(sender, 'stage', Stage.Confirmed))
           dispatch(fetchUserStage(sender))
         }
         break
       case NotificationTopic.RevealScore:
-        if (user === userAddress) {
+        if (isUser) {
           dispatch(updateAssessmentVariable(sender, 'stage', Stage.Committed))
           dispatch(fetchUserStage(sender))
         }
         break
       case NotificationTopic.TokensPaidOut:
       case NotificationTopic.AssessmentFinished:
-        if (user === userAddress) {
+        if (isUser) {
           dispatch(updateAssessmentVariable(sender, 'stage', Stage.Done))
           dispatch(fetchUserStage(sender))
           dispatch(fetchPayout(sender, user))
           dispatch(fetchFinalScore(sender, user))
-        } else {
-          console.log('no condition applied!', user, sender, topic)
         }
+        break
+      default:
+        console.log('no condition applied!', user, sender, topic)
     }
   }
 }
