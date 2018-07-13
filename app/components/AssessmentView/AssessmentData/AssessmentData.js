@@ -10,10 +10,10 @@ var h = require('react-hyperscript')
 
 export class AssessmentData extends Component {
   render () {
-    if (this.props.assessment && this.props.assessment.invalid) {
+    if (!this.props.assessment) return h('div', 'Loading Data...')
+    if (this.props.assessment.invalid) {
       return h('div', 'invalid assessment address!! (maybe you are on the wrong network)')
-    }
-    if (this.props.assessment) {
+    } else {
       let assessment = this.props.assessment
       let actionRequired = assessment.stage === assessment.userStage
       let nOtherAssessorsToBeActive = assessment.size - (assessment.stage === Stage.Called ? assessment.assessors.length : assessment.done) - (actionRequired ? 1 : 0)
@@ -69,8 +69,6 @@ export class AssessmentData extends Component {
           h(ProgressButtonBar, {address: assessment.address})
         ])
       )
-    } else {
-      return h('div', 'Loading Data')
     }
   }
 }

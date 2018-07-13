@@ -288,33 +288,42 @@ export function fetchStoredData (selectedAssessment) {
 
 /*
   Updates the store by calling the respective function for each type of event.
-  See web3actions().connect() to see that only user-relevant events call this function
 */
 export function processEvent (user, sender, topic) {
   console.log('processEvent called')
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
-    if (topic <= NotificationTopic.CalledAsAssessor) {
-      console.log('cond1 -fetch AssessmentData')
-      dispatch(fetchAssessmentData(sender))
-    } else if (topic === NotificationTopic.ConfirmedAsAssessor) {
-      if (user === userAddress) {
-        dispatch(fetchUserStage(sender))
-      }
-      dispatch(receiveAssessor(sender, user))
-    } else if (topic === NotificationTopic.AssessmentStarted && user === userAddress) {
-      dispatch(updateAssessmentVariable(sender, 'stage', Stage.Confirmed))
-      dispatch(fetchUserStage(sender))
-    } else if (topic === NotificationTopic.RevealScore && user === userAddress) {
-      dispatch(updateAssessmentVariable(sender, 'stage', Stage.Committed))
-      dispatch(fetchUserStage(sender))
-    } else if (topic >= NotificationTopic.RevealScore && user === userAddress) {
-      dispatch(updateAssessmentVariable(sender, 'stage', Stage.Done))
-      dispatch(fetchUserStage(sender))
-      dispatch(fetchPayout(sender, user))
-      dispatch(fetchFinalScore(sender, user))
-    } else {
-      console.log('no condition applied!', user, sender, topic)
+    switch (topic) {
+      case NotificationTopic.AssessmentCreated:
+      case NotificationTopic.CalledAsAssessor:
+        dispatch(fetchAssessmentData(sender))
+        break
+      case NotificationTopic.ConfirmedAsAssessor:
+        if (user === userAddress) dispatch(fetchUserStage(sender))
+        dispatch(receiveAssessor(sender, user))
+        break
+      case NotificationTopic.AssessmentStarted:
+        if (user === userAddress) {
+          dispatch(updateAssessmentVariable(sender, 'stage', Stage.Confirmed))
+          dispatch(fetchUserStage(sender))
+        }
+        break
+      case NotificationTopic.RevealScore:
+        if (user === userAddress) {
+          dispatch(updateAssessmentVariable(sender, 'stage', Stage.Committed))
+          dispatch(fetchUserStage(sender))
+        }
+        break
+      case NotificationTopic.TokensPaidOut:
+      case NotificationTopic.AssessmentFinished:
+        if (user === userAddress) {
+          dispatch(updateAssessmentVariable(sender, 'stage', Stage.Done))
+          dispatch(fetchUserStage(sender))
+          dispatch(fetchPayout(sender, user))
+          dispatch(fetchFinalScore(sender, user))
+        } else {
+          console.log('no condition applied!', user, sender, topic)
+        }
     }
   }
 }
