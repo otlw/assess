@@ -1,10 +1,22 @@
 import { Component } from 'react'
-import { MeetingPointButton } from '../AssessmentData/style.js'
 import MeetingPointForm from './MeetingPointForm.js'
 import TxList from '../../TxList.js'
+import styled from 'styled-components'
 var h = require('react-hyperscript')
 
-class MeetingPointEditButton extends Component {
+export const ViewMeetingPoint = styled('button')`
+  display: inline-block;
+  padding: 0.25em 1em;
+  border: 2px solid palevioletred;
+`
+
+export const EditMeetingPoint = styled('button')`
+  display: inline-block;
+  padding: 0.25em 1em;
+  border: 2px solid palevioletred;
+`
+
+class MeetingPointEditBox extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -12,8 +24,8 @@ class MeetingPointEditButton extends Component {
     }
   }
 
-  storeData (values) {
-    this.props.storeData(this.props.address, values.data)
+  storeDataOnAssessment (values) {
+    this.props.storeDataOnAssessment(this.props.address, values.data)
     this.setState({displayMPEdit: false})
   }
 
@@ -24,10 +36,10 @@ class MeetingPointEditButton extends Component {
   render () {
     return (
       h('div', [
-        h(MeetingPointButton, {
+        h(EditMeetingPoint, {
           onClick: this.toggleMPeditability.bind(this)
         }, 'edit'),
-        this.state.displayMPEdit ? h(MeetingPointForm, {onSubmit: this.storeData.bind(this)}) : null,
+        this.state.displayMPEdit ? h(MeetingPointForm, {onSubmit: this.storeDataOnAssessment.bind(this)}) : null,
         this.props.transactions
           ? h(TxList, {transactions: this.props.transactions})
           : null
@@ -36,4 +48,4 @@ class MeetingPointEditButton extends Component {
   }
 }
 
-export default MeetingPointEditButton
+export default MeetingPointEditBox
