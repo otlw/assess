@@ -4,7 +4,7 @@ import AssessorList from './AssessorList.js'
 import ProgressButtonBar from './ProgressButtonBar'
 import { StageDisplayNames, Stage } from '../../constants.js'
 import { convertDate } from '../../utils.js'
-import { EditMeetingPoint, ViewMeetingPoint } from './MeetingPoint/MeetingPointEditBox.js'
+import { ViewMeetingPoint } from './MeetingPoint/MeetingPointEditBox.js'
 import styled from 'styled-components'
 var h = require('react-hyperscript')
 
@@ -55,7 +55,6 @@ export class AssessmentData extends Component {
                 h(ViewMeetingPoint, {href: assessment.data, disabled: assessment.data === ''}, 'View'),
                 assessment.assessee === this.props.userAddress
                   ? h(MeetingPointEditBox, {
-                    className: EditMeetingPoint,
                     assessee: assessment.assessee,
                     address: assessment.address
                   }) // TODO make this appear right of GotoMeetingPointButton
