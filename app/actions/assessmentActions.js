@@ -26,10 +26,9 @@ export function confirmAssessor (address) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
-    // also salt should be saved in state => I put the saing part in the assessorStatus component
     sendAndReactToTransaction(
       dispatch,
-      {method: assessmentInstance.methods.confirmAssessor, args: []},
+      () => { return assessmentInstance.methods.confirmAssessor().send({from: userAddress}) },
       Stage.Called,
       userAddress,
       address,
@@ -44,7 +43,7 @@ export function commit (address, score, salt) {
     let assessmentInstance = getInstance.assessment(getState(), address)
     sendAndReactToTransaction(
       dispatch,
-      {method: assessmentInstance.methods.commit, args: [hashScoreAndSalt(score, salt)]},
+      () => { return assessmentInstance.methods.commit(hashScoreAndSalt(score, salt)).send({from: userAddress}) },
       Stage.Confirmed,
       userAddress,
       address,
@@ -59,7 +58,7 @@ export function reveal (address, score, salt) {
     let assessmentInstance = getInstance.assessment(getState(), address)
     sendAndReactToTransaction(
       dispatch,
-      {method: assessmentInstance.methods.reveal, args: [score, salt]},
+      () => { return assessmentInstance.methods.reveal(score, salt).send({from: userAddress}) },
       Stage.Committed,
       userAddress,
       address,
@@ -76,7 +75,7 @@ export function storeDataOnAssessment (address, data) {
     let dataAsBytes = getState().ethereum.web3.utils.utf8ToHex(data)
     sendAndReactToTransaction(
       dispatch,
-      {method: assessmentInstance.methods.addData, args: [dataAsBytes]},
+      () => { return assessmentInstance.methods.addData(dataAsBytes).send({from: userAddress}) },
       'meetingPointChange',
       userAddress,
       address,

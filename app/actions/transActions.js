@@ -37,8 +37,9 @@ export function removeTransaction (txHash) {
    @userAddress, @assessmentAddress and @saveData are used to mark the place where the transaction was triggered
    @react: an function clojure to be called once be called once the transaction was confirmed
 */
-export function sendAndReactToTransaction (dispatch, act, saveData, userAddress, assessmentAddress, react, gas) {
-  act.method(...act.args).send({from: userAddress, gas: gas || 320000})
+export function sendAndReactToTransaction (dispatch, act, saveData, userAddress, assessmentAddress, react) {
+  // act.method(...act.args).send({from: userAddress, gas: gas || 320000})
+  act()
     .on('transactionHash', (hash) => {
       dispatch(saveTransaction(assessmentAddress, userAddress, saveData, hash))
     })
