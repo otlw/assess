@@ -1,8 +1,26 @@
-import AssessmentLoader from '../hocs/AssessmentLoader.js'
-import AssessmentData from './AssessmentData/'
+import { connect } from 'react-redux'
+import { Component } from 'react'
+import AssessmentData from './AssessmentData.js'
+import {validateAndFetchAssessmentData} from '../../actions/assessmentActions'
 var h = require('react-hyperscript')
 
-export const AssessmentView = (props) => {
-  let address = props.match.params.id
-  return h(AssessmentLoader, {address, child: AssessmentData})
+const mapStateToProps = (state, ownProps) => {
+  return {
+    assessment: state.assessments[ownProps.match.params.id],
+    userAddress: state.ethereum.userAddress
+  }
 }
+
+const mapDispatchToProps = {
+  validateAndFetchAssessmentData
+}
+
+class AssessmentViewUnconnected extends Component {
+  render () {
+    let address = this.props.match.params.id
+    if (!this.props.assessment) this.props.validateAndFetchAssessmentData(address)
+    return h(AssessmentData, {assessment: this.props.assessment, userAddress: this.props.userAddress})
+  }
+}
+
+export const AssessmentView = connect(mapStateToProps, mapDispatchToProps)(AssessmentViewUnconnected)
