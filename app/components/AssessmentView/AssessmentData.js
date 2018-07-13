@@ -1,10 +1,10 @@
 import { Component } from 'react'
-import MeetingPointEditBox from '../MeetingPoint/'
-import AssessorList from '../AssessorList.js'
-import ProgressButtonBar from '../ProgressButtonBar'
-import { StageDisplayNames, Stage } from '../../../constants.js'
-import { convertDate } from '../../../utils.js'
-import { EditMeetingPoint, ViewMeetingPoint } from '../MeetingPoint/MeetingPointEditBox.js'
+import MeetingPointEditBox from './MeetingPoint/'
+import AssessorList from './AssessorList.js'
+import ProgressButtonBar from './ProgressButtonBar'
+import { StageDisplayNames, Stage } from '../../constants.js'
+import { convertDate } from '../../utils.js'
+import { EditMeetingPoint, ViewMeetingPoint } from './MeetingPoint/MeetingPointEditBox.js'
 import styled from 'styled-components'
 var h = require('react-hyperscript')
 
@@ -34,8 +34,8 @@ export class AssessmentData extends Component {
               h(StatusValue, statusString)
             ]),
             h(StatusIndicator, [
-              h(StatusKey, 'Due Date:'),
-              h(StatusValue, convertDate(assessment.endTime))
+              h(StatusKey, assessment.stage === Stage.Done ? 'Completed on: ' : 'Due Date:'),
+              h(StatusValue, convertDate(assessment.checkpoint))
             ])
           ]),
           // basic info
