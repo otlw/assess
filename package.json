@@ -22,7 +22,8 @@
       "contract",
       "assert",
       "describe",
-      "artifacts"
+      "artifacts",
+      "web3"
     ]
   },
   "devDependencies": {
