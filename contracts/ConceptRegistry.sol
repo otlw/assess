@@ -1,6 +1,7 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.4.23;
 
 import "./Concept.sol";
+import "./AssessmentFactory.sol";
 
 //@purpose: To create and store the concept ontology
 contract ConceptRegistry {
@@ -9,11 +10,12 @@ contract ConceptRegistry {
     bool initialized = false;
     address public mewAddress; //a manually created contract with no parents
     address public distributorAddress; //a manually created contract with no parents
+    AssessmentFactory public assessmentFactory;
 
     event ConceptCreation (address _concept);
 
     //@purpose: give this contract the address of a UserRegistry and mew Concept
-    function init(address _token, address _distributor) public {
+    function init(address _token, address _distributor, address _assessmentFactory) public {
         if (initialized == false) {
             fathomToken = _token;
             distributorAddress = _distributor;
@@ -21,6 +23,7 @@ contract ConceptRegistry {
             mewAddress = address(mew);
             conceptExists[mewAddress] = true;
             initialized = true;
+            assessmentFactory =  AssessmentFactory(_assessmentFactory);
         }
     }
 

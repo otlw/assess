@@ -84,8 +84,10 @@ contract('Assessment', function (accounts) {
         }})
 
       assessmentContract = Assessment.at(assessmentData.address)
+      console.log('assessmentaddress ', assessmentData.address)
 
       assert.isTrue(await assessedConcept.assessmentExists.call(assessmentContract.address), "the assessment hasn't been created")
+      assert(false)
     })
 
     it('should charge the assessee', async () => {

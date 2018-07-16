@@ -1,42 +1,11 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.4.23;
 
 import "./Math.sol";
 import "./Concept.sol";
 import "./FathomToken.sol";
+import "./AssessmentData.sol";
 
-contract Assessment {
-    address public assessee;
-    address[] assessors;
-
-    mapping (address => State) public assessorState;
-    State public assessmentStage;
-    enum State {
-        None,
-        Called,
-        Confirmed,
-        Committed,
-        Done,
-        Burned
-    }
-
-    Concept public concept;
-    FathomToken fathomToken;
-
-    uint public endTime;
-    // will keep track of timelimits for 1) latest possible time to confirm and
-    // 2) earliest time to reveal
-    uint public checkpoint;
-    uint public size;
-    uint public cost;
-
-    mapping(address => bytes32) commits;
-    uint public done; //counter how many assessors have committed/revealed their score
-    mapping(address => int128) scores;
-    int public finalScore;
-    bytes32 public salt; //used for token distribution
-    mapping (address => bytes) public data;
-
-    event DataChanged(address user, bytes oldData, bytes newData);
+contract Assessment is AssessmentData {
 
     modifier onlyConcept() {
         require(msg.sender == address(concept));
@@ -46,27 +15,6 @@ contract Assessment {
     modifier onlyInStage(State _stage) {
         require(assessmentStage == _stage);
         _;
-    }
-
-    function Assessment(address _assessee,
-                        uint _size,
-                        uint _cost,
-                        uint _confirmTime,
-                        uint _timeLimit) public {
-        assessee = _assessee;
-        concept = Concept(msg.sender);
-        fathomToken = concept.fathomToken();
-
-        endTime = now + _timeLimit;
-        // set checkpoint to latest possible time to confirm
-        checkpoint = now + _confirmTime;
-        assert(checkpoint < endTime);
-
-        size = _size;
-        cost = _cost;
-
-        fathomToken.notification(assessee, 0); // assessee has started an assessment
-        done = 0;
     }
 
     function addData(bytes _data) public {

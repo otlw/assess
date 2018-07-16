@@ -1,4 +1,4 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.4.23;
 
 import "./FathomToken.sol";
 import "./ConceptRegistry.sol";
@@ -173,10 +173,12 @@ contract Concept {
       @param: uint cost = the cost per assessor
       @param: uint size = the number of assessors
     */
+    event fb(address x); //TODO remove those
+    event fbConcept(address concept);
     function makeAssessment(uint cost, uint size, uint _waitTime, uint _timeLimit) public returns(bool) {
       require(size >= 5 && fathomToken.balanceOf(msg.sender)>= cost*size);
 
-      Assessment newAssessment = new Assessment(msg.sender, size, cost, _waitTime, _timeLimit);
+      Assessment newAssessment = conceptRegistry.assessmentFactory().createAssessment(msg.sender, size, cost, _waitTime, _timeLimit);
       assessmentExists[address(newAssessment)] = true;
       fathomToken.takeBalance(msg.sender, address(newAssessment), cost*size, address(this));
 
