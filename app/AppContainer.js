@@ -17,7 +17,7 @@ const theme = {
   blue: '#2F80ED',
   lightblue: '#70a5f9',
   yellow: '#fff700',
-  lightgreen:"#A5FBA9"
+  lightgreen: '#A5FBA9'
 }
 
 // the main frame on which everything is displayed.

@@ -9,7 +9,7 @@ export class ConceptCreation extends Component {
       step: 1,
       amountPerAssessor: 5,
       creationStatus: 'none',
-      gasEstimate:0
+      gasEstimate: 0
     }
   }
 
@@ -28,33 +28,33 @@ export class ConceptCreation extends Component {
     // step 3 => send transaction
     if (step === 2) {
       this.estimateGasCost()
-    } else if (step === 3){
+    } else if (step === 3) {
       this.loadConceptContractAndCreateAssessment()
     }
 
     // increment step
-    this.setState({step: step+1}) 
+    this.setState({step: step + 1})
   }
 
-  estimateGasCost(){
-      this.props.estimateGasCost(
-        this.props.conceptAddress,
-        this.state.amountPerAssessor,
-        (cost) => {
-          this.setState({gasEstimate: cost})
-        }
-      )
+  estimateGasCost () {
+    this.props.estimateGasCost(
+      this.props.conceptAddress,
+      this.state.amountPerAssessor,
+      (cost) => {
+        this.setState({gasEstimate: cost})
+      }
+    )
   }
 
-  loadConceptContractAndCreateAssessment(){
-      this.props.loadConceptContractAndCreateAssessment(
-        this.props.conceptAddress,
-        this.state.amountPerAssessor,
-        (status) => {
-          //TODO use this to display notification using the bar we discussed
-          this.setState({creationStatus: status})
-        }
-      )
+  loadConceptContractAndCreateAssessment () {
+    this.props.loadConceptContractAndCreateAssessment(
+      this.props.conceptAddress,
+      this.state.amountPerAssessor,
+      (status) => {
+        // TODO use this to display notification using the bar we discussed
+        this.setState({creationStatus: status})
+      }
+    )
   }
 
   render () {
@@ -87,14 +87,14 @@ export class ConceptCreation extends Component {
         h(ParameterKey, 'NO. OF ASSESSORS'),
         h(ParameterValue, '5'),
         h(ParameterKey, 'WHAT DO YOU WANT TO PAY?'),
-        h(ParameterValue, this.state.amountPerAssessor * 5 + ' AHA'),
+        h(ParameterValue, this.state.amountPerAssessor * 5 + ' AHA')
       ])
     } else if (this.state.step === 3) {
       BottomPartContent = h(BottomPart, [
-        h(Step3P,"Ethereum charges a transaction fee to process & create your assessment. Once completed, this step is irreversible."),
-        h(ParameterKey,"TRANSACTION COST"),
-        h(CostEstimate,this.state.gasEstimate+"ETH"),
-        h(Step3Bottom,"Clicking 'Next' will launch MetaMask so you can complete the transaction")
+        h(Step3P, 'Ethereum charges a transaction fee to process & create your assessment. Once completed, this step is irreversible.'),
+        h(ParameterKey, 'TRANSACTION COST'),
+        h(CostEstimate, this.state.gasEstimate + 'ETH'),
+        h(Step3Bottom, "Clicking 'Next' will launch MetaMask so you can complete the transaction")
       ])
     } else if (this.state.step === 4) {
       BottomPartContent = h(BottomPart, [
@@ -104,31 +104,31 @@ export class ConceptCreation extends Component {
       ])
     }
 
-    //set Navigation buttons according to step
-    let Navigation=(h(NavigationButtonGroup, [
-          h(CancelButton, {onClick: this.cancelButton.bind(this)}, 'Cancel'),
-          h(NextButton, {onClick: this.nextButton.bind(this)}, 'Next ->')
+    // set Navigation buttons according to step
+    let Navigation = (h(NavigationButtonGroup, [
+      h(CancelButton, {onClick: this.cancelButton.bind(this)}, 'Cancel'),
+      h(NextButton, {onClick: this.nextButton.bind(this)}, 'Next ->')
     ]))
 
-    if ((this.state.step===4)){
-      Navigation=(h(NavigationButtonGroup, [
-          h(CloseButton, {onClick: this.cancelButton.bind(this)}, 'Close')
+    if ((this.state.step === 4)) {
+      Navigation = (h(NavigationButtonGroup, [
+        h(CloseButton, {onClick: this.cancelButton.bind(this)}, 'Close')
       ]))
     }
 
-    //set cancelCross according to step
-    let CancelCrossButton=h(CancelCross, {onClick: this.cancelButton.bind(this)},"X")
-    if (this.state.step===4){
-      CancelCrossButton=null
+    // set cancelCross according to step
+    let CancelCrossButton = h(CancelCross, {onClick: this.cancelButton.bind(this)}, 'X')
+    if (this.state.step === 4) {
+      CancelCrossButton = null
     }
 
     return h(MainFrame, [
       CancelCrossButton,
       h(StepBox, [
-        h(Step, {current: this.state.step === 1, past:this.state.step > 1}, '1'),
-        h(Step, {current: this.state.step === 2, past:this.state.step > 2}, '2'),
-        h(Step, {current: this.state.step === 3, past:this.state.step > 3}, '3'),
-        h(Step, {current: this.state.step === 4, past:this.state.step > 4}, '4')
+        h(Step, {current: this.state.step === 1, past: this.state.step > 1}, '1'),
+        h(Step, {current: this.state.step === 2, past: this.state.step > 2}, '2'),
+        h(Step, {current: this.state.step === 3, past: this.state.step > 3}, '3'),
+        h(Step, {current: this.state.step === 4, past: this.state.step > 4}, '4')
       ]),
       h(HeaderTitle, "LET'S CREATE YOUR ASSESSMENT"),
       h(ConceptCreationCardFrame, [
@@ -157,7 +157,7 @@ font-size:1.5em;
 margin:1em auto;
 `
 
-//steps
+// steps
 
 const StepBox = styled('div')`
 padding:2em 0 0 0 ;
@@ -166,8 +166,8 @@ text-align:center;
 
 const Step = styled('div')`
 font-size:0.7em;
-background-color:${props => props.past ? props.theme.lightgreen : props.current ? '#C4C4C4' : "transparent"}
-border:${props => props.past ? '1px solid '+props.theme.lightgreen : '1px solid #C4C4C4'};
+background-color:${props => props.past ? props.theme.lightgreen : props.current ? '#C4C4C4' : 'transparent'}
+border:${props => props.past ? '1px solid ' + props.theme.lightgreen : '1px solid #C4C4C4'};
 border-radius: 50%;
 margin-right:1em;
 padding-top:0.5em
@@ -176,7 +176,7 @@ height: 1.5em;
 display:inline-block;
 `
 
-//main card designs
+// main card designs
 
 const ConceptCreationCardFrame = styled('div')`
 background: #FFFFFF;
@@ -259,7 +259,6 @@ const ParameterValue = styled('div')`
 
 // step 3
 
-
 const Step3P = styled('div')`
 margin-top:1.5em;
 font-size:0.6em;
@@ -277,7 +276,6 @@ font-size:1.5em;
 color:#444444;
 `
 // step 4
-
 
 const Step4Title = styled('div')`
 margin-top:1.5em;

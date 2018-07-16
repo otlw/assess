@@ -32,7 +32,7 @@ export class ConceptBoard extends Component {
           conceptName: this.props.concepts[this.state.selectedConceptAddress],
           conceptAddress: this.state.selectedConceptAddress,
           loadConceptContractAndCreateAssessment: this.props.loadConceptContractAndCreateAssessment,
-          estimateGasCost:this.props.estimateAssessmentCreationGasCost,
+          estimateGasCost: this.props.estimateAssessmentCreationGasCost,
           cancelCreation: this.cancelCreation.bind(this)
         })
       }
