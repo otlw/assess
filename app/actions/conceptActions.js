@@ -47,7 +47,11 @@ export function loadConceptContractAndCreateAssessment (address, cost, callback)
     const startTime = 100000
     sendAndReactToTransaction(
       dispatch,
-      {method: conceptInstance.methods.makeAssessment, args: [cost, size, startTime, endTime]},
+      () => {
+        return conceptInstance.methods.makeAssessment(
+          cost, size, startTime, endTime
+        ).send({from: userAddress})
+      },
       'makeAssessment',
       userAddress,
       address,

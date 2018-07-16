@@ -37,3 +37,14 @@ export function networkName (id) {
       return 'Local'
   }
 }
+
+export const NotificationTopic = Object.freeze({
+  AssessmentCreated: 0,
+  CalledAsAssessor: 1,
+  ConfirmedAsAssessor: 2,
+  AssessmentCancelled: 3,
+  AssessmentStarted: 4,
+  RevealScore: 5,
+  TokensPaidOut: 6,
+  AssessmentFinished: 7
+})

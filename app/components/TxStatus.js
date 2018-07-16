@@ -10,7 +10,7 @@ var h = require('react-hyperscript')
 const txItem = styled.section`
 background: papayawhip;
 `
-
+// TODO comment on what to expect as props
 export class TxStatus extends Component {
   deleteTX () {
     this.props.removeTX(this.props.transaction.txHash)

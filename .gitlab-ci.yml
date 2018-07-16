@@ -1,12 +1,48 @@
 image: library/node:9.11.1
+stages:
+  - setup
+  - prebuild
+  - build
+  - deploy
 
-before_script:
-  - npm install
+install: 
+  stage: setup
+  script: npm i
+  artifacts:
+    paths:
+      - node_modules
 
 lint:
-  stage: build
+  stage: prebuild
   script: npm run lint
 
+compile:
+  stage: prebuild
+  script: npm run compile
+  artifacts:
+    paths:
+      - build
+
+webPackBuild:
+  stage: build
+  script:
+    - bash scripts/loadDeployment.sh
+    - npm run build
+  artifacts:
+    paths:
+      - dist
+
 runTests:
+  stage: build
   script:
     - npm test
+
+pages:
+  stage: deploy
+  script:
+    - cp -r dist public
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
