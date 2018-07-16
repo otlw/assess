@@ -6,30 +6,15 @@ export class ConceptCreation extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      step: 2,
+      step: 1,
       amountPerAssessor: 5,
-      creationStatus: 'none'
+      creationStatus: 'none',
+      gasEstimate:0
     }
   }
 
   setAmountPerAssessor (e) {
     this.setState({amountPerAssessor: e.target.value})
-  }
-
-  backButton () {
-    let step = this.state.step
-    // step 2 => go back to step 1
-    if (step === 2) {
-      this.setState({step: 1})
-    }
-    // step 2 => go back to step 1
-    if (step === 2) {
-      this.setState({step: 1})
-    }
-    // step 2 => go back to step 2
-    if (step === 3) {
-      this.setState({step: 2})
-    }
   }
 
   cancelButton () {
@@ -38,29 +23,45 @@ export class ConceptCreation extends Component {
 
   nextButton () {
     let step = this.state.step
-    // step 0 => confirm
-    if (step === 0) {
-      this.setState({step: 1})
+
+    // step 2 => estimate
+    // step 3 => send transaction
+    if (step === 2) {
+      this.estimateGasCost()
+    } else if (step === 3){
+      this.loadConceptContractAndCreateAssessment()
     }
-    // step 1 => sendMetamask
-    if (step === 1) {
-      // let setState=this.setState
+
+    // increment step
+    this.setState({step: step+1}) 
+  }
+
+  estimateGasCost(){
+      this.props.estimateGasCost(
+        this.props.conceptAddress,
+        this.state.amountPerAssessor,
+        (cost) => {
+          this.setState({gasEstimate: cost})
+        }
+      )
+  }
+
+  loadConceptContractAndCreateAssessment(){
       this.props.loadConceptContractAndCreateAssessment(
         this.props.conceptAddress,
         this.state.amountPerAssessor,
         (status) => {
-          this.setState({step: 3, creationStatus: status})
+          //TODO use this to display notification using the bar we discussed
+          this.setState({creationStatus: status})
         }
       )
-      this.setState({step: 2})
-    }
   }
 
   render () {
     let BottomPartContent = null
 
-    if (this.state.step === 0) {
-      BottomPartContent = h(BottomPart0, [
+    if (this.state.step === 1) {
+      BottomPartContent = h(BottomPart, [
         h(Question1, 'How much do you wish to pay each assessor?'),
         h(ButtonCaptionBox, [
           h('span', 'PAY'),
@@ -79,32 +80,57 @@ export class ConceptCreation extends Component {
           h(TotalAmount, this.state.amountPerAssessor * 5 + ' AHA')
         ])
       ])
-    } else if (this.state.step === 1) {
-      BottomPartContent = h(BottomPart1, [
-        h('div', 'TOTAL COST'),
-        h(TotalCost, this.state.amountPerAssessor * 5 + ' AHA'),
-        h('div', 'Distributed between 5 Assessors'),
-        h(BottomCaption, 'Clicking “Next” will launch MetaMask so you can complete the transaction')
-      ])
     } else if (this.state.step === 2) {
-      BottomPartContent = h(BottomPart2, 'Please confirm MetaMask Transaction and wait for confirmation')
+      BottomPartContent = h(BottomPart, [
+        h(ParameterKey, 'ASSESSEE'),
+        h(ParameterValue, 'YOU'),
+        h(ParameterKey, 'NO. OF ASSESSORS'),
+        h(ParameterValue, '5'),
+        h(ParameterKey, 'WHAT DO YOU WANT TO PAY?'),
+        h(ParameterValue, this.state.amountPerAssessor * 5 + ' AHA'),
+      ])
     } else if (this.state.step === 3) {
-      BottomPartContent = h(BottomPart3, [
-        // TODO update this text with confirmation or error
-        h(Step3Title, 'Success & Pending'),
+      BottomPartContent = h(BottomPart, [
+        h(Step3P,"Ethereum charges a transaction fee to process & create your assessment. Once completed, this step is irreversible."),
+        h(ParameterKey,"TRANSACTION COST"),
+        h(CostEstimate,this.state.gasEstimate+"ETH"),
+        h(Step3Bottom,"Clicking 'Next' will launch MetaMask so you can complete the transaction")
+      ])
+    } else if (this.state.step === 4) {
+      BottomPartContent = h(BottomPart, [
+        h(Step4Title, 'Success & Pending'),
         h(P1, 'Your assessment has been sent to the Ethereum blockchain and is pending confirmation.'),
-        h('div', 'We’ll notify you once the transaction has been confirmed & your assessment is created.')
+        h(BottomP, 'We’ll notify you once the transaction has been confirmed & your assessment is created.')
       ])
     }
 
+    //set Navigation buttons according to step
+    let Navigation=(h(NavigationButtonGroup, [
+          h(CancelButton, {onClick: this.cancelButton.bind(this)}, 'Cancel'),
+          h(NextButton, {onClick: this.nextButton.bind(this)}, 'Next ->')
+    ]))
+
+    if ((this.state.step===4)){
+      Navigation=(h(NavigationButtonGroup, [
+          h(CloseButton, {onClick: this.cancelButton.bind(this)}, 'Close')
+      ]))
+    }
+
+    //set cancelCross according to step
+    let CancelCrossButton=h(CancelCross, {onClick: this.cancelButton.bind(this)},"X")
+    if (this.state.step===4){
+      CancelCrossButton=null
+    }
+
     return h(MainFrame, [
-      h(HeaderTitle, "LET'S CREATE YOUR ASSESSMENT"),
+      CancelCrossButton,
       h(StepBox, [
         h(Step, {current: this.state.step === 1, past:this.state.step > 1}, '1'),
         h(Step, {current: this.state.step === 2, past:this.state.step > 2}, '2'),
         h(Step, {current: this.state.step === 3, past:this.state.step > 3}, '3'),
         h(Step, {current: this.state.step === 4, past:this.state.step > 4}, '4')
       ]),
+      h(HeaderTitle, "LET'S CREATE YOUR ASSESSMENT"),
       h(ConceptCreationCardFrame, [
         h(ConceptTitleBox, [
           h(TitleCaption, 'CONCEPT'),
@@ -112,29 +138,30 @@ export class ConceptCreation extends Component {
         ]),
         BottomPartContent
       ]),
-      h(NavigationButtonGroup, [
-        h(BackButton, {onClick: this.backButton.bind(this)}, '<- Back'),
-        h(CancelButton, {onClick: this.cancelButton.bind(this)}, 'Cancel'),
-        h(NextButton, {onClick: this.nextButton.bind(this)}, 'Next ->')
-      ])
+      Navigation
     ])
   }
 }
 
 export default ConceptCreation
+
 // styles
 
 const MainFrame = styled('div')`
 text-align:center;
-padding:3em 0;
+padding:0 0 2em 0;
 `
 
 const HeaderTitle = styled('div')`
 font-size:1.5em;
+margin:1em auto;
 `
 
+//steps
+
 const StepBox = styled('div')`
-margin:2.2em 0 ;
+padding:2em 0 0 0 ;
+text-align:center;
 `
 
 const Step = styled('div')`
@@ -148,6 +175,8 @@ width: 2em;
 height: 1.5em;
 display:inline-block;
 `
+
+//main card designs
 
 const ConceptCreationCardFrame = styled('div')`
 background: #FFFFFF;
@@ -171,13 +200,14 @@ color: #444444;
 font-size:1.1em;
 `
 
-// step 0
-
-const BottomPart0 = styled('div')`
-padding: 1.3em 1.1em;
+const BottomPart = styled('div')`
+padding: 0 1.1em;
+height:15em;
 `
+
+// step 1
 const Question1 = styled('div')`
-margin-bottom:1.5em;
+margin:1.5em 0;
 color:#666666;
 font-size:0.7em;
 `
@@ -218,69 +248,88 @@ width:4em;
 text-align:center;
 `
 
-// step 1
-
-const BottomPart1 = styled('div')`
-padding: 5.3em 3em 1.3em 3em;
-text-align:center;
-font-size:0.6em;
-`
-
-const TotalCost = styled('div')`
-font-size:2em;
-margin:0.5em 0 0.9em 0;
-`
-const BottomCaption = styled('div')`
-margin-top:5.5em;
-`
-
 // step 2
 
-const BottomPart2 = styled('div')`
-padding: 8em 3em;
-text-align:center;
+const ParameterKey = styled('div')`
 font-size:0.6em;
+margin-top:1.5em;
+`
+const ParameterValue = styled('div')`
 `
 
 // step 3
 
-const BottomPart3 = styled('div')`
-padding: 1.8em 2em 6em 2em;
-text-align:center;
-font-size:0.6em;
-`
 
-const Step3Title = styled('div')`
-font-size:1.3em;
+const Step3P = styled('div')`
+margin-top:1.5em;
+font-size:0.6em;
+color:#666666;
+line-height: 1.5em;
+`
+const Step3Bottom = styled('div')`
+margin:4em 0 1.5em 0;
+font-size:0.6em;
+color:#666666;
+line-height: 1.2em;
+`
+const CostEstimate = styled('div')`
+font-size:1.5em;
+color:#444444;
+`
+// step 4
+
+
+const Step4Title = styled('div')`
+margin-top:1.5em;
+color:##444444;
 `
 const P1 = styled('div')`
-margin:2em 0 1.3em 0;
+margin-top:1.5em;
+font-size:0.6em;
+color:#666666;
+line-height: 1.5em;
+`
+const BottomP = styled('div')`
+margin-top:1.5em;
+font-size:0.6em;
+color:#666666;
+line-height: 1.5em;
 `
 
 // navigation buttons
 
-const NavigationButtonGroup = styled('div')`
-border-radius: 2px
-border: 1px solid #C4C4C4;
-width:33em;
+const NavigationButtonGroup = styled('div')`width:33em;
 margin: 2.2em auto;
 padding:0;
 font-size:0.6em;
 `
-const BackButton = styled('div')`
-background-color:#C4C4C4;
-padding: 1em 3.5em;
-display:inline-block;
-width:4em;
-`
 const CancelButton = styled('div')`
-padding: 1em 3.5em;
+border-radius: 2em;
+border: 1px solid #C4C4C4;
+padding: 1em 1em;
 display:inline-block;
 width:4em;
+margin-right:8.3em;
 `
 const NextButton = styled('div')`
-background-color:#C4C4C4;
-padding: 1em 3.5em;
+padding: 1em 1em;
 display:inline-block;
 width:4em;
+border-radius: 2em;
+border: 1px solid #C4C4C4;
+background-color:#C4C4C4;
+`
+const CloseButton = styled('div')`
+border-radius: 2em;
+border: 1px solid #C4C4C4;
+background-color:#C4C4C4;
+padding: 1em 1em;
+display:inline-block;
+width:4em;
+`
+const CancelCross = styled('div')`
+font-size:1.3em;
+float:right;
+margin:1.2em;
+cursor:pointer;
 `

@@ -5,7 +5,8 @@ import { LoadingStage } from '../../constants.js'
 import ConceptBoard from './ConceptBoard.js'
 import {
   loadConceptContractAndCreateAssessment,
-  loadConceptsFromConceptRegistery } from '../../actions/conceptActions.js'
+  loadConceptsFromConceptRegistery,
+  estimateAssessmentCreationGasCost } from '../../actions/conceptActions.js'
 
 const mapStateToProps = state => {
   return {
@@ -20,7 +21,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   load: loadConceptsFromConceptRegistery,
-  loadConceptContractAndCreateAssessment
+  loadConceptContractAndCreateAssessment,
+  estimateAssessmentCreationGasCost
 }
 
 export default compose(
