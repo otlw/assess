@@ -11,10 +11,11 @@ let getAccounts = require('../js/getAccounts.js')
 module.exports = function (deployer) {
   deployer.then(async () => {
     let accounts = await getAccounts(deployer.network, web3)
+    let mewAccounts = await getAccounts(deployer.network, web3, true)
     await deployer.deploy(Math)
     await deployer.link(Math, [Assessment, Concept, ConceptRegistry])
     await deployer.deploy(ConceptRegistry)
-    await deployer.deploy(Distributor, accounts.length, ConceptRegistry.address)
+    await deployer.deploy(Distributor, mewAccounts.length, ConceptRegistry.address)
 
     let epochLength = 60 * 60 * 24 * 7
     let tokenReward = 100
