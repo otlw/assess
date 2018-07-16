@@ -6,7 +6,7 @@ export class ConceptCreation extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      step: 0,
+      step: 2,
       amountPerAssessor: 5,
       creationStatus: 'none'
     }
@@ -100,9 +100,10 @@ export class ConceptCreation extends Component {
     return h(MainFrame, [
       h(HeaderTitle, "LET'S CREATE YOUR ASSESSMENT"),
       h(StepBox, [
-        h(Step, {underlined: this.state.step === 1}, 'STEP 1'),
-        h(Step, {underlined: this.state.step === 2}, 'STEP 2'),
-        h(Step, {underlined: this.state.step === 3}, 'STEP 3')
+        h(Step, {current: this.state.step === 1, past:this.state.step > 1}, '1'),
+        h(Step, {current: this.state.step === 2, past:this.state.step > 2}, '2'),
+        h(Step, {current: this.state.step === 3, past:this.state.step > 3}, '3'),
+        h(Step, {current: this.state.step === 4, past:this.state.step > 4}, '4')
       ]),
       h(ConceptCreationCardFrame, [
         h(ConceptTitleBox, [
@@ -136,10 +137,16 @@ const StepBox = styled('div')`
 margin:2.2em 0 ;
 `
 
-const Step = styled('span')`
+const Step = styled('div')`
 font-size:0.7em;
-border-bottom:${props => props.underlined ? '2px solid #C4C4C4' : null};
+background-color:${props => props.past ? props.theme.lightgreen : props.current ? '#C4C4C4' : "transparent"}
+border:${props => props.past ? '1px solid '+props.theme.lightgreen : '1px solid #C4C4C4'};
+border-radius: 50%;
 margin-right:1em;
+padding-top:0.5em
+width: 2em;
+height: 1.5em;
+display:inline-block;
 `
 
 const ConceptCreationCardFrame = styled('div')`
