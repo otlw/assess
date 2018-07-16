@@ -117,7 +117,10 @@ export class ConceptCreation extends Component {
     }
 
     // set cancelCross according to step
-    let CancelCrossButton = h(CancelCross, {onClick: this.cancelButton.bind(this)}, 'X')
+    let CancelCrossButton = (h('div', [
+      h(CancelCrossCounterBalance, {onClick: this.cancelButton.bind(this)}, 'X'),
+      h(CancelCross, {onClick: this.cancelButton.bind(this)}, 'X')
+    ]))
     if (this.state.step === 4) {
       CancelCrossButton = null
     }
@@ -325,9 +328,16 @@ padding: 1em 1em;
 display:inline-block;
 width:4em;
 `
-const CancelCross = styled('div')`
+const CancelCross = styled('span')`
 font-size:1.3em;
 float:right;
 margin:1.2em;
 cursor:pointer;
+`
+const CancelCrossCounterBalance = styled('span')`
+font-size:1.3em;
+float:left;
+margin:1.2em;
+cursor:pointer;
+color:transparent;
 `
