@@ -3,8 +3,7 @@ pragma solidity ^0.4.23;
 import './Proxy.sol';
 import './AssessmentData.sol';
 
-contract AssessmentProxy is Proxy, AssessmentData {
-    event fbA(address x);
+contract AssessmentProxy is Proxy, AssessmentDataInternal {
     constructor(address proxied,
                 address _concept,
                 address _assessee,
@@ -14,7 +13,6 @@ contract AssessmentProxy is Proxy, AssessmentData {
                 uint _timeLimit) public Proxy(proxied) {
         assessee = _assessee;
         concept = Concept(_concept);
-        fbA(msg.sender);
         fathomToken = concept.fathomToken();
 
         endTime = now + _timeLimit;

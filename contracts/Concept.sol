@@ -4,59 +4,18 @@ import "./FathomToken.sol";
 import "./ConceptRegistry.sol";
 import "./Assessment.sol";
 import "./Math.sol";
+import "./ConceptData.sol";
 
 //@purpose: To store concept data and create and manage assessments and members
-contract Concept {
-    address[] public parents; //The concepts that this concept is child to (ie: Calculus is child to Math)
-    bytes public data;
-    address public owner;
-    FathomToken public fathomToken;
-    ConceptRegistry conceptRegistry;
-    uint public lifetime;
-    mapping (address => bool) public assessmentExists;
-
-    uint[] propagationRates;
-
-    address[] public availableMembers;
-    mapping (address => MemberData) public memberData;
-
-    struct MemberData {
-        address recentAssessment;
-        uint index;
-        ComponentWeight[] weights;
-        mapping(address => uint) componentWeightIndex;
-    }
-
-    struct ComponentWeight {
-        uint weight;
-        uint date;
-    }
-
-    modifier onlyConcept() {
-        require(conceptRegistry.conceptExists(msg.sender));
-        _;
-    }
-
-    function Concept(address[] _parents, uint[] _propagationRates, uint _lifetime, bytes _data, address _owner) public {
-        require(_parents.length == _propagationRates.length);
-        conceptRegistry = ConceptRegistry(msg.sender);
-
-        for (uint j=0; j < _parents.length; j++) {
-            require(conceptRegistry.conceptExists(_parents[j]));
-            require(_propagationRates[j] < 1000);
-        }
-
-        propagationRates = _propagationRates;
-        parents = _parents;
-        data = _data;
-        lifetime = _lifetime;
-        owner = _owner;
-        fathomToken = FathomToken(conceptRegistry.fathomToken());
-    }
-
+contract Concept is ConceptData {
     modifier onlyOwner(){
         require(msg.sender == owner);
         _;
+    }
+
+    modifier onlyConcept() {
+      require(conceptRegistry.conceptExists(msg.sender));
+      _;
     }
 
     function transferOwnership(address _newOwner) onlyOwner() public {
@@ -178,7 +137,7 @@ contract Concept {
     function makeAssessment(uint cost, uint size, uint _waitTime, uint _timeLimit) public returns(bool) {
       require(size >= 5 && fathomToken.balanceOf(msg.sender)>= cost*size);
 
-      Assessment newAssessment = conceptRegistry.assessmentFactory().createAssessment(msg.sender, size, cost, _waitTime, _timeLimit);
+      Assessment newAssessment = conceptRegistry.proxyFactory().createAssessment(msg.sender, size, cost, _waitTime, _timeLimit);
       assessmentExists[address(newAssessment)] = true;
       fathomToken.takeBalance(msg.sender, address(newAssessment), cost*size, address(this));
 
