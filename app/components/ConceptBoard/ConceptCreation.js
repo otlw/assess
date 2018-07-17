@@ -57,7 +57,7 @@ export class ConceptCreation extends Component {
   render () {
     let BottomPartContent = null
 
-    switch(this.state.step){
+    switch (this.state.step) {
       case 1:
         BottomPartContent = h(BottomPart, [
           h(Question1, 'How much do you wish to pay each assessor?'),
@@ -78,7 +78,7 @@ export class ConceptCreation extends Component {
             h(TotalAmount, this.state.amountPerAssessor * 5 + ' AHA')
           ])
         ])
-        break;
+        break
       case 2:
         BottomPartContent = h(BottomPart, [
           h(ParameterKey, 'ASSESSEE'),
@@ -88,7 +88,7 @@ export class ConceptCreation extends Component {
           h(ParameterKey, 'WHAT DO YOU WANT TO PAY?'),
           h(ParameterValue, this.state.amountPerAssessor * 5 + ' AHA')
         ])
-        break;
+        break
       case 3:
         BottomPartContent = h(BottomPart, [
           h(Step3P, 'Ethereum charges a transaction fee to process & create your assessment. Once completed, this step is irreversible.'),
@@ -96,14 +96,14 @@ export class ConceptCreation extends Component {
           h(CostEstimate, this.state.gasEstimate + 'ETH'),
           h(Step3Bottom, "Clicking 'Next' will launch MetaMask so you can complete the transaction")
         ])
-        break;
+        break
       case 4:
         BottomPartContent = h(BottomPart, [
           h(Step4Title, 'Success & Pending'),
           h(P1, 'Your assessment has been sent to the Ethereum blockchain and is pending confirmation.'),
           h(BottomP, 'We’ll notify you once the transaction has been confirmed & your assessment is created.')
         ])
-        break;
+        break
     }
 
     // set Navigation buttons according to step
