@@ -17,9 +17,9 @@ module.exports = function (deployer) {
     await deployer.link(Math, [Assessment, Concept, ConceptRegistry, ProxyFactory])
 
     // set up the proxy factory
-    let masterAssessment = await deployer.deploy(Assessment)
-    let masterConcept = await deployer.deploy(Concept)
-    await deployer.deploy(ProxyFactory, masterConcept.address, masterAssessment.address)
+    await deployer.deploy(Assessment)
+    await deployer.deploy(Concept)
+    await deployer.deploy(ProxyFactory, Concept.address, Assessment.address)
 
     await deployer.deploy(ConceptRegistry)
     await deployer.deploy(Distributor, mewAccounts.length, ConceptRegistry.address)

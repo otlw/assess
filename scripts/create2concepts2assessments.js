@@ -15,7 +15,7 @@ let fathomTokenContract
 
 let provider
 const network = process.argv[2]
-let printGasAnalysis = process.argv[2] === 'gas'
+let printGasAnalysis = process.argv[2] === '--gas'
 
 async function test () {
   // const Eth = require('ethjs');
