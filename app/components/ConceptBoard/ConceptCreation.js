@@ -24,15 +24,12 @@ export class ConceptCreation extends Component {
   nextButton () {
     let step = this.state.step
 
-    // step 2 => estimate
-    // step 3 => send transaction
     if (step === 2) {
       this.estimateGasCost()
     } else if (step === 3) {
       this.loadConceptContractAndCreateAssessment()
     }
 
-    // increment step
     this.setState({step: step + 1})
   }
 
@@ -60,48 +57,53 @@ export class ConceptCreation extends Component {
   render () {
     let BottomPartContent = null
 
-    if (this.state.step === 1) {
-      BottomPartContent = h(BottomPart, [
-        h(Question1, 'How much do you wish to pay each assessor?'),
-        h(ButtonCaptionBox, [
-          h('span', 'PAY'),
-          h(RightCaption, 'TOTAL COST')
-        ]),
-        h(ButtonGroup, [
-          h('span', [
-            h(AmountPerAssessor, {
-              onChange: this.setAmountPerAssessor.bind(this),
-              value: this.state.amountPerAssessor,
-              type: 'number',
-              step: 1
-            }),
-            h(AHAUnit, 'AHA')
+    switch(this.state.step){
+      case 1:
+        BottomPartContent = h(BottomPart, [
+          h(Question1, 'How much do you wish to pay each assessor?'),
+          h(ButtonCaptionBox, [
+            h('span', 'PAY'),
+            h(RightCaption, 'TOTAL COST')
           ]),
-          h(TotalAmount, this.state.amountPerAssessor * 5 + ' AHA')
+          h(ButtonGroup, [
+            h('span', [
+              h(AmountPerAssessor, {
+                onChange: this.setAmountPerAssessor.bind(this),
+                value: this.state.amountPerAssessor,
+                type: 'number',
+                step: 1
+              }),
+              h(AHAUnit, 'AHA')
+            ]),
+            h(TotalAmount, this.state.amountPerAssessor * 5 + ' AHA')
+          ])
         ])
-      ])
-    } else if (this.state.step === 2) {
-      BottomPartContent = h(BottomPart, [
-        h(ParameterKey, 'ASSESSEE'),
-        h(ParameterValue, 'YOU'),
-        h(ParameterKey, 'NO. OF ASSESSORS'),
-        h(ParameterValue, '5'),
-        h(ParameterKey, 'WHAT DO YOU WANT TO PAY?'),
-        h(ParameterValue, this.state.amountPerAssessor * 5 + ' AHA')
-      ])
-    } else if (this.state.step === 3) {
-      BottomPartContent = h(BottomPart, [
-        h(Step3P, 'Ethereum charges a transaction fee to process & create your assessment. Once completed, this step is irreversible.'),
-        h(ParameterKey, 'TRANSACTION COST'),
-        h(CostEstimate, this.state.gasEstimate + 'ETH'),
-        h(Step3Bottom, "Clicking 'Next' will launch MetaMask so you can complete the transaction")
-      ])
-    } else if (this.state.step === 4) {
-      BottomPartContent = h(BottomPart, [
-        h(Step4Title, 'Success & Pending'),
-        h(P1, 'Your assessment has been sent to the Ethereum blockchain and is pending confirmation.'),
-        h(BottomP, 'We’ll notify you once the transaction has been confirmed & your assessment is created.')
-      ])
+        break;
+      case 2:
+        BottomPartContent = h(BottomPart, [
+          h(ParameterKey, 'ASSESSEE'),
+          h(ParameterValue, 'YOU'),
+          h(ParameterKey, 'NO. OF ASSESSORS'),
+          h(ParameterValue, '5'),
+          h(ParameterKey, 'WHAT DO YOU WANT TO PAY?'),
+          h(ParameterValue, this.state.amountPerAssessor * 5 + ' AHA')
+        ])
+        break;
+      case 3:
+        BottomPartContent = h(BottomPart, [
+          h(Step3P, 'Ethereum charges a transaction fee to process & create your assessment. Once completed, this step is irreversible.'),
+          h(ParameterKey, 'TRANSACTION COST'),
+          h(CostEstimate, this.state.gasEstimate + 'ETH'),
+          h(Step3Bottom, "Clicking 'Next' will launch MetaMask so you can complete the transaction")
+        ])
+        break;
+      case 4:
+        BottomPartContent = h(BottomPart, [
+          h(Step4Title, 'Success & Pending'),
+          h(P1, 'Your assessment has been sent to the Ethereum blockchain and is pending confirmation.'),
+          h(BottomP, 'We’ll notify you once the transaction has been confirmed & your assessment is created.')
+        ])
+        break;
     }
 
     // set Navigation buttons according to step

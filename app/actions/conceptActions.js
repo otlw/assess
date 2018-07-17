@@ -67,6 +67,7 @@ export function estimateAssessmentCreationGasCost (address, cost, callbck) {
     let userAddress = getState().ethereum.userAddress
     let conceptInstance = getInstance.concept(getState(), address)
     const size = 5
+    //TODO: put sensible default values for time-limits : maybe a week?
     const endTime = 10000000
     const startTime = 100000
     // use estimateGas to get transaction gas cost before it is published
