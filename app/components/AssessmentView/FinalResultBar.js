@@ -8,17 +8,8 @@ class FinalResultBar extends Component {
   constructor (props) {
     super(props)
 
-    // get cache/localStorage data in case a score-salt has been commited
-    let cacheCommitData = JSON.parse(window.localStorage.getItem(this.props.address + this.props.userAddress))
-    if (cacheCommitData) {
-      this.state = {
-        score: Number(cacheCommitData.score)
-      }
-    } else {
-      this.state = {
-        score: null
-      }
-    }
+    // get cache/localStorage data in case a score has been commited via this device
+    this.cacheCommitData = JSON.parse(window.localStorage.getItem(this.props.address + this.props.userAddress))
   }
 
   render () {
@@ -31,9 +22,9 @@ class FinalResultBar extends Component {
       let gain = this.props.payout - this.props.cost
       return (
         h(FinalResultBox, [
-          (this.state.score
-            ? h(AssessorScore, 'Your score was: ' + this.state.score)
-            : null), // user has used a different way or machine to enter the score than our app
+          (this.cacheCommitData
+            ? h(AssessorScore, 'Your score was: ' + Number(this.cacheCommitData))
+            : null), // user used a different way or machine to enter the score than our app
           h(FinalScoreField, 'Final score is:' + scoreString),
           h(EarnedReward, 'You earned ' + (gain >= 0 ? '+' : '-') + gain.toString() + ' AHA')
         ])
