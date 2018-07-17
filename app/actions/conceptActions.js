@@ -39,7 +39,6 @@ export function receiveConcepts (concepts) {
 // combination of two functions above for directly creating assessments from conceptList
 export function loadConceptContractAndCreateAssessment (address, cost, callback) {
   return async (dispatch, getState) => {
-    // instanciate Concept Contract
     let userAddress = getState().ethereum.userAddress
     let conceptInstance = getInstance.concept(getState(), address)
     const size = 5
@@ -55,7 +54,7 @@ export function loadConceptContractAndCreateAssessment (address, cost, callback)
       'makeAssessment',
       userAddress,
       address,
-      callback, // we need a callback to update concept creation to step 3 when the transaction is confirmed
+      callback,
       3000000 // weirdly, this transaction will only go through with a high gas price (testnet)
     )
   }
