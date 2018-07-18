@@ -68,8 +68,8 @@ export function estimateAssessmentCreationGasCost (address, cost, callbck) {
     let conceptInstance = getInstance.concept(getState(), address)
     const size = 5
     // TODO: put sensible default values for time-limits : maybe a week?
-    const endTime = 10000000
-    const startTime = 100000
+    const endTime = 4*24*3600
+    const startTime = 3*24*3600
     // use estimateGas to get transaction gas cost before it is published
     let estimate = await conceptInstance.methods.makeAssessment(cost, size, startTime, endTime).estimateGas({from: userAddress, gas: 3000000})
     // then get current gasPrice
