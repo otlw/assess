@@ -11,7 +11,7 @@ contract Distributor{
     address[] public memberAddresses;
     uint[] public memberWeights;
 
-    function Distributor(uint _nInitialMembers, address _conceptRegistry) public {
+    constructor(uint _nInitialMembers, address _conceptRegistry) public {
         nInitialMembers = _nInitialMembers;
         conceptRegistry = _conceptRegistry;
     }

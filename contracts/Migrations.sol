@@ -8,7 +8,7 @@ contract Migrations {
     if (msg.sender == member) _;
   }
 
-  function Migrations() public {
+  constructor() public {
     member = msg.sender;
   }
 
