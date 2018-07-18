@@ -8,7 +8,8 @@ const mapStateToProps = state => {
   return {
     userAddress: state.ethereum.userAddress,
     networkID: state.ethereum.networkID,
-    AhaBalance: state.ethereum.AhaBalance
+    AhaBalance: state.ethereum.AhaBalance,
+    notificationBar:state.navigation.notificationBar
   }
 }
 

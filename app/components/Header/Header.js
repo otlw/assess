@@ -2,10 +2,41 @@ import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
+import NotificationBar from './NotificationBar.js'
 
 import fathomLogo from '../../assets/fathom_monkey_beret_color_cropped.svg'
 
 import {networkName} from '../../constants.js'
+
+
+export class Header extends Component {
+  render () {
+    return (
+      h('div',[
+        h(HeaderBar, [
+          h(Link, {to: '/'}, h(Logo, {alt: 'logo', src: fathomLogo})),
+          h(LinkUnstyled, {to: '/concepts'}, h(conceptButton, 'Concepts')),
+          h(Box, [
+            h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
+              h(key, 'Network: '),
+              h(value, networkName(this.props.networkID))
+            ]),
+            h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
+              h(key, 'Your Address: '),
+              h(value, this.props.userAddress.substring(0, 8) + '...' + this.props.userAddress.substring(35, 42))
+            ]),
+            h(key, (this.props.AhaBalance / 1e9).toString().substring(0, 6) + ' AHA')
+          ])
+        ]),
+        this.props.notificationBar.display?
+        h(NotificationBar,{data:this.props.notificationBar})
+        :null
+      ])
+    )
+  }
+}
+
+export default Header
 
 // styles
 const HeaderBar = styled('div')`
@@ -58,27 +89,3 @@ const conceptButton = styled('div')`
 const LinkUnstyled = styled(Link)`
   text-decoration:none;
 `
-
-export class Header extends Component {
-  render () {
-    return (
-      h(HeaderBar, [
-        h(Link, {to: '/'}, h(Logo, {alt: 'logo', src: fathomLogo})),
-        h(LinkUnstyled, {to: '/concepts'}, h(conceptButton, 'Concepts')),
-        h(Box, [
-          h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
-            h(key, 'Network: '),
-            h(value, networkName(this.props.networkID))
-          ]),
-          h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
-            h(key, 'Your Address: '),
-            h(value, this.props.userAddress.substring(0, 8) + '...' + this.props.userAddress.substring(35, 42))
-          ]),
-          h(key, (this.props.AhaBalance / 1e9).toString().substring(0, 6) + ' AHA')
-        ])
-      ])
-    )
-  }
-}
-
-export default Header

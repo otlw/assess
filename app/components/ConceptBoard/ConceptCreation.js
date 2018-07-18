@@ -8,7 +8,6 @@ export class ConceptCreation extends Component {
     this.state = {
       step: 1,
       amountPerAssessor: 5,
-      creationStatus: 'none',
       gasEstimate: 0
     }
   }
@@ -24,13 +23,14 @@ export class ConceptCreation extends Component {
   nextButton () {
     let step = this.state.step
 
-    if (step === 2) {
+    if (step === 1) {
+      this.setState({step: step + 1})
+    } else if (step === 2) {
       this.estimateGasCost()
     } else if (step === 3) {
       this.loadConceptContractAndCreateAssessment()
     }
 
-    this.setState({step: step + 1})
   }
 
   estimateGasCost () {
@@ -38,7 +38,7 @@ export class ConceptCreation extends Component {
       this.props.conceptAddress,
       this.state.amountPerAssessor,
       (cost) => {
-        this.setState({gasEstimate: cost})
+        this.setState({gasEstimate: cost,step:3})
       }
     )
   }
@@ -47,9 +47,15 @@ export class ConceptCreation extends Component {
     this.props.loadConceptContractAndCreateAssessment(
       this.props.conceptAddress,
       this.state.amountPerAssessor,
-      (status) => {
-        // TODO use this to display notification using the bar we discussed
-        this.setState({creationStatus: status})
+      (err,status) => {
+        if (err){
+          console.log(err)
+          //call error bar
+        }else if (status==="success") {
+          //call success bar
+        } else {
+          this.setState({step:4})
+        }
       }
     )
   }
@@ -93,13 +99,13 @@ export class ConceptCreation extends Component {
         BottomPartContent = h(BottomPart, [
           h(Step3P, 'Ethereum charges a transaction fee to process & create your assessment. Once completed, this step is irreversible.'),
           h(ParameterKey, 'TRANSACTION COST'),
-          h(CostEstimate, this.state.gasEstimate + 'ETH'),
+          h(CostEstimate, this.state.gasEstimate.toString().substring(0,8) + 'ETH'),
           h(Step3Bottom, "Clicking 'Next' will launch MetaMask so you can complete the transaction")
         ])
         break
       case 4:
         BottomPartContent = h(BottomPart, [
-          h(Step4Title, 'Success & Pending'),
+          h(Step4Title, 'Submitted & Pending'),
           h(P1, 'Your assessment has been sent to the Ethereum blockchain and is pending confirmation.'),
           h(BottomP, 'We’ll notify you once the transaction has been confirmed & your assessment is created.')
         ])
