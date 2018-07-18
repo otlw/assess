@@ -47,12 +47,14 @@ export class ConceptCreation extends Component {
     this.props.loadConceptContractAndCreateAssessment(
       this.props.conceptAddress,
       this.state.amountPerAssessor,
-      (err,status) => {
+      (err,receipt) => {
         if (err){
           console.log(err)
-          //call error bar
-        }else if (status==="success") {
-          //call success bar
+          this.props.setNotificationBar({display:true,type:"error"})
+        } else if (receipt.status) {
+          let receiptAddress=receipt.events[0].raw.topics[2]
+          let assessmentAddress="0x"+receiptAddress.substring(26,receiptAddress.length)
+          this.props.setNotificationBar({display:true,type:"success",assessmentId:assessmentAddress})
         } else {
           this.setState({step:4})
         }
@@ -319,6 +321,7 @@ padding: 1em 1em;
 display:inline-block;
 width:4em;
 margin-right:8.3em;
+cursor:pointer;
 `
 const NextButton = styled('div')`
 padding: 1em 1em;
@@ -327,6 +330,7 @@ width:4em;
 border-radius: 2em;
 border: 1px solid #C4C4C4;
 background-color:#C4C4C4;
+cursor:pointer;
 `
 const CloseButton = styled('div')`
 border-radius: 2em;
@@ -335,6 +339,7 @@ background-color:#C4C4C4;
 padding: 1em 1em;
 display:inline-block;
 width:4em;
+cursor:pointer;
 `
 const CancelCross = styled('span')`
 font-size:1.3em;

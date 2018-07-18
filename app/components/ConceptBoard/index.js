@@ -3,6 +3,7 @@ import { compose } from 'redux'
 import { LoadComponent } from '../hocs/loadComponent.js'
 import { LoadingStage } from '../../constants.js'
 import ConceptBoard from './ConceptBoard.js'
+import {setNotificationBar } from '../../actions/navigationActions.js'
 import {
   loadConceptContractAndCreateAssessment,
   loadConceptsFromConceptRegistery,
@@ -22,7 +23,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   load: loadConceptsFromConceptRegistery,
   loadConceptContractAndCreateAssessment,
-  estimateAssessmentCreationGasCost
+  estimateAssessmentCreationGasCost,
+  setNotificationBar:setNotificationBar,
 }
 
 export default compose(

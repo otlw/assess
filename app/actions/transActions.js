@@ -55,10 +55,10 @@ export function sendAndReactToTransaction (dispatch, act, saveData, userAddress,
         ))
       }
       if (react && confirmationNumber === 9 && receipt.status) {
-        if (receipt.status) {
-          react(false,'success')
+        if (receipt.status==="0x01") {
+          react(false,receipt)
         } else {
-          react(true,receipt.status)
+          react(true,receipt)
         }
       }
     })

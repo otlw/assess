@@ -23,9 +23,9 @@ export function setMainDisplay (mainDisplay) {
   }
 }
 
-export function setNotificationBar (mainDisplay) {
+export function setNotificationBar (notificationBar) {
   return {
     type: SET_NOTIFICATION_BAR,
-    navigationBar
+    notificationBar
   }
 }

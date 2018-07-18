@@ -4,8 +4,7 @@ const initialState = {
   dashboardTab: 'Current',
   mainDisplay: 'Main',
   notificationBar:{
-    display:true,
-    type:"success"
+    display:false,
   }
 }
 

@@ -63,6 +63,7 @@ display:inline-block;
 padding: 0.5em 0.25em;
 width:6em;
 text-align:center;
+cursor:pointer;
 `
 const LearnButton = styled('div')`
 display:inline-block;
