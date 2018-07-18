@@ -2,7 +2,6 @@ export const SET_DASHBOARD_TAB = 'SET_DASHBOARD_TAB'
 export const SET_MAIN_DISPLAY = 'SET_MAIN_DISPLAY'
 export const SET_NOTIFICATION_BAR = 'SET_NOTIFICATION_BAR'
 
-
 export function setDashboardTab (tab) {
   if (tab === 'Past' ||
     tab === 'Current' ||

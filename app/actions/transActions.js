@@ -41,8 +41,8 @@ export function sendAndReactToTransaction (dispatch, act, saveData, userAddress,
   // act.method(...act.args).send({from: userAddress, gas: gas || 320000})
   act()
     .on('transactionHash', (hash) => {
-      //right after the transaction is published
-      react(false,hash)
+      // right after the transaction is published
+      react(false, hash)
       dispatch(saveTransaction(assessmentAddress, userAddress, saveData, hash))
     })
     .on('confirmation', (confirmationNumber, receipt) => {
@@ -55,16 +55,16 @@ export function sendAndReactToTransaction (dispatch, act, saveData, userAddress,
         ))
       }
       if (react && confirmationNumber === 9 && receipt.status) {
-        if (receipt.status==="0x01") {
-          react(false,receipt)
+        if (receipt.status === '0x01') {
+          react(false, receipt)
         } else {
-          react(true,receipt)
+          react(true, receipt)
         }
       }
     })
     .on('error', (err) => {
       // when there is an error
       console.log('err', err)
-      react(true,err)
+      react(true, err)
     })
 }

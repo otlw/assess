@@ -3,8 +3,8 @@ import { SET_DASHBOARD_TAB, SET_MAIN_DISPLAY, SET_NOTIFICATION_BAR } from '../ac
 const initialState = {
   dashboardTab: 'Current',
   mainDisplay: 'Main',
-  notificationBar:{
-    display:false,
+  notificationBar: {
+    display: false
   }
 }
 

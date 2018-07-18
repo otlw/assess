@@ -8,11 +8,10 @@ import fathomLogo from '../../assets/fathom_monkey_beret_color_cropped.svg'
 
 import {networkName} from '../../constants.js'
 
-
 export class Header extends Component {
   render () {
     return (
-      h('div',[
+      h('div', [
         h(HeaderBar, [
           h(Link, {to: '/'}, h(Logo, {alt: 'logo', src: fathomLogo})),
           h(LinkUnstyled, {to: '/concepts'}, h(conceptButton, 'Concepts')),
@@ -28,9 +27,9 @@ export class Header extends Component {
             h(key, (this.props.AhaBalance / 1e9).toString().substring(0, 6) + ' AHA')
           ])
         ]),
-        this.props.notificationBar.display?
-        h(NotificationBar,{data:this.props.notificationBar,setNotificationBar:this.props.setNotificationBar})
-        :null
+        this.props.notificationBar.display
+          ? h(NotificationBar, {data: this.props.notificationBar, setNotificationBar: this.props.setNotificationBar})
+          : null
       ])
     )
   }

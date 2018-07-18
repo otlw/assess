@@ -30,7 +30,6 @@ export class ConceptCreation extends Component {
     } else if (step === 3) {
       this.loadConceptContractAndCreateAssessment()
     }
-
   }
 
   estimateGasCost () {
@@ -38,7 +37,7 @@ export class ConceptCreation extends Component {
       this.props.conceptAddress,
       this.state.amountPerAssessor,
       (cost) => {
-        this.setState({gasEstimate: cost,step:3})
+        this.setState({gasEstimate: cost, step: 3})
       }
     )
   }
@@ -47,16 +46,16 @@ export class ConceptCreation extends Component {
     this.props.loadConceptContractAndCreateAssessment(
       this.props.conceptAddress,
       this.state.amountPerAssessor,
-      (err,receipt) => {
-        if (err){
+      (err, receipt) => {
+        if (err) {
           console.log(err)
-          this.props.setNotificationBar({display:true,type:"error"})
+          this.props.setNotificationBar({display: true, type: 'error'})
         } else if (receipt.status) {
-          let receiptAddress=receipt.events[0].raw.topics[2]
-          let assessmentAddress="0x"+receiptAddress.substring(26,receiptAddress.length)
-          this.props.setNotificationBar({display:true,type:"success",assessmentId:assessmentAddress})
+          let receiptAddress = receipt.events[0].raw.topics[2]
+          let assessmentAddress = '0x' + receiptAddress.substring(26, receiptAddress.length)
+          this.props.setNotificationBar({display: true, type: 'success', assessmentId: assessmentAddress})
         } else {
-          this.setState({step:4})
+          this.setState({step: 4})
         }
       }
     )
@@ -101,7 +100,7 @@ export class ConceptCreation extends Component {
         BottomPartContent = h(BottomPart, [
           h(Step3P, 'Ethereum charges a transaction fee to process & create your assessment. Once completed, this step is irreversible.'),
           h(ParameterKey, 'TRANSACTION COST'),
-          h(CostEstimate, this.state.gasEstimate.toString().substring(0,8) + 'ETH'),
+          h(CostEstimate, this.state.gasEstimate.toString().substring(0, 8) + 'ETH'),
           h(Step3Bottom, "Clicking 'Next' will launch MetaMask so you can complete the transaction")
         ])
         break
