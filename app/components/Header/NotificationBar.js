@@ -19,9 +19,10 @@ export class NotificationBar extends Component {
             h(closeButton, {onClick: this.closeBar.bind(this)}, 'X')
           ])
           : h(NotificationBarFrame, {type: 'error'}, [
-            h('Oops! Your assessment wasn’t created due to a technical error. Click '),
+            h('span','Oops! Your assessment wasn’t created due to a technical error. Click '),
             h(Link, {to: '/concepts'}, 'here'),
-            h('span', ' to try again.')
+            h('span', ' to try again.'),
+            h(closeButton, {onClick: this.closeBar.bind(this)}, 'X')
           ])
       )
     )
