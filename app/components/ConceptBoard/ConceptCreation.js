@@ -184,8 +184,8 @@ const Step = styled('div').attrs({className: 'flex items-center justify-center w
 // main card designs
 
 const ConceptCreationCardFrame = styled('div').attrs({className: 'flex flex-column self-center bg-white br1 shadow-3'})`
-width: 320px;
-height: 400px;
+width: 300px;
+height: 420px;
 `
 
 const ConceptTitleBox = styled('div').attrs({className: 'flex flex-column justify-center align-center pa4'})`
