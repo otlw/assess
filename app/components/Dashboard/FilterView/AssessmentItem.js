@@ -72,7 +72,7 @@ const Box = styled('div')`
   margin-right:3em;
 `
 
-const ConceptName = styled('div')`
+const ConceptName = styled('h3')`
   color:${props => props.theme.dark};
   font-size:1.8em;
 `
@@ -193,7 +193,7 @@ export class AssessmentItem extends Component {
         h(cardContainerInfo, [
           h(cardTextTitle, [
             h('h6', {className: 'f5 mv1 ttu uppercase'}, 'Assessment'),
-            h('h3', {className: 'f3 mv1'}, ConceptName, assessment.conceptData)
+            h(ConceptName, {className: 'f3 mv1'}, assessment.conceptData)
           ]),
           h(cardTextAssessee, [
             h('h6', {className: 'assessee-title-here f5 mv1 ttu uppercase'}, RoleBadge),
