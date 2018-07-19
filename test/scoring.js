@@ -2,7 +2,7 @@ var MathLib = artifacts.require('Math')
 let jsAsses = require('../js/simulateAssessment.js')
 
 var maxSize = 9 // the number of accounts created by testrpc
-var stake = 10000
+var stake = 1000
 // setting random scores
 var maxScore = 127
 // radius within two assessors agree
@@ -16,15 +16,19 @@ contract('Scoring Unit Tests', function (accounts) {
     var setup = jsAsses.generateAssessmentDataAtRandom(accounts, maxSize, maxScore, radius, stake, false)
     setups.push(setup)
   }
-  var verbose = false
+  var verbose = true
   // add custom cases here:
   // perfect agreement
   setups.push(jsAsses.generateAssessmentData(accounts, [100, 100, 100, 100, 100], radius, stake))
   // setups.push(jsAsses.generateAssessmentData(accounts,[-7,-6,8,8,9], radius, stake, false))
   // setups.push(jsAsses.generateAssessmentData(accounts,[0,10,10,10, 10], radius, stake, false))
   // draw:
-  setups.push(jsAsses.generateAssessmentData(accounts, [10, 10, 10, 60, 60, 60], radius, stake, false))
+  // setups.push(jsAsses.generateAssessmentData(accounts, [10, 10, 10, 60, 60, 60], radius, stake, false))
   setups.push(jsAsses.generateAssessmentData(accounts, [36, 45, 47, 53, 53, 64], radius, stake, false))
+  // used to determine how small aha's can get to still have sensible splits
+  // setups.push(jsAsses.generateAssessmentData(accounts, [10, 10, 10, 10, 11, 12, 20, 23], radius, stake, false))
+  // var stake2 = 1
+  // setups.push(jsAsses.generateAssessmentData(accounts, [10, 10, 10, 10, 11, 12, 20, 23], radius, stake2, false))
 
   describe(setups.length + ' virtual assessments with random scores and varying sizes are ', async () => {
     let outcomes = []
