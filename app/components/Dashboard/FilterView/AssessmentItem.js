@@ -4,6 +4,61 @@ import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 import { StageDisplayNames, Stage, networkName } from '../../../constants.js'
 
+const cardContainer = styled('div').attrs({
+  className: 'flex flex-column ma3 br2 shadow-4'
+})`height: 420px; width: 300px;background: linear-gradient(180.1deg, #FFFFFF 0.05%, #E9F7FD 52.48%, #CFF9EF 85.98%);
+`
+
+const cardContainerInfo = styled('div').attrs({
+  className: 'flex content-start flex-column w-100 h-50 pa3'
+})`
+`
+
+const cardTextTitle = styled('div').attrs({
+  className: 'flex flex-column tl'
+})`
+`
+
+const cardTextAssessee = styled('div').attrs({
+  className: 'flex flex-column tl mt3'
+})`
+`
+
+const cardContainerStatus = styled('div').attrs({
+  className: 'relative flex content-between flex-column w-100 h-50'
+})`background-color: #D3ECF7;
+`
+
+const cardTextStatus = styled('div').attrs({
+  className: 'flex flex-column h-100 pl3 pa3'
+})`
+`
+
+const cardContainerProgressBar = styled('div').attrs({
+  className: 'absolute flex items-center'
+})`right: 8px; top: -12px;
+`
+
+const cardProgressBarObject = styled('div').attrs({
+  className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
+})`width: 24px; height: 24px;
+`
+
+const cardProgressBarObjectActive = styled('div').attrs({
+  className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
+})`width: 24px; height: 24px; background-color: #116187;
+`
+
+const cardButtonPrimary = styled('div').attrs({
+  className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'
+})`background-color: #116187;
+`
+
+const cardButtonSecondary = styled('div').attrs({
+  className: 'flex self-end ph4 pv2 fw4 f5 items-center align-center br-pill dark-blue'
+})`box-shadow: 0px 0px 0px 1px hsla(214, 100%, 31%, 0.1);
+`
+
 const ItemFrame = styled('div')`
   border:2px solid ${props => props.userActionRequired ? props.theme.yellow : props.theme.dark};
   padding: 0.5em 1em;
@@ -45,9 +100,7 @@ const MeetingAddress = styled('a')`
 // assessee/assessor badges
 
 const AssesseeBadge = styled('div')`
-  background-color:${props => props.theme.lightblue};
-  border-radius:0.3em;
-  padding:0.1em 0.3em;
+  
 `
 const AssessorBadge = styled('div')`
   background-color:orange;
@@ -134,32 +187,49 @@ export class AssessmentItem extends Component {
     } else if (stage === Stage.Burned) {
       actionText = 'Canceled'
     }
+    /* start styling below */
     return (
-      h(ItemFrame, {userActionRequired}, [
-        h(Box, [
-          h(ConceptName, assessment.conceptData),
-          h(AssesseeAddress, {
-            href: 'https://' + (networkName(this.props.networkID) === 'Mainnet' ? '' : networkName(this.props.networkID) + '.') + 'etherscan.io/address/' + assessment.assessee,
-            target: '_blank',
-            title: 'est'
-          }, 'assessee: ' + assessment.assessee.substring(0, 8) + '...' + assessment.assessee.substring(30, 42) + isAssessee)
+      h(cardContainer, [
+        h(cardContainerInfo, [
+          h(cardTextTitle, [
+            h('h6', {className: 'f5 mv1 ttu uppercase'}, 'Assessment'),
+            h('h3', {className: 'f3 mv1'}, ConceptName, assessment.conceptData)
+          ]),
+          h(cardTextAssessee, [
+            h('h6', {className: 'assessee-title-here f5 mv1 ttu uppercase'}, RoleBadge),
+            h('h6', {className: 'assessee-name-here f5 mv1 ttu uppercase'}, 'Antoine Julius')
+          ])
         ]),
-        h(Box, [
-          RoleBadge
-        ]),
-        h(MeetingBox, [
+        h(cardContainerStatus, [
+          h(cardContainerProgressBar, {className: 'absolute flex items-center'}, [
+            h(cardProgressBarObjectActive, {className: 'flex br-100 w1 h1 bg-light-blue mh1 shadow-4'}),
+            h(cardProgressBarObject, {className: 'flex br-100 w1 h1 bg-light-blue mh1 shadow-4'}),
+            h(cardProgressBarObject, {className: 'flex br-100 w1 h1 bg-light-blue mh1 shadow-4'}),
+            h(cardProgressBarObject, {className: 'flex br-100 w1 h1 bg-light-blue mh1 shadow-4'})
+          ]),
+          h(cardTextStatus, [
+            h('h6', {className: 'f5 tl mv1 ttu uppercase'}, 'Status'),
+            h('h6', {className: 'status-message-here f5 tl lh-copy mv1 ttu uppercase'}, 'Waiting for assessors to stake.')
+          ]),
+          h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
+            h(cardButtonSecondary, 'Hide'),
+            h(cardButtonPrimary, 'Stake')
+          ])
+
+        ])
+        /* h(MeetingBox, [
           h(MeetingCaption, 'Meet at:'),
           MeetingPoint
         ]
-        ),
-        h(LinkBox, [
+        ) */
+        /* h(LinkBox, [
           h(LinkSubtitle, 'click here for details'),
           h(LinkUnstyled, { to: 'assessment/' + assessment.address },
             h(LinkButton, { userActionRequired, stage },
               actionText
             )
           )
-        ])
+        ]) */
       ])
     )
   }
