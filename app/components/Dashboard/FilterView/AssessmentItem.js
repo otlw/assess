@@ -161,7 +161,7 @@ export class AssessmentItem extends Component {
 
     // look if user is required to make an action
     let userActionRequired = true
-    let actionText = StageDisplayNames[userStage]
+    let status = StageDisplayNames[userStage]
     if (stage < userStage ||
       userStage === 0 ||
       userStage === 4 ||
@@ -169,23 +169,23 @@ export class AssessmentItem extends Component {
       userActionRequired = false
     }
     if (stage < userStage) {
-      actionText = 'Waiting...'
+      status = 'Waiting...'
     } else if (stage === Stage.Done) {
       // if assessment stage is finished, set good message (an assessee would have userStage===0)
       // display score for assessee and payout for assessor
       if (!isAssessee) {
-        actionText = h('div', [
+        status = h('div', [
           h('div', 'Payout :'),
           h('div', '+5 AHA')
         ])
       } else {
-        actionText = h('div', [
+        status = h('div', [
           h('div', 'Score :'),
           h('div', assessment.finalScore + ' %')
         ])
       }
     } else if (stage === Stage.Burned) {
-      actionText = 'Canceled'
+      status = 'Canceled'
     }
     /* start styling below */
     return (
@@ -209,7 +209,7 @@ export class AssessmentItem extends Component {
           ]),
           h(cardTextStatus, [
             h('h6', {className: 'f5 tl mv1 ttu uppercase'}, 'Status'),
-            h('h6', {className: 'status-message-here f5 tl lh-copy mv1 ttu uppercase'}, 'Waiting for assessors to stake.')
+            h('h6', {className: 'status-message-here f5 tl lh-copy mv1 ttu uppercase'}, status)
           ]),
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
             h(cardButtonSecondary, 'Hide'),
@@ -226,7 +226,7 @@ export class AssessmentItem extends Component {
           h(LinkSubtitle, 'click here for details'),
           h(LinkUnstyled, { to: 'assessment/' + assessment.address },
             h(LinkButton, { userActionRequired, stage },
-              actionText
+              status
             )
           )
         ]) */
