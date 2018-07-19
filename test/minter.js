@@ -19,7 +19,8 @@ contract('Minting New Tokens:', function (accounts) {
   let size = 6
   let waitTime = 50
   let timeLimit = 1000
-  let scores = Array(size).fill(100)
+  let scores = Array(size - 1).fill(100)
+  scores.push(20)
   let epochLength
 
   describe('Initially,', async () => {
@@ -95,6 +96,19 @@ contract('Minting New Tokens:', function (accounts) {
             return assert(true)
           } else {
             return assert(false, e.toString(), 'a bid with too high a salt could be submitted')
+          }
+        }
+        assert(false)
+      })
+
+      it('rejects bids if the assessor is not in the majority cluster', async () => {
+        try {
+          await minter.submitTicket(assessment.calledAssessors[size - 1], assessment.address, cost - 1)
+        } catch (e) {
+          if (e.toString().indexOf('revert') > 0) {
+            return assert(true)
+          } else {
+            return assert(false, e.toString(), 'a bid from a dissenting assessor could be submitted')
           }
         }
         assert(false)
