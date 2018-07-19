@@ -28,7 +28,7 @@ export class Header extends Component {
           ])
         ]),
         this.props.notificationBar.display
-          ? h(NotificationBar, {data: this.props.notificationBar, setNotificationBar: this.props.setNotificationBar})
+          ? h(NotificationBar, {status: this.props.notificationBar, setNotificationBar: this.props.setNotificationBar})
           : null
       ])
     )

@@ -24,7 +24,7 @@ export class ConceptCreation extends Component {
     let step = this.state.step
 
     if (step === 1) {
-      this.setState({step: step + 1})
+      this.setState({step: 2})
     } else if (step === 2) {
       this.estimateGasCost()
     } else if (step === 3) {

@@ -48,14 +48,14 @@ export function sendAndReactToTransaction (dispatch, act, saveData, userAddress,
     .on('confirmation', (confirmationNumber, receipt) => {
       // TODO: choose a good confirmation number (kovan and rinkeby accept 2, but local textnet requires 8)
       // when the transaction is confirmed into a block
-      if (confirmationNumber === 8 && receipt.status) {
+      if (confirmationNumber === 8) {
         dispatch(updateTransaction(
           receipt.transactionHash,
           receipt.status ? 'Tx confirmed' : 'Tx failed'
         ))
       }
-      if (react && confirmationNumber === 9 && receipt.status) {
-        if (receipt.status === '0x01') {
+      if (react && confirmationNumber === 9) {
+        if (receipt.status) {
           react(false, receipt)
         } else {
           react(true, receipt)

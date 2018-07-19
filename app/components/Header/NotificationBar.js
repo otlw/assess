@@ -11,10 +11,10 @@ export class NotificationBar extends Component {
   render () {
     return (
       h('div', {},
-        this.props.data.type === 'success'
+        this.props.status.type === 'success'
           ? h(NotificationBarFrame, {type: 'success'}, [
             h('span', 'Success! Your assessment has been created. Click '),
-            h(Link, {to: '/assessment/' + this.props.data.assessmentId}, 'here'),
+            h(Link, {to: '/assessment/' + this.props.status.assessmentId}, 'here'),
             h('span', ' to view the assessment details.'),
             h(closeButton, {onClick: this.closeBar.bind(this)}, 'X')
           ])
