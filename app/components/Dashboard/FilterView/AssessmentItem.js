@@ -2,7 +2,7 @@ import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
-import { StageDisplayNames, Stage, networkName } from '../../../constants.js'
+import { StageDisplayNames, Stage } from '../../../constants.js'
 
 const cardContainer = styled('div').attrs({
   className: 'flex flex-column ma3 br2 shadow-4'
@@ -59,43 +59,43 @@ const cardButtonSecondary = styled('div').attrs({
 })`box-shadow: 0px 0px 0px 1px hsla(214, 100%, 31%, 0.1);
 `
 
-const ItemFrame = styled('div')`
-  border:2px solid ${props => props.userActionRequired ? props.theme.yellow : props.theme.dark};
-  padding: 0.5em 1em;
-  margin: 0.2em 0;
-  background-color:${props => props.theme.light};
-  text-align:left;
-`
+// const ItemFrame = styled('div')`
+//   border:2px solid ${props => props.userActionRequired ? props.theme.yellow : props.theme.dark};
+//   padding: 0.5em 1em;
+//   margin: 0.2em 0;
+//   background-color:${props => props.theme.light};
+//   text-align:left;
+// `
 
-const Box = styled('div')`
-  display:inline-block;
-  margin-right:3em;
-`
+// const Box = styled('div')`
+//   display:inline-block;
+//   margin-right:3em;
+// `
 
 const ConceptName = styled('h3')`
   color:${props => props.theme.dark};
   font-size:1.8em;
 `
 
-const AssesseeAddress = styled('a')`
-  color:${props => props.theme.dark};
-  font-size:0.8em;
-`
+// const AssesseeAddress = styled('a')`
+//   color:${props => props.theme.dark};
+//   font-size:0.8em;
+// `
 
 // Meeting Point
 
-const MeetingBox = styled('div')`
-  background-color:${props => props.theme.veryLight};
-  padding: 0.5em 1em;
-  display:inline-block;
-`
-const MeetingCaption = styled('div')`
-  color:${props => props.theme.dark};
-`
-const MeetingAddress = styled('a')`
-  color:${props => props.theme.blue};
-  font-size:0.8em;
-`
+// const MeetingBox = styled('div')`
+//   background-color:${props => props.theme.veryLight};
+//   padding: 0.5em 1em;
+//   display:inline-block;
+// `
+// const MeetingCaption = styled('div')`
+//   color:${props => props.theme.dark};
+// `
+// const MeetingAddress = styled('a')`
+//   color:${props => props.theme.blue};
+//   font-size:0.8em;
+// `
 
 // assessee/assessor badges
 
@@ -110,31 +110,31 @@ const AssessorBadge = styled('div')`
 
 // link to action/assessmentView
 
-const LinkBox = styled('div')`
-  float: right;
-  margin-right:1.2em;
-`
+// const LinkBox = styled('div')`
+//   float: right;
+//   margin-right:1.2em;
+// `
 
-const LinkUnstyled = styled(Link)`
-  text-decoration:none;
-`
+// const LinkUnstyled = styled(Link)`
+//   text-decoration:none;
+// `
 
-const LinkButton = styled('div')`
-  display:block;
-  background-color:green;
-  color:${props => props.theme.lightgrey};
-  text-decoration:none;
-  padding: ${(props) => props.stage === Stage.Done ? '0.5em' : '1em'} 1.5em;
-  width:4em;
-  text-align:center;
-  border: ${(props) => props.userActionRequired ? '1px solid ' + props.theme.yellow : 'none'}
-`
+// const LinkButton = styled('div')`
+//   display:block;
+//   background-color:green;
+//   color:${props => props.theme.lightgrey};
+//   text-decoration:none;
+//   padding: ${(props) => props.stage === Stage.Done ? '0.5em' : '1em'} 1.5em;
+//   width:4em;
+//   text-align:center;
+//   border: ${(props) => props.userActionRequired ? '1px solid ' + props.theme.yellow : 'none'}
+// `
 
-const LinkSubtitle = styled('div')`
-  color:${props => props.theme.lightgrey};
-  font-size:0.6em;
-  text-align:center;
-`
+// const LinkSubtitle = styled('div')`
+//   color:${props => props.theme.lightgrey};
+//   font-size:0.6em;
+//   text-align:center;
+// `
 
 export class AssessmentItem extends Component {
   render () {
@@ -151,23 +151,28 @@ export class AssessmentItem extends Component {
     }
 
     // set meeting point component
-    let MeetingPoint = ' NoMeetingPointSet '
-    if (assessment.data) {
-      MeetingPoint = h(MeetingAddress, {
-        href: assessment.data,
-        target: '_blank'
-      }, assessment.data)
-    }
+
+    // let MeetingPoint = ' NoMeetingPointSet '
+    // if (assessment.data) {
+    //   MeetingPoint = h(MeetingAddress, {
+    //     href: assessment.data,
+    //     target: '_blank'
+    //   }, assessment.data)
+    // }
 
     // look if user is required to make an action
-    let userActionRequired = true
     let status = StageDisplayNames[userStage]
-    if (stage < userStage ||
-      userStage === 0 ||
-      userStage === 4 ||
-      userStage === 5) {
-      userActionRequired = false
-    }
+
+    // when the user is rrequired to act on the assessment
+
+    // let userActionRequired = true
+    // if (stage < userStage ||
+    //   userStage === 0 ||
+    //   userStage === 4 ||
+    //   userStage === 5) {
+    //   userActionRequired = false
+    // }
+
     if (stage < userStage) {
       status = 'Waiting...'
     } else if (stage === Stage.Done) {
