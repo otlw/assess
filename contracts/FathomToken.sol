@@ -15,7 +15,7 @@ contract FathomToken is StandardToken{
     ConceptRegistry conceptRegistry;
     string public constant name = "Aha";
     string public constant symbol = "AHA";
-    uint8 public constant decimals = 6;
+    uint8 public constant decimals = 9;
 
     address public minter;
     address public owner;
