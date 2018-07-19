@@ -49,9 +49,9 @@ const cardProgressBarObjectActive = styled('div').attrs({
 })`width: 24px; height: 24px; background-color: #116187;
 `
 
-const cardButtonPrimary = styled('div').attrs({
+const cardButtonPrimary = styled(Link).attrs({
   className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'
-})`background-color: #116187;
+})`background-color: #116187;text-decoration:none;
 `
 
 const cardButtonSecondary = styled('div').attrs({
@@ -213,7 +213,7 @@ export class AssessmentItem extends Component {
           ]),
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
             h(cardButtonSecondary, 'Hide'),
-            h(cardButtonPrimary, 'Stake')
+            h(cardButtonPrimary, { to: 'assessment/' + assessment.address }, status)
           ])
 
         ])
