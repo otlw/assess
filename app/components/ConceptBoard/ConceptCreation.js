@@ -67,22 +67,25 @@ export class ConceptCreation extends Component {
     switch (this.state.step) {
       case 1:
         BottomPartContent = h(BottomPart, [
-          h(Question1, 'How much do you wish to pay each assessor?'),
-          h(ButtonCaptionBox, [
-            h('span', 'PAY'),
-            h(RightCaption, 'TOTAL COST')
+          h(Question1, 'Your Assessment Fee'),
+          h(ButtonCaptionContainer, [
+            h(ButtonCaptionBox
+            ),
+            h(ButtonGroup, [
+              h(InputContainer, [
+                h(AmountPerAssessor, {
+                  onChange: this.setAmountPerAssessor.bind(this),
+                  value: this.state.amountPerAssessor,
+                  type: 'number',
+                  step: 1
+                }),
+                h(AHAUnit, 'AHA')
+              ])
+            ])
           ]),
-          h(ButtonGroup, [
-            h('span', [
-              h(AmountPerAssessor, {
-                onChange: this.setAmountPerAssessor.bind(this),
-                value: this.state.amountPerAssessor,
-                type: 'number',
-                step: 1
-              }),
-              h(AHAUnit, 'AHA')
-            ]),
-            h(TotalAmount, this.state.amountPerAssessor * 5 + ' AHA')
+          h(helpTextContainer, [
+            h(helpTextItem, 'This is divided and paid equally to each of your assessors.'),
+            h(helpTextItem, 'The more you pay, the more likely you will find assessors to assess you.')
           ])
         ])
         break
@@ -159,7 +162,7 @@ export default ConceptCreation
 
 // styles
 
-const MainFrame = styled('div')`
+const MainFrame = styled('div').attrs({ className: 'flex flex-column w-100 h-100 bg-light-blue' })`
 text-align:center;
 padding:0 0 2em 0;
 `
@@ -171,93 +174,59 @@ margin:1em auto;
 
 // steps
 
-const StepBox = styled('div')`
-padding:2em 0 0 0 ;
-text-align:center;
+const StepBox = styled('div').attrs({className: 'flex flex-row self-center justify-around w-100 mw5'})`
+
 `
 
-const Step = styled('div')`
-font-size:0.7em;
-background-color:${props => props.past ? props.theme.lightgreen : props.current ? '#C4C4C4' : 'transparent'}
-border:${props => props.past ? '1px solid ' + props.theme.lightgreen : '1px solid #C4C4C4'};
-border-radius: 50%;
-margin-right:1em;
-padding-top:0.5em
-width: 2em;
-height: 1.5em;
-display:inline-block;
+const Step = styled('div').attrs({className: 'flex items-center justify-center w2 h2 br-100 ba'})`
 `
 
 // main card designs
 
-const ConceptCreationCardFrame = styled('div')`
-background: #FFFFFF;
-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
-border-radius: 2px;
-margin: 0 auto; 
-width:13em;
-text-align:left;
+const ConceptCreationCardFrame = styled('div').attrs({className: 'flex flex-column self-center bg-white br1 shadow-3'})`
+width: 320px;
+height: 400px;
 `
 
-const ConceptTitleBox = styled('div')`
-background: #C4C4C4;  
-padding:1.9em;
+const ConceptTitleBox = styled('div').attrs({className: 'flex flex-column justify-center align-center pa4'})`
+background: #C4C4C4;
 `
-const TitleCaption = styled('div')`
-color: #444444;
-font-size:0.6em;
+const TitleCaption = styled('div').attrs({className: 'flex w-100 f6 dark-gray'})`
 `
-const ConceptTitle = styled('div')`
-color: #444444;
-font-size:1.1em;
+const ConceptTitle = styled('div').attrs({className: 'flex w-100 f3 mv1 dark-gray'})`
 `
 
-const BottomPart = styled('div')`
-padding: 0 1.1em;
-height:15em;
+const BottomPart = styled('div').attrs({className: 'flex flex-column h-100 pa3'})`
 `
 
 // step 1
-const Question1 = styled('div')`
-margin:1.5em 0;
-color:#666666;
-font-size:0.7em;
-`
-const ButtonCaptionBox = styled('div')`
-font-size: 0.6em;
-width:100%;
-`
-const RightCaption = styled('span')`
-float: right;
+const Question1 = styled('div').attrs({className: 'f5 lh-copy dark-gray tl ttu uppercase'})`
 `
 
-const ButtonGroup = styled('div')`
-border-radius: 2px
-border: 1px solid #C4C4C4;
-width:100%;
-padding:0;
-margin-bottom:6.5em;
-`
-const AmountPerAssessor = styled('input')`
-display:inline-block;
-padding: 0.5em 0.5em;
-width:2.5em;
-text-align:left;
-border:none;
-text-decoration:none;
-font-size:1em;
-`
-const AHAUnit = styled('div')`
-padding: 0.5em 0.5em 0.5em 0;
-display:inline-block;
+const ButtonCaptionContainer = styled('div').attrs({className: 'flex flex-column w-70 align-center justify-between'})`
 `
 
-const TotalAmount = styled('div')`
-display:inline-block;
-background: #F2F2F2;
-padding: 0.5em 0.25em;
-width:4em;
-text-align:center;
+const InputContainer = styled('div').attrs({className: 'flex flex-row justify-between items-center pv2'})`
+`
+
+const ButtonCaptionBox = styled('div').attrs({className: 'flex justify-between f6'})`
+`
+const RightCaption = styled('div')`
+`
+
+const ButtonGroup = styled('div').attrs({className: 'flex flex-row justify-between br1 ba b--mid-gray pv1 ph3 f4'})`
+`
+const AmountPerAssessor = styled('input').attrs({className: 'flex w-25 tl pa1 bn '})`
+`
+const AHAUnit = styled('div').attrs({className: 'mid-gray'})`
+`
+
+const TotalAmount = styled('div').attrs({className: 'flex justify-center h-100 w-50 bg-light-gray   pv2'})`
+`
+const helpTextContainer = styled('div').attrs({className: 'flex flex-column h-100 justify-end'})`
+`
+
+const helpTextItem = styled('div').attrs({className: 'flex f6 gray lh-copy tl pv1'})`
 `
 
 // step 2
