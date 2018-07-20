@@ -165,7 +165,7 @@ export class AssessmentItem extends Component {
     // }
 
     // look if user is required to make an action
-    let status = StageDisplayNames[userStage]
+    // let status = StageDisplayNames[userStage]
 
     // when the user is rrequired to act on the assessment
 
@@ -179,7 +179,7 @@ export class AssessmentItem extends Component {
 
       let actionRequired = stage === userStage
       let nOtherAssessorsToBeActive = assessment.size - assessment.done - (actionRequired ? 1 : 0)
-      let pendingAction = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[stage]
+      let status = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[stage]
 
 
     if (stage < userStage) {
@@ -228,7 +228,7 @@ export class AssessmentItem extends Component {
           ]),
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
             h(cardButtonSecondary, 'Hide'),
-            h(cardButtonPrimary, { to: 'assessment/' + assessment.address }, pendingAction)
+            h(cardButtonPrimary, { to: 'assessment/' + assessment.address }, StageDisplayNames[stage])
           ])
 
         ])
