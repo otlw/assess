@@ -103,7 +103,7 @@ export class ConceptCreation extends Component {
       case 3:
         BottomPartContent = h(BottomPart, [
           h(Step3P, 'Ethereum charges a transaction fee to process & create your assessment. Once completed, this step is irreversible.'),
-          h(ParameterKey, 'TRANSACTION COST'),
+          h(TransactionCostTitle, 'TRANSACTION COST'),
           h(CostEstimate, this.state.gasEstimate.toString().substring(0, 8) + 'ETH'),
           h(Step3Bottom, "Clicking 'Next' will launch MetaMask so you can complete the transaction")
         ])
@@ -130,12 +130,12 @@ export class ConceptCreation extends Component {
     }
 
     // set cancelCross according to step
-    let CancelCrossButton = (h('div', [
-      h(CancelCrossCounterBalance, {onClick: this.cancelButton.bind(this)}, 'X'),
+    let CancelCrossButton = (h(CancelCrossContainer, [
+     // h(CancelCrossCounterBalance, {onClick: this.cancelButton.bind(this)}, 'X'),
       h(CancelCross, {onClick: this.cancelButton.bind(this)}, 'X')
     ]))
     if (this.state.step === 4) {
-      CancelCrossButton = null
+      CancelCrossButton = h(CancelCrossContainer,"")
     }
 
     return h(MainFrame, [
@@ -179,6 +179,8 @@ const StepBox = styled('div').attrs({className: 'flex flex-row self-center justi
 `
 
 const Step = styled('div').attrs({className: 'flex items-center justify-center w2 h2 br-100 ba'})`
+background-color:${props => props.past ? props.theme.lightgreen : props.current ? '#C4C4C4' : 'transparent'}
+border:${props => props.past ? '1px solid ' + props.theme.lightgreen : '1px solid #C4C4C4'};
 `
 
 // main card designs
@@ -196,7 +198,7 @@ const TitleCaption = styled('div').attrs({className: 'flex w-100 f6 dark-gray'})
 const ConceptTitle = styled('div').attrs({className: 'flex w-100 f3 mv1 dark-gray'})`
 `
 
-const BottomPart = styled('div').attrs({className: 'flex flex-column h-100 pa3'})`
+const BottomPart = styled('div').attrs({className: 'flex flex-column h-100 pa3 justify-start'})`
 `
 
 // step 1
@@ -231,67 +233,42 @@ const helpTextItem = styled('div').attrs({className: 'flex f6 gray lh-copy tl pv
 
 // step 2
 
-const ParameterKey = styled('div')`
-font-size:0.6em;
-margin-top:1.5em;
+const ParameterKey = styled('div').attrs({className: 'f6 pt3'})`
 `
-const ParameterValue = styled('div')`
+const ParameterValue = styled('div').attrs({className: 'f5 pt1'})`
 `
 
 // step 3
 
-const Step3P = styled('div')`
-margin-top:1.5em;
-font-size:0.6em;
+const Step3P = styled('div').attrs({className: 'flex flex-row f6 lh-copy'})`
 color:#666666;
-line-height: 1.5em;
 `
-const Step3Bottom = styled('div')`
-margin:4em 0 1.5em 0;
-font-size:0.6em;
+const TransactionCostTitle = styled('div').attrs({className: 'flex flex-row f6 mt3'})`
 color:#666666;
-line-height: 1.2em;
 `
-const CostEstimate = styled('div')`
-font-size:1.5em;
+const CostEstimate = styled('div').attrs({className: 'flex flex-row f5 fw3'})`
 color:#444444;
 `
+const Step3Bottom = styled('div').attrs({className: 'flex flex-row f6 lh-copy mt3'})`
+color:#666666;
+`
+
 // step 4
 
-const Step4Title = styled('div')`
-margin-top:1.5em;
+const Step4Title = styled('div').attrs({className: 'flex flex-row f5 fw2 self-center'})`
 color:##444444;
 `
-const P1 = styled('div')`
-margin-top:1.5em;
-font-size:0.6em;
+const P1 = styled('div').attrs({className: 'flex flex-row f6 fw2 lh-copy mt3'})`
 color:#666666;
-line-height: 1.5em;
 `
-const BottomP = styled('div')`
-margin-top:1.5em;
-font-size:0.6em;
+const BottomP = styled('div').attrs({className: 'flex flex-row f6 fw2 lh-copy mt3'})`
 color:#666666;
-line-height: 1.5em;
 `
-
 // navigation buttons
 
-const NavigationButtonGroup = styled('div').attrs({className: 'flex flex-row self-center items-center justify-between  space-between h3'})`
-width: 420px;
-// margin: 2.2em auto;
-// padding:0;
-// font-size:0.6em;
+const NavigationButtonGroup = styled('div').attrs({className: 'flex flex-row items-center self-center justify-around h3'})`
+width: 450px;
 `
-// const CancelButton = styled('div')`
-// border-radius: 2em;
-// border: 1px solid #C4C4C4;
-// padding: 1em 1em;
-// display:inline-block;
-// width:4em;
-// margin-right:8.3em;
-// cursor:pointer;
-// `
 const CancelButton = styled('div').attrs({className: 'flex items-center justify-around w4 h2 br4 ba'})`
 border-color: #C4C4C4;
 cursor:pointer;
@@ -301,25 +278,13 @@ border-color: #C4C4C4;
 background-color:#C4C4C4;
 cursor:pointer;
 `
-const CloseButton = styled('div')`
-border-radius: 2em;
-border: 1px solid #C4C4C4;
+const CloseButton = styled('div').attrs({className: 'flex self-center items-center justify-around w4 h2 br4 ba'})`
+border-color: #C4C4C4;
 background-color:#C4C4C4;
-padding: 1em 1em;
-display:inline-block;
-width:4em;
 cursor:pointer;
 `
-const CancelCross = styled('span')`
-font-size:1.3em;
-float:right;
-margin:1.2em;
-cursor:pointer;
+const CancelCrossContainer = styled('div').attrs({className: 'flex justify-end w-100 h2'})`
 `
-const CancelCrossCounterBalance = styled('span')`
-font-size:1.3em;
-float:left;
-margin:1.2em;
+const CancelCross = styled('div').attrs({className: 'ma2 f4'})`
 cursor:pointer;
-color:transparent;
 `
