@@ -63,82 +63,13 @@ const cardButtonSecondary = styled('div').attrs({
 })`box-shadow: 0px 0px 0px 1px hsla(214, 100%, 31%, 0.1);
 `
 
-// const ItemFrame = styled('div')`
-//   border:2px solid ${props => props.userActionRequired ? props.theme.yellow : props.theme.dark};
-//   padding: 0.5em 1em;
-//   margin: 0.2em 0;
-//   background-color:${props => props.theme.light};
-//   text-align:left;
-// `
-
-// const Box = styled('div')`
-//   display:inline-block;
-//   margin-right:3em;
-// `
-
 const ConceptName = styled('h3')`
   color:${props => props.theme.dark};
   font-size:1.8em;
 `
 
-// const AssesseeAddress = styled('a')`
-//   color:${props => props.theme.dark};
-//   font-size:0.8em;
-// `
-
-// Meeting Point
-
-// const MeetingBox = styled('div')`
-//   background-color:${props => props.theme.veryLight};
-//   padding: 0.5em 1em;
-//   display:inline-block;
-// `
-// const MeetingCaption = styled('div')`
-//   color:${props => props.theme.dark};
-// `
-// const MeetingAddress = styled('a')`
-//   color:${props => props.theme.blue};
-//   font-size:0.8em;
-// `
-
-// assessee/assessor badges
-
-const AssesseeBadge = styled('div')`
-  
+const AssesseeBadge = styled('div')` 
 `
-const AssessorBadge = styled('div')`
-  background-color:orange;
-  border-radius:0.3em;
-  padding:0.1em 0.3em;
-`
-
-// link to action/assessmentView
-
-// const LinkBox = styled('div')`
-//   float: right;
-//   margin-right:1.2em;
-// `
-
-// const LinkUnstyled = styled(Link)`
-//   text-decoration:none;
-// `
-
-// const LinkButton = styled('div')`
-//   display:block;
-//   background-color:green;
-//   color:${props => props.theme.lightgrey};
-//   text-decoration:none;
-//   padding: ${(props) => props.stage === Stage.Done ? '0.5em' : '1em'} 1.5em;
-//   width:4em;
-//   text-align:center;
-//   border: ${(props) => props.userActionRequired ? '1px solid ' + props.theme.yellow : 'none'}
-// `
-
-// const LinkSubtitle = styled('div')`
-//   color:${props => props.theme.lightgrey};
-//   font-size:0.6em;
-//   text-align:center;
-// `
 
 export class AssessmentItem extends Component {
   render () {
@@ -147,40 +78,14 @@ export class AssessmentItem extends Component {
     let stage = assessment.stage
 
     // set assessee/assessor view
-    //let RoleBadge = h(AssessorBadge, 'Assessor')
     let isAssessee = false
     if (this.props.userAddress === assessment.assessee) {
-      //RoleBadge = h(AssesseeBadge, 'Assessee')
       isAssessee = true
     }
 
-    // set meeting point component
-
-    // let MeetingPoint = ' NoMeetingPointSet '
-    // if (assessment.data) {
-    //   MeetingPoint = h(MeetingAddress, {
-    //     href: assessment.data,
-    //     target: '_blank'
-    //   }, assessment.data)
-    // }
-
-    // look if user is required to make an action
-    // let status = StageDisplayNames[userStage]
-
-    // when the user is rrequired to act on the assessment
-
-    // let userActionRequired = true
-    // if (stage < userStage ||
-    //   userStage === 0 ||
-    //   userStage === 4 ||
-    //   userStage === 5) {
-    //   userActionRequired = false
-    // }
-
-      let actionRequired = stage === userStage
-      let nOtherAssessorsToBeActive = assessment.size - assessment.done - (actionRequired ? 1 : 0)
-      let status = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[stage]
-
+    let actionRequired = stage === userStage
+    let nOtherAssessorsToBeActive = assessment.size - assessment.done - (actionRequired ? 1 : 0)
+    let status = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[stage]
 
     if (stage < userStage) {
       status = 'Waiting...'
@@ -212,15 +117,15 @@ export class AssessmentItem extends Component {
           ]),
           h(cardTextAssessee, [
             h('h6', {className: 'assessee-title-here f5 mv1 ttu uppercase'}, h(AssesseeBadge, 'Assessee')),
-            h('h6', {className: 'assessee-name-here f5 mv1 ttu uppercase'}, isAssessee? "You" : assessment.assessee.substring(0,8)+"...")
+            h('h6', {className: 'assessee-name-here f5 mv1 ttu uppercase'}, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
           ])
         ]),
         h(cardContainerStatus, [
           h(cardContainerProgressBar, {className: 'absolute flex items-center'}, [
-            h(stage>0? cardProgressBarObjectComplete: (stage===0||stage===1)? cardProgressBarObjectActive:cardProgressBarObjectInactive),
-            h(stage>1? cardProgressBarObjectComplete: stage===2? cardProgressBarObjectActive:cardProgressBarObjectInactive),
-            h(stage>2? cardProgressBarObjectComplete: stage===3? cardProgressBarObjectActive:cardProgressBarObjectInactive),
-            h(stage>3? cardProgressBarObjectComplete: stage===4? cardProgressBarObjectActive:cardProgressBarObjectInactive),
+            h(stage > 0 ? cardProgressBarObjectComplete : (stage === 0 || stage === 1) ? cardProgressBarObjectActive : cardProgressBarObjectInactive),
+            h(stage > 1 ? cardProgressBarObjectComplete : stage === 2 ? cardProgressBarObjectActive : cardProgressBarObjectInactive),
+            h(stage > 2 ? cardProgressBarObjectComplete : stage === 3 ? cardProgressBarObjectActive : cardProgressBarObjectInactive),
+            h(stage > 3 ? cardProgressBarObjectComplete : stage === 4 ? cardProgressBarObjectActive : cardProgressBarObjectInactive)
           ]),
           h(cardTextStatus, [
             h('h6', {className: 'f5 tl mv1 ttu uppercase'}, 'Status'),
@@ -230,21 +135,7 @@ export class AssessmentItem extends Component {
             h(cardButtonSecondary, 'Hide'),
             h(cardButtonPrimary, { to: 'assessment/' + assessment.address }, StageDisplayNames[stage])
           ])
-
         ])
-        /* h(MeetingBox, [
-          h(MeetingCaption, 'Meet at:'),
-          MeetingPoint
-        ]
-        ) */
-        /* h(LinkBox, [
-          h(LinkSubtitle, 'click here for details'),
-          h(LinkUnstyled, { to: 'assessment/' + assessment.address },
-            h(LinkButton, { userActionRequired, stage },
-              status
-            )
-          )
-        ]) */
       ])
     )
   }
