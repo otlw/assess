@@ -173,6 +173,12 @@ export class AssessmentItem extends Component {
     //   userActionRequired = false
     // }
 
+     //let assessment = this.props.assessment
+      let actionRequired = stage === userStage
+      let nOtherAssessorsToBeActive = assessment.size - assessment.done - (actionRequired ? 1 : 0)
+      let pendingAction = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[stage]
+
+
     if (stage < userStage) {
       status = 'Waiting...'
     } else if (stage === Stage.Done) {
@@ -202,15 +208,15 @@ export class AssessmentItem extends Component {
           ]),
           h(cardTextAssessee, [
             h('h6', {className: 'assessee-title-here f5 mv1 ttu uppercase'}, RoleBadge),
-            h('h6', {className: 'assessee-name-here f5 mv1 ttu uppercase'}, 'Antoine Julius')
+            h('h6', {className: 'assessee-name-here f5 mv1 ttu uppercase'}, assessment.assessee.substring(0,8)+"...")
           ])
         ]),
         h(cardContainerStatus, [
           h(cardContainerProgressBar, {className: 'absolute flex items-center'}, [
-            h(cardProgressBarObjectActive, {className: 'flex br-100 w1 h1 bg-light-blue mh1 shadow-4'}),
-            h(cardProgressBarObject, {className: 'flex br-100 w1 h1 bg-light-blue mh1 shadow-4'}),
-            h(cardProgressBarObject, {className: 'flex br-100 w1 h1 bg-light-blue mh1 shadow-4'}),
-            h(cardProgressBarObject, {className: 'flex br-100 w1 h1 bg-light-blue mh1 shadow-4'})
+            h(cardProgressBarObjectActive),
+            h(cardProgressBarObject),
+            h(cardProgressBarObject),
+            h(cardProgressBarObject)
           ]),
           h(cardTextStatus, [
             h('h6', {className: 'f5 tl mv1 ttu uppercase'}, 'Status'),
@@ -218,7 +224,7 @@ export class AssessmentItem extends Component {
           ]),
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
             h(cardButtonSecondary, 'Hide'),
-            h(cardButtonPrimary, { to: 'assessment/' + assessment.address }, status)
+            h(cardButtonPrimary, { to: 'assessment/' + assessment.address }, pendingAction)
           ])
 
         ])
