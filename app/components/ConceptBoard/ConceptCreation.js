@@ -54,6 +54,7 @@ export class ConceptCreation extends Component {
           let receiptAddress = receipt.events[0].raw.topics[2]
           let assessmentAddress = '0x' + receiptAddress.substring(26, receiptAddress.length)
           this.props.setNotificationBar({display: true, type: 'success', assessmentId: assessmentAddress})
+          this.props.cancelCreation()
         } else {
           this.setState({step: 4})
         }
@@ -84,7 +85,7 @@ export class ConceptCreation extends Component {
             ])
           ]),
           h(helpTextContainer, [
-            h(helpTextItem, 'This is divided and paid equally to each of your assessors.'),
+            h(helpTextItem, 'This fee will be paid to each of your assessors.'),
             h(helpTextItem, 'The more you pay, the more likely you will find assessors to assess you.')
           ])
         ])
@@ -95,7 +96,7 @@ export class ConceptCreation extends Component {
           h(ParameterValue, 'YOU'),
           h(ParameterKey, 'NO. OF ASSESSORS'),
           h(ParameterValue, '5'),
-          h(ParameterKey, 'WHAT DO YOU WANT TO PAY?'),
+          h(ParameterKey, 'TOTAL COST'),
           h(ParameterValue, this.state.amountPerAssessor * 5 + ' AHA')
         ])
         break
