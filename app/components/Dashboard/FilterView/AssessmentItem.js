@@ -39,18 +39,18 @@ const cardContainerProgressBar = styled('div').attrs({
 })`right: 8px; top: -12px;
 `
 
-const cardProgressBarObject = styled('div').attrs({
+const cardProgressBarObjectInactive = styled('div').attrs({
   className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
 })`width: 24px; height: 24px;
 `
 
 const cardProgressBarObjectActive = styled('div').attrs({
   className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
-})`width: 24px; height: 24px; background-color: #116187;
+})`width: 24px; height: 24px; background-color: #52A7CC;
 `
 const cardProgressBarObjectComplete = styled('div').attrs({
   className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
-})`width: 24px; height: 24px; background-color: darkblue;
+})`width: 24px; height: 24px; background-color: #52CC91;
 `
 
 const cardButtonPrimary = styled(Link).attrs({
@@ -217,10 +217,10 @@ export class AssessmentItem extends Component {
         ]),
         h(cardContainerStatus, [
           h(cardContainerProgressBar, {className: 'absolute flex items-center'}, [
-            h(stage>0? cardProgressBarObjectComplete: actionRequired? cardProgressBarObjectActive:cardProgressBarObject),
-            h(stage>1? cardProgressBarObjectComplete: actionRequired? cardProgressBarObjectActive:cardProgressBarObject),
-            h(stage>2? cardProgressBarObjectComplete: actionRequired? cardProgressBarObjectActive:cardProgressBarObject),
-            h(stage>3? cardProgressBarObjectComplete: actionRequired? cardProgressBarObjectActive:cardProgressBarObject),
+            h(stage>0? cardProgressBarObjectComplete: (stage===0||stage===1)? cardProgressBarObjectActive:cardProgressBarObjectInactive),
+            h(stage>1? cardProgressBarObjectComplete: stage===2? cardProgressBarObjectActive:cardProgressBarObjectInactive),
+            h(stage>2? cardProgressBarObjectComplete: stage===3? cardProgressBarObjectActive:cardProgressBarObjectInactive),
+            h(stage>3? cardProgressBarObjectComplete: stage===4? cardProgressBarObjectActive:cardProgressBarObjectInactive),
           ]),
           h(cardTextStatus, [
             h('h6', {className: 'f5 tl mv1 ttu uppercase'}, 'Status'),
