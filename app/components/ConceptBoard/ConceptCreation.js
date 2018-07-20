@@ -176,7 +176,6 @@ margin:1em auto;
 // steps
 
 const StepBox = styled('div').attrs({className: 'flex flex-row self-center justify-around w-100 mw5'})`
-
 `
 
 const Step = styled('div').attrs({className: 'flex items-center justify-center w2 h2 br-100 ba'})`
@@ -278,26 +277,27 @@ line-height: 1.5em;
 
 // navigation buttons
 
-const NavigationButtonGroup = styled('div')`width:33em;
-margin: 2.2em auto;
-padding:0;
-font-size:0.6em;
+const NavigationButtonGroup = styled('div').attrs({className: 'flex flex-row self-center items-center justify-between  space-between h3'})`
+width: 420px;
+// margin: 2.2em auto;
+// padding:0;
+// font-size:0.6em;
 `
-const CancelButton = styled('div')`
-border-radius: 2em;
-border: 1px solid #C4C4C4;
-padding: 1em 1em;
-display:inline-block;
-width:4em;
-margin-right:8.3em;
+// const CancelButton = styled('div')`
+// border-radius: 2em;
+// border: 1px solid #C4C4C4;
+// padding: 1em 1em;
+// display:inline-block;
+// width:4em;
+// margin-right:8.3em;
+// cursor:pointer;
+// `
+const CancelButton = styled('div').attrs({className: 'flex items-center justify-around w4 h2 br4 ba'})`
+border-color: #C4C4C4;
 cursor:pointer;
 `
-const NextButton = styled('div')`
-padding: 1em 1em;
-display:inline-block;
-width:4em;
-border-radius: 2em;
-border: 1px solid #C4C4C4;
+const NextButton = styled('div').attrs({className: 'flex items-center justify-around w4 h2 br4 ba'})`
+border-color: #C4C4C4;
 background-color:#C4C4C4;
 cursor:pointer;
 `
