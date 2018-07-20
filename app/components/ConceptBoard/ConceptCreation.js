@@ -131,11 +131,11 @@ export class ConceptCreation extends Component {
 
     // set cancelCross according to step
     let CancelCrossButton = (h(CancelCrossContainer, [
-     // h(CancelCrossCounterBalance, {onClick: this.cancelButton.bind(this)}, 'X'),
+      // h(CancelCrossCounterBalance, {onClick: this.cancelButton.bind(this)}, 'X'),
       h(CancelCross, {onClick: this.cancelButton.bind(this)}, 'X')
     ]))
     if (this.state.step === 4) {
-      CancelCrossButton = h(CancelCrossContainer,"")
+      CancelCrossButton = h(CancelCrossContainer, '')
     }
 
     return h(MainFrame, [
@@ -213,17 +213,12 @@ const InputContainer = styled('div').attrs({className: 'flex flex-row justify-be
 
 const ButtonCaptionBox = styled('div').attrs({className: 'flex justify-between f6'})`
 `
-const RightCaption = styled('div')`
-`
 
 const ButtonGroup = styled('div').attrs({className: 'flex flex-row justify-between br1 ba b--mid-gray pv1 ph3 f4'})`
 `
 const AmountPerAssessor = styled('input').attrs({className: 'flex w-25 tl pa1 bn '})`
 `
 const AHAUnit = styled('div').attrs({className: 'mid-gray'})`
-`
-
-const TotalAmount = styled('div').attrs({className: 'flex justify-center h-100 w-50 bg-light-gray   pv2'})`
 `
 const helpTextContainer = styled('div').attrs({className: 'flex flex-column h-100 justify-end'})`
 `
