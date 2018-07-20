@@ -147,11 +147,11 @@ export class AssessmentItem extends Component {
     let stage = assessment.stage
 
     // set assessee/assessor view
-    let RoleBadge = h(AssessorBadge, 'Assessor')
-    let isAssessee = ''
+    //let RoleBadge = h(AssessorBadge, 'Assessor')
+    let isAssessee = false
     if (this.props.userAddress === assessment.assessee) {
-      RoleBadge = h(AssesseeBadge, 'Assessee')
-      isAssessee = ' (you)'
+      //RoleBadge = h(AssesseeBadge, 'Assessee')
+      isAssessee = true
     }
 
     // set meeting point component
@@ -211,8 +211,8 @@ export class AssessmentItem extends Component {
             h(ConceptName, {className: 'f3 mv1'}, assessment.conceptData)
           ]),
           h(cardTextAssessee, [
-            h('h6', {className: 'assessee-title-here f5 mv1 ttu uppercase'}, RoleBadge),
-            h('h6', {className: 'assessee-name-here f5 mv1 ttu uppercase'}, assessment.assessee.substring(0,8)+"...")
+            h('h6', {className: 'assessee-title-here f5 mv1 ttu uppercase'}, h(AssesseeBadge, 'Assessee')),
+            h('h6', {className: 'assessee-name-here f5 mv1 ttu uppercase'}, isAssessee? "You" : assessment.assessee.substring(0,8)+"...")
           ])
         ]),
         h(cardContainerStatus, [
