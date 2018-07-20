@@ -48,6 +48,10 @@ const cardProgressBarObjectActive = styled('div').attrs({
   className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
 })`width: 24px; height: 24px; background-color: #116187;
 `
+const cardProgressBarObjectComplete = styled('div').attrs({
+  className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
+})`width: 24px; height: 24px; background-color: darkblue;
+`
 
 const cardButtonPrimary = styled(Link).attrs({
   className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'
@@ -173,7 +177,6 @@ export class AssessmentItem extends Component {
     //   userActionRequired = false
     // }
 
-     //let assessment = this.props.assessment
       let actionRequired = stage === userStage
       let nOtherAssessorsToBeActive = assessment.size - assessment.done - (actionRequired ? 1 : 0)
       let pendingAction = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[stage]
@@ -198,6 +201,7 @@ export class AssessmentItem extends Component {
     } else if (stage === Stage.Burned) {
       status = 'Canceled'
     }
+
     /* start styling below */
     return (
       h(cardContainer, [
@@ -213,10 +217,10 @@ export class AssessmentItem extends Component {
         ]),
         h(cardContainerStatus, [
           h(cardContainerProgressBar, {className: 'absolute flex items-center'}, [
-            h(cardProgressBarObjectActive),
-            h(cardProgressBarObject),
-            h(cardProgressBarObject),
-            h(cardProgressBarObject)
+            h(stage>0? cardProgressBarObjectComplete: actionRequired? cardProgressBarObjectActive:cardProgressBarObject),
+            h(stage>1? cardProgressBarObjectComplete: actionRequired? cardProgressBarObjectActive:cardProgressBarObject),
+            h(stage>2? cardProgressBarObjectComplete: actionRequired? cardProgressBarObjectActive:cardProgressBarObject),
+            h(stage>3? cardProgressBarObjectComplete: actionRequired? cardProgressBarObjectActive:cardProgressBarObject),
           ]),
           h(cardTextStatus, [
             h('h6', {className: 'f5 tl mv1 ttu uppercase'}, 'Status'),
