@@ -7,7 +7,7 @@ import icoClose from '../../assets/ico-close.svg'
 import icoConfirm from '../../assets/ico-confirm.svg'
 import iconArrowBack from '../../assets/icon-arrow-back.svg'
 
-export class ConceptCreation extends Component {
+export class AssessmentCreation extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -182,7 +182,7 @@ export class ConceptCreation extends Component {
   }
 }
 
-export default ConceptCreation
+export default AssessmentCreation
 
 // styles
 

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import h from 'react-hyperscript'
 
 import ConceptList from './ConceptList'
-import ConceptCreation from './ConceptCreation'
+import AssessmentCreation from './AssessmentCreation'
 
 export class ConceptBoard extends Component {
   constructor (props) {
@@ -28,7 +28,7 @@ export class ConceptBoard extends Component {
 
       let ConceptHeader = h(ConceptHeaderDefault, 'Choose a Concept')
       if (this.state.selectedConceptAddress !== '0') {
-        ConceptHeader = h(ConceptCreation, {
+        ConceptHeader = h(AssessmentCreation, {
           conceptName: this.props.concepts[this.state.selectedConceptAddress],
           conceptAddress: this.state.selectedConceptAddress,
           loadConceptContractAndCreateAssessment: this.props.loadConceptContractAndCreateAssessment,
@@ -42,9 +42,7 @@ export class ConceptBoard extends Component {
         h(ConceptHeaderBox, [
           ConceptHeader
         ]),
-        h(ConceptListBox, [
-          h(ConceptList, {concepts, selectConceptAddress: this.selectConceptAddress.bind(this)})
-        ])
+        h(ConceptList, {concepts, selectConceptAddress: this.selectConceptAddress.bind(this)})
       ])
     } else {
       return h('div', 'Loading Concepts')
@@ -62,9 +60,5 @@ width:100%;
 text-align:center;
 `
 
-const ConceptListBox = styled('div')`
-padding:1.1em 3.5em;
-background: white;
-`
 const ConceptHeaderDefault = styled('div')`
 `

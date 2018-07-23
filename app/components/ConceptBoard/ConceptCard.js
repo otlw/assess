@@ -26,49 +26,28 @@ export default ConceptCard
 
 // styles
 
-const ConceptCardFrame = styled('div')`
-background: #FFFFFF;
-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
-border-radius: 2px;
-margin: 1.1em 0.6em;
-width:13em;
-display:inline-block;
-text-align:left;
+const ConceptCardFrame = styled('div').attrs({className: 'flex flex-column bg-white br1 shadow-3 mv3'})`
+width: 300px;
+height: 420px;
 `
-const ConceptTitleBox = styled('div')`
+const ConceptTitleBox = styled('div').attrs({className: 'flex flex-column pv4 ph3'})`
 background: #C4C4C4;
-padding:1.9em;
 `
-const TitleCaption = styled('div')`
+const TitleCaption = styled('div').attrs({className: 'flex f6'})`
 color: #444444;
-font-size:0.6em;
 `
-const ConceptTitle = styled('div')`
+const ConceptTitle = styled('div').attrs({className: 'flex f5 pv2'})`
 color: #444444;
-font-size:1.1em;
 `
-const BottomPart = styled('div')`
-padding: 0.5em 0.25em;
+const BottomPart = styled('div').attrs({className: 'flex flex-column justify-around pa3 h-100'})`
 `
-const ConceptDescription = styled('div')`
-margin-bottom:1.1em;
+const ConceptDescription = styled('div').attrs({className: 'flex flex-row'})`
 `
-const ButtonGroup = styled('div')`
-border-radius: 2px
-border: 1px solid #C4C4C4;
-width:12em;
+const ButtonGroup = styled('div').attrs({className: 'flex flex-row br4 ba justify-between w-80'})`
 `
-const GetAssessedButton = styled('div')`
-display:inline-block;
-padding: 0.5em 0.25em;
-width:6em;
-text-align:center;
+const GetAssessedButton = styled('div').attrs({className: 'flex h2 pa2 w5 justify-center'})`
 cursor:pointer;
 `
-const LearnButton = styled('div')`
-display:inline-block;
+const LearnButton = styled('div').attrs({className: 'flex br4 br--right h2 pa2 w4 justify-center'})`
 background: #C4C4C4;
-padding: 0.5em 0.25em;
-width:5em;
-text-align:center;
 `
