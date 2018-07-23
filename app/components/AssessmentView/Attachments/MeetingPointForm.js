@@ -1,4 +1,3 @@
-// import { Component } from 'react'
 import { Field, reduxForm } from 'redux-form'
 var h = require('react-hyperscript')
 
@@ -13,7 +12,7 @@ const MeetingPointForm = props => {
         type: 'text',
         placeholder: 'e.g. a gitlab repo'
       }),
-      h('button', {
+      h(fathomButtonSecondary, {
         type: 'submit',
         disabled: submitting,
         title: 'Only works for assessee and staked assessors!' },
@@ -25,3 +24,4 @@ const MeetingPointForm = props => {
 export default reduxForm({
   form: 'meeting'
 })(MeetingPointForm)
+

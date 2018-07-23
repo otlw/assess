@@ -1,7 +1,7 @@
 import { Component } from 'react'
-import { MeetingPointButton } from '../AssessmentData/style.js'
 import MeetingPointForm from './MeetingPointForm.js'
 import TxList from '../../TxList.js'
+import styled from 'styled-components'
 var h = require('react-hyperscript')
 
 class MeetingPointEditButton extends Component {
@@ -24,7 +24,7 @@ class MeetingPointEditButton extends Component {
   render () {
     return (
       h('div', [
-        h(MeetingPointButton, {
+        h(fathomButtonSecondary, {
           onClick: this.toggleMPeditability.bind(this)
         }, 'edit'),
         this.state.displayMPEdit ? h(MeetingPointForm, {onSubmit: this.storeData.bind(this)}) : null,
@@ -37,3 +37,8 @@ class MeetingPointEditButton extends Component {
 }
 
 export default MeetingPointEditButton
+
+
+const fathomButtonSecondary = styled('button').attrs({className: 'flex self-start ph4 pv2 fw4 f5 items-center align-center br-pill dark-blue'})`
+box-shadow: 0px 0px 0px 1px hsla(214, 100%, 31%, 0.1);
+`
