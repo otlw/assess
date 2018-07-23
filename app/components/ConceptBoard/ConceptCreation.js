@@ -133,7 +133,10 @@ export class ConceptCreation extends Component {
 
     // set Navigation buttons according to step
     let Navigation = (h(NavigationButtonGroup, [
-      h(CancelButton, {onClick: this.cancelButton.bind(this)}, 'Cancel'),
+      h(CancelButton, {onClick: this.cancelButton.bind(this)}, [
+        h("img",{alt: 'icoClose', src: icoClose,className:"h1 ma1"}),
+        h('span',"Cancel"),
+      ]),
       h(NextButton, {onClick: this.nextButton.bind(this)}, [
         h('span',"Next"),
         h("img",{alt: 'icoArrowForward', src: icoArrowForward}),
@@ -142,7 +145,10 @@ export class ConceptCreation extends Component {
 
     if ((this.state.step === 4)) {
       Navigation = (h(NavigationButtonGroup, [
-        h(CloseButton, {onClick: this.cancelButton.bind(this)}, 'Close')
+        h(CloseButton, {onClick: this.cancelButton.bind(this)}, [
+          h("img",{alt: 'icoClose', src: icoClose,className:"h1 ma1"}),
+          h('span',"Close"),
+        ])
       ]))
     }
     //h(Logo, {alt: 'logo', src: fathomLogo})
@@ -290,7 +296,7 @@ color:#666666;
 const NavigationButtonGroup = styled('div').attrs({className: 'flex flex-row items-center self-center justify-around h3'})`
 width: 450px;
 `
-const CancelButton = styled('div').attrs({className: 'flex items-center justify-around w4 h2 br4 ba'})`
+const CancelButton = styled('div').attrs({className: 'flex items-center justify-center w4 h2 br4 ba'})`
 border-color: #C4C4C4;
 cursor:pointer;
 `
@@ -299,7 +305,7 @@ border-color: #C4C4C4;
 background-color:#C4C4C4;
 cursor:pointer;
 `
-const CloseButton = styled('div').attrs({className: 'flex self-center items-center justify-around w4 h2 br4 ba'})`
+const CloseButton = styled('div').attrs({className: 'flex self-center items-center justify-center w4 h2 br4 ba'})`
 border-color: #C4C4C4;
 background-color:#C4C4C4;
 cursor:pointer;
