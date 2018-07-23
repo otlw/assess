@@ -2,6 +2,11 @@ import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 
+import icoArrowForward from '../../assets/ico-arrow-forward.svg'
+import icoClose from '../../assets/ico-close.svg'
+import icoConfirm from '../../assets/ico-confirm.svg'
+import iconArrowBack from '../../assets/icon-arrow-back.svg'
+
 export class ConceptCreation extends Component {
   constructor (props) {
     super(props)
@@ -129,7 +134,10 @@ export class ConceptCreation extends Component {
     // set Navigation buttons according to step
     let Navigation = (h(NavigationButtonGroup, [
       h(CancelButton, {onClick: this.cancelButton.bind(this)}, 'Cancel'),
-      h(NextButton, {onClick: this.nextButton.bind(this)}, 'Next ->')
+      h(NextButton, {onClick: this.nextButton.bind(this)}, [
+        h('span',"Next"),
+        h("img",{alt: 'icoArrowForward', src: icoArrowForward}),
+      ])
     ]))
 
     if ((this.state.step === 4)) {
@@ -137,10 +145,10 @@ export class ConceptCreation extends Component {
         h(CloseButton, {onClick: this.cancelButton.bind(this)}, 'Close')
       ]))
     }
+    //h(Logo, {alt: 'logo', src: fathomLogo})
 
     // set cancelCross according to step
     let CancelCrossButton = (h(CancelCrossContainer, [
-      // h(CancelCrossCounterBalance, {onClick: this.cancelButton.bind(this)}, 'X'),
       h(CancelCross, {onClick: this.cancelButton.bind(this)}, 'X')
     ]))
     if (this.state.step === 4) {
@@ -282,7 +290,7 @@ const CancelButton = styled('div').attrs({className: 'flex items-center justify-
 border-color: #C4C4C4;
 cursor:pointer;
 `
-const NextButton = styled('div').attrs({className: 'flex items-center justify-around w4 h2 br4 ba'})`
+const NextButton = styled('div').attrs({className: 'flex flex-row items-center justify-center w4 h2 br4 ba'})`
 border-color: #C4C4C4;
 background-color:#C4C4C4;
 cursor:pointer;
