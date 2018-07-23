@@ -52,9 +52,12 @@ export class AssessmentData extends Component {
                 h(assessmentLabelBody, 'Meeting Point'),
                 h(assessmentTextBody, assessment.data || 'You haven\'t set a meeting point'),
                 h(assessmentRow, [
-                  h(fathomButtonPrimary, {href: assessment.data, disabled: assessment.data === ''}, 'View'),
+                  assessment.data!==""
+                   ? h(fathomButtonPrimary, {href: assessment.data, disabled: assessment.data === ''}, 'View')
+                   :null
+                   ,
                   assessment.assessee === this.props.userAddress
-                    ? h(MeetingPointEditButton, {assessee: assessment.assessee}) // TODO fathomButtonSecondary should replace 'h(MeetingPointEditButton'
+                    ? h(MeetingPointEditButton, {assessee: assessment.assessee})
                     : null
                 ])
               ])
