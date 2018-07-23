@@ -12,7 +12,7 @@ const MeetingPointForm = props => {
         type: 'text',
         placeholder: 'e.g. a gitlab repo'
       }),
-      h(fathomButtonSecondary, {
+      h('button', {
         type: 'submit',
         disabled: submitting,
         title: 'Only works for assessee and staked assessors!' },

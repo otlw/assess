@@ -18,6 +18,7 @@ class MeetingPointEditButton extends Component {
   }
 
   toggleMPeditability () {
+    console.log(this.state.displayMPEdit)
     this.setState({displayMPEdit: !this.state.displayMPEdit})
   }
 
