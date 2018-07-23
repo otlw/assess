@@ -6,7 +6,7 @@ export class ConceptCreation extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      step: 3,
+      step: 2,
       amountPerAssessor: 5,
       gasEstimate: 0
     }
@@ -50,6 +50,7 @@ export class ConceptCreation extends Component {
         if (err) {
           console.log(err)
           this.props.setNotificationBar({display: true, type: 'error'})
+          this.props.cancelCreation()
         } else if (receipt.status) {
           let receiptAddress = receipt.events[0].raw.topics[2]
           let assessmentAddress = '0x' + receiptAddress.substring(26, receiptAddress.length)
@@ -92,12 +93,18 @@ export class ConceptCreation extends Component {
         break
       case 2:
         BottomPartContent = h(BottomPart, [
-          h(ParameterKey, 'ASSESSEE'),
-          h(ParameterValue, 'YOU'),
-          h(ParameterKey, 'NO. OF ASSESSORS'),
-          h(ParameterValue, '5'),
-          h(ParameterKey, 'TOTAL COST'),
-          h(ParameterValue, this.state.amountPerAssessor * 5 + ' AHA')
+          h(ParameterBox,[
+            h(ParameterKey, 'ASSESSEE'),
+            h(ParameterValue, 'YOU'),
+          ]),
+          h(ParameterBox,[
+            h(ParameterKey, 'NO. OF ASSESSORS'),
+            h(ParameterValue, '5'),
+          ]),
+          h(ParameterBox,[
+            h(ParameterKey, 'TOTAL COST'),
+            h(ParameterValue, this.state.amountPerAssessor * 5 + ' AHA')
+          ]),
         ])
         break
       case 3:
@@ -230,9 +237,12 @@ const helpTextItem = styled('div').attrs({className: 'flex f6 gray lh-copy tl pv
 
 // step 2
 
-const ParameterKey = styled('div').attrs({className: 'f6 pt3'})`
+const ParameterBox = styled('div').attrs({className: 'flex flex-column self-center'})`
 `
-const ParameterValue = styled('div').attrs({className: 'f5 pt1'})`
+
+const ParameterKey = styled('div').attrs({className: 'f6 pt3 self-center'})`
+`
+const ParameterValue = styled('div').attrs({className: 'f5 pt1 self-center'})`
 `
 
 // step 3
