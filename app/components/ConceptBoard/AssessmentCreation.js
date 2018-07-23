@@ -5,7 +5,7 @@ import h from 'react-hyperscript'
 import icoArrowForward from '../../assets/ico-arrow-forward.svg'
 import icoClose from '../../assets/ico-close.svg'
 import icoConfirm from '../../assets/ico-confirm.svg'
-import iconArrowBack from '../../assets/icon-arrow-back.svg'
+// import iconArrowBack from '../../assets/icon-arrow-back.svg'
 
 export class AssessmentCreation extends Component {
   constructor (props) {
@@ -134,28 +134,28 @@ export class AssessmentCreation extends Component {
     // set Navigation buttons according to step
     let Navigation = (h(NavigationButtonGroup, [
       h(CancelButton, {onClick: this.cancelButton.bind(this)}, [
-        h("img",{alt: 'icoClose', src: icoClose,className:"h1 ma1"}),
-        h('span',"Cancel"),
+        h('img', {alt: 'icoClose', src: icoClose, className: 'h1 ma1'}),
+        h('span', 'Cancel')
       ]),
       h(NextButton, {onClick: this.nextButton.bind(this)}, [
-        h('span',"Next"),
-        h("img",{alt: 'icoArrowForward', src: icoArrowForward}),
+        h('span', 'Next'),
+        h('img', {alt: 'icoArrowForward', src: icoArrowForward})
       ])
     ]))
 
     if ((this.state.step === 4)) {
       Navigation = (h(NavigationButtonGroup, [
         h(CloseButton, {onClick: this.cancelButton.bind(this)}, [
-          h("img",{alt: 'icoClose', src: icoClose,className:"h1 ma1"}),
-          h('span',"Close"),
+          h('img', {alt: 'icoClose', src: icoClose, className: 'h1 ma1'}),
+          h('span', 'Close')
         ])
       ]))
     }
-    //h(Logo, {alt: 'logo', src: fathomLogo})
+    // h(Logo, {alt: 'logo', src: fathomLogo})
 
     // set cancelCross according to step
     let CancelCrossButton = (h(CancelCrossContainer, [
-      h(CancelCross, {onClick: this.cancelButton.bind(this),alt: 'icoClose', src: icoClose})
+      h(CancelCross, {onClick: this.cancelButton.bind(this), alt: 'icoClose', src: icoClose})
     ]))
     if (this.state.step === 4) {
       CancelCrossButton = h(CancelCrossContainer, '')
@@ -167,7 +167,7 @@ export class AssessmentCreation extends Component {
         h(Step, {current: this.state.step === 1, past: this.state.step > 1}, '1'),
         h(Step, {current: this.state.step === 2, past: this.state.step > 2}, '2'),
         h(Step, {current: this.state.step === 3, past: this.state.step > 3}, '3'),
-        h(Step4, {current: this.state.step === 4, past: this.state.step > 4,alt: 'icoConfirm', src: icoConfirm})
+        h(Step4, {current: this.state.step === 4, past: this.state.step > 4, alt: 'icoConfirm', src: icoConfirm})
       ]),
       h(HeaderTitle, "LET'S CREATE YOUR ASSESSMENT"),
       h(ConceptCreationCardFrame, [
