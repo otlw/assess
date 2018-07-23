@@ -24,4 +24,3 @@ const MeetingPointForm = props => {
 export default reduxForm({
   form: 'meeting'
 })(MeetingPointForm)
-
