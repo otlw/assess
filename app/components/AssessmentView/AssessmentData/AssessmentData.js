@@ -60,7 +60,7 @@ export class AssessmentData extends Component {
               ])
             ]),
             h(assessmentColumnRight, [
-              h(assessmentObjectText, [
+              h(assessmentObjectTextRight, [
                 h(assessmentLabelBody, 'Assessors'),
                 h(assessmentObjectText)
               ])
@@ -113,6 +113,9 @@ const assessmentColumnLeft = styled('div').attrs({className: 'flex flex-column w
 `
 
 const assessmentObjectText = styled('div').attrs({className: 'flex flex-column w-100  items-start justify-center self-start mv3'})`
+`
+
+const assessmentObjectTextRight = styled('div').attrs({className: 'flex flex-column w-100  items-end justify-center self-start mv3'})`
 `
 
 const assessmentListAssessors = styled('div').attrs({className: 'flex flex-column w-100 h-100 self-start  items-start justify-center self-start mv3'})`
