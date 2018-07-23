@@ -149,7 +149,7 @@ export class ConceptCreation extends Component {
 
     // set cancelCross according to step
     let CancelCrossButton = (h(CancelCrossContainer, [
-      h(CancelCross, {onClick: this.cancelButton.bind(this)}, 'X')
+      h(CancelCross, {onClick: this.cancelButton.bind(this),alt: 'icoClose', src: icoClose})
     ]))
     if (this.state.step === 4) {
       CancelCrossButton = h(CancelCrossContainer, '')
@@ -302,6 +302,6 @@ cursor:pointer;
 `
 const CancelCrossContainer = styled('div').attrs({className: 'flex justify-end w-100 h2'})`
 `
-const CancelCross = styled('div').attrs({className: 'ma2 f4'})`
+const CancelCross = styled('img').attrs({className: 'ma2 f4'})`
 cursor:pointer;
 `
