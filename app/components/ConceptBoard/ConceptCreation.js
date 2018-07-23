@@ -6,7 +6,7 @@ export class ConceptCreation extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      step: 1,
+      step: 3,
       amountPerAssessor: 5,
       gasEstimate: 0
     }
@@ -103,8 +103,10 @@ export class ConceptCreation extends Component {
       case 3:
         BottomPartContent = h(BottomPart, [
           h(Step3P, 'Ethereum charges a transaction fee to process & create your assessment. Once completed, this step is irreversible.'),
-          h(TransactionCostTitle, 'TRANSACTION COST'),
-          h(CostEstimate, this.state.gasEstimate.toString().substring(0, 8) + 'ETH'),
+          h(EstimateBox,[
+            h(TransactionCostTitle, 'TRANSACTION COST'),
+            h(CostEstimate, this.state.gasEstimate.toString().substring(0, 8) + 'ETH'),
+          ]),
           h(Step3Bottom, "Clicking 'Next' will launch MetaMask so you can complete the transaction")
         ])
         break
@@ -198,7 +200,7 @@ const TitleCaption = styled('div').attrs({className: 'flex w-100 f6 dark-gray'})
 const ConceptTitle = styled('div').attrs({className: 'flex w-100 f3 mv1 dark-gray'})`
 `
 
-const BottomPart = styled('div').attrs({className: 'flex flex-column h-100 pa3 justify-start'})`
+const BottomPart = styled('div').attrs({className: 'flex flex-column h-100 pa3 justify-between'})`
 `
 
 // step 1
@@ -238,10 +240,12 @@ const ParameterValue = styled('div').attrs({className: 'f5 pt1'})`
 const Step3P = styled('div').attrs({className: 'flex flex-row f6 lh-copy'})`
 color:#666666;
 `
-const TransactionCostTitle = styled('div').attrs({className: 'flex flex-row f6 mt3'})`
+const EstimateBox = styled('div').attrs({className: 'flex flex-column self-center'})`
+`
+const TransactionCostTitle = styled('div').attrs({className: 'flex flex-row f6 mt3 self-center'})`
 color:#666666;
 `
-const CostEstimate = styled('div').attrs({className: 'flex flex-row f5 fw3'})`
+const CostEstimate = styled('div').attrs({className: 'flex flex-row f5 fw3 self-center'})`
 color:#444444;
 `
 const Step3Bottom = styled('div').attrs({className: 'flex flex-row f6 lh-copy mt3'})`
