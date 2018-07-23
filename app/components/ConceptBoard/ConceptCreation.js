@@ -161,7 +161,7 @@ export class ConceptCreation extends Component {
         h(Step, {current: this.state.step === 1, past: this.state.step > 1}, '1'),
         h(Step, {current: this.state.step === 2, past: this.state.step > 2}, '2'),
         h(Step, {current: this.state.step === 3, past: this.state.step > 3}, '3'),
-        h(Step, {current: this.state.step === 4, past: this.state.step > 4}, '4')
+        h(Step4, {current: this.state.step === 4, past: this.state.step > 4,alt: 'icoConfirm', src: icoConfirm})
       ]),
       h(HeaderTitle, "LET'S CREATE YOUR ASSESSMENT"),
       h(ConceptCreationCardFrame, [
@@ -196,6 +196,10 @@ const StepBox = styled('div').attrs({className: 'flex flex-row self-center justi
 `
 
 const Step = styled('div').attrs({className: 'flex items-center justify-center w2 h2 br-100 ba'})`
+background-color:${props => props.past ? props.theme.lightgreen : props.current ? '#C4C4C4' : 'transparent'}
+border:${props => props.past ? '1px solid ' + props.theme.lightgreen : '1px solid #C4C4C4'};
+`
+const Step4 = styled('img').attrs({className: 'flex items-center justify-center w2 h2 br-100 ba'})`
 background-color:${props => props.past ? props.theme.lightgreen : props.current ? '#C4C4C4' : 'transparent'}
 border:${props => props.past ? '1px solid ' + props.theme.lightgreen : '1px solid #C4C4C4'};
 `
