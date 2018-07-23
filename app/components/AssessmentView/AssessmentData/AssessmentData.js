@@ -27,7 +27,7 @@ export class AssessmentData extends Component {
             h(assessmentTextTitle, assessment.conceptData)
           ]),
           // indicates status of assesssment
-          h(assessmentRowStatusDate, [
+          h(assessmentRowSubHeader, [
             h(assessmentContainerStatus, [
               h(assessmentLabelBody, 'STATUS'),
               h(assessmentTextBody, statusString)
@@ -51,10 +51,12 @@ export class AssessmentData extends Component {
               h(assessmentObjectText, [
                 h(assessmentLabelBody, 'Meeting Point'),
                 h(assessmentTextBody, assessment.data || 'You haven\'t set a meeting point'),
-                h(MeetingPointButton, {href: assessment.data, disabled: assessment.data === ''}, 'View'),
-                assessment.assessee === this.props.userAddress
-                  ? h(MeetingPointEditButton, {className: MeetingPointButton, assessee: assessment.assessee}) // TODO make this appear right of GotoMeetingPointButton
-                  : null
+                h(assessmentRow, [
+                  h(fathomButtonPrimary, {href: assessment.data, disabled: assessment.data === ''}, 'View'),
+                  assessment.assessee === this.props.userAddress
+                    ? h(MeetingPointEditButton, {className: fathomButtonSecondary, assessee: assessment.assessee}) // TODO fathomButtonSecondary should replace 'h(MeetingPointEditButton'
+                    : null
+                ])
               ])
             ]),
             h(assessmentColumnRight, [
@@ -65,7 +67,9 @@ export class AssessmentData extends Component {
             ])
           ]),
           // progress-buttons
-          h(ProgressButtonBar)
+          h(assessmentFooter, [
+            h(ProgressButtonBar)
+          ])
         ])
       )
     } else {
@@ -87,7 +91,7 @@ const assessmentLabelRole = styled('h6').attrs({className: 'f6 tl ttu uppercase 
 const assessmentTextTitle = styled('h2').attrs({className: 'f2 tl ttu uppercase dark-blue mt2 mb0 fw4'})`
 `
 
-const assessmentRowStatusDate = styled('div').attrs({className: 'flex flex-row w-100 bt bb b--gray items-center'})`
+const assessmentRowSubHeader = styled('div').attrs({className: 'flex flex-row w-100 items-center bt bb b--gray'})`
 `
 
 const assessmentContainerStatus = styled('div').attrs({className: 'flex flex-row w-50 items-center justify-between pa3'})`
@@ -115,6 +119,16 @@ const assessmentListAssessors = styled('div').attrs({className: 'flex flex-colum
 `
 
 const assessmentColumnRight = styled('div').attrs({className: 'flex flex-column w-50 h-100 self-start items-start justify-around pa3'})`
+`
+
+const assessmentRow = styled('div').attrs({className: 'flex flex-row w-100 mw5 justify-between mt3 '})`
+`
+
+const fathomButtonPrimary = styled('button').attrs({className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'})`
+`
+
+const fathomButtonSecondary = styled('button').attrs({className: 'flex self-start ph4 pv2 fw4 f5 items-center align-center br-pill dark-blue'})`
+box-shadow: 0px 0px 0px 1px hsla(214, 100%, 31%, 0.1);
 `
 
 const assessmentFooter = styled('div').attrs({className: 'flex flex-row w-100'})`
