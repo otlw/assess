@@ -93,26 +93,26 @@ export class ConceptCreation extends Component {
         break
       case 2:
         BottomPartContent = h(BottomPart, [
-          h(ParameterBox,[
+          h(ParameterBox, [
             h(ParameterKey, 'ASSESSEE'),
-            h(ParameterValue, 'YOU'),
+            h(ParameterValue, 'YOU')
           ]),
-          h(ParameterBox,[
+          h(ParameterBox, [
             h(ParameterKey, 'NO. OF ASSESSORS'),
-            h(ParameterValue, '5'),
+            h(ParameterValue, '5')
           ]),
-          h(ParameterBox,[
+          h(ParameterBox, [
             h(ParameterKey, 'TOTAL COST'),
             h(ParameterValue, this.state.amountPerAssessor * 5 + ' AHA')
-          ]),
+          ])
         ])
         break
       case 3:
         BottomPartContent = h(BottomPart, [
           h(Step3P, 'Ethereum charges a transaction fee to process & create your assessment. Once completed, this step is irreversible.'),
-          h(EstimateBox,[
+          h(EstimateBox, [
             h(TransactionCostTitle, 'TRANSACTION COST'),
-            h(CostEstimate, this.state.gasEstimate.toString().substring(0, 8) + 'ETH'),
+            h(CostEstimate, this.state.gasEstimate.toString().substring(0, 8) + 'ETH')
           ]),
           h(Step3Bottom, "Clicking 'Next' will launch MetaMask so you can complete the transaction")
         ])
