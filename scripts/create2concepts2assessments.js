@@ -1,3 +1,6 @@
+const IPFS = require('ipfs')
+const Buffer = require('buffer/').Buffer
+
 // This script deploys two concepts and creates an assessments on them.
 // It uses the latest version of the fathom-network that has been deployed to the testnet by
 // fetching the addresses of the relevant contracts from the build-folder.
@@ -141,4 +144,33 @@ async function test () {
   // let assessmentContract2 = await new web3.eth.Contract(assessmentArtifact.abi, assessmentAddress2)
   // console.log('assessment2 instanciated')
 }
-test()
+
+// Create the IPFS node instance
+const node = new IPFS()
+
+try {
+  node.on('ready', async () => {
+    console.log('ready')
+    // Your node is now ready to use \o/
+
+    let description1="han" //{"ok":"buen"}
+    let descriptionBuffer1=(Buffer.from(description1, 'utf8')) //.toString('hex')
+    let resp=await node.files.add(descriptionBuffer1)
+
+    console.log(resp)
+    let path=resp[0].path
+    console.log(path)
+    let verif=await node.files.get(path)
+    console.log("verif",verif)
+    let decoded=Buffer.from(verif[0].hash, 'hex').toString('utf8')
+    console.log(decoded)
+    test()
+
+    // stopping a node
+    node.stop(() => {
+      // node is now 'offline'
+    })
+  })
+} catch (e) {
+      console.log('Erro:', e)
+}
