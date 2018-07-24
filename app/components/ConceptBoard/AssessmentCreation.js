@@ -11,7 +11,7 @@ export class AssessmentCreation extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      step: 2,
+      step: 1,
       amountPerAssessor: 5,
       gasEstimate: 0
     }

@@ -42,8 +42,8 @@ export function loadConceptContractAndCreateAssessment (address, cost, callback)
     let userAddress = getState().ethereum.userAddress
     let conceptInstance = getInstance.concept(getState(), address)
     const size = 5
-    const endTime = 10000000
-    const startTime = 100000
+    const endTime = 4 * 24 * 3600
+    const startTime = 3 * 24 * 3600
     sendAndReactToTransaction(
       dispatch,
       () => {
@@ -67,7 +67,6 @@ export function estimateAssessmentCreationGasCost (address, cost, cllbck) {
     let userAddress = getState().ethereum.userAddress
     let conceptInstance = getInstance.concept(getState(), address)
     const size = 5
-    // TODO: put sensible default values for time-limits : maybe a week?
     const endTime = 4 * 24 * 3600
     const startTime = 3 * 24 * 3600
     // use estimateGas to get transaction gas cost before it is published
