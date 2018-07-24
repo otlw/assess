@@ -40,9 +40,6 @@ contract AssessmentData is ProxyData, AssessmentHeader {
     int public finalScore;
     bytes32 public salt; //used for token distribution
     mapping (address => bytes) public data;
-
-    // ?? where to put modifiers?
-
 }
 
 // same as assessmentData but with all variables internal, so as to not produce getter methods on the Assessment-Proxy
@@ -77,6 +74,4 @@ contract AssessmentDataInternal is ProxyData, AssessmentHeader {
   int internal finalScore;
   bytes32 internal salt; //used for token distribution
   mapping (address => bytes) internal data;
-
-  // ?? where to put modifiers?
 }
