@@ -2,16 +2,14 @@ import { Component } from 'react'
 var h = require('react-hyperscript')
 
 // component to display all assessors
-export class AssessorList extends Component {
+class AssessorList extends Component {
   render () {
-    if (this.props.loadedAssessors) {
-      return h('ul',
+    return (
+      h('ul',
         this.props.assessors.map((assessor, k) => {
-          return h('li', assessor.address)
+          return h('li', assessor)
         }))
-    } else {
-      return h('div', 'Loading assessors...')
-    }
+    )
   }
 }
 

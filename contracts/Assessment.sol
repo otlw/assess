@@ -16,7 +16,8 @@ contract Assessment {
         Confirmed,
         Committed,
         Done,
-        Burned
+        Burned,
+        Dissent
     }
 
     Concept public concept;
@@ -109,7 +110,7 @@ contract Assessment {
     */
     function setAssessorPool(uint seed, address _concept, uint num) public onlyConcept() {
         uint numCalled = 0;
-        uint membersOfConcept = Concept(_concept).getMemberLength();
+        uint membersOfConcept = Concept(_concept).getAvailableMemberLength();
         //we want to call at most half of the members of each concept
         uint maxFromThisPool = num > membersOfConcept/2 ? membersOfConcept/2 : num;
         for (uint k=0; k < maxFromThisPool; k++) {
@@ -134,7 +135,7 @@ contract Assessment {
     function callAllFromMew(uint _nMew, address _mew) public onlyConcept() {
         Concept mew = Concept(_mew);
         for (uint i=0; i< _nMew; i++) {
-            addAssessorToPool(mew.members(i));
+            addAssessorToPool(mew.availableMembers(i));
         }
         assessmentStage = State.Called;
     }
@@ -266,13 +267,14 @@ contract Assessment {
         uint dissentBonus = 0;
         bool[] memory inAssessor = new bool[] (assessors.length);
         uint[] memory inAssessorPayout = new uint[] (assessors.length);
-        // pay out dissenting assessors their reduced stake and save how much stake to redistribute to whom
+        // pay out dissenting assessors their reduced stake, set their State to dissent and save how much stake to redistribute to whom
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Done) {
                 uint payoutValue;
                 bool dissenting;
                 (payoutValue, dissenting) = Math.getPayout(Math.abs(scores[assessors[i]] - finalScore), cost);
                 if (dissenting) {
+                    assessorState[assessors[i]] = State.Dissent;
                     dissentBonus += cost - payoutValue;
                     if (payoutValue > 0) {
                         fathomToken.transfer(assessors[i], payoutValue);

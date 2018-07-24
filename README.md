@@ -41,7 +41,7 @@ Deploying a fathom-network-instance will lead the following contracts being on-c
 - One instance of Concept.sol, being the root of the concept-tree (the _MEW-concept_)
 - Math.sol, a library to do scoring and clustering
 
-### ...to a private testnet
+### Local Testnet 
 
 Open a console and run your private testnet:
 > ganache-cli
@@ -49,35 +49,33 @@ Open a console and run your private testnet:
 In another console, run the migration: 
 >'truffle migrate'
 
+All address in the testnet will be funded with AHAs and the first six will be
+added to the Mew Concept.
 
-### ...to the rinkeby- or kovan-testnet
+### Public Network
 
-As you want to deploy to a real testnet, you need to have
-[Metamask](https://metamask.io/) installed and some rinkeby-ether on its first
-account. To generate your keys, create a file `secrets.json` in the uppermost
-project folder ('./'), where you save the seed-phrase that underlies the account
-that pays for the deployment. (Metamask -> Settings -> Reveal Seed Words) 
+To deploy to a public network you need to supply a funded account. You can do
+this by creating a file called `secrets.json` in the root folder
+('./'), containing seed words that have ETH on the network you want to deploy
+to. 
 
 Your secrets.json-file should look like this: 
 >'{"seed": "baseball poet vague session shrimp humus embrace glare monkey donkey balony bread"}'
 
-#### 1) Specify the initial AHA-Owner
+#### 1) Specify the initial accounts
 
-You need to provide at least one address to which all the initial tokens will be
-distributed. 
-To do so, create a file `./initialMembers.json` in the root-folder of the
-project.
+You need to provide at least one address for the initial accounts to the system.
+These will have tokens distributed them and will be entered into the mew
+concept. To do so, create a file `./initialMembers.json` in the root-folder of
+the project.
 
-Its content should look like this:
->'{"accounts": ["0xaccount1...", "0xaccount2...", ... ]}'
+Its content should look like this
 
-It must hold at least one account, which will the one that will receive all the
-AHA-tokens. If you want them to get funded too, make sure to put your first
-MetaMask-address in the first position of that list. To modify the
-amount, open `/migrations/2_deploy_contracts.js` and set the variable
-`initialAmount` to the desired value.
+>'["0xaccount1...", "0xaccount2...", ... ]'
 
-#### 2) Specify an initial set of users and distribute tokens to them
+To modify the amount addresses are funded with , open
+`/migrations/2_deploy_contracts.js` and set the variable `initialAmount` to the
+desired value.
 
 _*NOTE*: If you *DON'T* want to the MEW-concept to have any initial members nor
 distribute tokens to them, remove the third and fourth migration-file and
@@ -88,18 +86,13 @@ can be run in your system.)_
 If you *DO* want to seed the network with some initial users in the mew-concept
 add them to the list of initial accounts.
 
-_OPTIONAL_: If you want to be able to add more members than specified in the
-list, adjust the `nInitialMewMembers`-variable in `/migrations/2_deploy_contracts.js`
-to that end.
-
-#### 3) Configure token & member distribution
+#### 2) Configure token & member distribution
 
 By default, all tokens will be distributed amongst all addresses in the
 initial-member list and all addresses will be added to MEW. If you want to
-change that play around with the parameters in `/migrations/3_fund_users.js` and
-`/migrations/4_add_members_to_mew.js` respectively.
+change that play around with the parameters in [getAccounts.js](js/getAccounts.js).
 
-#### 4) Deploy
+#### 3) Deploy
 
 Lastly, run 
 >'truffle migrate --network rinkeby' 
@@ -108,7 +101,7 @@ or
 
 >'truffle migrate --network kovan 
 
-#### 5) Troubleshooting
+#### 4) Troubleshooting
 
 - If you encounter an error-message saying 'Unknown number of arguments to
   solidity-function' it sometimes helps to recompile everything: 
