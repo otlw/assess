@@ -119,8 +119,9 @@ const assessmentObjectText = styled('div').attrs({className: 'flex flex-column w
 const assessmentObjectTextRight = styled('div').attrs({className: 'flex flex-column w-100  items-end justify-center self-start mv3'})`
 `
 
-const assessmentListAssessors = styled('div').attrs({className: 'flex flex-column w-100 h-100 self-start  items-start justify-center self-start mv3'})`
-`
+// Commented out as we may need to re-implement this very soon
+// const assessmentListAssessors = styled('div').attrs({className: 'flex flex-column w-100 h-100
+// self-start  items-start justify-center self-start mv3'})``
 
 const assessmentColumnRight = styled('div').attrs({className: 'flex flex-column w-50 h-100 self-start items-start justify-around pa3'})`
 `
