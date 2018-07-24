@@ -9,7 +9,7 @@ function getContractInstance (web3, abi, address) {
 
 export const convertDate = (unixTimestamp) => {
   let date = new Date(unixTimestamp * 1000) // input in milliseconds
-  return date.toString()
+  return date.toDateString()
 }
 
 export const getInstance = {
