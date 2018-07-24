@@ -5,7 +5,6 @@ import ProgressButtonBar from '../ProgressButtonBar'
 import { StageDisplayNames } from '../../../constants.js'
 import { convertDate } from '../../../utils.js'
 import styled from 'styled-components'
-import { Header, Role, ConceptName, SubHeader, StatusIndicator, StatusKey, StatusValue, DataBox, InfoField, InfoKey, AssessorBox, InfoBox, InfoValue, AssessorsDone, MeetingPointButton } from './style.js'
 
 var h = require('react-hyperscript')
 
@@ -24,7 +23,8 @@ export class AssessmentData extends Component {
           // holds role and concept title
           h(assessmentHeader, [
             h(assessmentLabelRole, assessment.assessee !== this.props.userAddress ? 'Assessing' : 'Getting assessed in'),
-            h(assessmentTextTitle, assessment.conceptData)
+            h(assessmentTextTitle, assessment.conceptData),
+            h(assessmentAddressInHeader, assessment.address)
           ]),
           // indicates status of assesssment
           h(assessmentRowSubHeader, [
@@ -64,7 +64,8 @@ export class AssessmentData extends Component {
             h(assessmentColumnRight, [
               h(assessmentObjectTextRight, [
                 h(assessmentLabelBody, 'Assessors'),
-                h(assessmentObjectText)
+                h(assessmentObjectText),
+                h(AssessorList)
               ])
             ])
           ]),
@@ -91,6 +92,9 @@ const assessmentLabelRole = styled('h6').attrs({className: 'f6 tl ttu uppercase 
 `
 
 const assessmentTextTitle = styled('h2').attrs({className: 'f2 tl ttu uppercase dark-blue mt2 mb0 fw4'})`
+`
+
+const assessmentAddressInHeader = styled('h5').attrs({className: 'f2 tl ttu uppercase dark-blue mt2 mb0 fw4'})`
 `
 
 const assessmentRowSubHeader = styled('div').attrs({className: 'flex flex-row w-100 items-center bt bb b--gray'})`
