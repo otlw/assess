@@ -5,7 +5,6 @@ import ProgressButtonBar from '../ProgressButtonBar'
 import { StageDisplayNames } from '../../../constants.js'
 import { convertDate } from '../../../utils.js'
 import styled from 'styled-components'
-import { Header, Role, ConceptName, SubHeader, StatusIndicator, StatusKey, StatusValue, DataBox, InfoField, InfoKey, AssessorBox, InfoBox, InfoValue, AssessorsDone, MeetingPointButton } from './style.js'
 
 var h = require('react-hyperscript')
 
@@ -64,7 +63,7 @@ export class AssessmentData extends Component {
             h(assessmentColumnRight, [
               h(assessmentObjectTextRight, [
                 h(assessmentLabelBody, 'Assessors'),
-                h(assessmentObjectText)
+                h(assessmentObjectText, AssessorList)
               ])
             ])
           ]),
