@@ -1,6 +1,5 @@
 import { Component } from 'react'
 import MeetingPointEditButton from '../Attachments/'
-import AssessorList from '../AssessorList'
 import ProgressButtonBar from '../ProgressButtonBar'
 import { StageDisplayNames } from '../../../constants.js'
 import { convertDate } from '../../../utils.js'
@@ -23,8 +22,7 @@ export class AssessmentData extends Component {
           // holds role and concept title
           h(assessmentHeader, [
             h(assessmentLabelRole, assessment.assessee !== this.props.userAddress ? 'Assessing' : 'Getting assessed in'),
-            h(assessmentTextTitle, assessment.conceptData),
-            h(assessmentAddressInHeader, assessment.address)
+            h(assessmentTextTitle, assessment.conceptData)
           ]),
           // indicates status of assesssment
           h(assessmentRowSubHeader, [
@@ -52,11 +50,9 @@ export class AssessmentData extends Component {
                 h(assessmentLabelBody, 'Meeting Point'),
                 h(assessmentTextBody, assessment.data || 'You haven\'t set a meeting point'),
                 h(assessmentRow, [
-                  assessment.data !== ''
-                    ? h(fathomButtonPrimary, {href: assessment.data, disabled: assessment.data === ''}, 'View')
-                    : null,
+                  h(fathomButtonPrimary, {href: assessment.data, disabled: assessment.data === ''}, 'View'),
                   assessment.assessee === this.props.userAddress
-                    ? h(MeetingPointEditButton, {assessee: assessment.assessee})
+                    ? h(MeetingPointEditButton, {className: fathomButtonSecondary, assessee: assessment.assessee}) // TODO fathomButtonSecondary should replace 'h(MeetingPointEditButton'
                     : null
                 ])
               ])
@@ -64,8 +60,7 @@ export class AssessmentData extends Component {
             h(assessmentColumnRight, [
               h(assessmentObjectTextRight, [
                 h(assessmentLabelBody, 'Assessors'),
-                h(assessmentObjectText),
-                h(AssessorList)
+                h(assessmentListAssessors)
               ])
             ])
           ]),
@@ -92,9 +87,6 @@ const assessmentLabelRole = styled('h6').attrs({className: 'f6 tl ttu uppercase 
 `
 
 const assessmentTextTitle = styled('h2').attrs({className: 'f2 tl ttu uppercase dark-blue mt2 mb0 fw4'})`
-`
-
-const assessmentAddressInHeader = styled('h5').attrs({className: 'f2 tl ttu uppercase dark-blue mt2 mb0 fw4'})`
 `
 
 const assessmentRowSubHeader = styled('div').attrs({className: 'flex flex-row w-100 items-center bt bb b--gray'})`
@@ -134,6 +126,10 @@ const assessmentRow = styled('div').attrs({className: 'flex flex-row w-100 mw5 j
 `
 
 const fathomButtonPrimary = styled('button').attrs({className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'})`
+`
+
+const fathomButtonSecondary = styled('button').attrs({className: 'flex self-start ph4 pv2 fw4 f5 items-center align-center br-pill dark-blue'})`
+box-shadow: 0px 0px 0px 1px hsla(214, 100%, 31%, 0.1);
 `
 
 const assessmentFooter = styled('div').attrs({className: 'flex flex-row w-100'})`
