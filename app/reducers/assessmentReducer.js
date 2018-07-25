@@ -1,16 +1,14 @@
 import {
   RECEIVE_ASSESSMENT,
+  RECEIVE_ASSESSOR,
   REMOVE_ASSESSMENT,
-  RECEIVE_ASSESSORS,
-  RECEIVE_STORED_DATA,
-  RECEIVE_PAYOUTS,
-  SET_ASSESSMENT
+  SET_ASSESSMENT_AS_INVALID,
+  UPDATE_ASSESSMENT_VARIABLE
 } from '../actions/assessmentActions'
 
 import extend from 'xtend'
 
 let initialState = {
-  selectedAssessment: ''
 }
 /*
   further assessments are stored like this:
@@ -22,21 +20,11 @@ assessmentAddress : {
   stage: [0,4]
   finalScore: [-127, 127],
   userStage: 0,
-  assessors : [
-    {
-      address,
-      stage,
-    },
-    ...
-  ]
   data: {
      address: dataString,
      ...
   },
-  payouts: {
-    address1: 20,
-    ...
-  }
+  payout: 20,
 }
  */
 
@@ -51,31 +39,26 @@ function assessments (state = initialState, action) {
       delete newStage[action.address]
       return newStage
     }
-    case RECEIVE_ASSESSORS: {
+    case RECEIVE_ASSESSOR: {
       let address = action.address
+      let assessment = state[address] || {assessors: []}
+      let newAssessors = assessment.assessors.slice(0)
+      newAssessors.push(action.assessor)
       return {
         ...state,
-        [address]: extend(state[address], extend(state[address].assessors, {assessors: action.assessors}))
+        [address]: extend(assessment, {assessors: newAssessors})
       }
     }
-    case RECEIVE_STORED_DATA: {
-      let address = action.assessmentAddress
+    case UPDATE_ASSESSMENT_VARIABLE: {
       return {
         ...state,
-        [address]: extend(state[address], {data: action.data})
+        [action.address]: extend(state[action.address], {[action.name]: action.value})
       }
     }
-    case RECEIVE_PAYOUTS: {
-      let address = action.assessmentAddress
+    case SET_ASSESSMENT_AS_INVALID: {
       return {
         ...state,
-        [address]: extend(state[address], {payouts: action.payouts})
-      }
-    }
-    case SET_ASSESSMENT: {
-      return {
-        ...state,
-        selectedAssessment: action.address
+        [action.address]: {'invalid': true}
       }
     }
     default:

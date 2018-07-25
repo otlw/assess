@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import MeetingPointEditButton from '../Attachments/'
-import AssessorList from '../AssessorList'
 import ProgressButtonBar from '../ProgressButtonBar'
+import AssessorList from '../AssessorList.js'
 import { StageDisplayNames } from '../../../constants.js'
 import { convertDate } from '../../../utils.js'
 import styled from 'styled-components'
@@ -51,11 +51,9 @@ export class AssessmentData extends Component {
                 h(assessmentLabelBody, 'Meeting Point'),
                 h(assessmentTextBody, assessment.data || 'You haven\'t set a meeting point'),
                 h(assessmentRow, [
-                  assessment.data !== ''
-                    ? h(fathomButtonPrimary, {href: assessment.data, disabled: assessment.data === ''}, 'View')
-                    : null,
+                  h(fathomButtonPrimary, {href: assessment.data, disabled: assessment.data === ''}, 'View'),
                   assessment.assessee === this.props.userAddress
-                    ? h(MeetingPointEditButton, {assessee: assessment.assessee})
+                    ? h(MeetingPointEditButton, {className: fathomButtonSecondary, assessee: assessment.assessee}) // TODO fathomButtonSecondary should replace 'h(MeetingPointEditButton'
                     : null
                 ])
               ])
@@ -130,6 +128,10 @@ const assessmentRow = styled('div').attrs({className: 'flex flex-row w-100 mw5 j
 `
 
 const fathomButtonPrimary = styled('button').attrs({className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'})`
+`
+
+const fathomButtonSecondary = styled('button').attrs({className: 'flex self-start ph4 pv2 fw4 f5 items-center align-center br-pill dark-blue'})`
+box-shadow: 0px 0px 0px 1px hsla(214, 100%, 31%, 0.1);
 `
 
 const assessmentFooter = styled('div').attrs({className: 'flex flex-row w-100'})`

@@ -1,62 +1,21 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.4.23;
 
 import "./FathomToken.sol";
 import "./ConceptRegistry.sol";
 import "./Assessment.sol";
 import "./Math.sol";
+import "./ConceptData.sol";
 
 //@purpose: To store concept data and create and manage assessments and members
-contract Concept {
-    address[] public parents; //The concepts that this concept is child to (ie: Calculus is child to Math)
-    bytes public data;
-    address public owner;
-    FathomToken public fathomToken;
-    ConceptRegistry conceptRegistry;
-    uint public lifetime;
-    mapping (address => bool) public assessmentExists;
-
-    uint[] propagationRates;
-
-    address[] public members;
-    mapping (address => MemberData) public memberData;
-
-    struct MemberData {
-        address recentAssessment;
-        uint index;
-        ComponentWeight[] weights;
-        mapping(address => uint) componentWeightIndex;
-    }
-
-    struct ComponentWeight {
-        uint weight;
-        uint date;
-    }
-
-    modifier onlyConcept() {
-        require(conceptRegistry.conceptExists(msg.sender));
-        _;
-    }
-
-    function Concept(address[] _parents, uint[] _propagationRates, uint _lifetime, bytes _data, address _owner) public {
-        require(_parents.length == _propagationRates.length);
-        conceptRegistry = ConceptRegistry(msg.sender);
-
-        for (uint j=0; j < _parents.length; j++) {
-            require(conceptRegistry.conceptExists(_parents[j]));
-            require(_propagationRates[j] < 1000);
-        }
-
-        propagationRates = _propagationRates;
-        parents = _parents;
-        data = _data;
-        lifetime = _lifetime;
-        owner = _owner;
-        fathomToken = FathomToken(conceptRegistry.fathomToken());
-    }
-
+contract Concept is ConceptData {
     modifier onlyOwner(){
         require(msg.sender == owner);
         _;
+    }
+
+    modifier onlyConcept() {
+      require(conceptRegistry.conceptExists(msg.sender));
+      _;
     }
 
     function transferOwnership(address _newOwner) onlyOwner() public {
@@ -67,8 +26,8 @@ contract Concept {
         lifetime = _newLifetime;
     }
 
-    function getMemberLength() public constant returns(uint) {
-        return members.length;
+    function getAvailableMemberLength() public constant returns(uint) {
+        return availableMembers.length;
     }
 
     function getParentsLength() public view returns(uint) {
@@ -82,6 +41,8 @@ contract Concept {
         if (conceptRegistry.distributorAddress() == msg.sender)
             {
                 this.addWeight(_user, _weight);
+                availableMembers.push(_user);
+                memberData[_user].index = availableMembers.length;
             }
     }
 
@@ -93,8 +54,8 @@ contract Concept {
     function toggleAvailability() public returns(bool success){
         if (getWeightAndUpdate(msg.sender) > 0) {
             if (memberData[msg.sender].index == 0) {
-                members.push(msg.sender);
-                memberData[msg.sender].index = members.length;
+                availableMembers.push(msg.sender);
+                memberData[msg.sender].index = availableMembers.length;
                 success = true;
             }
             else {
@@ -112,15 +73,15 @@ contract Concept {
         uint weight1;
         uint weight2;
         address randomMember1;
-        while (members.length > 1 && weight1 == 0) {
-            uint index1 = Math.getRandom(seed, members.length - 1);
-            randomMember1 = members[index1];
+        while (availableMembers.length > 1 && weight1 == 0) {
+            uint index1 = Math.getRandom(seed, availableMembers.length - 1);
+            randomMember1 = availableMembers[index1];
             weight1 = getWeightAndUpdate(randomMember1);
             seed++;
         }
-        while (members.length > 1 && weight2 == 0) {
-                uint index2 = Math.getRandom(seed * 2, members.length - 1);
-                address randomMember2 = members[index2];
+        while (availableMembers.length > 1 && weight2 == 0) {
+                uint index2 = Math.getRandom(seed * 2, availableMembers.length - 1);
+                address randomMember2 = availableMembers[index2];
                 weight2 = getWeightAndUpdate(randomMember2);
                 seed += 10;
         }
@@ -141,7 +102,7 @@ contract Concept {
         }
     }
 
-    //@purpose: check weight and update members array
+    //@purpose: check weight and update availableMembers array
     function getWeightAndUpdate(address _member) public returns(uint weight) {
         weight = getWeight(_member);
         if (weight == 0) {
@@ -150,18 +111,18 @@ contract Concept {
     }
 
     /*
-      @purpose: removes member at a given index from the members array by substituting they with
-      the last member and then decreasing the size of the members array
-      @returns the updated number of members in the concept
+      @purpose: removes member at a given index from the availableMembers array by substituting they with
+      the last member and then decreasing the size of the availableMembers array
+      @returns the updated number of availableMembers in the concept
     */
     function removeMember(address _member) private returns(uint){
         uint index = memberData[_member].index;
         if (index > 0){
-            members[index] = members[members.length - 1]; //THIS NEEDS TO BE TESTED!
+            availableMembers[index] = availableMembers[availableMembers.length - 1]; //THIS NEEDS TO BE TESTED!
             memberData[_member].index = 0;
-            members.length--;
+            availableMembers.length--;
         }
-        return members.length;
+        return availableMembers.length;
     }
 
     /*
@@ -171,16 +132,18 @@ contract Concept {
       @param: uint cost = the cost per assessor
       @param: uint size = the number of assessors
     */
+    event fb(address x); //TODO remove those
+    event fbConcept(address concept);
     function makeAssessment(uint cost, uint size, uint _waitTime, uint _timeLimit) public returns(bool) {
       require(size >= 5 && fathomToken.balanceOf(msg.sender)>= cost*size);
 
-      Assessment newAssessment = new Assessment(msg.sender, size, cost, _waitTime, _timeLimit);
+      Assessment newAssessment = conceptRegistry.proxyFactory().createAssessment(msg.sender, size, cost, _waitTime, _timeLimit);
       assessmentExists[address(newAssessment)] = true;
       fathomToken.takeBalance(msg.sender, address(newAssessment), cost*size, address(this));
 
       // get membernumber of mew to see whether there are more than 200 users in the system:
       address mewAddress = conceptRegistry.mewAddress();
-      uint nMemberInMew = Concept(mewAddress).getMemberLength();
+      uint nMemberInMew = Concept(mewAddress).getAvailableMemberLength();
       if (nMemberInMew < size * 5) {
         newAssessment.callAllFromMew(nMemberInMew, mewAddress);
       } else {
@@ -203,11 +166,6 @@ contract Concept {
     }
 
     function addWeight(address _assessee, uint _weight) public onlyConcept() {
-        if (memberData[_assessee].index == 0) {
-            members.push(_assessee);
-            memberData[_assessee].index = members.length;
-        }
-
         uint idx = memberData[_assessee].componentWeightIndex[msg.sender];
         if (idx > 0) {
             memberData[_assessee].weights[idx-1] = ComponentWeight(_weight, now + lifetime);

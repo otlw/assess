@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.23;
 
 import "./ConceptRegistry.sol";
 import "./Assessment.sol";
@@ -33,11 +33,11 @@ contract Minter {
     event NewEpochLength(uint oldLength, uint newLength);
     event TokensMinted(address recipient, uint amount);
 
-    function Minter(address _conceptRegistry, uint _epochLength, uint _reward) public {
+    constructor(address _conceptRegistry, uint _epochLength, uint _reward) public {
         conceptRegistry = ConceptRegistry(_conceptRegistry);
         epochLength = _epochLength;
         epochStart = now;
-        epochHash = uint(block.blockhash(block.number - 1));
+        epochHash = uint(blockhash(block.number - 1));
         reward = _reward;
         owner = msg.sender;
     }
@@ -80,7 +80,7 @@ contract Minter {
     )
         public view returns(uint distance)
     {
-        uint hash = uint(keccak256(_assessor, _assessment, _tokenSalt, _assessmentSalt));
+        uint hash = uint(keccak256(abi.encodePacked(_assessor, _assessment, _tokenSalt, _assessmentSalt)));
         distance = epochHash > hash ? epochHash - hash : hash - epochHash;
     }
 
@@ -89,7 +89,7 @@ contract Minter {
         if (fathomToken.mint(winner, reward)) {
             emit TokensMinted(winner, reward);
             epochStart = epochStart + epochLength;
-            epochHash = uint(block.blockhash(block.number - 1));
+            epochHash = uint(blockhash(block.number - 1));
             closestDistance = 2**256-1;
             winner = address(0x0);
         }
