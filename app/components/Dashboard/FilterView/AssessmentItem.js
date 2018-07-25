@@ -63,7 +63,9 @@ const cardButtonSecondary = styled('div').attrs({
 })`box-shadow: 0px 0px 0px 1px hsla(214, 100%, 31%, 0.1);
 `
 
-const ConceptName = styled('h3')`
+const ConceptName = styled('h3').attrs({
+  className: 'f3 mv1'
+})`
   color:${props => props.theme.dark};
   font-size:1.8em;
 `
@@ -114,15 +116,15 @@ export class AssessmentItem extends Component {
         h(cardContainerInfo, [
           h(cardTextTitle, [
             h('h6', {className: 'f5 mv1 ttu uppercase'}, 'Assessment'),
-            h(ConceptName, {className: 'f3 mv1'}, assessment.conceptData)
+            h(ConceptName, assessment.conceptData)
           ]),
           h(cardTextAssessee, [
-            h('h6', {className: 'assessee-title-here f5 mv1 ttu uppercase'}, h(AssesseeBadge, 'Assessee')),
-            h('h6', {className: 'assessee-name-here f5 mv1 ttu uppercase'}, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
+            h('h6', {className: 'f5 mv1 ttu uppercase'}, h(AssesseeBadge, 'Assessee')),
+            h('h6', {className: 'f5 mv1 ttu uppercase'}, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
           ])
         ]),
         h(cardContainerStatus, [
-          h(cardContainerProgressBar, {className: 'absolute flex items-center'}, [
+          h(cardContainerProgressBar, [
             h(stage > 0 ? cardProgressBarObjectComplete : (stage === 0 || stage === 1) ? cardProgressBarObjectActive : cardProgressBarObjectInactive),
             h(stage > 1 ? cardProgressBarObjectComplete : stage === 2 ? cardProgressBarObjectActive : cardProgressBarObjectInactive),
             h(stage > 2 ? cardProgressBarObjectComplete : stage === 3 ? cardProgressBarObjectActive : cardProgressBarObjectInactive),
@@ -130,7 +132,7 @@ export class AssessmentItem extends Component {
           ]),
           h(cardTextStatus, [
             h('h6', {className: 'f5 tl mv1 ttu uppercase'}, 'Status'),
-            h('h6', {className: 'status-message-here f5 tl lh-copy mv1 ttu uppercase'}, status)
+            h('h6', {className: 'f5 tl lh-copy mv1 ttu uppercase'}, status)
           ]),
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
             h(cardButtonSecondary, 'Hide'),
