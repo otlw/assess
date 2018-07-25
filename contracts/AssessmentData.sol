@@ -21,7 +21,8 @@ contract AssessmentData is ProxyData, AssessmentHeader {
         Confirmed,
         Committed,
         Done,
-        Burned
+        Burned,
+        Dissent
     }
 
     Concept public concept;
