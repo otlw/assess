@@ -153,24 +153,63 @@ try {
     console.log('ready')
     // Your node is now ready to use \o/
 
-    let description1="han" //{"ok":"buen"}
+    let hash1;
+
+    // node.files.add("Testing...", async function(err, hash) {
+    //   if (err) throw err; // If connection is closed
+    //   console.log(hash);  // "Qmc7CrwGJvRyCYZZU64aPawPj7CJ56vyBxdhxa38Dh1aKt"
+    //   hash1=hash
+    //   let verif=await node.files.catText(hash1)
+    //   console.log("verif",verif)
+    //   let decoded=Buffer.from(verif[0].hash, 'hex').toString('utf8')
+    //   console.log("decoded",decoded)
+    // });
+
+
+    let description1="youhou" //({"content":"han"}).toString() //{"ok":"buen"}
+    console.log("description1",description1)
     let descriptionBuffer1=(Buffer.from(description1, 'utf8')) //.toString('hex')
-    let resp=await node.files.add(descriptionBuffer1)
 
-    console.log(resp)
+    console.log("descriptionBuffer1",descriptionBuffer1)
+
+    let Buffer2=new Buffer("yeeha")
+    let Buffer3=Buffer.from("yeeha")
+    console.log("Buffer2",Buffer2)
+    console.log("Buffer2.toString()",Buffer2.toString())
+    console.log("Buffer3.toString()",Buffer3.toString())
+
+    const files = [
+      {
+        path: '/tmp/buffer1.txt',
+        content: descriptionBuffer1
+      }
+    ]
+
+    console.log([{
+      path:"ok.txt",
+      content:Buffer.from('Hello World')
+    }])
+
+    let resp=await node.files.add([{
+      path:"ok.txt",
+      content:Buffer.from('Hello World')
+    }])
+
+    console.log("resp",resp)
     let path=resp[0].path
-    console.log(path)
-    let verif=await node.files.get(path)
+    console.log("path",path)
+    let verif=await node.files.cat(path)
     console.log("verif",verif)
-    let decoded=Buffer.from(verif[0].hash, 'hex').toString('utf8')
-    console.log(decoded)
-    test()
+    let decoded=verif[0].hash.toString() //Buffer.from(verif[0].hash, 'hex').toString('utf8')
 
-    // stopping a node
-    node.stop(() => {
-      // node is now 'offline'
-    })
+    console.log("decoded",decoded)
+    // test()
+
+    // // stopping a node
+    // node.stop(() => {
+    //   // node is now 'offline'
+    // })
   })
 } catch (e) {
-      console.log('Erro:', e)
+      console.log('Error:', e)
 }
