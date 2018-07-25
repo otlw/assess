@@ -1,6 +1,3 @@
-const IPFS = require('ipfs')
-const Buffer = require('buffer/').Buffer
-
 // This script deploys two concepts and creates an assessments on them.
 // It uses the latest version of the fathom-network that has been deployed to the testnet by
 // fetching the addresses of the relevant contracts from the build-folder.
@@ -19,7 +16,12 @@ let fathomTokenContract
 let provider
 const network = process.argv[2]
 
-async function test () {
+//variables for the two descriptions
+let description1="we dem boiz";
+let description2="Hol' up hol' up, Hol' up, we dem boyz Hol' up, we dem boyz Hol' up, hol' up, hol' up, we makin' noise Hol' up, hol' up, hol' up, hol' up, hol' up"
+let ipfsHash1,ipfsHash2;
+
+async function create () {
   // const Eth = require('ethjs');
   const Web3 = require('web3')
 
@@ -145,71 +147,53 @@ async function test () {
   // console.log('assessment2 instanciated')
 }
 
-// Create the IPFS node instance
-const node = new IPFS()
-
-try {
-  node.on('ready', async () => {
-    console.log('ready')
-    // Your node is now ready to use \o/
-
-    let hash1;
-
-    // node.files.add("Testing...", async function(err, hash) {
-    //   if (err) throw err; // If connection is closed
-    //   console.log(hash);  // "Qmc7CrwGJvRyCYZZU64aPawPj7CJ56vyBxdhxa38Dh1aKt"
-    //   hash1=hash
-    //   let verif=await node.files.catText(hash1)
-    //   console.log("verif",verif)
-    //   let decoded=Buffer.from(verif[0].hash, 'hex').toString('utf8')
-    //   console.log("decoded",decoded)
-    // });
+//setup ipfs api
+    const ipfsAPI = require('ipfs-api');
+    const ipfs = ipfsAPI('ipfs.infura.io', '5001', {protocol: 'https'});
 
 
-    let description1="youhou" //({"content":"han"}).toString() //{"ok":"buen"}
-    console.log("description1",description1)
-    let descriptionBuffer1=(Buffer.from(description1, 'utf8')) //.toString('hex')
+async function uploadDescriptionToIPFS(string){
+  console.log("\n-------------- Storing string on IPFS : --------------")
+  try {
+    //Use a Buffer to send the string
+      var ifpsBuffer = Buffer.from(string);
+      console.log("String to be stored on IPFS : ",string)
+    //use ipfs-api to add file
+      let response= await ipfs.add([ifpsBuffer], {pin:false})
 
-    console.log("descriptionBuffer1",descriptionBuffer1)
+    //log path of stored file
+                  let path=response[0].path
+                  console.log("path of description : ",path)
+    //verify that description is correctly stord and log it
+                  let verif=await ipfs.get(path)
+                  let decoded=verif[0].content.toString() 
+                  console.log("Decoded string from IPFS : ",decoded)
 
-    let Buffer2=new Buffer("yeeha")
-    let Buffer3=Buffer.from("yeeha")
-    console.log("Buffer2",Buffer2)
-    console.log("Buffer2.toString()",Buffer2.toString())
-    console.log("Buffer3.toString()",Buffer3.toString())
+                  // return hash of description to be stored on contract
+                  console.log("-------------- string stored on IPFS --------------\n")
+                  return path;
+  } catch (e) {
+        console.log('Error:', e)
+  }
 
-    const files = [
-      {
-        path: '/tmp/buffer1.txt',
-        content: descriptionBuffer1
-      }
-    ]
-
-    console.log([{
-      path:"ok.txt",
-      content:Buffer.from('Hello World')
-    }])
-
-    let resp=await node.files.add([{
-      path:"ok.txt",
-      content:Buffer.from('Hello World')
-    }])
-
-    console.log("resp",resp)
-    let path=resp[0].path
-    console.log("path",path)
-    let verif=await node.files.cat(path)
-    console.log("verif",verif)
-    let decoded=verif[0].hash.toString() //Buffer.from(verif[0].hash, 'hex').toString('utf8')
-
-    console.log("decoded",decoded)
-    // test()
-
-    // // stopping a node
-    // node.stop(() => {
-    //   // node is now 'offline'
-    // })
-  })
-} catch (e) {
-      console.log('Error:', e)
 }
+
+let stringifiedJson1=JSON.stringify({
+  "description":description1,
+  "learn":"https://www.youtube.com/watch?v=UX6K7waag5Q"
+})
+
+let stringifiedJson2=JSON.stringify({
+  "description":description2,
+  "learn":"https://www.youtube.com/watch?v=UX6K7waag5Q"
+})
+
+async function execute(){
+  ipfsHash1= await uploadDescriptionToIPFS(stringifiedJson1)
+  ipfsHash2= await uploadDescriptionToIPFS(stringifiedJson2)
+  await create()
+  console.log("done !")
+  process.exit()
+}
+
+execute()
