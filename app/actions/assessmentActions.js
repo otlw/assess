@@ -245,8 +245,8 @@ export function fetchPayout (address, user) {
       toBlock: 'latest'
     }
     let pastEvents = await fathomTokenInstance.getPastEvents('Transfer', filter)
-    let payout = pastEvents[0].returnValues['_value']
-    dispatch(updateAssessmentVariable(address, 'payout', payout))
+    let payout = pastEvents[0] ? pastEvents[0].returnValues['_value'] : undefined
+    if (payout) dispatch(updateAssessmentVariable(address, 'payout', payout))
   }
 }
 

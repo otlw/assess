@@ -214,13 +214,14 @@ contract Assessment is AssessmentData {
         uint dissentBonus = 0;
         bool[] memory inAssessor = new bool[] (assessors.length);
         uint[] memory inAssessorPayout = new uint[] (assessors.length);
-        // pay out dissenting assessors their reduced stake and save how much stake to redistribute to whom
+        // pay out dissenting assessors their reduced stake, set their State to dissent and save how much stake to redistribute to whom
         for (uint i = 0; i < assessors.length; i++) {
             if (assessorState[assessors[i]] == State.Done) {
                 uint payoutValue;
                 bool dissenting;
                 (payoutValue, dissenting) = Math.getPayout(Math.abs(scores[assessors[i]] - finalScore), cost);
                 if (dissenting) {
+                    assessorState[assessors[i]] = State.Dissent;
                     dissentBonus += cost - payoutValue;
                     if (payoutValue > 0) {
                         fathomToken.transfer(assessors[i], payoutValue);

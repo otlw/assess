@@ -49,6 +49,8 @@ Open a console and run your private testnet:
 In another console, run the migration: 
 >'truffle migrate'
 
+All address in the testnet will be funded with AHAs and the first six will be
+added to the Mew Concept.
 
 ### Public Network
 
@@ -62,11 +64,12 @@ Your secrets.json-file should look like this:
 
 #### 1) Specify the initial accounts
 
-You need to provide at least one address to which tokens will be distributed to
-and which will be entered into the mew concept. To do so, create a file
-`./initialMembers.json` in the root-folder of the project.
+You need to provide at least one address for the initial accounts to the system.
+These will have tokens distributed them and will be entered into the mew
+concept. To do so, create a file `./initialMembers.json` in the root-folder of
+the project.
 
-Its content should look like this:t
+Its content should look like this
 
 >'["0xaccount1...", "0xaccount2...", ... ]'
 
