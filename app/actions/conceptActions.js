@@ -19,8 +19,21 @@ export function loadConceptsFromConceptRegistery () {
       let conceptInstance = getInstance.concept(getState(), address)
 
       // get and decode data
-      let data = await conceptInstance.methods.data().call()
-      let decodedConceptData = Buffer.from(data.slice(2), 'hex').toString('utf8')
+      let hash = await conceptInstance.methods.data().call()
+      let decodedConceptDataHash = Buffer.from(hash.slice(2), 'hex').toString('utf8')
+
+      //retrieve JSON from IPFS if the data is an IPFS hash
+      if (decodedConceptDataHash.substring(0,2)==="Qm"){
+        //setup ipfs api
+        const ipfsAPI = require('ipfs-api');
+        const ipfs = ipfsAPI('ipfs.infura.io', '5001', {protocol: 'https'});
+          //verify that description is correctly stord and log it
+                        let resp=await ipfs.get(decodedConceptDataHash)
+                        let decodedConceptData=resp[0].content.toString() 
+                        console.log("Decoded string from IPFS : ",decodedConceptData)
+      } else {
+        let decodedConceptData=decodedConceptDataHash
+      }
 
       return (concepts[address] = decodedConceptData)
     }))
