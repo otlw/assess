@@ -4,39 +4,8 @@ import "./Math.sol";
 import "./Concept.sol";
 import "./FathomToken.sol";
 
-contract Assessment {
-    address public assessee;
-    address[] assessors;
-
-    mapping (address => State) public assessorState;
-    State public assessmentStage;
-    enum State {
-        None,
-        Called,
-        Confirmed,
-        Committed,
-        Done,
-        Burned
-    }
-
-    Concept public concept;
-    FathomToken fathomToken;
-
-    uint public endTime;
-    // will keep track of timelimits for 1) latest possible time to confirm and
-    // 2) earliest time to reveal
-    uint public checkpoint;
-    uint public size;
-    uint public cost;
-
-    mapping(address => bytes32) commits;
-    uint public done; //counter how many assessors have committed/revealed their score
-    mapping(address => int128) scores;
-    int public finalScore;
-    bytes32 public salt; //used for token distribution
-    mapping (address => bytes) public data;
-
-    event DataChanged(address user, bytes oldData, bytes newData);
+/* contract defining logic and getter methods */
+contract Assessment is AssessmentDataInternal {
 
     modifier onlyConcept() {
         require(msg.sender == address(concept));
