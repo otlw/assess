@@ -112,6 +112,32 @@ function hashScoreAndSalt (_score, _salt) {
   ).toString('hex')
 }
 
+
+async function uploadDescriptionToIPFS(string){
+  console.log("\n-------------- Storing string on IPFS : --------------")
+  try {
+    //Use a Buffer to send the string
+      var ifpsBuffer = Buffer.from(string);
+      console.log("String to be stored on IPFS : ",string)
+    //use ipfs-api to add file
+      let response= await ipfs.add([ifpsBuffer], {pin:false})
+
+    //log path of stored file
+                  let path=response[0].path
+                  console.log("path of description : ",path)
+    //verify that description is correctly stord and log it
+                  let verif=await ipfs.get(path)
+                  let decoded=verif[0].content.toString() 
+                  console.log("Decoded string from IPFS : ",decoded)
+
+                  // return hash of description to be stored on contract
+                  console.log("-------------- string stored on IPFS --------------\n")
+                  return path;
+  } catch (e) {
+        console.log('Error while uploading to ipfs:', e)
+  }
+}
+
 async function test () {
   let conceptRegContract
   let fathomTokenContract
@@ -158,9 +184,14 @@ async function test () {
     }
   } else {
     console.log('Creating new concept....')
-    // encode a title for this concept
-    const msg1 = '0x' + (Buffer.from('Monkeying, ', 'utf8')).toString('hex')
-    let txResultConcept1 = await conceptRegContract.methods.makeConcept([mewAddress], [500], 60 * 60 * 24, msg1, accounts[0]).send({from: accounts[0], gas: 3200000})
+    // stringify data for this concept
+    const stringifiedJson = JSON.stringify({
+      name:"Monkeying",
+      description:"just foolin around...",
+      learnMore:"https://www.youtube.com/watch?v=b6m-XlOxjbk"
+    })
+    const conceptData= await uploadDescriptionToIPFS(stringifiedJson)
+    let txResultConcept1 = await conceptRegContract.methods.makeConcept([mewAddress], [500], 60 * 60 * 24, conceptData, accounts[0]).send({from: accounts[0], gas: 3200000})
     // use the tx to get deployed concept address
     conceptAddress = txResultConcept1.events.ConceptCreation.returnValues._concept
     console.log('New concept created as child of mew concept at ' + conceptAddress)

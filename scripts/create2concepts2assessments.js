@@ -178,13 +178,13 @@ async function uploadDescriptionToIPFS(string){
 let stringifiedJson1=JSON.stringify({
   "name":"Hol up... ",
   "description":description1,
-  "learn":"https://www.youtube.com/watch?v=UX6K7waag5Q"
+  "learnMore":"https://www.youtube.com/watch?v=UX6K7waag5Q"
 })
 
 let stringifiedJson2=JSON.stringify({
   "name":"Hol up !",
   "description":description2,
-  "learn":"https://www.youtube.com/watch?v=UX6K7waag5Q"
+  "learnMore":"https://www.youtube.com/watch?v=UX6K7waag5Q"
 })
 
 async function execute(){
