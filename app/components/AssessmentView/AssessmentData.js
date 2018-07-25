@@ -5,7 +5,7 @@ import ProgressButtonBar from './ProgressButtonBar'
 import FinalResultBar from './FinalResultBar.js'
 import { StageDisplayNames, Stage } from '../../constants.js'
 import { convertDate } from '../../utils.js'
-import { ViewMeetingPoint } from './MeetingPoint/MeetingPointEditBox.js'
+// Do we still need this? -> import { ViewMeetingPoint } from './MeetingPoint/MeetingPointEditBox.js'
 import styled from 'styled-components'
 var h = require('react-hyperscript')
 
@@ -118,7 +118,7 @@ const assessmentContainerStatus = styled('div').attrs({className: 'flex flex-row
 const assessmentLabelBody = styled('h6').attrs({className: 'f6 mid-gray mv0 fw4 ttu uppercase'})`
 `
 
-const assessmentTextBody = styled('h5').attrs({className: 'f5 gray mt2 mb0 fw4 gray'})`
+const assessmentTextBody = styled('h5').attrs({className: 'f5 gray mv2 mb0 fw4 gray'})`
 `
 
 const assessmentContainerDate = styled('div').attrs({className: 'flex flex-row w-50 items-center justify-between pa3 bl b--gray'})`
@@ -147,10 +147,6 @@ const assessmentRow = styled('div').attrs({className: 'flex flex-row w-100 mw5 j
 `
 
 const fathomButtonPrimary = styled('button').attrs({className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'})`
-`
-
-const fathomButtonSecondary = styled('button').attrs({className: 'flex self-start ph4 pv2 fw4 f5 items-center align-center br-pill dark-blue'})`
-box-shadow: 0px 0px 0px 1px hsla(214, 100%, 31%, 0.1);
 `
 
 const assessmentFooter = styled('div').attrs({className: 'flex flex-row w-100'})`
