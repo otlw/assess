@@ -1,4 +1,4 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.23;
 
 import "./Concept.sol";
 import "./ConceptRegistry.sol";
@@ -11,7 +11,7 @@ contract Distributor{
     address[] public memberAddresses;
     uint[] public memberWeights;
 
-    function Distributor(uint _nInitialMembers, address _conceptRegistry) public {
+    constructor(uint _nInitialMembers, address _conceptRegistry) public {
         nInitialMembers = _nInitialMembers;
         conceptRegistry = _conceptRegistry;
     }
