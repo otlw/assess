@@ -2,6 +2,7 @@ var Math = artifacts.require('./Math.sol')
 var Concept = artifacts.require('./Concept.sol')
 var Assessment = artifacts.require('./Assessment.sol')
 var ConceptRegistry = artifacts.require('./ConceptRegistry.sol')
+var ProxyFactory = artifacts.require('./ProxyFactory.sol')
 var FathomToken = artifacts.require('./FathomToken.sol')
 var Distributor = artifacts.require('./Distributor.sol')
 var Minter = artifacts.require('./Minter.sol')
@@ -13,7 +14,13 @@ module.exports = function (deployer) {
     let accounts = await getAccounts(deployer.network, web3)
     let mewAccounts = await getAccounts(deployer.network, web3, true)
     await deployer.deploy(Math)
-    await deployer.link(Math, [Assessment, Concept, ConceptRegistry])
+    await deployer.link(Math, [Assessment, Concept, ConceptRegistry, ProxyFactory])
+
+    // set up the proxy factory
+    await deployer.deploy(Assessment)
+    await deployer.deploy(Concept)
+    await deployer.deploy(ProxyFactory, Concept.address, Assessment.address)
+
     await deployer.deploy(ConceptRegistry)
     await deployer.deploy(Distributor, mewAccounts.length, ConceptRegistry.address)
 
@@ -33,6 +40,6 @@ module.exports = function (deployer) {
     await minter.init(FathomToken.address)
 
     let conceptRegistry = await ConceptRegistry.deployed()
-    await conceptRegistry.init(FathomToken.address, Distributor.address)
+    await conceptRegistry.init(FathomToken.address, Distributor.address, ProxyFactory.address)
   })
 }
