@@ -15,6 +15,7 @@ let fathomTokenContract
 
 let provider
 const network = process.argv[2]
+let printGasAnalysis = process.argv[2] === '--gas'
 
 //variables for the two descriptions
 let description1="we dem boiz";
@@ -133,6 +134,41 @@ async function create () {
   let events2 = await fathomTokenContract.getPastEvents({fromBlock: 0, toBlock: 'latest'})
   const assessmentAddress2 = events2[events2.length - 1].returnValues.sender
   console.log('New assessment deployed from concept1 at ' + assessmentAddress2)
+
+  if (printGasAnalysis) {
+    console.log('Gas cost')
+    let proxied = false
+    let toUpdate = proxied ? 'postProxy' : 'preProxy'
+    web3.eth.getGasPrice()
+      .then(function (gasPrice) {
+        // filling in values from proxied and unproxied contracts
+        let costs = {
+          makeAssessment: {
+            preProxy: { gasUsed: 2177785, ether: 0.0021777850000000002, dollar: 0.9081363450000001 },
+            postProxy: { gasUsed: 481456, ether: 0.000481456, dollar: 0.200767152 },
+            gain: 4.52333131168788
+          },
+          createConcept: {
+            preProxy: { gasUsed: 3168506, ether: 0.003168506, dollar: 1.3212670020000001 },
+            postProxy: { gasUsed: 319011, ether: 0.000319011, dollar: 0.133027587 },
+            gain: 9.93227819730354
+          },
+          etherPrice: 417, // as of july 17 2018
+          gasPrice: 1000000000 // safe low cost from eth gas station july 17 2018
+          // gasPrice: gasPrice // makes only sense when on testnet
+        }
+        // filling in new values for whatever should be updated (see lines 135 & 136)
+        costs.createConcept[toUpdate].gasUsed = txResultConcept1.gasUsed
+        costs.createConcept[toUpdate].ether = txResultConcept1.gasUsed * web3.utils.fromWei(costs.gasPrice.toString(), 'ether')
+        costs.createConcept[toUpdate].dollar = costs.createConcept.preProxy.ether * costs.etherPrice
+        costs.makeAssessment[toUpdate].gasUsed = txResultAssessment1.gasUsed
+        costs.makeAssessment[toUpdate].ether = txResultAssessment1.gasUsed * web3.utils.fromWei(costs.gasPrice.toString(), 'ether')
+        costs.makeAssessment[toUpdate].dollar = costs.makeAssessment.preProxy.ether * costs.etherPrice
+        costs.createConcept.gain = costs.createConcept.preProxy.gasUsed / costs.createConcept.postProxy.gasUsed
+        costs.makeAssessment.gain = costs.makeAssessment.preProxy.gasUsed / costs.makeAssessment.postProxy.gasUsed
+        console.log(costs)
+      })
+  }
 
   // Instantiating the assessment contracts...
   // let assessmentArtifact = require('./build/contracts/Assessment.json')

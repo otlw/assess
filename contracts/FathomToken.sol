@@ -1,4 +1,4 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.4.23;
 
 import "./Concept.sol";
 import "./ConceptRegistry.sol";
@@ -33,7 +33,7 @@ contract FathomToken is StandardToken{
       7 = Assessment Finished,
     */
 
-    function FathomToken(address _conceptRegistry, address _initialUser, uint _initialBalance, address _minter) public {
+    constructor(address _conceptRegistry, address _initialUser, uint _initialBalance, address _minter) public {
         owner = msg.sender;
         conceptRegistry = ConceptRegistry(_conceptRegistry);
         minter = _minter;
