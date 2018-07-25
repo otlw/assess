@@ -28,12 +28,14 @@ module.exports = function (deployer) {
     let tokenReward = 100
     await deployer.deploy(Minter, ConceptRegistry.address, epochLength, tokenReward)
 
-    let initialAhaAccount = (await web3.eth.accounts)[0]
+    let initialFundedAccount = (await new Promise(resolve => {
+      web3.eth.getAccounts((err, accounts) => resolve(accounts[0]))
+    }))
     let initialAmount = 10000000000 * (accounts.length)
     await deployer.deploy(
       FathomToken,
       ConceptRegistry.address,
-      initialAhaAccount,
+      initialFundedAccount,
       initialAmount,
       Minter.address)
     let minter = await Minter.deployed()
