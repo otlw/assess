@@ -9,7 +9,7 @@ export const NavTabs = () => {
   }
 
   return h('div', [
-    h(NavLink, { to: '/concepts/', activeStyle: activeStyle}, 'Concepts '),
+    h(NavLink, { to: '/concepts/', activeStyle: activeStyle }, 'Concepts '),
     h(NavLink, { to: '/', activeStyle: activeStyle, exact: true }, 'Assessments '),
     h(NavLink, { to: '/certificates/', activeStyle: activeStyle }, 'Certificates ')
   ])
