@@ -1,15 +1,6 @@
-import AssessmentList from '../Dashboard/FilterView/AssessmentList.js'
-
+import AssessmentList from '../AssessmentList.js'
 import h from 'react-hyperscript'
-
-const Stage = { // TODO import from constatns instead
-  None: 0,
-  Called: 1,
-  Confirmed: 2,
-  Committed: 3,
-  Done: 4,
-  Burned: 5
-}
+import { Stage } from '../../constants.js'
 
 export const CertificateList = (props) => {
   let userAddress = props.userAddress

@@ -1,20 +1,9 @@
-import AssessmentList from './AssessmentList'
-
+import AssessmentList from '../AssessmentList'
+import { Stage } from '../../constants.js'
 import h from 'react-hyperscript'
-
-const Stage = {
-  None: 0,
-  Called: 1,
-  Confirmed: 2,
-  Committed: 3,
-  Done: 4,
-  Burned: 5
-}
 
 export const AssessmentFilterView = (props) => {
   let userAddress = props.userAddress
-
-  // map assessmentList from assessments object from redux store
   let assessmentAsList = Object.values(props.assessments)
 
   let assessmentLists = {

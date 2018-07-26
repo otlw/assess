@@ -2,6 +2,7 @@ import { Component } from 'react'
 import { connect } from 'react-redux'
 import Header from './components/Header'
 import NavTabs from './components/NavTabs/NavTabs.js'
+// import AssessmentFilterView from './components/AssessmentFilterView'
 import Dashboard from './components/Dashboard'
 import {AssessmentView} from './components/AssessmentView'
 import CertificateList from './components/CertificateList'
@@ -46,6 +47,7 @@ export class App extends Component {
       // if there arent anydeployed contract on this network
       warningScreen = h('p', "You are connected to a network on which you haven't deployed contracts. Please use an appropriate script")
     } // else, just display the normal App
+    console.log('props in appcontainer', this.props)
 
     return (
       h(HashRouter, [
@@ -55,11 +57,9 @@ export class App extends Component {
               h(Header),
               this.props.loadedWeb3
                 ? (h('div', {style: {margin: '8px'}}, [
-                  h(NavTabs),
-                  h(Route, {exact: true, path: '/', component: Dashboard}), // AssessmentList
-                  // TODO after concept-creation is merged in
-                  // CertificateList
-                  h(Route, {path: '/concepts/', render: () => h('div', 'monkeys all the way!')}),
+                  (!this.props.showNavTabs ? h(NavTabs) : null),
+                  h(Route, {exact: true, path: '/', component: Dashboard}), // TODO: Once the AssessmentCreation MR has been merged, replace this component with AssessmentFilterView
+                  h(Route, {path: '/concepts/', render: () => h('div', 'monkeys all the way!')}), // TODO after concept-creation is merged in
                   h(Route, {path: '/assessment/:id', component: AssessmentView}),
                   h(Route, {path: '/certificates/', component: CertificateList})
                 ]))
@@ -74,7 +74,8 @@ export class App extends Component {
 const mapStateToProps = state => {
   return {
     loadedWeb3: state.ethereum.isConnected && state.ethereum.userAddress && state.ethereum.networkID && state.ethereum.webSocketIsConnected,
-    mainDisplay: state.navigation.mainDisplay
+    mainDisplay: state.navigation.mainDisplay,
+    showNavTabs: state.navigation.showNavTabs
   }
 }
 

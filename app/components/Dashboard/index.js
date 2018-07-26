@@ -1,12 +1,13 @@
 import { Component } from 'react'
 import h from 'react-hyperscript'
-
-import FilterView from './FilterView'
+import CreationBar from './CreationBar'
+import AssessmentFilterView from '../AssessmentFilterView'
 
 export class AssessmentDashboardApp extends Component {
   render () {
     return h('div', {style: {textAlign: 'center'}}, [
-      h(FilterView)
+      h(CreationBar),
+      h(AssessmentFilterView)
     ])
   }
 }
