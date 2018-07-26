@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import { connect } from 'react-redux'
 import Header from './components/Header'
-import NavTabs from './components/NavTabs/NavTabs.js'
+import {NavTabs} from './components/NavTabs'
 // import AssessmentFilterView from './components/AssessmentFilterView'
 import Dashboard from './components/Dashboard'
 import CertificateList from './components/CertificateList'
