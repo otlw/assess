@@ -15,22 +15,20 @@ export const AssessmentFilterView = (props) => {
   let userAddress = props.userAddress
 
   // map assessmentList from assessments object from redux store
-  let assessmentList = Object.keys(props.assessments).map((assessmentAddress) => { //TODO: no need to add address field. just turn it into list
-    return {...props.assessments[assessmentAddress], address: assessmentAddress}
-  })
+  let assessmentAsList = Object.values(props.assessments)
 
   let assessmentLists = {
-    Current: assessmentList.filter(assessment => {
+    Current: assessmentAsList.filter(assessment => {
       if (props.userAddress === assessment.assessee) {
         return assessment.stage < Stage.Done
       }
       return assessment.stage > Stage.Called && assessment.stage < Stage.Done
     }),
-    Available: assessmentList.filter(assessment => {
+    Available: assessmentAsList.filter(assessment => {
       return (props.userAddress !== assessment.assessee &&
               assessment.stage === Stage.Called)
     }),
-    Completed: assessmentList.filter(assessment => assessment.stage === Stage.Done)
+    Completed: assessmentAsList.filter(assessment => assessment.stage === Stage.Done)
   }
 
   // return view

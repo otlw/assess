@@ -13,14 +13,7 @@ const Stage = { // TODO import from constatns instead
 
 export const CertificateList = (props) => {
   let userAddress = props.userAddress
-
-  // map assessmentList from assessments object from redux store
-  let assessmentList = Object.keys(props.assessments).map((assessmentAddress) => { //TODO just use the list
-    return {...props.assessments[assessmentAddress], address: assessmentAddress}
-  })
-  console.log('assessmentList ', assessmentList )
-
-  let completedAsAssessee = assessmentList.filter(
+  let completedAsAssessee = Object.values(props.assessments).filter(
     assessment =>
       assessment.stage === Stage.Done &&
       assessment.assessee === props.userAddress &&

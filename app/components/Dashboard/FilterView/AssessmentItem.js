@@ -111,7 +111,6 @@ export class AssessmentItem extends Component {
     }
 
     /* start styling below */
-    console.log('in item: ', assessment.address)
     return (
       h(cardContainer, [
         h(cardContainerInfo, [
