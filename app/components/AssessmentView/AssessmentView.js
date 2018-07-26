@@ -5,7 +5,7 @@ import ProgressAndInputBar from './ProgressAndInputBar'
 import FinalResultBar from './FinalResultBar.js'
 import { StageDisplayNames, Stage } from '../../constants.js'
 import { convertDate } from '../../utils.js'
-import { ViewMeetingPoint } from './MeetingPoint/MeetingPointEditBox.js'
+// Do we still need this? -> import { ViewMeetingPoint } from './MeetingPoint/MeetingPointEditBox.js'
 import styled from 'styled-components'
 var h = require('react-hyperscript')
 
@@ -24,61 +24,70 @@ export class AssessmentData extends Component {
       return (
         h(SuperFrame, [
           // holds role and concept title
-          h(Header, [
-            h(Role, assessment.assessee !== this.props.userAddress ? 'Assessing' : 'Getting assessed in'),
-            h(ConceptName, assessment.conceptData)
+          h(assessmentHeader, [
+            h(assessmentLabelRole, assessment.assessee !== this.props.userAddress ? 'Assessing' : 'Getting assessed in'),
+            h(assessmentTextTitle, assessment.conceptData)
           ]),
           // indicates status of assesssment
-          h(SubHeader, [
-            h(StatusIndicator, [
-              h(StatusKey, 'STATUS'),
-              h(StatusValue, assessment.stage === Stage.Done ? 'Assessment Complete' : statusString)
+          h(assessmentRowSubHeader, [
+            h(assessmentContainerStatus, [
+              h(assessmentLabelBody, 'STATUS'),
+              h(assessmentTextBody, assessment.stage === Stage.Done ? 'Assessment Complete' : statusString)
             ]),
-            h(StatusIndicator, [
-              h(StatusKey, assessment.stage === Stage.Done ? 'Completed on: ' : 'Due Date:'),
-              h(StatusValue, convertDate(assessment.checkpoint))
+            h(assessmentContainerDate, [
+              h(assessmentLabelBody, assessment.stage === Stage.Done ? 'Completed on: ' : 'Due Date:'),
+              h(assessmentTextBody, convertDate(assessment.checkpoint))
             ])
           ]),
+
           // basic info
-          h(DataBox, [
-            h(InfoBox, [
-              h(InfoField, [
-                h(InfoKey, 'Assessee'),
-                h(InfoValue, assessment.assessee)
+          h(assessmentContainerBody, [
+            h(assessmentColumnLeft, [
+              h(assessmentObjectText, [
+                h(assessmentLabelBody, 'Assessee'),
+                h(assessmentTextBody, assessment.assessee)
               ]),
-              h(InfoField, [
-                h(InfoKey, 'Fee'),
-                h(InfoValue, assessment.cost + 'AHA')
+              h(assessmentObjectText, [
+                h(assessmentLabelBody, 'Fee'),
+                h(assessmentTextBody, assessment.cost + 'AHA')
               ]),
-              h(InfoField, [
-                h(InfoKey, 'Meeting Point'),
-                h(InfoValue, assessment.data || '< no meeting point set >'),
-                h(ViewMeetingPoint, {href: assessment.data, disabled: assessment.data === ''}, 'View'),
-                assessment.assessee === this.props.userAddress
-                  ? h(MeetingPointEditBox, {
-                    assessee: assessment.assessee,
-                    address: assessment.address
-                  }) // TODO make this appear right of GotoMeetingPointButton
-                  : null
+              h(assessmentObjectText, [
+                h(assessmentLabelBody, 'Meeting Point'),
+                h(assessmentTextBody, assessment.data || 'You haven\'t set a meeting point'),
+                h(assessmentRow, [
+                  h(fathomButtonPrimary, {href: assessment.data, disabled: assessment.data === ''}, 'View'),
+                  assessment.assessee === this.props.userAddress
+                    ? h(MeetingPointEditBox, { // same here ALEX
+                      assessee: assessment.assessee,
+                      address: assessment.address
+                    })
+                    : null
+                ])
               ])
             ]),
-            h(AssessorBox, [
-              h(AssessorsDone, 'Assessors'),
-              h(AssessorList, {assessors: assessment.assessors})
+            h(assessmentColumnRight, [
+              h(assessmentObjectTextRight, [
+                h(assessmentLabelBody, 'Assessors'),
+                h(assessmentObjectText, [
+                  h(AssessorList, {assessors: assessment.assessors}) // ALEX, i meddled here
+                ])
+              ])
             ])
           ]),
-          // progress-buttons
-          assessment.stage === Stage.Done
-            ? h(FinalResultBar, {
-              address: assessment.address,
-              userAddress: this.props.userAddress,
-              userStage: assessment.userStage,
-              assessee: assessment.assessee,
-              payout: assessment.payout,
-              finalScore: assessment.finalScore,
-              cost: assessment.cost
-            })
-            : h(ProgressAndInputBar, {address: assessment.address})
+          // progress-button or FinalResultBor
+          h(assessmentFooter, [
+            assessment.stage === Stage.Done
+              ? h(FinalResultBar, {
+                address: assessment.address,
+                userAddress: this.props.userAddress,
+                userStage: assessment.userStage,
+                assessee: assessment.assessee,
+                payout: assessment.payout,
+                finalScore: assessment.finalScore,
+                cost: assessment.cost
+              })
+              : h(ProgressAndInputBar, {address: assessment.address})
+          ])
         ])
       )
     }
@@ -87,91 +96,58 @@ export class AssessmentData extends Component {
 
 export default AssessmentData
 
-export const SuperFrame = styled('div')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+const SuperFrame = styled('div').attrs({className: 'flex flex-column w-100 mw8 bg-white shadow-4'})`
+font-family:'system-ui',sans-serif;
 `
 
-export const Header = styled('div')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+const assessmentHeader = styled('div').attrs({className: 'flex flex-column w-100 pv4 ph3 bg-lightest-blue'})`
 `
 
-export const Role = styled('div')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+const assessmentLabelRole = styled('h6').attrs({className: 'f6 tl ttu uppercase dark-blue mv0 fw4'})`
 `
 
-export const ConceptName = styled('div')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+const assessmentTextTitle = styled('h2').attrs({className: 'f2 tl ttu uppercase dark-blue mt2 mb0 fw4'})`
 `
 
-export const SubHeader = styled('div')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
-`
-export const StatusIndicator = styled('span')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+const assessmentRowSubHeader = styled('div').attrs({className: 'flex flex-row w-100 items-center bt bb b--gray'})`
 `
 
-export const StatusKey = styled('span')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+const assessmentContainerStatus = styled('div').attrs({className: 'flex flex-row w-50 items-center justify-between pa3'})`
 `
 
-export const StatusValue = styled('span')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+const assessmentLabelBody = styled('h6').attrs({className: 'f6 mid-gray mv0 fw4 ttu uppercase'})`
 `
 
-export const DataBox = styled('div')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+const assessmentTextBody = styled('h5').attrs({className: 'f5 gray mv2 mb0 fw4 gray'})`
 `
 
-export const InfoBox = styled('span')`
-  display: inline-block;
-  vertical-align:top
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+const assessmentContainerDate = styled('div').attrs({className: 'flex flex-row w-50 items-center justify-between pa3 bl b--gray'})`
 `
 
-export const InfoField = styled('div')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+const assessmentContainerBody = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-between'})`
 `
 
-export const InfoKey = styled('div')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+const assessmentColumnLeft = styled('div').attrs({className: 'flex flex-column w-50 items-around justify-around pa3'})`
 `
 
-export const InfoValue = styled('div')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+const assessmentObjectText = styled('div').attrs({className: 'flex flex-column w-100  items-start justify-center self-start mv3'})`
 `
 
-export const AssessorBox = styled('span')`
-  display: inline-block;
-  vertical-align:top
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+const assessmentObjectTextRight = styled('div').attrs({className: 'flex flex-column w-100  items-end justify-center self-start mv3'})`
 `
 
-export const AssessorsDone = styled('div')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+// Commented out as we may need to re-implement this very soon
+// const assessmentListAssessors = styled('div').attrs({className: 'flex flex-column w-100 h-100
+// self-start  items-start justify-center self-start mv3'})``
+
+const assessmentColumnRight = styled('div').attrs({className: 'flex flex-column w-50 h-100 self-start items-start justify-around pa3'})`
 `
 
-export const AssessorNames = styled('div')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+const assessmentRow = styled('div').attrs({className: 'flex flex-row w-100 mw5 justify-between mt3 '})`
 `
 
-export const MeetingPointButton = styled('button')`
-  display: inline-block;
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+const fathomButtonPrimary = styled('button').attrs({className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'})`
+`
+
+const assessmentFooter = styled('div').attrs({className: 'flex flex-row w-100'})`
 `
