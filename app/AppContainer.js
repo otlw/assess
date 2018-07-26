@@ -1,6 +1,7 @@
 import { Component } from 'react'
 import { connect } from 'react-redux'
 import Header from './components/Header'
+import NavTabs from './components/NavTabs/NavTabs.js'
 import Dashboard from './components/Dashboard'
 import {AssessmentView} from './components/AssessmentView'
 import h from 'react-hyperscript'
@@ -53,8 +54,13 @@ export class App extends Component {
               h(Header),
               this.props.loadedWeb3
                 ? (h('div', {style: {margin: '8px'}}, [
-                  h(Route, {exact: true, path: '/', component: Dashboard}),
-                  h(Route, {path: '/assessment/:id', component: AssessmentView})
+                  h(NavTabs),
+                  h(Route, {exact: true, path: '/', component: Dashboard}), // AssessmentList
+                  // TODO after concept-creation is merged in
+                  // CertificateList
+                  h(Route, {path: '/assessment/:id', component: AssessmentView}),
+                  h(Route, {path: '/certificates/', render: () => h('div', 'testcerts')}),
+                  h(Route, {path: '/concepts/', render: () => h('div', 'monkeys all the way!')})
                 ]))
                 : h('div', 'Loading web3')
             ]) : warningScreen

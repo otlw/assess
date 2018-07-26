@@ -7,7 +7,7 @@ import CreationBar from './CreationBar'
 export class AssessmentDashboardApp extends Component {
   render () {
     return h('div', {style: {textAlign: 'center'}}, [
-      h(CreationBar),
+      // h(CreationBar),
       h(FilterView)
     ])
   }
