@@ -59,7 +59,7 @@ export class Header extends Component {
             h(key, 'Your Address: '),
             h(value, this.props.userAddress.substring(0, 8) + '...' + this.props.userAddress.substring(35, 42))
           ]),
-          h(key, (this.props.AhaBalance / 1e9).toString().substring(0, 6) + ' AHA')
+          h(key, Math.round(this.props.AhaBalance / 1e9) + ' AHA')
         ])
       ])
     )
