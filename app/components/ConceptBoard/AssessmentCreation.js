@@ -84,7 +84,8 @@ export class AssessmentCreation extends Component {
                   onChange: this.setAmountPerAssessor.bind(this),
                   value: this.state.amountPerAssessor,
                   type: 'number',
-                  step: 1
+                  step: 1,
+                  min: 1
                 }),
                 h(AHAUnit, 'AHA')
               ])

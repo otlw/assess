@@ -38,6 +38,7 @@ export function receiveConcepts (concepts) {
 
 // combination of two functions above for directly creating assessments from conceptList
 export function loadConceptContractAndCreateAssessment (address, cost, callback) {
+  // TODO handle the case where cost===0 (that throws an exception)
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let conceptInstance = getInstance.concept(getState(), address)
@@ -62,6 +63,7 @@ export function loadConceptContractAndCreateAssessment (address, cost, callback)
 
 // estimate the gas of the transaction above
 export function estimateAssessmentCreationGasCost (address, cost, cllbck) {
+  // TODO handle the case where cost===0 (that throws an exception)
   return async (dispatch, getState) => {
     // instanciate Concept Contract
     let userAddress = getState().ethereum.userAddress
