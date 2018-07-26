@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import MeetingPointEditBox from './MeetingPoint/'
 import AssessorList from './AssessorList.js'
-import ProgressButtonBar from './ProgressButtonBar'
+import ProgressAndInputBar from './ProgressAndInputBar'
 import FinalResultBar from './FinalResultBar.js'
 import { StageDisplayNames, Stage } from '../../constants.js'
 import { convertDate } from '../../utils.js'
@@ -86,7 +86,7 @@ export class AssessmentData extends Component {
                 finalScore: assessment.finalScore,
                 cost: assessment.cost
               })
-              : h(ProgressButtonBar, {address: assessment.address})
+              : h(ProgressAndInputBar, {address: assessment.address})
           ])
         ])
       )

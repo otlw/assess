@@ -6,7 +6,7 @@ import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
 import styled from 'styled-components'
 
 // component to display an individual assessor slot address and options
-export class ProgressButtonBar extends Component {
+export class ProgressAndInputBar extends Component {
   constructor (props) {
     super(props)
 
@@ -17,7 +17,7 @@ export class ProgressButtonBar extends Component {
     // state is set to default score-salt only if the cache is empty for that assessment address
     if (cacheCommitData) {
       this.state = {
-        view: 'progressView',
+        view: this.props.inputType || 'progressView',
         score: Number(cacheCommitData.score),
         salt: cacheCommitData.salt,
         invalidScoreRange: false
@@ -97,53 +97,97 @@ export class ProgressButtonBar extends Component {
     }
   }
 
+  storeData () {
+    this.props.storeDataOnAssessment(this.props.assessmentAddress, this.state.meetingPoint)
+    this.props.dispatchSetInputBar('')
+  }
+
+  setMeetingPointToBeStored (e) {
+    this.setState({
+      meetingPoint: e.target.value.toString(),
+      action: this.storeData
+    })
+  }
+
+  closeInputBar () {
+    if (this.props.inputType) this.props.dispatchSetInputBar('')
+    else this.setProgressView()
+  }
+
   render () {
-    if (this.state.view === 'progressView') {
-      // show overview
-      return (
-        h(ProgressButtonBox, [
-          h(PastOrPresentPhaseButton, {
-            onClick: this.setStakeAction.bind(this),
-            disabled: !(this.props.stage === Stage.Called && this.props.stage === this.props.userStage)
-          }, '1. Stake'),
-          h(this.props.stage >= Stage.Confirmed ? PastOrPresentPhaseButton : FuturePhaseButton, {
-            onClick: this.setCommitAction.bind(this),
-            disabled: !(this.props.stage === Stage.Confirmed && this.props.stage === this.props.userStage)
-          }, '2. Commit'),
-          h(this.props.stage >= Stage.Committed ? PastOrPresentPhaseButton : FuturePhaseButton, {
-            onClick: this.setRevealAction.bind(this),
-            disabled: !(this.props.stage === Stage.Committed && this.props.stage === this.props.userStage)
-          }, '3. Reveal'),
-          this.props.transactions
-            ? h(TxList, {transactions: this.props.transactions})
-            : null
-        ])
-      )
-    } else {
-      // show stageActionView
-      return (
-        h(ProgressButtonBox, [
-          h(CloseButton, {onClick: this.setProgressView.bind(this)}, 'X'),
-          h(StageName, this.state.view + ':'),
-          this.props.stage === Stage.Confirmed
-            ? (
-              h('div', {style: {display: 'inline-block'}}, [
-                h(Feedback, {invalidScoreRange: this.state.invalidScoreRange}, 'must be 0% <= score <= 100%, 0.5% granularity'),
-                h(CommitInput, {
-                  placeholder: 'What score do you want to give the assessee?',
-                  step: 0.5,
-                  type: 'number',
-                  onChange: this.setScore.bind(this)})
-              ]))
-            : h(StageDescriptor, this.state.displayText),
-          h(SubmitButton, {onClick: this.state.action.bind(this)}, 'Go')
-        ])
-      )
+    let view = this.props.inputType || this.state.view
+    switch (view) {
+      case 'progressView': {
+        // show overview with differently colored Buttons that indicate the activity of the stage
+        // and the general progress of the assessment
+        return (
+          h(ProgressButtonBox, [
+            // Stake Button
+            h(PastOrPresentPhaseButton, {
+              onClick: this.setStakeAction.bind(this),
+              disabled: !(this.props.stage === Stage.Called && this.props.stage === this.props.userStage)
+            }, '1. Stake'),
+            h(this.props.stage >= Stage.Confirmed ? PastOrPresentPhaseButton : FuturePhaseButton, {
+              onClick: this.setCommitAction.bind(this),
+              disabled: !(this.props.stage === Stage.Confirmed && this.props.stage === this.props.userStage)
+            }, '2. Commit'),
+            h(this.props.stage >= Stage.Committed ? PastOrPresentPhaseButton : FuturePhaseButton, {
+              onClick: this.setRevealAction.bind(this),
+              disabled: !(this.props.stage === Stage.Committed && this.props.stage === this.props.userStage)
+            }, '3. Reveal'),
+            this.props.transactions
+              ? h(TxList, {transactions: this.props.transactions})
+              : null
+          ])
+        )
+      }
+      case 'Stake':
+      case 'Commit':
+      case 'Reveal': {
+        // show actionView, where the user can input data and interact with the assessment
+        return (
+          h(ProgressButtonBox, [
+            h(CloseButton, {onClick: this.closeInputBar.bind(this)}, 'X'),
+            h(StageName, this.state.view + ':'),
+            this.props.stage === Stage.Confirmed
+              ? (
+                h('div', {style: {display: 'inline-block'}}, [
+                  h(Feedback, {invalidScoreRange: this.state.invalidScoreRange}, 'must be 0% <= score <= 100%, 0.5% granularity'),
+                  h(CommitInput, {
+                    placeholder: 'What score do you want to give the assessee?',
+                    step: 0.5,
+                    type: 'number',
+                    onChange: this.setScore.bind(this)})
+                ]))
+              : h(StageDescriptor, this.state.displayText),
+            h(SubmitButton, {onClick: this.state.action.bind(this)}, 'Go')
+          ])
+        )
+      }
+      case 'editMeetingPoint': {
+        // add Meeting Point
+        return (
+          h(ProgressButtonBox, [
+            h(CloseButton, {onClick: this.closeInputBar.bind(this)}, 'X'),
+            h(StageName, 'Add a meeting Point:'),
+            h('div', {style: {display: 'inline-block'}}, [
+              h(CommitInput, {
+                placeholder: 'e.g. a gitLab repo',
+                type: 'string',
+                onChange: this.setMeetingPointToBeStored.bind(this) })
+            ]),
+            h(SubmitButton, {onClick: this.storeData.bind(this)}, 'Submit')
+          ])
+        )
+      }
+      default:
+        console.log('ERROR: invalid view type', this.state.view)
+        return h('div', 'Ooopsi, something went wrong here!')
     }
   }
 }
 
-export default ProgressButtonBar
+export default ProgressAndInputBar
 
 export const ProgressButtonBox = styled('div')`
   padding: 0.25em 1em;
