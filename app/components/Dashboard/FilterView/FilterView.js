@@ -15,7 +15,7 @@ export const AssessmentFilterView = (props) => {
   let userAddress = props.userAddress
 
   // map assessmentList from assessments object from redux store
-  let assessmentList = Object.keys(props.assessments).map((assessmentAddress) => {
+  let assessmentList = Object.keys(props.assessments).map((assessmentAddress) => { //TODO: no need to add address field. just turn it into list
     return {...props.assessments[assessmentAddress], address: assessmentAddress}
   })
 

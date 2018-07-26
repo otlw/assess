@@ -4,6 +4,7 @@ import Header from './components/Header'
 import NavTabs from './components/NavTabs/NavTabs.js'
 import Dashboard from './components/Dashboard'
 import {AssessmentView} from './components/AssessmentView'
+import CertificateList from './components/CertificateList'
 import h from 'react-hyperscript'
 import { HashRouter, Route } from 'react-router-dom'
 import {ThemeProvider} from 'styled-components'
@@ -58,9 +59,9 @@ export class App extends Component {
                   h(Route, {exact: true, path: '/', component: Dashboard}), // AssessmentList
                   // TODO after concept-creation is merged in
                   // CertificateList
+                  h(Route, {path: '/concepts/', render: () => h('div', 'monkeys all the way!')}),
                   h(Route, {path: '/assessment/:id', component: AssessmentView}),
-                  h(Route, {path: '/certificates/', render: () => h('div', 'testcerts')}),
-                  h(Route, {path: '/concepts/', render: () => h('div', 'monkeys all the way!')})
+                  h(Route, {path: '/certificates/', component: CertificateList})
                 ]))
                 : h('div', 'Loading web3')
             ]) : warningScreen

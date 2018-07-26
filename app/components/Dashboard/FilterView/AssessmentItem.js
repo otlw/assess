@@ -111,6 +111,7 @@ export class AssessmentItem extends Component {
     }
 
     /* start styling below */
+    console.log('in item: ', assessment.address)
     return (
       h(cardContainer, [
         h(cardContainerInfo, [
@@ -136,7 +137,7 @@ export class AssessmentItem extends Component {
           ]),
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
             h(cardButtonSecondary, 'Hide'),
-            h(cardButtonPrimary, { to: 'assessment/' + assessment.address }, StageDisplayNames[stage])
+            h(cardButtonPrimary, { to: '/assessment/' + assessment.address }, StageDisplayNames[stage])
           ])
         ])
       ])

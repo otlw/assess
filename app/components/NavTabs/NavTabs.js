@@ -4,9 +4,9 @@ import { NavLink } from 'react-router-dom'
 
 export const NavTabs = () => {
   return h('div', [
+    h(NavLink, { to: '/concepts/' }, 'Concepts '),
     h(NavLink, { to: '/' }, 'Assessments '),
-    h(NavLink, { to: '/certificates/' }, 'Certificates '),
-    h(NavLink, { to: '/concepts/' }, 'Concepts ')
+    h(NavLink, { to: '/certificates/' }, 'Certificates ')
   ])
 }
 
