@@ -107,7 +107,7 @@ async function create () {
   console.log('\n### -- 5. Create Assessments on those 2 Concepts -- ###\n')
 
   // define constants for assessments
-  const cost = 10
+  const cost = 1
   const size = 5
   const endTime = 1000000000000
   const startTime = 1000000000
@@ -116,7 +116,7 @@ async function create () {
   // check balance of assessee
   fathomTokenContract = await new web3.eth.Contract(fathomTokenArtifact.abi, fathomTokenArtifact.networks[net].address, {from: assesseeAddress})
   let assesseeInitialBalance = await fathomTokenContract.methods.balanceOf(assesseeAddress).call()
-  console.log('Account 0 is : ' + accounts[0])
+  console.log('Account is : ' + assesseeAddress)
   console.log('Assessee initial AHA balance ' + Number(assesseeInitialBalance))
   let assesseeEthBalance = await web3.eth.getBalance(assesseeAddress)
   console.log('Assessee initial ETH balance ' + Number(assesseeEthBalance))

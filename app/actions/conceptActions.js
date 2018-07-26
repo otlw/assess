@@ -32,6 +32,8 @@ export function loadConceptsFromConceptRegistery () {
         let resp = await ipfs.get(decodedConceptDataHash)
         decodedConceptData = resp[0].content.toString()
         console.log('Decoded string from IPFS : ', decodedConceptData)
+        //parse JSON
+        decodedConceptData= JSON.parse(decodedConceptData)
       } else {
         decodedConceptData = decodedConceptDataHash
       }
