@@ -4,8 +4,8 @@ import Header from './components/Header'
 import NavTabs from './components/NavTabs/NavTabs.js'
 // import AssessmentFilterView from './components/AssessmentFilterView'
 import Dashboard from './components/Dashboard'
-import {AssessmentView} from './components/AssessmentView'
 import CertificateList from './components/CertificateList'
+import AssessmentView from './components/AssessmentView'
 import h from 'react-hyperscript'
 import { HashRouter, Route } from 'react-router-dom'
 import {ThemeProvider} from 'styled-components'
@@ -47,7 +47,6 @@ export class App extends Component {
       // if there arent anydeployed contract on this network
       warningScreen = h('p', "You are connected to a network on which you haven't deployed contracts. Please use an appropriate script")
     } // else, just display the normal App
-    console.log('props in appcontainer', this.props)
 
     return (
       h(HashRouter, [
