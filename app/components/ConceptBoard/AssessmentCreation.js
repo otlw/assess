@@ -174,7 +174,7 @@ export class AssessmentCreation extends Component {
       h(ConceptCreationCardFrame, [
         h(ConceptTitleBox, [
           h(TitleCaption, 'CONCEPT'),
-          h(ConceptTitle, this.props.conceptName)
+          h(ConceptTitle, this.props.conceptData.name)
         ]),
         BottomPartContent
       ]),

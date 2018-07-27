@@ -76,6 +76,7 @@ const AssesseeBadge = styled('div')`
 export class AssessmentItem extends Component {
   render () {
     const assessment = this.props.assessment
+    console.log(assessment)
     let userStage = assessment.userStage
     let stage = assessment.stage
 

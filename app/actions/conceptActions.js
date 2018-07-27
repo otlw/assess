@@ -25,17 +25,23 @@ export function loadConceptsFromConceptRegistery () {
 
       // retrieve JSON from IPFS if the data is an IPFS hash
       if (decodedConceptDataHash.substring(0, 2) === 'Qm') {
+        
         // setup ipfs api
         const ipfsAPI = require('ipfs-api')
         const ipfs = ipfsAPI('ipfs.infura.io', '5001', {protocol: 'https'})
+
         // verify that description is correctly stord and log it
         let resp = await ipfs.get(decodedConceptDataHash)
         decodedConceptData = resp[0].content.toString()
-        console.log('Decoded string from IPFS : ', decodedConceptData)
+
         //parse JSON
         decodedConceptData= JSON.parse(decodedConceptData)
       } else {
-        decodedConceptData = decodedConceptDataHash
+        //if no ipfs hash, just use data string decodedConceptDataHash
+        decodedConceptData = {
+          name:decodedConceptDataHash,
+          description:decodedConceptDataHash
+        }
       }
 
       return (concepts[address] = decodedConceptData)
