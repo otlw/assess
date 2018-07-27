@@ -2,7 +2,8 @@ import { Component } from 'react'
 import { connect } from 'react-redux'
 import Header from './components/Header'
 import Dashboard from './components/Dashboard'
-import {AssessmentView} from './components/AssessmentView'
+import ConceptBoard from './components/ConceptBoard'
+import AssessmentView from './components/AssessmentView'
 import h from 'react-hyperscript'
 import { HashRouter, Route } from 'react-router-dom'
 import {ThemeProvider} from 'styled-components'
@@ -15,7 +16,8 @@ const theme = {
   lightgrey: '#d3d3d3',
   blue: '#2F80ED',
   lightblue: '#70a5f9',
-  yellow: '#fff700'
+  yellow: '#fff700',
+  lightgreen: '#A5FBA9'
 }
 
 // the main frame on which everything is displayed.
@@ -52,8 +54,9 @@ export class App extends Component {
             ? h('div', [
               h(Header),
               this.props.loadedWeb3
-                ? (h('div', {style: {margin: '8px'}}, [
+                ? (h('div', [
                   h(Route, {exact: true, path: '/', component: Dashboard}),
+                  h(Route, {exact: true, path: '/concepts', component: ConceptBoard}),
                   h(Route, {path: '/assessment/:id', component: AssessmentView})
                 ]))
                 : h('div', 'Loading web3')

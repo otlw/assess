@@ -1,0 +1,25 @@
+import { Component } from 'react'
+import styled from 'styled-components'
+import h from 'react-hyperscript'
+import ConceptCard from './ConceptCard'
+
+export class ConceptList extends Component {
+  render () {
+    let conceptAdresses = Object.keys(this.props.concepts)
+    return h(ConceptListBox, [
+      conceptAdresses.map((conceptAdress, k) => {
+        return h(ConceptCard, {
+          conceptAddress: conceptAdress,
+          conceptName: this.props.concepts[conceptAdress],
+          key: k,
+          selectConcept: this.props.selectConceptAddress.bind(this)
+        })
+      })
+    ])
+  }
+}
+
+export default ConceptList
+
+const ConceptListBox = styled('div').attrs({className: 'flex flex-row flex-wrap bg-white justify-around content-around'})`
+`

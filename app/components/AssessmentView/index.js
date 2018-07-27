@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { Component } from 'react'
-import AssessmentData from './AssessmentData.js'
+import AssessmentView from './AssessmentView.js'
 import {validateAndFetchAssessmentData} from '../../actions/assessmentActions'
 var h = require('react-hyperscript')
 
@@ -19,8 +19,8 @@ class AssessmentViewUnconnected extends Component {
   render () {
     let address = this.props.match.params.id
     if (!this.props.assessment) this.props.validateAndFetchAssessmentData(address)
-    return h(AssessmentData, {assessment: this.props.assessment, userAddress: this.props.userAddress})
+    return h(AssessmentView, {assessment: this.props.assessment, userAddress: this.props.userAddress})
   }
 }
 
-export const AssessmentView = connect(mapStateToProps, mapDispatchToProps)(AssessmentViewUnconnected)
+export default connect(mapStateToProps, mapDispatchToProps)(AssessmentViewUnconnected)
