@@ -76,7 +76,6 @@ const AssesseeBadge = styled('div')`
 export class AssessmentItem extends Component {
   render () {
     const assessment = this.props.assessment
-    console.log(assessment)
     let userStage = assessment.userStage
     let stage = assessment.stage
 
@@ -117,7 +116,7 @@ export class AssessmentItem extends Component {
         h(cardContainerInfo, [
           h(cardTextTitle, [
             h('h6', {className: 'f5 mv1 ttu uppercase'}, 'Assessment'),
-            h(ConceptName, assessment.conceptData)
+            h(ConceptName, assessment.conceptData.name)
           ]),
           h(cardTextAssessee, [
             h('h6', {className: 'f5 mv1 ttu uppercase'}, h(AssesseeBadge, 'Assessee')),

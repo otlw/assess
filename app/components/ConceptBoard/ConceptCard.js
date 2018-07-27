@@ -4,10 +4,10 @@ import h from 'react-hyperscript'
 
 export class ConceptCard extends Component {
   render () {
-    //set LearnMore link if it's provided by the concept data
-    let LearnMore=h(LearnButton, 'Learn')
-    if (this.props.conceptData.learnMore){
-      LearnMore=h(LearnButtonLink,{href:this.props.conceptData.learnMore,target:"_blank"} ,'Learn')
+    // set LearnMore link if it's provided by the concept data
+    let LearnMore = h(LearnButton, 'Learn')
+    if (this.props.conceptData.learnMore) {
+      LearnMore = h(LearnButtonLink, {href: this.props.conceptData.learnMore, target: '_blank'}, 'Learn')
     }
     return h(ConceptCardFrame, [
       h(ConceptTitleBox, [
@@ -16,7 +16,7 @@ export class ConceptCard extends Component {
       ]),
       h(BottomPart, [
         // TODO handle concept description
-        h(ConceptDescription, "Description:\n"+this.props.conceptData.description),
+        h(ConceptDescription, 'Description:\n' + this.props.conceptData.description),
         h(ButtonGroup, [
           h(GetAssessedButton, {onClick: this.props.selectConcept.bind(this), id: this.props.conceptAddress}, 'Get Assessed'),
           LearnMore

@@ -173,8 +173,31 @@ export function fetchAssessmentData (address) {
       let conceptInstance = getInstance.concept(getState(), conceptAddress)
       let stage = Number(await assessmentInstance.methods.assessmentStage().call())
 
+      // handle concept data
+
       let conceptDataHex = await conceptInstance.methods.data().call()
-      let conceptData = Buffer.from(conceptDataHex.slice(2), 'hex').toString('utf8')
+      let decodedConceptDataHash = Buffer.from(conceptDataHex.slice(2), 'hex').toString('utf8')
+      let decodedConceptData
+
+      // retrieve JSON from IPFS if the concept data is an IPFS hash
+      if (decodedConceptDataHash.substring(0, 2) === 'Qm') {
+        // setup ipfs api
+        const ipfsAPI = require('ipfs-api')
+        const ipfs = ipfsAPI('ipfs.infura.io', '5001', {protocol: 'https'})
+
+        // verify that description is correctly stord and log it
+        let resp = await ipfs.get(decodedConceptDataHash)
+        decodedConceptData = resp[0].content.toString()
+
+        // parse JSON
+        decodedConceptData = JSON.parse(decodedConceptData)
+      } else {
+        // if no ipfs hash, just use data string decodedConceptDataHash
+        decodedConceptData = {
+          name: decodedConceptDataHash,
+          description: decodedConceptDataHash
+        }
+      }
 
       // Dynamic Info
       let done = Number(await assessmentInstance.methods.done().call())
@@ -220,7 +243,7 @@ export function fetchAssessmentData (address) {
         size,
         assessee,
         conceptAddress,
-        conceptData,
+        conceptData: decodedConceptData,
         finalScore,
         data,
         assessors,
