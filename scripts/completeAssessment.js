@@ -113,6 +113,10 @@ function hashScoreAndSalt (_score, _salt) {
 }
 
 
+//setup ipfs api
+const ipfsAPI = require('ipfs-api');
+const ipfs = ipfsAPI('ipfs.infura.io', '5001', {protocol: 'https'});
+
 async function uploadDescriptionToIPFS(string){
   console.log("\n-------------- Storing string on IPFS : --------------")
   try {
