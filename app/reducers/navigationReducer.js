@@ -1,11 +1,17 @@
-import { SET_DASHBOARD_TAB, SET_MAIN_DISPLAY, SET_NOTIFICATION_BAR } from '../actions/navigationActions.js'
+import {
+  SET_DASHBOARD_TAB,
+  SET_MAIN_DISPLAY,
+  SET_INPUT_BAR,
+  SET_NOTIFICATION_BAR
+} from '../actions/navigationActions.js'
 
 const initialState = {
   dashboardTab: 'Current',
   mainDisplay: 'Main',
   notificationBar: {
     display: false
-  }
+  },
+  inputBar: ''
 }
 
 export default function navigation (state = initialState, action) {
@@ -24,6 +30,11 @@ export default function navigation (state = initialState, action) {
       return {
         ...state,
         notificationBar: action.notificationBar
+      }
+    case SET_INPUT_BAR:
+      return {
+        ...state,
+        inputBar: action.inputType
       }
     default: return state
   }

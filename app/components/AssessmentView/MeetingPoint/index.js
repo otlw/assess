@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import { storeDataOnAssessment } from '../../../actions/assessmentActions'
+import { dispatchSetInputBar } from '../../../actions/navigationActions.js'
 import MeetingPointEditBox from './MeetingPointEditBox.js'
 
 const mapStateToProps = (state, ownProps) => {
@@ -12,7 +13,8 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = {
-  storeDataOnAssessment
+  storeDataOnAssessment,
+  dispatchSetInputBar
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeetingPointEditBox)

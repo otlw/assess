@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
-import ProgressButtonBar from './ProgressButtonBar.js'
-import { confirmAssessor, commit, reveal } from '../../../actions/assessmentActions'
+import ProgressAndInputBar from './ProgressAndInputBar.js'
+import { dispatchSetInputBar } from '../../../actions/navigationActions.js'
+import { confirmAssessor, commit, reveal, storeDataOnAssessment } from '../../../actions/assessmentActions'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -13,14 +14,17 @@ const mapStateToProps = (state, ownProps) => {
     userAddress: state.ethereum.userAddress,
     stage: state.assessments[ownProps.address].stage,
     userStage: state.assessments[ownProps.address].userStage,
-    cost: state.assessments[ownProps.address].cost
+    cost: state.assessments[ownProps.address].cost,
+    inputType: state.navigation.inputBar
   }
 }
 
 const mapDispatchToProps = {
   confirmAssessor,
   commit,
-  reveal
+  reveal,
+  storeDataOnAssessment,
+  dispatchSetInputBar
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProgressButtonBar)
+export default connect(mapStateToProps, mapDispatchToProps)(ProgressAndInputBar)
