@@ -8,7 +8,7 @@ import CertificateList from './components/CertificateList'
 import AssessmentView from './components/AssessmentView'
 import h from 'react-hyperscript'
 import { HashRouter, Route } from 'react-router-dom'
-import {ThemeProvider} from 'styled-components'
+import styled, {ThemeProvider} from 'styled-components'
 
 const theme = {
   primary: '#546e7a',
@@ -55,7 +55,7 @@ export class App extends Component {
             ? h('div', [
               h(Header),
               this.props.loadedWeb3
-                ? (h('div', {style: {margin: '8px'}}, [
+                ? (h(appContainer, [
                   (!this.props.showNavTabs ? h(NavTabs) : null),
                   h(Route, {exact: true, path: '/', component: Dashboard}), // TODO: Once the AssessmentCreation MR has been merged, replace this component with AssessmentFilterView
                   h(Route, {path: '/concepts/', render: () => h('div', 'monkeys all the way!')}), // TODO after concept-creation is merged in
@@ -69,6 +69,8 @@ export class App extends Component {
     )
   }
 }
+
+const appContainer = styled('div').attrs({className: 'flex flex-column w-100 pa2'})``
 
 const mapStateToProps = state => {
   return {
