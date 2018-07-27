@@ -18,13 +18,26 @@ export const NavTabs = () => {
 
   return h(tabContainer, [
     h(tabObjectLeft, [
-      h(NavLink, { to: '/concepts/', activeStyle: activeStyle}, 'Concepts ')
+      h(NavLink, { 
+        to: '/concepts/', 
+        activeStyle: activeStyle,
+        className:"heyhey"
+      }, 'Concepts ')
     ]),
     h(tabObjectMiddle, [
-      h(NavLink, { to: '/', activeStyle: activeStyle, exact: true }, 'Assessments ')
+      h(NavLink, { 
+        to: '/', 
+        activeStyle: activeStyle, 
+        exact: true ,
+        className:"heyhey"
+      }, 'Assessments ')
     ]),
     h(tabObjectRight, [
-      h(NavLink, { to: '/certificates/', activeStyle: activeStyle }, 'Certificates ')
+      h(NavLink, { 
+        to: '/certificates/', 
+        activeStyle: activeStyle,
+        className:"heyhey" 
+      }, 'Certificates ')
     ])
   ])
 }
