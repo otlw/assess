@@ -37,15 +37,14 @@ export function receiveConcepts (concepts) {
 }
 
 // combination of two functions above for directly creating assessments from conceptList
-export function loadConceptContractAndCreateAssessment (address) {
+export function loadConceptContractAndCreateAssessment (address, cost, callback) {
+  // TODO handle the case where cost===0 (that throws an exception)
   return async (dispatch, getState) => {
-    // instanciate Concept Contract
     let userAddress = getState().ethereum.userAddress
     let conceptInstance = getInstance.concept(getState(), address)
-    const cost = 10
     const size = 5
-    const endTime = 10000000
-    const startTime = 100000
+    const endTime = 4 * 24 * 3600
+    const startTime = 3 * 24 * 3600
     sendAndReactToTransaction(
       dispatch,
       () => {
@@ -56,9 +55,28 @@ export function loadConceptContractAndCreateAssessment (address) {
       'makeAssessment',
       userAddress,
       address,
-      '', // no react-method needed. This should be processed by listening to the events
+      callback,
       3000000 // weirdly, this transaction will only go through with a high gas price (testnet)
     )
+  }
+}
+
+// estimate the gas of the transaction above
+export function estimateAssessmentCreationGasCost (address, cost, cllbck) {
+  // TODO handle the case where cost===0 (that throws an exception)
+  return async (dispatch, getState) => {
+    // instanciate Concept Contract
+    let userAddress = getState().ethereum.userAddress
+    let conceptInstance = getInstance.concept(getState(), address)
+    const size = 5
+    const endTime = 4 * 24 * 3600
+    const startTime = 3 * 24 * 3600
+    // use estimateGas to get transaction gas cost before it is published
+    let estimate = await conceptInstance.methods.makeAssessment(cost, size, startTime, endTime).estimateGas({from: userAddress, gas: 3000000})
+    // then get current gasPrice
+    let gasPrice = await getState().ethereum.web3.eth.getGasPrice()
+    // then convert it to eth from wei and multiply it by the estimate
+    cllbck(estimate * getState().ethereum.web3.utils.fromWei(gasPrice.toString(), 'ether'))
   }
 }
 
