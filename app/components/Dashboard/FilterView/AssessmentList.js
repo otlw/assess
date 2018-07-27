@@ -1,5 +1,6 @@
 import AssessmentItem from './AssessmentItem'
 import h from 'react-hyperscript'
+import styled from 'styled-components'
 
 const assessmentListStyle = {
   frame: {
@@ -15,17 +16,23 @@ export const AssessmentList = (props) => {
       'None'
     ])
   } else {
-    return h(
-      'div', {style: assessmentListStyle.frame},
-      [h('h1', props.name)].concat(
-        props.assessments.map((assessment, k) => {
-          return h(AssessmentItem, {
-            assessment,
-            userAddress: props.userAddress,
-            networkID: props.networkID
-          })
-        })))
+    return (
+        h(listContainer, [
+          h('h1', props.name),
+          h(listContainerCards, props.assessments.map((assessment, k) => {
+            return h(AssessmentItem, {
+              assessment,
+              userAddress: props.userAddress,
+              networkID: props.networkID
+            })
+          }))
+        ])
+    )
   }
 }
+
+const listContainer = styled('div').attrs({className: 'flex flex-column w-100'})``
+
+const listContainerCards = styled('div').attrs({className: 'flex flex-row w-100 justify-center'})``
 
 export default AssessmentList
