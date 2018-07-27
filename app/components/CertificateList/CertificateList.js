@@ -8,7 +8,7 @@ export const CertificateList = (props) => {
     assessment =>
       assessment.stage === Stage.Done &&
       assessment.assessee === props.userAddress &&
-      assessment.finalScore >= 0
+      assessment.finalScore >= 50
   )
 
   // return view
