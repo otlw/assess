@@ -17,16 +17,16 @@ export const AssessmentList = (props) => {
     ])
   } else {
     return (
-        h(listContainer, [
-          h('h1', props.name),
-          h(listContainerCards, props.assessments.map((assessment, k) => {
-            return h(AssessmentItem, {
-              assessment,
-              userAddress: props.userAddress,
-              networkID: props.networkID
-            })
-          }))
-        ])
+      h(listContainer, [
+        h('h1', props.name),
+        h(listContainerCards, props.assessments.map((assessment, k) => {
+          return h(AssessmentItem, {
+            assessment,
+            userAddress: props.userAddress,
+            networkID: props.networkID
+          })
+        }))
+      ])
     )
   }
 }
