@@ -5,7 +5,7 @@ import h from 'react-hyperscript'
 export class ConceptCard extends Component {
   render () {
     // set LearnMore link if it's provided by the concept data
-    let LearnMore = h(LearnButton, 'Learn')
+    let LearnMore = null
     if (this.props.conceptData.learnMore) {
       LearnMore = h(LearnButtonLink, {href: this.props.conceptData.learnMore, target: '_blank'}, 'Learn')
     }
@@ -51,9 +51,6 @@ const ButtonGroup = styled('div').attrs({className: 'flex flex-row br4 ba justif
 `
 const GetAssessedButton = styled('div').attrs({className: 'flex h2 pa2 w5 justify-center'})`
 cursor:pointer;
-`
-const LearnButton = styled('div').attrs({className: 'flex br4 br--right h2 pa2 w4 justify-center'})`
-background: #C4C4C4;
 `
 const LearnButtonLink = styled('a').attrs({className: 'flex br4 br--right h2 pa2 w4 justify-center'})`
 background: #C4C4C4;

@@ -16,13 +16,17 @@ let initialState = {}
 	...
 ]
 
-if the data is correctly stored on ipfs and
+if the data is correctly stored on ipfs and:
 
 [
-	conceptAddress:string,
+	conceptAddress : {
+		description:sameString,
+		name:sameString
+	},
 	...
 ]
 
+if the string is not an ipfs hash
 
  */
 
