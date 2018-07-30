@@ -208,8 +208,8 @@ async function test () {
     // define constants for assessments
     console.log('Creating assessment....')
     const cost = 1
-    const endTime = 1000000000000
-    const startTime = 1000000000
+    const endTime = 4 * 24 * 3600
+    const startTime = 3 * 24 * 3600
     let assessee = accounts[0]
 
     // create an assessment on concept
