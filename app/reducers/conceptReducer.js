@@ -8,22 +8,22 @@ let initialState = {}
   further concepts are stored like this:
 
 [
-	conceptAddress : {
-		description:string,
-		learnMore:string,
-		name:string
-	},
-	...
+  conceptAddress : {
+    description:string,
+    learnMore:string,
+    name:string
+  },
+  ...
 ]
 
 if the data is correctly stored on ipfs and:
 
 [
-	conceptAddress : {
-		description:sameString,
-		name:sameString
-	},
-	...
+  conceptAddress : {
+    description:sameString,
+    name:sameString
+  },
+  ...
 ]
 
 if the string is not an ipfs hash

@@ -121,22 +121,22 @@ async function uploadDescriptionToIPFS(string){
   console.log("\n-------------- Storing string on IPFS : --------------")
   try {
     //Use a Buffer to send the string
-      var ifpsBuffer = Buffer.from(string);
-      console.log("String to be stored on IPFS : ",string)
+    var ifpsBuffer = Buffer.from(string);
+    console.log("String to be stored on IPFS : ",string)
     //use ipfs-api to add file
-      let response= await ipfs.add([ifpsBuffer], {pin:false})
+    let response= await ipfs.add([ifpsBuffer], {pin:false})
 
     //log path of stored file
-                  let path=response[0].path
-                  console.log("path of description : ",path)
+    let path=response[0].path
+    console.log("path of description : ",path)
     //verify that description is correctly stord and log it
-                  let verif=await ipfs.get(path)
-                  let decoded=verif[0].content.toString() 
-                  console.log("Decoded string from IPFS : ",decoded)
+    let verif=await ipfs.get(path)
+    let decoded=verif[0].content.toString() 
+    console.log("Decoded string from IPFS : ",decoded)
 
-                  // return hash of description to be stored on contract
-                  console.log("-------------- string stored on IPFS --------------\n")
-                  return path;
+    // return hash of description to be stored on contract
+    console.log("-------------- string stored on IPFS --------------\n")
+    return path;
   } catch (e) {
         console.log('Error while uploading to ipfs:', e)
   }
