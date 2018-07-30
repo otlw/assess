@@ -1,11 +1,13 @@
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { LoadComponent } from '../../hocs/loadComponent.js'
-import { LoadingStage } from '../../../constants.js'
-import CreationBar from './CreationBar.js'
+import { LoadComponent } from '../hocs/loadComponent.js'
+import { LoadingStage } from '../../constants.js'
+import ConceptBoard from './ConceptBoard.js'
+import { setNotificationBar } from '../../actions/navigationActions.js'
 import {
   loadConceptContractAndCreateAssessment,
-  loadConceptsFromConceptRegistery } from '../../../actions/conceptActions.js'
+  loadConceptsFromConceptRegistery,
+  estimateAssessmentCreationGasCost } from '../../actions/conceptActions.js'
 
 const mapStateToProps = state => {
   return {
@@ -20,10 +22,12 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   load: loadConceptsFromConceptRegistery,
-  loadConceptContractAndCreateAssessment
+  loadConceptContractAndCreateAssessment,
+  estimateAssessmentCreationGasCost,
+  setNotificationBar: setNotificationBar
 }
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   LoadComponent
-)(CreationBar)
+)(ConceptBoard)

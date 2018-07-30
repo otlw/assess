@@ -2,9 +2,9 @@ import { Component } from 'react'
 import { connect } from 'react-redux'
 import Header from './components/Header'
 import {NavTabs} from './components/NavTabs'
-// import AssessmentFilterView from './components/AssessmentFilterView'
-import Dashboard from './components/Dashboard'
+import AssessmentFilterView from './components/AssessmentFilterView'
 import CertificateList from './components/CertificateList'
+import ConceptBoard from './components/ConceptBoard'
 import AssessmentView from './components/AssessmentView'
 import h from 'react-hyperscript'
 import { HashRouter, Route } from 'react-router-dom'
@@ -18,7 +18,8 @@ const theme = {
   lightgrey: '#d3d3d3',
   blue: '#2F80ED',
   lightblue: '#70a5f9',
-  yellow: '#fff700'
+  yellow: '#fff700',
+  lightgreen: '#A5FBA9'
 }
 
 // the main frame on which everything is displayed.
@@ -57,8 +58,8 @@ export class App extends Component {
               this.props.loadedWeb3
                 ? (h(appContainer, [
                   (!this.props.showNavTabs ? h(NavTabs) : null),
-                  h(Route, {exact: true, path: '/', component: Dashboard}), // TODO: Once the AssessmentCreation MR has been merged, replace this component with AssessmentFilterView
-                  h(Route, {path: '/concepts/', render: () => h('div', 'monkeys all the way!')}), // TODO after concept-creation is merged in
+                  h(Route, {exact: true, path: '/', component: AssessmentFilterView}),
+                  h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
                   h(Route, {path: '/assessment/:id', component: AssessmentView}),
                   h(Route, {path: '/certificates/', component: CertificateList})
                 ]))
