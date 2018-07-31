@@ -10,6 +10,9 @@ import {networkName} from '../../constants.js'
 const Logo = styled('img').attrs({className: 'flex w2 mh2 self-center'})`
 `
 
+//  h(LinkUnstyled, {to: '/concepts'}, h(conceptButton, 'Concepts')),
+// TODO add link to concepts
+
 export const Header = (props) => {
   let address = props.userAddress.substring(0, 8) + '...' + props.userAddress.substring(35, 42)
   let balance = (props.AhaBalance / 1e9).toString().substring(0, 6) + ' AHA'
@@ -17,15 +20,18 @@ export const Header = (props) => {
 
   return (
     h(headerContainer,
-      [ h(headerRowLeft, [
-        h(Link, {to: '/'}, h(Logo, {alt: 'logo', src: fathomLogo})),
-        h(headerItem, {name: 'Address', value: address}),
-        h(headerItem, {name: 'Network', value: network})
-      ]),
-        [ h(headerRowRight, [
+      [
+        h(headerRowLeft, [
+          h(Link, {to: '/'}, h(Logo, {alt: 'logo', src: fathomLogo})),
+          h(headerItem, {name: 'Address', value: address}),
+          h(headerItem, {name: 'Network', value: network})
+        ]),
+        h(headerRowRight, [
           h(headerItem, {name: 'Balance', value: balance})
-        ]
-      )]
+        ]),
+        props.notificationBar.display
+          ? h(NotificationBar, {status: props.notificationBar, setNotificationBar: props.setNotificationBar})
+          : null
       ])
   )
 }
