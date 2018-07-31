@@ -33,6 +33,6 @@ export const AssessmentList = (props) => {
 
 const listContainer = styled('div').attrs({className: 'flex flex-column w-100'})``
 
-const listContainerCards = styled('div').attrs({className: 'flex flex-row w-100 justify-center'})``
+const listContainerCards = styled('div').attrs({className: 'flex flex-row flex-wrap w-100 justify-center'})``
 
 export default AssessmentList
