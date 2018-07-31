@@ -187,7 +187,7 @@ export default AssessmentCreation
 
 // styles
 
-const createAssessmentContainer = styled('div').attrs({ className: 'flex flex-column w-100 h-100 bg-near-white pa2 tc' })`
+const createAssessmentContainer = styled('div').attrs({ className: 'flex flex-column w-100 h-100 bg-white pa2 tc' })`
 
 `
 
@@ -277,10 +277,10 @@ const cardContainerCostEstimate = styled('div').attrs({className: 'flex w-100 fl
 
 const createAssessmentContainerNavigate = styled('div').attrs({className: 'flex w-100 mw7 flex-row items-center self-center justify-around h3'})`
 `
-const createAssessmentButtonCancel = styled('div').attrs({className: 'flex items-center justify-center w4 h2 br4 ba bg-transparent'})`
+const createAssessmentButtonCancel = styled('div').attrs({className: 'flex items-center justify-center w4 pv2 br-pill ba bg-transparent'})`
 cursor:pointer;
 `
-const createAssessmentButtonNext = styled('div').attrs({className: 'flex flex-row items-center justify-center w4 h2 br4 ba bg-light-green dark-gray'})`
+const createAssessmentButtonNext = styled('div').attrs({className: 'flex flex-row items-center justify-center w4 pv2 br-pill ba bg-light-green dark-gray'})`
 cursor:pointer;
 `
 const CloseButton = styled('div').attrs({className: 'flex self-center items-center justify-center w4 h2 br4 ba'})`
