@@ -10,9 +10,6 @@ import {networkName} from '../../constants.js'
 const Logo = styled('img').attrs({className: 'flex w2 mh2 self-center'})`
 `
 
-//  h(LinkUnstyled, {to: '/concepts'}, h(conceptButton, 'Concepts')),
-// TODO add link to concepts
-
 export const Header = (props) => {
   let address = props.userAddress.substring(0, 8) + '...' + props.userAddress.substring(35, 42)
   let balance = (props.AhaBalance / 1e9).toString().substring(0, 6) + ' AHA'
