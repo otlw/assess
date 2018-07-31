@@ -115,19 +115,19 @@ export class AssessmentCreation extends Component {
         break
       case 3:
         BottomPartContent = h(cardContainerInput, [
-          h(Step3P, 'Ethereum charges a transaction fee to process & create your assessment. Once completed, this step is irreversible.'),
-          h(EstimateBox, [
-            h(TransactionCostTitle, 'TRANSACTION COST'),
-            h(CostEstimate, this.state.gasEstimate.toString().substring(0, 8) + 'ETH')
+          h(cardContainerCostEstimate, [
+            h(cardLabel, 'TRANSACTION COST'),
+            h(cardTextObject, this.state.gasEstimate.toString().substring(0, 8) + 'ETH')
           ]),
-          h(Step3Bottom, "Clicking 'Next' will launch MetaMask so you can complete the transaction")
+          h(cardTextObjectHelp, 'Ethereum charges a transaction fee to process & create your assessment. Once completed, this step is irreversible.'),
+          h(cardTextObjectHelp, "Clicking 'Next' will launch MetaMask so you can complete the transaction")
         ])
         break
       case 4:
         BottomPartContent = h(cardContainerInput, [
-          h(Step4Title, 'Submitted & Pending'),
-          h(P1, 'Your assessment has been sent to the Ethereum blockchain and is pending confirmation.'),
-          h(BottomP, 'We’ll notify you once the transaction has been confirmed & your assessment is created.')
+          h(cardTitle, 'Submitted & Pending'),
+          h(cardTextObjectHelp, 'Your assessment has been sent to the Ethereum blockchain and is pending confirmation.'),
+          h(cardTextObjectHelp, 'We’ll notify you once the transaction has been confirmed & your assessment is created.')
         ])
         break
     }
@@ -174,7 +174,7 @@ export class AssessmentCreation extends Component {
       h(createAssessmentCardContainer, [
         h(createAssessmentCardContainerConcept, [
           h(cardLabelTitle, 'Concept'),
-          h(cardTitleConcept, this.props.conceptName)
+          h(cardTitle, this.props.conceptName)
         ]),
         BottomPartContent
       ]),
@@ -219,7 +219,7 @@ const createAssessmentCardContainerConcept = styled('div').attrs({className: 'fl
 const cardLabelTitle = styled('div').attrs({className: 'flex flex-column tl ttu uppercase'})`
 color: #0A4A66;
 `
-const cardTitleConcept = styled('h3').attrs({className: 'f3 fw4 mv1 w-100 tl'})`
+const cardTitle = styled('h3').attrs({className: 'f3 fw4 mv1 w-100 tl'})`
 color: #117099;
 `
 
@@ -248,7 +248,8 @@ const AHAUnit = styled('div').attrs({className: 'mid-gray'})`
 const helpTextContainer = styled('div').attrs({className: 'flex flex-column h-100 justify-end'})`
 `
 
-const cardTextObjectHelp = styled('h6').attrs({className: 'flex f6 fw4 dark-gray lh-copy tl mv2'})`
+const cardTextObjectHelp = styled('h6').attrs({className: 'flex f6 fw4 lh-copy tl mv2'})`
+color:#0A4A66;
 `
 
 // step 2
@@ -265,32 +266,13 @@ color: #117099;
 
 // step 3
 
-const Step3P = styled('div').attrs({className: 'flex flex-row f6 lh-copy'})`
-color:#666666;
-`
-const EstimateBox = styled('div').attrs({className: 'flex flex-column self-center'})`
-`
-const TransactionCostTitle = styled('div').attrs({className: 'flex flex-row f6 mt3 self-center'})`
-color:#666666;
-`
-const CostEstimate = styled('div').attrs({className: 'flex flex-row f5 fw3 self-center'})`
-color:#444444;
-`
-const Step3Bottom = styled('div').attrs({className: 'flex flex-row f6 lh-copy mt3'})`
-color:#666666;
+const cardContainerCostEstimate = styled('div').attrs({className: 'flex w-100 flex-column self-center'})`
 `
 
 // step 4
 
-const Step4Title = styled('div').attrs({className: 'flex flex-row f5 fw2 self-center'})`
-color:##444444;
-`
-const P1 = styled('div').attrs({className: 'flex flex-row f6 fw2 lh-copy mt3'})`
-color:#666666;
-`
-const BottomP = styled('div').attrs({className: 'flex flex-row f6 fw2 lh-copy mt3'})`
-color:#666666;
-`
+// Custom styles no longer necessary for Step 4
+
 // navigation buttons
 
 const createAssessmentContainerNavigate = styled('div').attrs({className: 'flex w-100 mw7 flex-row items-center self-center justify-around h3'})`
