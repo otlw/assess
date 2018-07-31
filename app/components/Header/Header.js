@@ -1,6 +1,7 @@
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
+import NotificationBar from './NotificationBar.js'
 
 import fathomLogo from '../../assets/fathom_monkey_beret_color_cropped.svg'
 
