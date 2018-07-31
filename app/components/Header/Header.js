@@ -6,13 +6,7 @@ import fathomLogo from '../../assets/fathom_monkey_beret_color_cropped.svg'
 
 import {networkName} from '../../constants.js'
 
-const Logo = styled('img')`
-  margin: 0 1.25%;
-  padding: 0 1.25%;
-  text-align: center;
-  display: inline-block
-  width:5%;
-  vertical-align:top;
+const Logo = styled('img').attrs({className: 'flex w2 mh2 self-center'})`
 `
 
 export const Header = (props) => {
@@ -21,36 +15,46 @@ export const Header = (props) => {
   let network = networkName(props.networkID)
 
   return (
-    h('div',
-      {className: 'flex w-100 bg-dark-blue'},
-      [
-        h('ul',
-          {className: 'list flex content-around flex-row w-100 pa2 ma0 items-end'},
-          [
-            h(Link, {to: '/'}, h(Logo, {alt: 'logo', src: fathomLogo})),
-            h(HeaderItem, {name: 'Address', value: address}),
-            h(HeaderItem, {name: 'Balance', value: balance}),
-            h(HeaderItem, {name: 'Network', value: network})
-          ]
-        )
-      ]
-    )
+    h(headerContainer,
+      [ h(headerRowLeft, [
+        h(Link, {to: '/'}, h(Logo, {alt: 'logo', src: fathomLogo})),
+        h(headerItem, {name: 'Address', value: address}),
+        h(headerItem, {name: 'Network', value: network})
+      ]),
+        [ h(headerRowRight, [
+          h(headerItem, {name: 'Balance', value: balance})
+        ]
+      )]
+      ])
   )
 }
 
-const HeaderItem = (props) => {
+const headerContainer = styled('ul').attrs({
+  className: 'list flex w-100 flex-row flex-wrap pa2 ma0 items-start justify-between bg-dark-blue'})`
+  `
+
+const headerRowLeft = styled('ul').attrs({
+  className: 'list pl0 flex w-auto flex-row ma0 items-center justify-start'})`
+    `
+
+const headerRowRight = styled('ul').attrs({
+  className: 'list pl0 flex w-auto flex-row ma0 items-center justify-end'})`
+      `
+
+const headerItemContainer = styled('li').attrs({className: 'flex ba br1 b--dark-purple lightest-blue mh2'})`
+`
+const headerItemLabel = styled('div').attrs({className: 'ph3 pv2'})`
+`
+const headerItemValue = styled('div').attrs({className: 'bg-lightest-blue dark-blue ph3 pv2'})`
+`
+
+const headerItem = (props) => {
   return (
-    h('li',
-      {className: 'flex self-end content-end pr3'},
+    h(headerItemContainer,
       [
-        h('div',
-          {className: 'flex ba br1 b--dark-purple lightest-blue'},
-          [
-            h('div', {className: 'ph3 pv2'}, props.name),
-            h('div', {className: 'bg-lightest-blue dark-blue ph3 pv2'}, props.value)
-          ])
-      ]
-    )
+        h(headerItemLabel, props.name),
+        h(headerItemValue, props.value)
+      ])
   )
 }
 
