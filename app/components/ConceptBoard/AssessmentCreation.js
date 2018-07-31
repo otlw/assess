@@ -99,17 +99,17 @@ export class AssessmentCreation extends Component {
         break
       case 2:
         BottomPartContent = h(cardContainerInput, [
-          h(ParameterBox, [
-            h(ParameterKey, 'ASSESSEE'),
-            h(ParameterValue, 'YOU')
+          h(cardContainerParameters, [
+            h(cardLabel, 'ASSESSEE'),
+            h(cardTextObject, 'YOU')
           ]),
-          h(ParameterBox, [
-            h(ParameterKey, 'NO. OF ASSESSORS'),
-            h(ParameterValue, '5')
+          h(cardContainerParameters, [
+            h(cardLabel, 'NO. OF ASSESSORS'),
+            h(cardTextObject, '5')
           ]),
-          h(ParameterBox, [
-            h(ParameterKey, 'TOTAL COST'),
-            h(ParameterValue, this.state.amountPerAssessor * 5 + ' AHA')
+          h(cardContainerParameters, [
+            h(cardLabel, 'TOTAL COST'),
+            h(cardTextObject, this.state.amountPerAssessor * 5 + ' AHA')
           ])
         ])
         break
@@ -217,8 +217,10 @@ const createAssessmentCardContainer = styled('div').attrs({className: 'flex flex
 const createAssessmentCardContainerConcept = styled('div').attrs({className: 'flex content-start flex-column w-100 h-50 pa3 bg-none'})`
 `
 const cardLabelTitle = styled('div').attrs({className: 'flex flex-column tl ttu uppercase'})`
+color: #0A4A66;
 `
 const cardTitleConcept = styled('h3').attrs({className: 'f3 fw4 mv1 w-100 tl'})`
+color: #117099;
 `
 
 const cardContainerInput = styled('div').attrs({className: 'flex flex-column h-100 pa3 justify-between bg-lightest-blue'})`
@@ -251,12 +253,14 @@ const cardTextObjectHelp = styled('h6').attrs({className: 'flex f6 fw4 dark-gray
 
 // step 2
 
-const ParameterBox = styled('div').attrs({className: 'flex flex-column self-center'})`
+const cardContainerParameters = styled('div').attrs({className: 'flex w-100 flex-column items-start fw4'})`
 `
 
-const ParameterKey = styled('div').attrs({className: 'f6 pt3 self-center'})`
+const cardLabel = styled('h6').attrs({className: 'f5 fw4 tl mv1'})`
+color: #0A4A66;
 `
-const ParameterValue = styled('div').attrs({className: 'f5 pt1 self-center'})`
+const cardTextObject = styled('h4').attrs({className: 'f4 fw4 tl mv1'})`
+color: #117099;
 `
 
 // step 3
