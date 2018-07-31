@@ -64,7 +64,7 @@ const cardButtonSecondary = styled('div').attrs({
 `
 
 const ConceptName = styled('h3').attrs({
-  className: 'f3 mv1'
+  className: 'f3 fw4 mv1'
 })`
   color:${props => props.theme.dark};
   font-size:1.8em;
@@ -115,12 +115,12 @@ export class AssessmentItem extends Component {
       h(cardContainer, [
         h(cardContainerInfo, [
           h(cardTextTitle, [
-            h('h6', {className: 'f5 mv1 ttu uppercase'}, 'Assessment'),
+            h('h6', {className: 'f5 fw4 mv1 ttu uppercase'}, 'Assessment'),
             h(ConceptName, assessment.conceptData)
           ]),
           h(cardTextAssessee, [
-            h('h6', {className: 'f5 mv1 ttu uppercase'}, h(AssesseeBadge, 'Assessee')),
-            h('h6', {className: 'f5 mv1 ttu uppercase'}, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
+            h('h6', {className: 'f5 fw4 mv1 ttu uppercase'}, h(AssesseeBadge, 'Assessee')),
+            h('h6', {className: 'f5 fw4 mv1 ttu uppercase'}, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
           ])
         ]),
         h(cardContainerStatus, [
@@ -131,8 +131,8 @@ export class AssessmentItem extends Component {
             h(stage > 3 ? cardProgressBarObjectComplete : stage === 4 ? cardProgressBarObjectActive : cardProgressBarObjectInactive)
           ]),
           h(cardTextStatus, [
-            h('h6', {className: 'f5 tl mv1 ttu uppercase'}, 'Status'),
-            h('h6', {className: 'f5 tl lh-copy mv1 ttu uppercase'}, status)
+            h('h6', {className: 'f5 fw4 tl mv1 ttu uppercase'}, 'Status'),
+            h('h6', {className: 'f5 fw4 tl lh-copy mv1 ttu uppercase'}, status)
           ]),
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
             h(cardButtonSecondary, 'Hide'),
