@@ -70,7 +70,7 @@ const ConceptName = styled('h3').attrs({
   font-size:1.8em;
 `
 
-const AssesseeBadge = styled('div')` 
+const AssesseeBadge = styled('div')`
 `
 
 export class AssessmentItem extends Component {
