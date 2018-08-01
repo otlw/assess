@@ -109,8 +109,8 @@ async function create () {
   // define constants for assessments
   const cost = 1
   const size = 5
-    const endTime = 4 * 24 * 3600
-    const startTime = 3 * 24 * 3600
+  const endTime = 7 * 24 * 3600
+  const startTime = 3 * 24 * 3600
   const assesseeAddress = accounts[0]
 
   // check balance of assessee

@@ -13,6 +13,10 @@ export const UPDATE_ASSESSMENT_VARIABLE = 'UPDATE_ASSESSMENT_VARIABLE'
 
 const ethereumjsABI = require('ethereumjs-abi')
 
+// setup ipfs api
+const ipfsAPI = require('ipfs-api')
+const ipfs = ipfsAPI('ipfs.infura.io', '5001', {protocol: 'https'})
+
 export function hashScoreAndSalt (_score, _salt) {
   return '0x' + ethereumjsABI.soliditySHA3(
     ['int128', 'string'],
@@ -181,10 +185,6 @@ export function fetchAssessmentData (address) {
 
       // retrieve JSON from IPFS if the concept data is an IPFS hash
       if (decodedConceptDataHash.substring(0, 2) === 'Qm') {
-        // setup ipfs api
-        const ipfsAPI = require('ipfs-api')
-        const ipfs = ipfsAPI('ipfs.infura.io', '5001', {protocol: 'https'})
-
         // verify that description is correctly stord and log it
         let resp = await ipfs.get(decodedConceptDataHash)
         decodedConceptData = resp[0].content.toString()
