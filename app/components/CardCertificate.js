@@ -1,33 +1,32 @@
 import h from 'react-hyperscript'
-import { NavLink } from 'react-router-dom'
+import { Component } from 'react'
 import styled from 'styled-components'
 
 export class cardCredential extends Component {
-
-
-  return (
-    h(credentialContainer, [
-      h(credentialContainerInfo, [
-        h(credentialObjectText, [
-          h(credentialLabel, 'Credential'),
-          h(credentialTitleText, assessment.conceptData),
-          h(credentialLabel,'Awarded To Alex Singh'),
+  render () {
+    return (
+      h(credentialContainer, [
+        h(credentialContainerInfo, [
+          h(credentialObjectText, [
+            h(credentialLabel, 'Credential'),
+            h(credentialTitleText, this.props.assessment.conceptData),
+            h(credentialLabel, 'Awarded To Alex Singh'),
+          ]),
+          h(credentialDecoCircleSmall),
+          h(credentialDecoCircleLarge),
+          h(credentialDecoTriSmall),
+          h(credentialDecoTriLarge),
         ]),
-      h(credentialDecoCircleSmall),
-      h(credentialDecoCircleLarge),
-      h(credentialDecoTriSmall),
-      h(credentialDecoTriLarge),
-      ]),
-      h(credentialContainerBottom, [
-        h(credentialContainerScore, [
-          h(credentialLabel, 'Score'),
-          h(credentialObjectScore, '8.1'),
-        ]),
-        h(buttonPrimaryShare, 'Share')
-      ]
-    ])
-  )
-  )
+        h(credentialContainerBottom, [
+          h(credentialContainerScore, [
+            h(credentialLabel, 'Score'),
+            h(credentialObjectScore, '8.1'),
+          ]),
+          h(buttonPrimaryShare, 'Share')
+        ])
+      ])
+    )
+  }
 }
 
 const credentialContainer = styled('div').attrs({className: 'flex flex-column ma3 br2 shadow-4'
