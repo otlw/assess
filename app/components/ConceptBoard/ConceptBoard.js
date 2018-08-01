@@ -42,7 +42,8 @@ export class ConceptBoard extends Component {
         h(ConceptHeaderBox, [
           ConceptHeader
         ]),
-        h(ConceptList, {concepts, selectConceptAddress: this.selectConceptAddress.bind(this)})
+        // only display list when no concept is selected
+        this.state.selectedConceptAddress === '0' ? h(ConceptList, {concepts, selectConceptAddress: this.selectConceptAddress.bind(this)}) : null
       ])
     } else {
       return h('div', 'Loading Concepts')
