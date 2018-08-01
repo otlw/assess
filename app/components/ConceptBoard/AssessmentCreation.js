@@ -187,7 +187,7 @@ export default AssessmentCreation
 
 // styles
 
-const createAssessmentContainer = styled('div').attrs({ className: 'fixed flex flex-column w-100 min-vh-100 bg-white pa2 tc' })`
+const createAssessmentContainer = styled('div').attrs({ className: 'flex flex-column w-100 h-100 bg-white pa2 tc' })`
 
 `
 
