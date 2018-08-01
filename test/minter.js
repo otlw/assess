@@ -1,7 +1,6 @@
 var ConceptRegistry = artifacts.require('ConceptRegistry')
 var FathomToken = artifacts.require('FathomToken')
 var Concept = artifacts.require('Concept')
-var Assessment = artifacts.require('Assessment')
 var Minter = artifacts.require('Minter')
 
 var BigNumber = require('bignumber.js')
@@ -22,6 +21,7 @@ contract('Minting New Tokens:', function (accounts) {
   let scores = Array(size - 1).fill(100)
   scores.push(20)
   let epochLength
+  let foundation = { address: accounts[9] }
 
   describe('Initially,', async () => {
     it('a concept is created', async () => {
@@ -42,9 +42,16 @@ contract('Minting New Tokens:', function (accounts) {
       let stage = await assessment.instance.assessmentStage.call()
       assert.equal(stage.toNumber(), 4, 'assessment did not move to stage done')
     })
+
+    it('the owner can set where the tax should go by default', async () => {
+      minter = await Minter.deployed()
+      await minter.setDefaultBeneficiary(foundation.address)
+      let defaultBeneficiary = await minter.defaultBeneficiary.call()
+      assert.equal(foundation.address, defaultBeneficiary)
+    })
+
     describe('During the epoch, the minter...', async () => {
       it('accepts bids from finished assessments', async () => {
-        minter = await Minter.deployed()
         await minter.submitTicket(assessment.calledAssessors[0], assessment.address, cost - 3)
         assert.equal(assessment.calledAssessors[0], await minter.winner.call())
       })
@@ -152,18 +159,57 @@ contract('Minting New Tokens:', function (accounts) {
     })
 
     describe('After the epoch, the minter...', async () => {
+
       it('mints new tokens to the winner', async () => {
         await utils.evmIncreaseTime(epochLength)
         let winner = await minter.winner.call()
         let balanceBefore = await fathomToken.balanceOf.call(winner)
+        foundation['balance'] = Number(await fathomToken.balanceOf.call(foundation.address))
         await minter.endEpoch()
         let balanceAfter = await fathomToken.balanceOf.call(winner)
         assert.isAbove(balanceAfter.toNumber(), balanceBefore.toNumber(), 'winner did not receive minted Tokens')
       })
+
+      it('mints part of the token to the default beneficiary (aka the foundation)', async () => {
+        let balanceAfter = await fathomToken.balanceOf.call(foundation.address)
+        assert.isAbove(balanceAfter.toNumber(), foundation.balance, 'default beneficiary did not receive a share of the minted Tokens')
+      })
+
       it('and starts a new epoch', async () => {
         assert(await minter.winner.call(), 0x0, 'winner was not reset')
         assert(await minter.closestDistance.call(), 0, 'winner was not reset')
       })
     })
+
+    describe('The taxation system is opt-out:', async () => {
+      let selfishUser;
+      it('another assessment is run until the end and a user submits a bid', async () => {
+        assessment = await chain.createAndRunAssessment(
+          assessedConcept.address,
+          assessees[1],
+          cost, size, waitTime, timeLimit,
+          scores, -1
+        )
+        let stage = await assessment.instance.assessmentStage.call()
+        selfishUser = assessment.calledAssessors[0]
+        assert.equal(stage.toNumber(), 4, 'assessment did not move to stage done')
+
+        await minter.submitTicket(selfishUser, assessment.address, cost - 3)
+        assert.equal(selfishUser, await minter.winner.call())
+      })
+
+      it('users can redirect their taxes if they want to', async () => {
+        await minter.registerBeneficiary(selfishUser, {from: selfishUser})
+        let balanceBefore = Number(await fathomToken.balanceOf.call(selfishUser))
+        await utils.evmIncreaseTime(epochLength)
+        await minter.endEpoch()
+        let balanceAfter = Number(await fathomToken.balanceOf.call(selfishUser))
+        let reward = Number(await minter.reward.call())
+        assert.equal(balanceAfter, balanceBefore + reward, 'user did not receive all minted tokens')
+      })
+
+    })
+
+    // describe('Users can specify a ')
   })
 })

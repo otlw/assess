@@ -7,7 +7,6 @@ import "./FathomToken.sol";
 
 contract Minter {
 
-
     bool public initialized;
     uint public reward;
 
@@ -22,6 +21,8 @@ contract Minter {
     uint public closestDistance = 2**256 - 1;
 
     address public owner;
+    mapping (address => address) public beneficiaries;
+    address public defaultBeneficiary;
 
     modifier onlyOwner() {
         require(msg.sender == owner);
@@ -48,6 +49,16 @@ contract Minter {
             initialized = true;
         }
     }
+
+    function registerBeneficiary(address _user) public {
+      beneficiaries[msg.sender] = _user;
+    }
+
+    function setDefaultBeneficiary (address _user) public {
+      require(msg.sender == owner);
+      defaultBeneficiary = _user;
+    }
+
     /*
       function to be called by an assessor to submit a ticket to the lottery if
       the assessor has revealed their score in an assessment whose commit-phase
@@ -86,7 +97,13 @@ contract Minter {
 
     function endEpoch() public {
         require(now > (epochStart + epochLength));
-        if (fathomToken.mint(winner, reward)) {
+
+        // determine whether or not the winner is paying a tax
+        address taxRecipient = defaultBeneficiary;
+        if (beneficiaries[winner] != address(0)) {
+          taxRecipient = beneficiaries[winner];
+        }
+        if (fathomToken.mintWithTax(winner, reward, taxRecipient)) {
             emit TokensMinted(winner, reward);
             epochStart = epochStart + epochLength;
             epochHash = uint(blockhash(block.number - 1));

@@ -58,14 +58,20 @@ contract FathomToken is StandardToken{
         return true;
     }
 
-    function mint(address _to, uint _amount) public returns(bool){
-        require(msg.sender == minter);
-        require(totalSupply + _amount > totalSupply);
-
-        totalSupply += _amount;
-        balances[_to] += _amount;
-        emit Transfer(address(0), _to, _amount);
-        return true;
+    // function to mint new tokens and forward 10% to a specified recipient
+    function mintWithTax(address _to, uint _amount, address _taxRecipient) public returns(bool) {
+      require(msg.sender == minter);
+      require(totalSupply + _amount > totalSupply);
+      uint taxAmount;
+      if (_taxRecipient != address(0)) {
+        taxAmount = _amount / 10;
+        balances[_taxRecipient] += taxAmount;
+        emit Transfer(_to, _taxRecipient, taxAmount);
+      }
+      uint netAmount = _amount - taxAmount;
+      balances[_to] += netAmount;
+      emit Transfer(address(0), _to, netAmount);
+      return true;
     }
 
     function changeMinter(address _newMinter) public {
