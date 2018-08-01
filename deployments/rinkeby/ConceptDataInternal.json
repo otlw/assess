@@ -1,8 +1,8 @@
 {
   "contractName": "ConceptDataInternal",
   "abi": [],
-  "bytecode": "0x6080604052348015600f57600080fd5b50603580601d6000396000f3006080604052600080fd00a165627a7a723058202d06fa1c5b6c6b46f5486e38a327879f01cf1766f42248b469a7ff7f8a1df9790029",
-  "deployedBytecode": "0x6080604052600080fd00a165627a7a723058202d06fa1c5b6c6b46f5486e38a327879f01cf1766f42248b469a7ff7f8a1df9790029",
+  "bytecode": "0x6080604052348015600f57600080fd5b50603580601d6000396000f3006080604052600080fd00a165627a7a7230582003174364fe4f8185ea7743ad6f04473369cb15c0e6fe07f6cb8c2e63eab318ce0029",
+  "deployedBytecode": "0x6080604052600080fd00a165627a7a7230582003174364fe4f8185ea7743ad6f04473369cb15c0e6fe07f6cb8c2e63eab318ce0029",
   "sourceMap": "830:715:4:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;830:715:4;;;;;;;",
   "deployedSourceMap": "830:715:4:-;;;;;",
   "source": "pragma solidity ^0.4.23;\n\nimport \"./FathomToken.sol\";\nimport \"./ConceptRegistry.sol\";\nimport \"./Assessment.sol\";\nimport \"./Math.sol\";\nimport \"./Proxy.sol\";\n\ncontract ConceptData is ProxyData {\n  address[] public parents; //The concepts that this concept is child to (ie: Calculus is child to Math)\n  bytes public data;\n  address public owner;\n  FathomToken public fathomToken;\n  ConceptRegistry conceptRegistry;\n  uint public lifetime;\n  mapping (address => bool) public assessmentExists;\n\n  uint[] propagationRates;\n\n  address[] public availableMembers;\n  mapping (address => MemberData) public memberData;\n\n  struct MemberData {\n    address recentAssessment;\n    uint index;\n    ComponentWeight[] weights;\n    mapping(address => uint) componentWeightIndex;\n  }\n\n  struct ComponentWeight {\n    uint weight;\n    uint date;\n  }\n}\n\ncontract ConceptDataInternal is ProxyData {\n  address[] internal parents; //The concepts that this concept is child to (ie: Calculus is child to Math)\n  bytes internal data;\n  address internal owner;\n  FathomToken internal fathomToken;\n  ConceptRegistry internal conceptRegistry;\n  uint internal lifetime;\n  mapping (address => bool) internal assessmentExists;\n\n  uint[] internal propagationRates;\n\n  address[] internal availableMembers;\n  mapping (address => MemberData) internal memberData;\n\n  struct MemberData {\n    address recentAssessment;\n    uint index;\n    ComponentWeight[] weights;\n    mapping(address => uint) componentWeightIndex;\n  }\n\n  struct ComponentWeight {\n    uint weight;\n    uint date;\n    }\n}\n",
@@ -11,17 +11,17 @@
     "absolutePath": "/home/jared/dev/blockchain/assess/contracts/ConceptData.sol",
     "exportedSymbols": {
       "ConceptData": [
-        1953
+        1945
       ],
       "ConceptDataInternal": [
-        2000
+        1992
       ]
     },
-    "id": 2001,
+    "id": 1993,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 1901,
+        "id": 1893,
         "literals": [
           "solidity",
           "^",
@@ -34,10 +34,10 @@
       {
         "absolutePath": "/home/jared/dev/blockchain/assess/contracts/FathomToken.sol",
         "file": "./FathomToken.sol",
-        "id": 1902,
+        "id": 1894,
         "nodeType": "ImportDirective",
-        "scope": 2001,
-        "sourceUnit": 2581,
+        "scope": 1993,
+        "sourceUnit": 2573,
         "src": "26:27:4",
         "symbolAliases": [],
         "unitAlias": ""
@@ -45,10 +45,10 @@
       {
         "absolutePath": "/home/jared/dev/blockchain/assess/contracts/ConceptRegistry.sol",
         "file": "./ConceptRegistry.sol",
-        "id": 1903,
+        "id": 1895,
         "nodeType": "ImportDirective",
-        "scope": 2001,
-        "sourceUnit": 2263,
+        "scope": 1993,
+        "sourceUnit": 2255,
         "src": "54:31:4",
         "symbolAliases": [],
         "unitAlias": ""
@@ -56,9 +56,9 @@
       {
         "absolutePath": "/home/jared/dev/blockchain/assess/contracts/Assessment.sol",
         "file": "./Assessment.sol",
-        "id": 1904,
+        "id": 1896,
         "nodeType": "ImportDirective",
-        "scope": 2001,
+        "scope": 1993,
         "sourceUnit": 1057,
         "src": "86:26:4",
         "symbolAliases": [],
@@ -67,10 +67,10 @@
       {
         "absolutePath": "/home/jared/dev/blockchain/assess/contracts/Math.sol",
         "file": "./Math.sol",
-        "id": 1905,
+        "id": 1897,
         "nodeType": "ImportDirective",
-        "scope": 2001,
-        "sourceUnit": 2809,
+        "scope": 1993,
+        "sourceUnit": 2801,
         "src": "113:20:4",
         "symbolAliases": [],
         "unitAlias": ""
@@ -78,10 +78,10 @@
       {
         "absolutePath": "/home/jared/dev/blockchain/assess/contracts/Proxy.sol",
         "file": "./Proxy.sol",
-        "id": 1906,
+        "id": 1898,
         "nodeType": "ImportDirective",
-        "scope": 2001,
-        "sourceUnit": 3241,
+        "scope": 1993,
+        "sourceUnit": 3176,
         "src": "134:21:4",
         "symbolAliases": [],
         "unitAlias": ""
@@ -92,41 +92,41 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 1907,
+              "id": 1899,
               "name": "ProxyData",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 3218,
+              "referencedDeclaration": 3153,
               "src": "181:9:4",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_ProxyData_$3218",
+                "typeIdentifier": "t_contract$_ProxyData_$3153",
                 "typeString": "contract ProxyData"
               }
             },
-            "id": 1908,
+            "id": 1900,
             "nodeType": "InheritanceSpecifier",
             "src": "181:9:4"
           }
         ],
         "contractDependencies": [
-          3218
+          3153
         ],
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 1953,
+        "id": 1945,
         "linearizedBaseContracts": [
-          1953,
-          3218
+          1945,
+          3153
         ],
         "name": "ConceptData",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "constant": false,
-            "id": 1911,
+            "id": 1903,
             "name": "parents",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "195:24:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -136,7 +136,7 @@
             },
             "typeName": {
               "baseType": {
-                "id": 1909,
+                "id": 1901,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "195:7:4",
@@ -145,7 +145,7 @@
                   "typeString": "address"
                 }
               },
-              "id": 1910,
+              "id": 1902,
               "length": null,
               "nodeType": "ArrayTypeName",
               "src": "195:9:4",
@@ -159,10 +159,10 @@
           },
           {
             "constant": false,
-            "id": 1913,
+            "id": 1905,
             "name": "data",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "300:17:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -171,7 +171,7 @@
               "typeString": "bytes"
             },
             "typeName": {
-              "id": 1912,
+              "id": 1904,
               "name": "bytes",
               "nodeType": "ElementaryTypeName",
               "src": "300:5:4",
@@ -185,10 +185,10 @@
           },
           {
             "constant": false,
-            "id": 1915,
+            "id": 1907,
             "name": "owner",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "321:20:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -197,7 +197,7 @@
               "typeString": "address"
             },
             "typeName": {
-              "id": 1914,
+              "id": 1906,
               "name": "address",
               "nodeType": "ElementaryTypeName",
               "src": "321:7:4",
@@ -211,26 +211,26 @@
           },
           {
             "constant": false,
-            "id": 1917,
+            "id": 1909,
             "name": "fathomToken",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "345:30:4",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_FathomToken_$2580",
+              "typeIdentifier": "t_contract$_FathomToken_$2572",
               "typeString": "contract FathomToken"
             },
             "typeName": {
               "contractScope": null,
-              "id": 1916,
+              "id": 1908,
               "name": "FathomToken",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2580,
+              "referencedDeclaration": 2572,
               "src": "345:11:4",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_FathomToken_$2580",
+                "typeIdentifier": "t_contract$_FathomToken_$2572",
                 "typeString": "contract FathomToken"
               }
             },
@@ -239,26 +239,26 @@
           },
           {
             "constant": false,
-            "id": 1919,
+            "id": 1911,
             "name": "conceptRegistry",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "379:31:4",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_ConceptRegistry_$2262",
+              "typeIdentifier": "t_contract$_ConceptRegistry_$2254",
               "typeString": "contract ConceptRegistry"
             },
             "typeName": {
               "contractScope": null,
-              "id": 1918,
+              "id": 1910,
               "name": "ConceptRegistry",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2262,
+              "referencedDeclaration": 2254,
               "src": "379:15:4",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_ConceptRegistry_$2262",
+                "typeIdentifier": "t_contract$_ConceptRegistry_$2254",
                 "typeString": "contract ConceptRegistry"
               }
             },
@@ -267,10 +267,10 @@
           },
           {
             "constant": false,
-            "id": 1921,
+            "id": 1913,
             "name": "lifetime",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "414:20:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -279,7 +279,7 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 1920,
+              "id": 1912,
               "name": "uint",
               "nodeType": "ElementaryTypeName",
               "src": "414:4:4",
@@ -293,10 +293,10 @@
           },
           {
             "constant": false,
-            "id": 1925,
+            "id": 1917,
             "name": "assessmentExists",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "438:49:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -305,9 +305,9 @@
               "typeString": "mapping(address => bool)"
             },
             "typeName": {
-              "id": 1924,
+              "id": 1916,
               "keyType": {
-                "id": 1922,
+                "id": 1914,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "447:7:4",
@@ -323,7 +323,7 @@
                 "typeString": "mapping(address => bool)"
               },
               "valueType": {
-                "id": 1923,
+                "id": 1915,
                 "name": "bool",
                 "nodeType": "ElementaryTypeName",
                 "src": "458:4:4",
@@ -338,10 +338,10 @@
           },
           {
             "constant": false,
-            "id": 1928,
+            "id": 1920,
             "name": "propagationRates",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "492:23:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -351,7 +351,7 @@
             },
             "typeName": {
               "baseType": {
-                "id": 1926,
+                "id": 1918,
                 "name": "uint",
                 "nodeType": "ElementaryTypeName",
                 "src": "492:4:4",
@@ -360,7 +360,7 @@
                   "typeString": "uint256"
                 }
               },
-              "id": 1927,
+              "id": 1919,
               "length": null,
               "nodeType": "ArrayTypeName",
               "src": "492:6:4",
@@ -374,10 +374,10 @@
           },
           {
             "constant": false,
-            "id": 1931,
+            "id": 1923,
             "name": "availableMembers",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "520:33:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -387,7 +387,7 @@
             },
             "typeName": {
               "baseType": {
-                "id": 1929,
+                "id": 1921,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "520:7:4",
@@ -396,7 +396,7 @@
                   "typeString": "address"
                 }
               },
-              "id": 1930,
+              "id": 1922,
               "length": null,
               "nodeType": "ArrayTypeName",
               "src": "520:9:4",
@@ -410,21 +410,21 @@
           },
           {
             "constant": false,
-            "id": 1935,
+            "id": 1927,
             "name": "memberData",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "557:49:4",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1947_storage_$",
+              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1939_storage_$",
               "typeString": "mapping(address => struct ConceptData.MemberData)"
             },
             "typeName": {
-              "id": 1934,
+              "id": 1926,
               "keyType": {
-                "id": 1932,
+                "id": 1924,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "566:7:4",
@@ -436,18 +436,18 @@
               "nodeType": "Mapping",
               "src": "557:31:4",
               "typeDescriptions": {
-                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1947_storage_$",
+                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1939_storage_$",
                 "typeString": "mapping(address => struct ConceptData.MemberData)"
               },
               "valueType": {
                 "contractScope": null,
-                "id": 1933,
+                "id": 1925,
                 "name": "MemberData",
                 "nodeType": "UserDefinedTypeName",
-                "referencedDeclaration": 1947,
+                "referencedDeclaration": 1939,
                 "src": "577:10:4",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_MemberData_$1947_storage_ptr",
+                  "typeIdentifier": "t_struct$_MemberData_$1939_storage_ptr",
                   "typeString": "struct ConceptData.MemberData"
                 }
               }
@@ -457,14 +457,14 @@
           },
           {
             "canonicalName": "ConceptData.MemberData",
-            "id": 1947,
+            "id": 1939,
             "members": [
               {
                 "constant": false,
-                "id": 1937,
+                "id": 1929,
                 "name": "recentAssessment",
                 "nodeType": "VariableDeclaration",
-                "scope": 1947,
+                "scope": 1939,
                 "src": "635:24:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -473,7 +473,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 1936,
+                  "id": 1928,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "635:7:4",
@@ -487,10 +487,10 @@
               },
               {
                 "constant": false,
-                "id": 1939,
+                "id": 1931,
                 "name": "index",
                 "nodeType": "VariableDeclaration",
-                "scope": 1947,
+                "scope": 1939,
                 "src": "665:10:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -499,7 +499,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1938,
+                  "id": 1930,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "665:4:4",
@@ -513,36 +513,36 @@
               },
               {
                 "constant": false,
-                "id": 1942,
+                "id": 1934,
                 "name": "weights",
                 "nodeType": "VariableDeclaration",
-                "scope": 1947,
+                "scope": 1939,
                 "src": "681:25:4",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1952_storage_$dyn_storage_ptr",
+                  "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1944_storage_$dyn_storage_ptr",
                   "typeString": "struct ConceptData.ComponentWeight[]"
                 },
                 "typeName": {
                   "baseType": {
                     "contractScope": null,
-                    "id": 1940,
+                    "id": 1932,
                     "name": "ComponentWeight",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 1952,
+                    "referencedDeclaration": 1944,
                     "src": "681:15:4",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_ComponentWeight_$1952_storage_ptr",
+                      "typeIdentifier": "t_struct$_ComponentWeight_$1944_storage_ptr",
                       "typeString": "struct ConceptData.ComponentWeight"
                     }
                   },
-                  "id": 1941,
+                  "id": 1933,
                   "length": null,
                   "nodeType": "ArrayTypeName",
                   "src": "681:17:4",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1952_storage_$dyn_storage_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1944_storage_$dyn_storage_ptr",
                     "typeString": "struct ConceptData.ComponentWeight[]"
                   }
                 },
@@ -551,10 +551,10 @@
               },
               {
                 "constant": false,
-                "id": 1946,
+                "id": 1938,
                 "name": "componentWeightIndex",
                 "nodeType": "VariableDeclaration",
-                "scope": 1947,
+                "scope": 1939,
                 "src": "712:45:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -563,9 +563,9 @@
                   "typeString": "mapping(address => uint256)"
                 },
                 "typeName": {
-                  "id": 1945,
+                  "id": 1937,
                   "keyType": {
-                    "id": 1943,
+                    "id": 1935,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "720:7:4",
@@ -581,7 +581,7 @@
                     "typeString": "mapping(address => uint256)"
                   },
                   "valueType": {
-                    "id": 1944,
+                    "id": 1936,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "731:4:4",
@@ -597,20 +597,20 @@
             ],
             "name": "MemberData",
             "nodeType": "StructDefinition",
-            "scope": 1953,
+            "scope": 1945,
             "src": "611:151:4",
             "visibility": "public"
           },
           {
             "canonicalName": "ConceptData.ComponentWeight",
-            "id": 1952,
+            "id": 1944,
             "members": [
               {
                 "constant": false,
-                "id": 1949,
+                "id": 1941,
                 "name": "weight",
                 "nodeType": "VariableDeclaration",
-                "scope": 1952,
+                "scope": 1944,
                 "src": "795:11:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -619,7 +619,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1948,
+                  "id": 1940,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "795:4:4",
@@ -633,10 +633,10 @@
               },
               {
                 "constant": false,
-                "id": 1951,
+                "id": 1943,
                 "name": "date",
                 "nodeType": "VariableDeclaration",
-                "scope": 1952,
+                "scope": 1944,
                 "src": "812:9:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -645,7 +645,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1950,
+                  "id": 1942,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "812:4:4",
@@ -660,12 +660,12 @@
             ],
             "name": "ComponentWeight",
             "nodeType": "StructDefinition",
-            "scope": 1953,
+            "scope": 1945,
             "src": "766:60:4",
             "visibility": "public"
           }
         ],
-        "scope": 2001,
+        "scope": 1993,
         "src": "157:671:4"
       },
       {
@@ -674,41 +674,41 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 1954,
+              "id": 1946,
               "name": "ProxyData",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 3218,
+              "referencedDeclaration": 3153,
               "src": "862:9:4",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_ProxyData_$3218",
+                "typeIdentifier": "t_contract$_ProxyData_$3153",
                 "typeString": "contract ProxyData"
               }
             },
-            "id": 1955,
+            "id": 1947,
             "nodeType": "InheritanceSpecifier",
             "src": "862:9:4"
           }
         ],
         "contractDependencies": [
-          3218
+          3153
         ],
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 2000,
+        "id": 1992,
         "linearizedBaseContracts": [
-          2000,
-          3218
+          1992,
+          3153
         ],
         "name": "ConceptDataInternal",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "constant": false,
-            "id": 1958,
+            "id": 1950,
             "name": "parents",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "876:26:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -718,7 +718,7 @@
             },
             "typeName": {
               "baseType": {
-                "id": 1956,
+                "id": 1948,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "876:7:4",
@@ -727,7 +727,7 @@
                   "typeString": "address"
                 }
               },
-              "id": 1957,
+              "id": 1949,
               "length": null,
               "nodeType": "ArrayTypeName",
               "src": "876:9:4",
@@ -741,10 +741,10 @@
           },
           {
             "constant": false,
-            "id": 1960,
+            "id": 1952,
             "name": "data",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "983:19:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -753,7 +753,7 @@
               "typeString": "bytes"
             },
             "typeName": {
-              "id": 1959,
+              "id": 1951,
               "name": "bytes",
               "nodeType": "ElementaryTypeName",
               "src": "983:5:4",
@@ -767,10 +767,10 @@
           },
           {
             "constant": false,
-            "id": 1962,
+            "id": 1954,
             "name": "owner",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1006:22:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -779,7 +779,7 @@
               "typeString": "address"
             },
             "typeName": {
-              "id": 1961,
+              "id": 1953,
               "name": "address",
               "nodeType": "ElementaryTypeName",
               "src": "1006:7:4",
@@ -793,26 +793,26 @@
           },
           {
             "constant": false,
-            "id": 1964,
+            "id": 1956,
             "name": "fathomToken",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1032:32:4",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_FathomToken_$2580",
+              "typeIdentifier": "t_contract$_FathomToken_$2572",
               "typeString": "contract FathomToken"
             },
             "typeName": {
               "contractScope": null,
-              "id": 1963,
+              "id": 1955,
               "name": "FathomToken",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2580,
+              "referencedDeclaration": 2572,
               "src": "1032:11:4",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_FathomToken_$2580",
+                "typeIdentifier": "t_contract$_FathomToken_$2572",
                 "typeString": "contract FathomToken"
               }
             },
@@ -821,26 +821,26 @@
           },
           {
             "constant": false,
-            "id": 1966,
+            "id": 1958,
             "name": "conceptRegistry",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1068:40:4",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_ConceptRegistry_$2262",
+              "typeIdentifier": "t_contract$_ConceptRegistry_$2254",
               "typeString": "contract ConceptRegistry"
             },
             "typeName": {
               "contractScope": null,
-              "id": 1965,
+              "id": 1957,
               "name": "ConceptRegistry",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2262,
+              "referencedDeclaration": 2254,
               "src": "1068:15:4",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_ConceptRegistry_$2262",
+                "typeIdentifier": "t_contract$_ConceptRegistry_$2254",
                 "typeString": "contract ConceptRegistry"
               }
             },
@@ -849,10 +849,10 @@
           },
           {
             "constant": false,
-            "id": 1968,
+            "id": 1960,
             "name": "lifetime",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1112:22:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -861,7 +861,7 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 1967,
+              "id": 1959,
               "name": "uint",
               "nodeType": "ElementaryTypeName",
               "src": "1112:4:4",
@@ -875,10 +875,10 @@
           },
           {
             "constant": false,
-            "id": 1972,
+            "id": 1964,
             "name": "assessmentExists",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1138:51:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -887,9 +887,9 @@
               "typeString": "mapping(address => bool)"
             },
             "typeName": {
-              "id": 1971,
+              "id": 1963,
               "keyType": {
-                "id": 1969,
+                "id": 1961,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "1147:7:4",
@@ -905,7 +905,7 @@
                 "typeString": "mapping(address => bool)"
               },
               "valueType": {
-                "id": 1970,
+                "id": 1962,
                 "name": "bool",
                 "nodeType": "ElementaryTypeName",
                 "src": "1158:4:4",
@@ -920,10 +920,10 @@
           },
           {
             "constant": false,
-            "id": 1975,
+            "id": 1967,
             "name": "propagationRates",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1194:32:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -933,7 +933,7 @@
             },
             "typeName": {
               "baseType": {
-                "id": 1973,
+                "id": 1965,
                 "name": "uint",
                 "nodeType": "ElementaryTypeName",
                 "src": "1194:4:4",
@@ -942,7 +942,7 @@
                   "typeString": "uint256"
                 }
               },
-              "id": 1974,
+              "id": 1966,
               "length": null,
               "nodeType": "ArrayTypeName",
               "src": "1194:6:4",
@@ -956,10 +956,10 @@
           },
           {
             "constant": false,
-            "id": 1978,
+            "id": 1970,
             "name": "availableMembers",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1231:35:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -969,7 +969,7 @@
             },
             "typeName": {
               "baseType": {
-                "id": 1976,
+                "id": 1968,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "1231:7:4",
@@ -978,7 +978,7 @@
                   "typeString": "address"
                 }
               },
-              "id": 1977,
+              "id": 1969,
               "length": null,
               "nodeType": "ArrayTypeName",
               "src": "1231:9:4",
@@ -992,21 +992,21 @@
           },
           {
             "constant": false,
-            "id": 1982,
+            "id": 1974,
             "name": "memberData",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1270:51:4",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1994_storage_$",
+              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1986_storage_$",
               "typeString": "mapping(address => struct ConceptDataInternal.MemberData)"
             },
             "typeName": {
-              "id": 1981,
+              "id": 1973,
               "keyType": {
-                "id": 1979,
+                "id": 1971,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "1279:7:4",
@@ -1018,18 +1018,18 @@
               "nodeType": "Mapping",
               "src": "1270:31:4",
               "typeDescriptions": {
-                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1994_storage_$",
+                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1986_storage_$",
                 "typeString": "mapping(address => struct ConceptDataInternal.MemberData)"
               },
               "valueType": {
                 "contractScope": null,
-                "id": 1980,
+                "id": 1972,
                 "name": "MemberData",
                 "nodeType": "UserDefinedTypeName",
-                "referencedDeclaration": 1994,
+                "referencedDeclaration": 1986,
                 "src": "1290:10:4",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_MemberData_$1994_storage_ptr",
+                  "typeIdentifier": "t_struct$_MemberData_$1986_storage_ptr",
                   "typeString": "struct ConceptDataInternal.MemberData"
                 }
               }
@@ -1039,14 +1039,14 @@
           },
           {
             "canonicalName": "ConceptDataInternal.MemberData",
-            "id": 1994,
+            "id": 1986,
             "members": [
               {
                 "constant": false,
-                "id": 1984,
+                "id": 1976,
                 "name": "recentAssessment",
                 "nodeType": "VariableDeclaration",
-                "scope": 1994,
+                "scope": 1986,
                 "src": "1350:24:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1055,7 +1055,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 1983,
+                  "id": 1975,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "1350:7:4",
@@ -1069,10 +1069,10 @@
               },
               {
                 "constant": false,
-                "id": 1986,
+                "id": 1978,
                 "name": "index",
                 "nodeType": "VariableDeclaration",
-                "scope": 1994,
+                "scope": 1986,
                 "src": "1380:10:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1081,7 +1081,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1985,
+                  "id": 1977,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "1380:4:4",
@@ -1095,36 +1095,36 @@
               },
               {
                 "constant": false,
-                "id": 1989,
+                "id": 1981,
                 "name": "weights",
                 "nodeType": "VariableDeclaration",
-                "scope": 1994,
+                "scope": 1986,
                 "src": "1396:25:4",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1999_storage_$dyn_storage_ptr",
+                  "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1991_storage_$dyn_storage_ptr",
                   "typeString": "struct ConceptDataInternal.ComponentWeight[]"
                 },
                 "typeName": {
                   "baseType": {
                     "contractScope": null,
-                    "id": 1987,
+                    "id": 1979,
                     "name": "ComponentWeight",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 1999,
+                    "referencedDeclaration": 1991,
                     "src": "1396:15:4",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_ComponentWeight_$1999_storage_ptr",
+                      "typeIdentifier": "t_struct$_ComponentWeight_$1991_storage_ptr",
                       "typeString": "struct ConceptDataInternal.ComponentWeight"
                     }
                   },
-                  "id": 1988,
+                  "id": 1980,
                   "length": null,
                   "nodeType": "ArrayTypeName",
                   "src": "1396:17:4",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1999_storage_$dyn_storage_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1991_storage_$dyn_storage_ptr",
                     "typeString": "struct ConceptDataInternal.ComponentWeight[]"
                   }
                 },
@@ -1133,10 +1133,10 @@
               },
               {
                 "constant": false,
-                "id": 1993,
+                "id": 1985,
                 "name": "componentWeightIndex",
                 "nodeType": "VariableDeclaration",
-                "scope": 1994,
+                "scope": 1986,
                 "src": "1427:45:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1145,9 +1145,9 @@
                   "typeString": "mapping(address => uint256)"
                 },
                 "typeName": {
-                  "id": 1992,
+                  "id": 1984,
                   "keyType": {
-                    "id": 1990,
+                    "id": 1982,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1435:7:4",
@@ -1163,7 +1163,7 @@
                     "typeString": "mapping(address => uint256)"
                   },
                   "valueType": {
-                    "id": 1991,
+                    "id": 1983,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "1446:4:4",
@@ -1179,20 +1179,20 @@
             ],
             "name": "MemberData",
             "nodeType": "StructDefinition",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1326:151:4",
             "visibility": "public"
           },
           {
             "canonicalName": "ConceptDataInternal.ComponentWeight",
-            "id": 1999,
+            "id": 1991,
             "members": [
               {
                 "constant": false,
-                "id": 1996,
+                "id": 1988,
                 "name": "weight",
                 "nodeType": "VariableDeclaration",
-                "scope": 1999,
+                "scope": 1991,
                 "src": "1510:11:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1201,7 +1201,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1995,
+                  "id": 1987,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "1510:4:4",
@@ -1215,10 +1215,10 @@
               },
               {
                 "constant": false,
-                "id": 1998,
+                "id": 1990,
                 "name": "date",
                 "nodeType": "VariableDeclaration",
-                "scope": 1999,
+                "scope": 1991,
                 "src": "1527:9:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1227,7 +1227,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1997,
+                  "id": 1989,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "1527:4:4",
@@ -1242,12 +1242,12 @@
             ],
             "name": "ComponentWeight",
             "nodeType": "StructDefinition",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1481:62:4",
             "visibility": "public"
           }
         ],
-        "scope": 2001,
+        "scope": 1993,
         "src": "830:715:4"
       }
     ],
@@ -1257,17 +1257,17 @@
     "absolutePath": "/home/jared/dev/blockchain/assess/contracts/ConceptData.sol",
     "exportedSymbols": {
       "ConceptData": [
-        1953
+        1945
       ],
       "ConceptDataInternal": [
-        2000
+        1992
       ]
     },
-    "id": 2001,
+    "id": 1993,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 1901,
+        "id": 1893,
         "literals": [
           "solidity",
           "^",
@@ -1280,10 +1280,10 @@
       {
         "absolutePath": "/home/jared/dev/blockchain/assess/contracts/FathomToken.sol",
         "file": "./FathomToken.sol",
-        "id": 1902,
+        "id": 1894,
         "nodeType": "ImportDirective",
-        "scope": 2001,
-        "sourceUnit": 2581,
+        "scope": 1993,
+        "sourceUnit": 2573,
         "src": "26:27:4",
         "symbolAliases": [],
         "unitAlias": ""
@@ -1291,10 +1291,10 @@
       {
         "absolutePath": "/home/jared/dev/blockchain/assess/contracts/ConceptRegistry.sol",
         "file": "./ConceptRegistry.sol",
-        "id": 1903,
+        "id": 1895,
         "nodeType": "ImportDirective",
-        "scope": 2001,
-        "sourceUnit": 2263,
+        "scope": 1993,
+        "sourceUnit": 2255,
         "src": "54:31:4",
         "symbolAliases": [],
         "unitAlias": ""
@@ -1302,9 +1302,9 @@
       {
         "absolutePath": "/home/jared/dev/blockchain/assess/contracts/Assessment.sol",
         "file": "./Assessment.sol",
-        "id": 1904,
+        "id": 1896,
         "nodeType": "ImportDirective",
-        "scope": 2001,
+        "scope": 1993,
         "sourceUnit": 1057,
         "src": "86:26:4",
         "symbolAliases": [],
@@ -1313,10 +1313,10 @@
       {
         "absolutePath": "/home/jared/dev/blockchain/assess/contracts/Math.sol",
         "file": "./Math.sol",
-        "id": 1905,
+        "id": 1897,
         "nodeType": "ImportDirective",
-        "scope": 2001,
-        "sourceUnit": 2809,
+        "scope": 1993,
+        "sourceUnit": 2801,
         "src": "113:20:4",
         "symbolAliases": [],
         "unitAlias": ""
@@ -1324,10 +1324,10 @@
       {
         "absolutePath": "/home/jared/dev/blockchain/assess/contracts/Proxy.sol",
         "file": "./Proxy.sol",
-        "id": 1906,
+        "id": 1898,
         "nodeType": "ImportDirective",
-        "scope": 2001,
-        "sourceUnit": 3241,
+        "scope": 1993,
+        "sourceUnit": 3176,
         "src": "134:21:4",
         "symbolAliases": [],
         "unitAlias": ""
@@ -1338,41 +1338,41 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 1907,
+              "id": 1899,
               "name": "ProxyData",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 3218,
+              "referencedDeclaration": 3153,
               "src": "181:9:4",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_ProxyData_$3218",
+                "typeIdentifier": "t_contract$_ProxyData_$3153",
                 "typeString": "contract ProxyData"
               }
             },
-            "id": 1908,
+            "id": 1900,
             "nodeType": "InheritanceSpecifier",
             "src": "181:9:4"
           }
         ],
         "contractDependencies": [
-          3218
+          3153
         ],
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 1953,
+        "id": 1945,
         "linearizedBaseContracts": [
-          1953,
-          3218
+          1945,
+          3153
         ],
         "name": "ConceptData",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "constant": false,
-            "id": 1911,
+            "id": 1903,
             "name": "parents",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "195:24:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -1382,7 +1382,7 @@
             },
             "typeName": {
               "baseType": {
-                "id": 1909,
+                "id": 1901,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "195:7:4",
@@ -1391,7 +1391,7 @@
                   "typeString": "address"
                 }
               },
-              "id": 1910,
+              "id": 1902,
               "length": null,
               "nodeType": "ArrayTypeName",
               "src": "195:9:4",
@@ -1405,10 +1405,10 @@
           },
           {
             "constant": false,
-            "id": 1913,
+            "id": 1905,
             "name": "data",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "300:17:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -1417,7 +1417,7 @@
               "typeString": "bytes"
             },
             "typeName": {
-              "id": 1912,
+              "id": 1904,
               "name": "bytes",
               "nodeType": "ElementaryTypeName",
               "src": "300:5:4",
@@ -1431,10 +1431,10 @@
           },
           {
             "constant": false,
-            "id": 1915,
+            "id": 1907,
             "name": "owner",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "321:20:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -1443,7 +1443,7 @@
               "typeString": "address"
             },
             "typeName": {
-              "id": 1914,
+              "id": 1906,
               "name": "address",
               "nodeType": "ElementaryTypeName",
               "src": "321:7:4",
@@ -1457,26 +1457,26 @@
           },
           {
             "constant": false,
-            "id": 1917,
+            "id": 1909,
             "name": "fathomToken",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "345:30:4",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_FathomToken_$2580",
+              "typeIdentifier": "t_contract$_FathomToken_$2572",
               "typeString": "contract FathomToken"
             },
             "typeName": {
               "contractScope": null,
-              "id": 1916,
+              "id": 1908,
               "name": "FathomToken",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2580,
+              "referencedDeclaration": 2572,
               "src": "345:11:4",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_FathomToken_$2580",
+                "typeIdentifier": "t_contract$_FathomToken_$2572",
                 "typeString": "contract FathomToken"
               }
             },
@@ -1485,26 +1485,26 @@
           },
           {
             "constant": false,
-            "id": 1919,
+            "id": 1911,
             "name": "conceptRegistry",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "379:31:4",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_ConceptRegistry_$2262",
+              "typeIdentifier": "t_contract$_ConceptRegistry_$2254",
               "typeString": "contract ConceptRegistry"
             },
             "typeName": {
               "contractScope": null,
-              "id": 1918,
+              "id": 1910,
               "name": "ConceptRegistry",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2262,
+              "referencedDeclaration": 2254,
               "src": "379:15:4",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_ConceptRegistry_$2262",
+                "typeIdentifier": "t_contract$_ConceptRegistry_$2254",
                 "typeString": "contract ConceptRegistry"
               }
             },
@@ -1513,10 +1513,10 @@
           },
           {
             "constant": false,
-            "id": 1921,
+            "id": 1913,
             "name": "lifetime",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "414:20:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -1525,7 +1525,7 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 1920,
+              "id": 1912,
               "name": "uint",
               "nodeType": "ElementaryTypeName",
               "src": "414:4:4",
@@ -1539,10 +1539,10 @@
           },
           {
             "constant": false,
-            "id": 1925,
+            "id": 1917,
             "name": "assessmentExists",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "438:49:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -1551,9 +1551,9 @@
               "typeString": "mapping(address => bool)"
             },
             "typeName": {
-              "id": 1924,
+              "id": 1916,
               "keyType": {
-                "id": 1922,
+                "id": 1914,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "447:7:4",
@@ -1569,7 +1569,7 @@
                 "typeString": "mapping(address => bool)"
               },
               "valueType": {
-                "id": 1923,
+                "id": 1915,
                 "name": "bool",
                 "nodeType": "ElementaryTypeName",
                 "src": "458:4:4",
@@ -1584,10 +1584,10 @@
           },
           {
             "constant": false,
-            "id": 1928,
+            "id": 1920,
             "name": "propagationRates",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "492:23:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -1597,7 +1597,7 @@
             },
             "typeName": {
               "baseType": {
-                "id": 1926,
+                "id": 1918,
                 "name": "uint",
                 "nodeType": "ElementaryTypeName",
                 "src": "492:4:4",
@@ -1606,7 +1606,7 @@
                   "typeString": "uint256"
                 }
               },
-              "id": 1927,
+              "id": 1919,
               "length": null,
               "nodeType": "ArrayTypeName",
               "src": "492:6:4",
@@ -1620,10 +1620,10 @@
           },
           {
             "constant": false,
-            "id": 1931,
+            "id": 1923,
             "name": "availableMembers",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "520:33:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -1633,7 +1633,7 @@
             },
             "typeName": {
               "baseType": {
-                "id": 1929,
+                "id": 1921,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "520:7:4",
@@ -1642,7 +1642,7 @@
                   "typeString": "address"
                 }
               },
-              "id": 1930,
+              "id": 1922,
               "length": null,
               "nodeType": "ArrayTypeName",
               "src": "520:9:4",
@@ -1656,21 +1656,21 @@
           },
           {
             "constant": false,
-            "id": 1935,
+            "id": 1927,
             "name": "memberData",
             "nodeType": "VariableDeclaration",
-            "scope": 1953,
+            "scope": 1945,
             "src": "557:49:4",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1947_storage_$",
+              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1939_storage_$",
               "typeString": "mapping(address => struct ConceptData.MemberData)"
             },
             "typeName": {
-              "id": 1934,
+              "id": 1926,
               "keyType": {
-                "id": 1932,
+                "id": 1924,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "566:7:4",
@@ -1682,18 +1682,18 @@
               "nodeType": "Mapping",
               "src": "557:31:4",
               "typeDescriptions": {
-                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1947_storage_$",
+                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1939_storage_$",
                 "typeString": "mapping(address => struct ConceptData.MemberData)"
               },
               "valueType": {
                 "contractScope": null,
-                "id": 1933,
+                "id": 1925,
                 "name": "MemberData",
                 "nodeType": "UserDefinedTypeName",
-                "referencedDeclaration": 1947,
+                "referencedDeclaration": 1939,
                 "src": "577:10:4",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_MemberData_$1947_storage_ptr",
+                  "typeIdentifier": "t_struct$_MemberData_$1939_storage_ptr",
                   "typeString": "struct ConceptData.MemberData"
                 }
               }
@@ -1703,14 +1703,14 @@
           },
           {
             "canonicalName": "ConceptData.MemberData",
-            "id": 1947,
+            "id": 1939,
             "members": [
               {
                 "constant": false,
-                "id": 1937,
+                "id": 1929,
                 "name": "recentAssessment",
                 "nodeType": "VariableDeclaration",
-                "scope": 1947,
+                "scope": 1939,
                 "src": "635:24:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1719,7 +1719,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 1936,
+                  "id": 1928,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "635:7:4",
@@ -1733,10 +1733,10 @@
               },
               {
                 "constant": false,
-                "id": 1939,
+                "id": 1931,
                 "name": "index",
                 "nodeType": "VariableDeclaration",
-                "scope": 1947,
+                "scope": 1939,
                 "src": "665:10:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1745,7 +1745,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1938,
+                  "id": 1930,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "665:4:4",
@@ -1759,36 +1759,36 @@
               },
               {
                 "constant": false,
-                "id": 1942,
+                "id": 1934,
                 "name": "weights",
                 "nodeType": "VariableDeclaration",
-                "scope": 1947,
+                "scope": 1939,
                 "src": "681:25:4",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1952_storage_$dyn_storage_ptr",
+                  "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1944_storage_$dyn_storage_ptr",
                   "typeString": "struct ConceptData.ComponentWeight[]"
                 },
                 "typeName": {
                   "baseType": {
                     "contractScope": null,
-                    "id": 1940,
+                    "id": 1932,
                     "name": "ComponentWeight",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 1952,
+                    "referencedDeclaration": 1944,
                     "src": "681:15:4",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_ComponentWeight_$1952_storage_ptr",
+                      "typeIdentifier": "t_struct$_ComponentWeight_$1944_storage_ptr",
                       "typeString": "struct ConceptData.ComponentWeight"
                     }
                   },
-                  "id": 1941,
+                  "id": 1933,
                   "length": null,
                   "nodeType": "ArrayTypeName",
                   "src": "681:17:4",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1952_storage_$dyn_storage_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1944_storage_$dyn_storage_ptr",
                     "typeString": "struct ConceptData.ComponentWeight[]"
                   }
                 },
@@ -1797,10 +1797,10 @@
               },
               {
                 "constant": false,
-                "id": 1946,
+                "id": 1938,
                 "name": "componentWeightIndex",
                 "nodeType": "VariableDeclaration",
-                "scope": 1947,
+                "scope": 1939,
                 "src": "712:45:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1809,9 +1809,9 @@
                   "typeString": "mapping(address => uint256)"
                 },
                 "typeName": {
-                  "id": 1945,
+                  "id": 1937,
                   "keyType": {
-                    "id": 1943,
+                    "id": 1935,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "720:7:4",
@@ -1827,7 +1827,7 @@
                     "typeString": "mapping(address => uint256)"
                   },
                   "valueType": {
-                    "id": 1944,
+                    "id": 1936,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "731:4:4",
@@ -1843,20 +1843,20 @@
             ],
             "name": "MemberData",
             "nodeType": "StructDefinition",
-            "scope": 1953,
+            "scope": 1945,
             "src": "611:151:4",
             "visibility": "public"
           },
           {
             "canonicalName": "ConceptData.ComponentWeight",
-            "id": 1952,
+            "id": 1944,
             "members": [
               {
                 "constant": false,
-                "id": 1949,
+                "id": 1941,
                 "name": "weight",
                 "nodeType": "VariableDeclaration",
-                "scope": 1952,
+                "scope": 1944,
                 "src": "795:11:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1865,7 +1865,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1948,
+                  "id": 1940,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "795:4:4",
@@ -1879,10 +1879,10 @@
               },
               {
                 "constant": false,
-                "id": 1951,
+                "id": 1943,
                 "name": "date",
                 "nodeType": "VariableDeclaration",
-                "scope": 1952,
+                "scope": 1944,
                 "src": "812:9:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -1891,7 +1891,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1950,
+                  "id": 1942,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "812:4:4",
@@ -1906,12 +1906,12 @@
             ],
             "name": "ComponentWeight",
             "nodeType": "StructDefinition",
-            "scope": 1953,
+            "scope": 1945,
             "src": "766:60:4",
             "visibility": "public"
           }
         ],
-        "scope": 2001,
+        "scope": 1993,
         "src": "157:671:4"
       },
       {
@@ -1920,41 +1920,41 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 1954,
+              "id": 1946,
               "name": "ProxyData",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 3218,
+              "referencedDeclaration": 3153,
               "src": "862:9:4",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_ProxyData_$3218",
+                "typeIdentifier": "t_contract$_ProxyData_$3153",
                 "typeString": "contract ProxyData"
               }
             },
-            "id": 1955,
+            "id": 1947,
             "nodeType": "InheritanceSpecifier",
             "src": "862:9:4"
           }
         ],
         "contractDependencies": [
-          3218
+          3153
         ],
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 2000,
+        "id": 1992,
         "linearizedBaseContracts": [
-          2000,
-          3218
+          1992,
+          3153
         ],
         "name": "ConceptDataInternal",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "constant": false,
-            "id": 1958,
+            "id": 1950,
             "name": "parents",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "876:26:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -1964,7 +1964,7 @@
             },
             "typeName": {
               "baseType": {
-                "id": 1956,
+                "id": 1948,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "876:7:4",
@@ -1973,7 +1973,7 @@
                   "typeString": "address"
                 }
               },
-              "id": 1957,
+              "id": 1949,
               "length": null,
               "nodeType": "ArrayTypeName",
               "src": "876:9:4",
@@ -1987,10 +1987,10 @@
           },
           {
             "constant": false,
-            "id": 1960,
+            "id": 1952,
             "name": "data",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "983:19:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -1999,7 +1999,7 @@
               "typeString": "bytes"
             },
             "typeName": {
-              "id": 1959,
+              "id": 1951,
               "name": "bytes",
               "nodeType": "ElementaryTypeName",
               "src": "983:5:4",
@@ -2013,10 +2013,10 @@
           },
           {
             "constant": false,
-            "id": 1962,
+            "id": 1954,
             "name": "owner",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1006:22:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -2025,7 +2025,7 @@
               "typeString": "address"
             },
             "typeName": {
-              "id": 1961,
+              "id": 1953,
               "name": "address",
               "nodeType": "ElementaryTypeName",
               "src": "1006:7:4",
@@ -2039,26 +2039,26 @@
           },
           {
             "constant": false,
-            "id": 1964,
+            "id": 1956,
             "name": "fathomToken",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1032:32:4",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_FathomToken_$2580",
+              "typeIdentifier": "t_contract$_FathomToken_$2572",
               "typeString": "contract FathomToken"
             },
             "typeName": {
               "contractScope": null,
-              "id": 1963,
+              "id": 1955,
               "name": "FathomToken",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2580,
+              "referencedDeclaration": 2572,
               "src": "1032:11:4",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_FathomToken_$2580",
+                "typeIdentifier": "t_contract$_FathomToken_$2572",
                 "typeString": "contract FathomToken"
               }
             },
@@ -2067,26 +2067,26 @@
           },
           {
             "constant": false,
-            "id": 1966,
+            "id": 1958,
             "name": "conceptRegistry",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1068:40:4",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_ConceptRegistry_$2262",
+              "typeIdentifier": "t_contract$_ConceptRegistry_$2254",
               "typeString": "contract ConceptRegistry"
             },
             "typeName": {
               "contractScope": null,
-              "id": 1965,
+              "id": 1957,
               "name": "ConceptRegistry",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2262,
+              "referencedDeclaration": 2254,
               "src": "1068:15:4",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_ConceptRegistry_$2262",
+                "typeIdentifier": "t_contract$_ConceptRegistry_$2254",
                 "typeString": "contract ConceptRegistry"
               }
             },
@@ -2095,10 +2095,10 @@
           },
           {
             "constant": false,
-            "id": 1968,
+            "id": 1960,
             "name": "lifetime",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1112:22:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -2107,7 +2107,7 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 1967,
+              "id": 1959,
               "name": "uint",
               "nodeType": "ElementaryTypeName",
               "src": "1112:4:4",
@@ -2121,10 +2121,10 @@
           },
           {
             "constant": false,
-            "id": 1972,
+            "id": 1964,
             "name": "assessmentExists",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1138:51:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -2133,9 +2133,9 @@
               "typeString": "mapping(address => bool)"
             },
             "typeName": {
-              "id": 1971,
+              "id": 1963,
               "keyType": {
-                "id": 1969,
+                "id": 1961,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "1147:7:4",
@@ -2151,7 +2151,7 @@
                 "typeString": "mapping(address => bool)"
               },
               "valueType": {
-                "id": 1970,
+                "id": 1962,
                 "name": "bool",
                 "nodeType": "ElementaryTypeName",
                 "src": "1158:4:4",
@@ -2166,10 +2166,10 @@
           },
           {
             "constant": false,
-            "id": 1975,
+            "id": 1967,
             "name": "propagationRates",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1194:32:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -2179,7 +2179,7 @@
             },
             "typeName": {
               "baseType": {
-                "id": 1973,
+                "id": 1965,
                 "name": "uint",
                 "nodeType": "ElementaryTypeName",
                 "src": "1194:4:4",
@@ -2188,7 +2188,7 @@
                   "typeString": "uint256"
                 }
               },
-              "id": 1974,
+              "id": 1966,
               "length": null,
               "nodeType": "ArrayTypeName",
               "src": "1194:6:4",
@@ -2202,10 +2202,10 @@
           },
           {
             "constant": false,
-            "id": 1978,
+            "id": 1970,
             "name": "availableMembers",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1231:35:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -2215,7 +2215,7 @@
             },
             "typeName": {
               "baseType": {
-                "id": 1976,
+                "id": 1968,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "1231:7:4",
@@ -2224,7 +2224,7 @@
                   "typeString": "address"
                 }
               },
-              "id": 1977,
+              "id": 1969,
               "length": null,
               "nodeType": "ArrayTypeName",
               "src": "1231:9:4",
@@ -2238,21 +2238,21 @@
           },
           {
             "constant": false,
-            "id": 1982,
+            "id": 1974,
             "name": "memberData",
             "nodeType": "VariableDeclaration",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1270:51:4",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1994_storage_$",
+              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1986_storage_$",
               "typeString": "mapping(address => struct ConceptDataInternal.MemberData)"
             },
             "typeName": {
-              "id": 1981,
+              "id": 1973,
               "keyType": {
-                "id": 1979,
+                "id": 1971,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "1279:7:4",
@@ -2264,18 +2264,18 @@
               "nodeType": "Mapping",
               "src": "1270:31:4",
               "typeDescriptions": {
-                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1994_storage_$",
+                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1986_storage_$",
                 "typeString": "mapping(address => struct ConceptDataInternal.MemberData)"
               },
               "valueType": {
                 "contractScope": null,
-                "id": 1980,
+                "id": 1972,
                 "name": "MemberData",
                 "nodeType": "UserDefinedTypeName",
-                "referencedDeclaration": 1994,
+                "referencedDeclaration": 1986,
                 "src": "1290:10:4",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_MemberData_$1994_storage_ptr",
+                  "typeIdentifier": "t_struct$_MemberData_$1986_storage_ptr",
                   "typeString": "struct ConceptDataInternal.MemberData"
                 }
               }
@@ -2285,14 +2285,14 @@
           },
           {
             "canonicalName": "ConceptDataInternal.MemberData",
-            "id": 1994,
+            "id": 1986,
             "members": [
               {
                 "constant": false,
-                "id": 1984,
+                "id": 1976,
                 "name": "recentAssessment",
                 "nodeType": "VariableDeclaration",
-                "scope": 1994,
+                "scope": 1986,
                 "src": "1350:24:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -2301,7 +2301,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 1983,
+                  "id": 1975,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "1350:7:4",
@@ -2315,10 +2315,10 @@
               },
               {
                 "constant": false,
-                "id": 1986,
+                "id": 1978,
                 "name": "index",
                 "nodeType": "VariableDeclaration",
-                "scope": 1994,
+                "scope": 1986,
                 "src": "1380:10:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -2327,7 +2327,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1985,
+                  "id": 1977,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "1380:4:4",
@@ -2341,36 +2341,36 @@
               },
               {
                 "constant": false,
-                "id": 1989,
+                "id": 1981,
                 "name": "weights",
                 "nodeType": "VariableDeclaration",
-                "scope": 1994,
+                "scope": 1986,
                 "src": "1396:25:4",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1999_storage_$dyn_storage_ptr",
+                  "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1991_storage_$dyn_storage_ptr",
                   "typeString": "struct ConceptDataInternal.ComponentWeight[]"
                 },
                 "typeName": {
                   "baseType": {
                     "contractScope": null,
-                    "id": 1987,
+                    "id": 1979,
                     "name": "ComponentWeight",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 1999,
+                    "referencedDeclaration": 1991,
                     "src": "1396:15:4",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_ComponentWeight_$1999_storage_ptr",
+                      "typeIdentifier": "t_struct$_ComponentWeight_$1991_storage_ptr",
                       "typeString": "struct ConceptDataInternal.ComponentWeight"
                     }
                   },
-                  "id": 1988,
+                  "id": 1980,
                   "length": null,
                   "nodeType": "ArrayTypeName",
                   "src": "1396:17:4",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1999_storage_$dyn_storage_ptr",
+                    "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1991_storage_$dyn_storage_ptr",
                     "typeString": "struct ConceptDataInternal.ComponentWeight[]"
                   }
                 },
@@ -2379,10 +2379,10 @@
               },
               {
                 "constant": false,
-                "id": 1993,
+                "id": 1985,
                 "name": "componentWeightIndex",
                 "nodeType": "VariableDeclaration",
-                "scope": 1994,
+                "scope": 1986,
                 "src": "1427:45:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -2391,9 +2391,9 @@
                   "typeString": "mapping(address => uint256)"
                 },
                 "typeName": {
-                  "id": 1992,
+                  "id": 1984,
                   "keyType": {
-                    "id": 1990,
+                    "id": 1982,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1435:7:4",
@@ -2409,7 +2409,7 @@
                     "typeString": "mapping(address => uint256)"
                   },
                   "valueType": {
-                    "id": 1991,
+                    "id": 1983,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "1446:4:4",
@@ -2425,20 +2425,20 @@
             ],
             "name": "MemberData",
             "nodeType": "StructDefinition",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1326:151:4",
             "visibility": "public"
           },
           {
             "canonicalName": "ConceptDataInternal.ComponentWeight",
-            "id": 1999,
+            "id": 1991,
             "members": [
               {
                 "constant": false,
-                "id": 1996,
+                "id": 1988,
                 "name": "weight",
                 "nodeType": "VariableDeclaration",
-                "scope": 1999,
+                "scope": 1991,
                 "src": "1510:11:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -2447,7 +2447,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1995,
+                  "id": 1987,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "1510:4:4",
@@ -2461,10 +2461,10 @@
               },
               {
                 "constant": false,
-                "id": 1998,
+                "id": 1990,
                 "name": "date",
                 "nodeType": "VariableDeclaration",
-                "scope": 1999,
+                "scope": 1991,
                 "src": "1527:9:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -2473,7 +2473,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1997,
+                  "id": 1989,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "1527:4:4",
@@ -2488,12 +2488,12 @@
             ],
             "name": "ComponentWeight",
             "nodeType": "StructDefinition",
-            "scope": 2000,
+            "scope": 1992,
             "src": "1481:62:4",
             "visibility": "public"
           }
         ],
-        "scope": 2001,
+        "scope": 1993,
         "src": "830:715:4"
       }
     ],
@@ -2505,5 +2505,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.1",
-  "updatedAt": "2018-07-25T15:34:28.452Z"
+  "updatedAt": "2018-07-25T23:08:13.061Z"
 }
