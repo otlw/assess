@@ -1,4 +1,3 @@
-import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
@@ -8,83 +7,59 @@ import fathomLogo from '../../assets/fathom_monkey_beret_color_cropped.svg'
 
 import {networkName} from '../../constants.js'
 
-export class Header extends Component {
-  render () {
-    return (
-      h('div', [
-        h(HeaderBar, [
+const Logo = styled('img').attrs({className: 'flex w2 mh2 self-center'})`
+`
+
+export const Header = (props) => {
+  let address = props.userAddress.substring(0, 8) + '...' + props.userAddress.substring(35, 42)
+  let balance = (Math.round(props.AhaBalance / 1e9)).toString().substring(0, 6) + ' AHA'
+  let network = networkName(props.networkID)
+
+  return (
+    h(headerContainer,
+      [
+        h(headerRowLeft, [
           h(Link, {to: '/'}, h(Logo, {alt: 'logo', src: fathomLogo})),
-          h(LinkUnstyled, {to: '/concepts'}, h(conceptButton, 'Concepts')),
-          h(Box, [
-            h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
-              h(key, 'Network: '),
-              h(value, networkName(this.props.networkID))
-            ]),
-            h('div', {style: {display: 'inline-block', marginRight: '2em'}}, [
-              h(key, 'Your Address: '),
-              h(value, this.props.userAddress.substring(0, 8) + '...' + this.props.userAddress.substring(35, 42))
-            ]),
-            h(key, (Math.round(this.props.AhaBalance / 1e9)).toString().substring(0, 6) + ' AHA')
-          ])
+          h(headerItem, {name: 'Address', value: address}),
+          h(headerItem, {name: 'Network', value: network})
         ]),
-        this.props.notificationBar.display
-          ? h(NotificationBar, {status: this.props.notificationBar, setNotificationBar: this.props.setNotificationBar})
+        h(headerRowRight, [
+          h(headerItem, {name: 'Balance', value: balance})
+        ]),
+        props.notificationBar.display
+          ? h(NotificationBar, {status: props.notificationBar, setNotificationBar: props.setNotificationBar})
           : null
       ])
-    )
-  }
+  )
+}
+
+const headerContainer = styled('ul').attrs({
+  className: 'list flex w-100 flex-row flex-wrap pl0 pv2 ma0 items-start justify-between bg-dark-blue'})`
+  `
+
+const headerRowLeft = styled('ul').attrs({
+  className: 'list pl0 flex w-auto flex-row ma0 items-center justify-start'})`
+    `
+
+const headerRowRight = styled('ul').attrs({
+  className: 'list pl0 flex w-auto flex-row ma0 items-center justify-end'})`
+      `
+
+const headerItemContainer = styled('li').attrs({className: 'flex ba br1 b--dark-purple lightest-blue mh2'})`
+`
+const headerItemLabel = styled('div').attrs({className: 'ph3 pv2'})`
+`
+const headerItemValue = styled('div').attrs({className: 'bg-lightest-blue dark-blue ph3 pv2'})`
+`
+
+const headerItem = (props) => {
+  return (
+    h(headerItemContainer,
+      [
+        h(headerItemLabel, props.name),
+        h(headerItemValue, props.value)
+      ])
+  )
 }
 
 export default Header
-
-// styles
-const HeaderBar = styled('div')`
-  padding: 0.8em 0;
-  background-color: ${props => props.theme.primary};
-  border-bottom: 0.5px solid ${props => props.theme.light};
-  position:relative;
-  font-size:0.8em;
-`
-
-const Logo = styled('img')`
-  margin: 0 1.25%;
-  padding: 0 1.25%;
-  text-align: center;
-  display: inline-block
-  width:5%;
-  vertical-align:top;
-`
-
-const value = styled('span')`
-  color:${props => props.theme.primary}
-`
-
-const key = styled('span')`
-  color:${props => props.theme.dark}
-  font-style:bold
-  font-size:1.1em
-`
-
-const Box = styled('div')`
-  padding: 0.5em 1em;
-  margin-top:0.5em;
-  margin-left:1em;
-  background-color: ${props => props.theme.light};
-  display: inline-block;
-  width:70%;
-  text-align:center;
-  vertical-align:top;
-`
-
-const conceptButton = styled('div')`
-  background-color: #C4C4C4;
-  border: 1px solid #444444;
-  box-sizing: border-box;
-  border-radius: 2px;
-  display: inline-block;
-  padding:0.5em 1.6em;
-  color: #444444;
-`
-const LinkUnstyled = styled(Link)`
-  text-decoration:none;
-`
