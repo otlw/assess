@@ -4,20 +4,20 @@ import h from 'react-hyperscript'
 
 export const AssessmentFilterView = (props) => {
   let userAddress = props.userAddress
-  let assessmentAsList = Object.values(props.assessments)
+  let assessmentsAsList = Object.values(props.assessments)
 
   let assessmentLists = {
-    Current: assessmentAsList.filter(assessment => {
+    Current: assessmentsAsList.filter(assessment => {
       if (props.userAddress === assessment.assessee) {
         return assessment.stage < Stage.Done
       }
       return assessment.stage > Stage.Called && assessment.stage < Stage.Done
     }),
-    Available: assessmentAsList.filter(assessment => {
+    Available: assessmentsAsList.filter(assessment => {
       return (props.userAddress !== assessment.assessee &&
               assessment.stage === Stage.Called)
     }),
-    Completed: assessmentAsList.filter(assessment => assessment.stage === Stage.Done)
+    Completed: assessmentsAsList.filter(assessment => assessment.stage === Stage.Done)
   }
 
   // return view
