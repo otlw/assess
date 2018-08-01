@@ -2,7 +2,7 @@ import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
-import { StageDisplayNames, Stage } from '../../../constants.js'
+import { StageDisplayNames, Stage } from '../constants.js'
 
 export class AssessmentCard extends Component {
   render () {
@@ -67,7 +67,7 @@ export class AssessmentCard extends Component {
           ]),
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
             h(cardButtonSecondary, 'Hide'),
-            h(cardButtonPrimary, { to: 'assessment/' + assessment.address }, StageDisplayNames[stage])
+            h(cardButtonPrimary, { to: '/assessment/' + assessment.address }, StageDisplayNames[stage])
           ])
         ])
       ])
@@ -77,6 +77,7 @@ export class AssessmentCard extends Component {
 
 export default AssessmentCard
 
+// styles
 const cardContainer = styled('div').attrs({
   className: 'flex flex-column ma3 br2 shadow-4'
 })`height: 420px; width: 300px;background: linear-gradient(180.1deg, #FFFFFF 0.05%, #E9F7FD 52.48%, #CFF9EF 85.98%);
