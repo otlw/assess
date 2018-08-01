@@ -2,8 +2,82 @@ import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
-import { StageDisplayNames, Stage } from '../../../constants.js'
+import { StageDisplayNames, Stage } from '../constants.js'
 
+export class AssessmentItem extends Component {
+  render () {
+    const assessment = this.props.assessment
+    let userStage = assessment.userStage
+    let stage = assessment.stage
+
+    // set assessee/assessor view
+    let isAssessee = false
+    if (this.props.userAddress === assessment.assessee) {
+      isAssessee = true
+    }
+
+    let actionRequired = stage === userStage
+    let nOtherAssessorsToBeActive = assessment.size - assessment.done - (actionRequired ? 1 : 0)
+    let status = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[stage]
+
+    if (stage < userStage) {
+      status = 'Waiting...'
+    } else if (stage === Stage.Done) {
+      // if assessment stage is finished, set good message (an assessee would have userStage===0)
+      // display score for assessee and payout for assessor
+      if (!isAssessee) {
+        let gain = this.props.assessment.payout - this.props.assessment.cost
+        status = h('div', [
+          h('div', 'Payout :'),
+          h('div', (gain >= 0 ? '+' : '-') + gain.toString() + ' AHA')
+        ])
+      } else {
+        status = h('div', [
+          h('div', 'Score :'),
+          h('div', assessment.finalScore + ' %')
+        ])
+      }
+    } else if (stage === Stage.Burned) {
+      status = 'Canceled'
+    }
+
+    /* start styling below */
+    return (
+      h(cardContainer, [
+        h(cardContainerInfo, [
+          h(cardTextTitle, [
+            h('h6', {className: 'f5 mv1 ttu uppercase'}, 'Assessment'),
+            h(ConceptName, assessment.conceptData)
+          ]),
+          h(cardTextAssessee, [
+            h('h6', {className: 'f5 mv1 ttu uppercase'}, h(AssesseeBadge, 'Assessee')),
+            h('h6', {className: 'f5 mv1 ttu uppercase'}, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
+          ])
+        ]),
+        h(cardContainerStatus, [
+          h(cardContainerProgressBar, [
+            h(stage > 0 ? cardProgressBarObjectComplete : (stage === 0 || stage === 1) ? cardProgressBarObjectActive : cardProgressBarObjectInactive),
+            h(stage > 1 ? cardProgressBarObjectComplete : stage === 2 ? cardProgressBarObjectActive : cardProgressBarObjectInactive),
+            h(stage > 2 ? cardProgressBarObjectComplete : stage === 3 ? cardProgressBarObjectActive : cardProgressBarObjectInactive),
+            h(stage > 3 ? cardProgressBarObjectComplete : stage === 4 ? cardProgressBarObjectActive : cardProgressBarObjectInactive)
+          ]),
+          h(cardTextStatus, [
+            h('h6', {className: 'f5 tl mv1 ttu uppercase'}, 'Status'),
+            h('h6', {className: 'f5 tl lh-copy mv1 ttu uppercase'}, status)
+          ]),
+          h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
+            h(cardButtonSecondary, 'Hide'),
+            h(cardButtonPrimary, { to: '/assessment/' + assessment.address }, StageDisplayNames[stage])
+          ])
+        ])
+      ])
+    )
+  }
+}
+
+export default AssessmentItem
+
+// styles
 const cardContainer = styled('div').attrs({
   className: 'flex flex-column ma3 br2 shadow-4'
 })`height: 420px; width: 300px;background: linear-gradient(180.1deg, #FFFFFF 0.05%, #E9F7FD 52.48%, #CFF9EF 85.98%);
@@ -72,76 +146,3 @@ const ConceptName = styled('h3').attrs({
 
 const AssesseeBadge = styled('div')` 
 `
-
-export class AssessmentItem extends Component {
-  render () {
-    const assessment = this.props.assessment
-    let userStage = assessment.userStage
-    let stage = assessment.stage
-
-    // set assessee/assessor view
-    let isAssessee = false
-    if (this.props.userAddress === assessment.assessee) {
-      isAssessee = true
-    }
-
-    let actionRequired = stage === userStage
-    let nOtherAssessorsToBeActive = assessment.size - assessment.done - (actionRequired ? 1 : 0)
-    let status = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[stage]
-
-    if (stage < userStage) {
-      status = 'Waiting...'
-    } else if (stage === Stage.Done) {
-      // if assessment stage is finished, set good message (an assessee would have userStage===0)
-      // display score for assessee and payout for assessor
-      if (!isAssessee) {
-        let gain = this.props.assessment.payout - this.props.assessment.cost
-        status = h('div', [
-          h('div', 'Payout :'),
-          h('div', (gain >= 0 ? '+' : '-') + gain.toString() + ' AHA')
-        ])
-      } else {
-        status = h('div', [
-          h('div', 'Score :'),
-          h('div', assessment.finalScore + ' %')
-        ])
-      }
-    } else if (stage === Stage.Burned) {
-      status = 'Canceled'
-    }
-
-    /* start styling below */
-    return (
-      h(cardContainer, [
-        h(cardContainerInfo, [
-          h(cardTextTitle, [
-            h('h6', {className: 'f5 mv1 ttu uppercase'}, 'Assessment'),
-            h(ConceptName, assessment.conceptData)
-          ]),
-          h(cardTextAssessee, [
-            h('h6', {className: 'f5 mv1 ttu uppercase'}, h(AssesseeBadge, 'Assessee')),
-            h('h6', {className: 'f5 mv1 ttu uppercase'}, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
-          ])
-        ]),
-        h(cardContainerStatus, [
-          h(cardContainerProgressBar, [
-            h(stage > 0 ? cardProgressBarObjectComplete : (stage === 0 || stage === 1) ? cardProgressBarObjectActive : cardProgressBarObjectInactive),
-            h(stage > 1 ? cardProgressBarObjectComplete : stage === 2 ? cardProgressBarObjectActive : cardProgressBarObjectInactive),
-            h(stage > 2 ? cardProgressBarObjectComplete : stage === 3 ? cardProgressBarObjectActive : cardProgressBarObjectInactive),
-            h(stage > 3 ? cardProgressBarObjectComplete : stage === 4 ? cardProgressBarObjectActive : cardProgressBarObjectInactive)
-          ]),
-          h(cardTextStatus, [
-            h('h6', {className: 'f5 tl mv1 ttu uppercase'}, 'Status'),
-            h('h6', {className: 'f5 tl lh-copy mv1 ttu uppercase'}, status)
-          ]),
-          h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
-            h(cardButtonSecondary, 'Hide'),
-            h(cardButtonPrimary, { to: 'assessment/' + assessment.address }, StageDisplayNames[stage])
-          ])
-        ])
-      ])
-    )
-  }
-}
-
-export default AssessmentItem
