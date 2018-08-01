@@ -12,7 +12,7 @@ export class AssessmentCreation extends Component {
     super(props)
     this.state = {
       step: 1,
-      amountPerAssessor: 5, // TODO set defualt value to 0 once bug is resolved (#277)
+      amountPerAssessor: 1, // TODO set defualt value to 0 once bug is resolved (#277)
       gasEstimate: 0
     }
   }
