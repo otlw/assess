@@ -57,7 +57,7 @@ export class App extends Component {
               h(Header),
               this.props.loadedWeb3
                 ? (h(appContainer, [
-                  (!this.props.showNavTabs ? h(NavTabs) : null),
+                  h(NavTabs),
                   h(Route, {exact: true, path: '/', component: AssessmentFilterView}),
                   h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
                   h(Route, {path: '/assessment/:id', component: AssessmentView}),
@@ -76,8 +76,7 @@ const appContainer = styled('div').attrs({className: 'flex flex-column w-100 pa2
 const mapStateToProps = state => {
   return {
     loadedWeb3: state.ethereum.isConnected && state.ethereum.userAddress && state.ethereum.networkID && state.ethereum.webSocketIsConnected,
-    mainDisplay: state.navigation.mainDisplay,
-    showNavTabs: state.navigation.showNavTabs
+    mainDisplay: state.navigation.mainDisplay
   }
 }
 
