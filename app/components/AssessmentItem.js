@@ -2,76 +2,7 @@ import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
-import { StageDisplayNames, Stage } from '../../../constants.js'
-
-const cardContainer = styled('div').attrs({
-  className: 'flex flex-column ma3 br2 shadow-4'
-})`height: 420px; width: 300px;background: linear-gradient(180.1deg, #FFFFFF 0.05%, #E9F7FD 52.48%, #CFF9EF 85.98%);
-`
-
-const cardContainerInfo = styled('div').attrs({
-  className: 'flex content-start flex-column w-100 h-50 pa3'
-})`
-`
-
-const cardTextTitle = styled('div').attrs({
-  className: 'flex flex-column tl'
-})`
-`
-
-const cardTextAssessee = styled('div').attrs({
-  className: 'flex flex-column tl mt3'
-})`
-`
-
-const cardContainerStatus = styled('div').attrs({
-  className: 'relative flex content-between flex-column w-100 h-50'
-})`background-color: #D3ECF7;
-`
-
-const cardTextStatus = styled('div').attrs({
-  className: 'flex flex-column h-100 pl3 pa3'
-})`
-`
-
-const cardContainerProgressBar = styled('div').attrs({
-  className: 'absolute flex items-center'
-})`right: 8px; top: -12px;
-`
-
-const cardProgressBarObjectInactive = styled('div').attrs({
-  className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
-})`width: 24px; height: 24px;
-`
-
-const cardProgressBarObjectActive = styled('div').attrs({
-  className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
-})`width: 24px; height: 24px; background-color: #52A7CC;
-`
-const cardProgressBarObjectComplete = styled('div').attrs({
-  className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
-})`width: 24px; height: 24px; background-color: #52CC91;
-`
-
-const cardButtonPrimary = styled(Link).attrs({
-  className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'
-})`background-color: #116187;text-decoration:none;
-`
-
-const cardButtonSecondary = styled('div').attrs({
-  className: 'flex self-end ph4 pv2 fw4 f5 items-center align-center br-pill dark-blue'
-})`box-shadow: 0px 0px 0px 1px hsla(214, 100%, 31%, 0.1);
-`
-
-const ConceptName = styled('h3').attrs({
-  className: 'f3 fw4 mv1'
-})`
-  color:${props => props.theme.dark};
-  font-size:1.8em;
-`
-
-const AssesseeBadge = styled('div')` 
-`
+import { StageDisplayNames, Stage } from '../constants.js'
 
 export class AssessmentItem extends Component {
   render () {
@@ -136,7 +67,7 @@ export class AssessmentItem extends Component {
           ]),
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
             h(cardButtonSecondary, 'Hide'),
-            h(cardButtonPrimary, { to: 'assessment/' + assessment.address }, StageDisplayNames[stage])
+            h(cardButtonPrimary, { to: '/assessment/' + assessment.address }, StageDisplayNames[stage])
           ])
         ])
       ])
@@ -145,3 +76,73 @@ export class AssessmentItem extends Component {
 }
 
 export default AssessmentItem
+
+// styles
+const cardContainer = styled('div').attrs({
+  className: 'flex flex-column ma3 br2 shadow-4'
+})`height: 420px; width: 300px;background: linear-gradient(180.1deg, #FFFFFF 0.05%, #E9F7FD 52.48%, #CFF9EF 85.98%);
+`
+
+const cardContainerInfo = styled('div').attrs({
+  className: 'flex content-start flex-column w-100 h-50 pa3'
+})`
+`
+
+const cardTextTitle = styled('div').attrs({
+  className: 'flex flex-column tl'
+})`
+`
+
+const cardTextAssessee = styled('div').attrs({
+  className: 'flex flex-column tl mt3'
+})`
+`
+
+const cardContainerStatus = styled('div').attrs({
+  className: 'relative flex content-between flex-column w-100 h-50'
+})`background-color: #D3ECF7;
+`
+
+const cardTextStatus = styled('div').attrs({
+  className: 'flex flex-column h-100 pl3 pa3'
+})`
+`
+
+const cardContainerProgressBar = styled('div').attrs({
+  className: 'absolute flex items-center'
+})`right: 8px; top: -12px;
+`
+
+const cardProgressBarObjectInactive = styled('div').attrs({
+  className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
+})`width: 24px; height: 24px;
+`
+
+const cardProgressBarObjectActive = styled('div').attrs({
+  className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
+})`width: 24px; height: 24px; background-color: #52A7CC;
+`
+const cardProgressBarObjectComplete = styled('div').attrs({
+  className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
+})`width: 24px; height: 24px; background-color: #52CC91;
+`
+
+const cardButtonPrimary = styled(Link).attrs({
+  className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'
+})`background-color: #116187;text-decoration:none;
+`
+
+const cardButtonSecondary = styled('div').attrs({
+  className: 'flex self-end ph4 pv2 fw4 f5 items-center align-center br-pill dark-blue'
+})`box-shadow: 0px 0px 0px 1px hsla(214, 100%, 31%, 0.1);
+`
+
+const ConceptName = styled('h3').attrs({
+  className: 'f3 mv1'
+})`
+  color:${props => props.theme.dark};
+  font-size:1.8em;
+`
+
+const AssesseeBadge = styled('div')` 
+`

@@ -1,16 +1,15 @@
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { LoadComponent } from '../../hocs/loadComponent.js'
-import FilterView from './FilterView'
+import { LoadComponent } from '../hocs/loadComponent.js'
+import AssessmentFilterView from './AssessmentFilterView.js'
 
-import {setDashboardTab} from '../../../actions/navigationActions.js'
-import { fetchLatestAssessments } from '../../../actions/assessmentActions.js'
+import {setDashboardTab} from '../../actions/navigationActions.js'
+import { fetchLatestAssessments } from '../../actions/assessmentActions.js'
 
 const mapStateToProps = state => {
   return {
     assessments: state.assessments,
     userAddress: state.ethereum.userAddress,
-    selectedTab: state.navigation.dashboardTab,
     networkID: state.ethereum.networkID
   }
 }
@@ -23,4 +22,4 @@ const mapDispatchToProps = {
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   LoadComponent
-)(FilterView)
+)(AssessmentFilterView)
