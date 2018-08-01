@@ -37,9 +37,6 @@ export class ConceptBoard extends Component {
           setNotificationBar: this.props.setNotificationBar
         })
       }
-      console.log(this.state.selectedConceptAddress === '0')
-      console.log(this.state.selectedConceptAddress)
-      console.log(typeof this.state.selectedConceptAddress)
 
       return h('div', [
         h(ConceptHeaderBox, [
