@@ -1,33 +1,32 @@
 import h from 'react-hyperscript'
-import { Component } from 'react'
 import styled from 'styled-components'
 
-export class cardCredential extends Component {
-  render () {
-    return (
-      h(credentialContainer, [
-        h(credentialContainerInfo, [
-          h(credentialObjectText, [
-            h(credentialLabel, 'Credential'),
-            h(credentialTitleText, this.props.assessment.conceptData),
-            h(credentialLabel, 'Awarded To Alex Singh'),
-          ]),
-          h(credentialDecoCircleSmall),
-          h(credentialDecoCircleLarge),
-          h(credentialDecoTriSmall),
-          h(credentialDecoTriLarge),
+export const cardCredential = (props) => {
+  return (
+    h(credentialContainer, [
+      h(credentialContainerInfo, [
+        h(credentialObjectText, [
+          h(credentialLabel, 'Credential'),
+          h(credentialTitleText, props.assessment.conceptData),
+          h(credentialLabel, 'Awarded To You')
         ]),
-        h(credentialContainerBottom, [
-          h(credentialContainerScore, [
-            h(credentialLabel, 'Score'),
-            h(credentialObjectScore, '8.1'),
-          ]),
-          h(buttonPrimaryShare, 'Share')
-        ])
+        h(credentialDecoCircleSmall),
+        h(credentialDecoCircleLarge),
+        h(credentialDecoTriSmall),
+        h(credentialDecoTriLarge)
+      ]),
+      h(credentialContainerBottom, [
+        h(credentialContainerScore, [
+          h(credentialLabel, 'Score'),
+          h(credentialObjectScore, props.assessment.finalScore)
+        ]),
+        h(buttonPrimaryShare, 'Share') // TODO this is where Bridger comes in!!
       ])
-    )
-  }
+    ])
+  )
 }
+
+export default cardCredential
 
 const credentialContainer = styled('div').attrs({className: 'flex flex-column ma3 br2 shadow-4'
 })`
@@ -116,9 +115,3 @@ const buttonPrimaryShare = styled('div').attrs({className: 'flex self-end ph4 pv
 })`
 background-color: #2E998A;
 `
-
-
-
-
-
-export default cardCredential
