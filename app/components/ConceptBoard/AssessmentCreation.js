@@ -203,7 +203,9 @@ const createAssessmentProgressBarObject = styled('div').attrs({className: 'flex 
 background-color:${props => props.past ? props.theme.lightgreen : props.current ? '#C4C4C4' : 'transparent'}
 border:${props => props.past ? '1px solid ' + props.theme.lightgreen : '1px solid #C4C4C4'};
 `
-const createAssessmentProgressBarObjectFinal = styled('img').attrs({className: 'flex items-center justify-center w2 h2 br-100 ba'})`
+const createAssessmentProgressBarObjectFinal = styled('img').attrs({className: 'flex items-center justify-center pa1 br-100 ba'})`
+height: 22px;
+width: 22px;
 background-color:${props => props.past ? props.theme.lightgreen : props.current ? '#C4C4C4' : 'transparent'}
 border:${props => props.past ? '1px solid ' + props.theme.lightgreen : '1px solid #C4C4C4'};
 `
