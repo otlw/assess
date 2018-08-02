@@ -49,7 +49,7 @@ export class AssessmentData extends Component {
               ]),
               h(assessmentObjectText, [
                 h(assessmentLabelBody, 'Fee'),
-                h(assessmentTextBody, assessment.cost + 'AHA')
+                h(assessmentTextBody, assessment.cost + ' AHA')
               ]),
               h(assessmentObjectText, [
                 h(assessmentLabelBody, 'Meeting Point'),

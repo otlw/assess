@@ -85,7 +85,7 @@ export class AssessmentCreation extends Component {
                   value: this.state.amountPerAssessor,
                   type: 'number',
                   step: 1,
-                  min: 1
+                  min: 0
                 }),
                 h(AHAUnit, 'AHA')
               ])
