@@ -45,13 +45,13 @@ export class AssessmentItem extends Component {
     return (
       h(cardContainer, [
         h(cardContainerInfo, [
-          h(cardTextTitle, [
-            h('h6', {className: 'f5 fw4 mv1 ttu uppercase'}, 'Assessment'),
+          h(cardTextObject, [
+            h(cardTextTitle, 'Assessment'),
             h(ConceptName, assessment.conceptData)
           ]),
-          h(cardTextAssessee, [
-            h('h6', {className: 'f5 fw4 mv1 ttu uppercase'}, h(AssesseeBadge, 'Assessee')),
-            h('h6', {className: 'f5 fw4 mv1 ttu uppercase truncate w4 ellipsis'}, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
+          h(cardTextObject, [
+            h(cardLabel, 'Assessee'),
+            h(cardTextAssessee, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
           ])
         ]),
         h(cardContainerStatus, [
@@ -62,8 +62,8 @@ export class AssessmentItem extends Component {
             h(stage > 3 ? cardProgressBarObjectComplete : stage === 4 ? cardProgressBarObjectActive : cardProgressBarObjectInactive)
           ]),
           h(cardTextStatus, [
-            h('h6', {className: 'f5 fw4 tl mv1 ttu uppercase'}, 'Status'),
-            h('h6', {className: 'f5 fw4 tl lh-copy mv1 ttu uppercase'}, status)
+            h(cardLabel, 'Status'),
+            h(cardTextStatusMsg, status)
           ]),
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
             h(cardButtonSecondary, 'Hide'),
@@ -89,14 +89,27 @@ const cardContainerInfo = styled('div').attrs({
 height: 60%;
 `
 
-const cardTextTitle = styled('div').attrs({
+const cardTextObject = styled('div').attrs({
   className: 'flex flex-column tl'
 })`
 `
 
-const cardTextAssessee = styled('div').attrs({
-  className: 'flex flex-column tl mt3'
+const cardTextTitle = styled('div').attrs({
+  className: 'f5 fw4 mv1 ttu uppercase'
 })`
+color: #0A4A66;
+`
+
+const cardLabel = styled('div').attrs({
+  className: 'f5 fw4 mv1 ttu uppercase'
+})`
+color: #0A4A66;
+`
+
+const cardTextAssessee = styled('div').attrs({
+  className: 'f5 fw4 mv1 ttu uppercase truncate w4 ellipsis'
+})`
+color: #117099;
 `
 
 const cardContainerStatus = styled('div').attrs({
@@ -130,6 +143,12 @@ const cardProgressBarObjectComplete = styled('div').attrs({
 })`width: 20px; height: 20px; background-color: #52CC91;
 `
 
+const cardTextStatusMsg = styled('div').attrs({
+  className: 'f5 fw4 mv1'
+})`
+color: #117099;
+`
+
 const cardButtonPrimary = styled(Link).attrs({
   className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'
 })`background-color: #116187;text-decoration:none;
@@ -144,8 +163,4 @@ const ConceptName = styled('h2').attrs({
   className: 'f2 fw4 mv1'
 })`
   color:${props => props.theme.dark};
-  font-size:1.8em;
-`
-
-const AssesseeBadge = styled('div')` 
 `
