@@ -46,12 +46,12 @@ export class AssessmentItem extends Component {
       h(cardContainer, [
         h(cardContainerInfo, [
           h(cardTextTitle, [
-            h('h6', {className: 'f5 mv1 ttu uppercase'}, 'Assessment'),
+            h('h6', {className: 'f5 fw4 mv1 ttu uppercase'}, 'Assessment'),
             h(ConceptName, assessment.conceptData)
           ]),
           h(cardTextAssessee, [
-            h('h6', {className: 'f5 mv1 ttu uppercase'}, h(AssesseeBadge, 'Assessee')),
-            h('h6', {className: 'f5 mv1 ttu uppercase'}, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
+            h('h6', {className: 'f5 fw4 mv1 ttu uppercase'}, h(AssesseeBadge, 'Assessee')),
+            h('h6', {className: 'f5 fw4 mv1 ttu uppercase truncate w4 ellipsis'}, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
           ])
         ]),
         h(cardContainerStatus, [
@@ -62,8 +62,8 @@ export class AssessmentItem extends Component {
             h(stage > 3 ? cardProgressBarObjectComplete : stage === 4 ? cardProgressBarObjectActive : cardProgressBarObjectInactive)
           ]),
           h(cardTextStatus, [
-            h('h6', {className: 'f5 tl mv1 ttu uppercase'}, 'Status'),
-            h('h6', {className: 'f5 tl lh-copy mv1 ttu uppercase'}, status)
+            h('h6', {className: 'f5 fw4 tl mv1 ttu uppercase'}, 'Status'),
+            h('h6', {className: 'f5 fw4 tl lh-copy mv1 ttu uppercase'}, status)
           ]),
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
             h(cardButtonSecondary, 'Hide'),
@@ -84,8 +84,9 @@ const cardContainer = styled('div').attrs({
 `
 
 const cardContainerInfo = styled('div').attrs({
-  className: 'flex content-start flex-column w-100 h-50 pa3'
+  className: 'flex justify-between flex-column w-100 pa3'
 })`
+height: 60%;
 `
 
 const cardTextTitle = styled('div').attrs({
@@ -99,8 +100,10 @@ const cardTextAssessee = styled('div').attrs({
 `
 
 const cardContainerStatus = styled('div').attrs({
-  className: 'relative flex content-between flex-column w-100 h-50'
-})`background-color: #D3ECF7;
+  className: 'relative flex content-between flex-column w-100'
+})`
+height: 40%;
+background-color: #D3ECF7;
 `
 
 const cardTextStatus = styled('div').attrs({
@@ -110,21 +113,21 @@ const cardTextStatus = styled('div').attrs({
 
 const cardContainerProgressBar = styled('div').attrs({
   className: 'absolute flex items-center'
-})`right: 8px; top: -12px;
+})`right: 16px; top: -8px;
 `
 
 const cardProgressBarObjectInactive = styled('div').attrs({
   className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
-})`width: 24px; height: 24px;
+})`width: 20px; height: 20px;
 `
 
 const cardProgressBarObjectActive = styled('div').attrs({
   className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
-})`width: 24px; height: 24px; background-color: #52A7CC;
+})`width: 20px; height: 20px; background-color: #52A7CC;
 `
 const cardProgressBarObjectComplete = styled('div').attrs({
   className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
-})`width: 24px; height: 24px; background-color: #52CC91;
+})`width: 20px; height: 20px; background-color: #52CC91;
 `
 
 const cardButtonPrimary = styled(Link).attrs({
@@ -137,8 +140,8 @@ const cardButtonSecondary = styled('div').attrs({
 })`box-shadow: 0px 0px 0px 1px hsla(214, 100%, 31%, 0.1);
 `
 
-const ConceptName = styled('h3').attrs({
-  className: 'f3 mv1'
+const ConceptName = styled('h2').attrs({
+  className: 'f2 fw4 mv1'
 })`
   color:${props => props.theme.dark};
   font-size:1.8em;
