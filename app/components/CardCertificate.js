@@ -28,15 +28,16 @@ export const cardCredential = (props) => {
 
 export default cardCredential
 
-const credentialContainer = styled('div').attrs({className: 'flex flex-column ma3 br2 shadow-4'
+const credentialContainer = styled('div').attrs({className: 'flex flex-column ma3 br2 shadow-4 overflow-hidden'
 })`
 height: 420px; width: 300px;
 background: linear-gradient(144.78deg, rgba(61, 204, 196, 0.7) 0%, #CCFFFC 100%);
 `
 
 const credentialContainerInfo = styled('div').attrs({
-  className: 'relative flex content-start flex-column w-100 h-50 pa3'
+  className: 'relative flex content-start flex-column w-100 pa3'
 })`
+height: 60%;
 `
 
 const credentialObjectText = styled('div').attrs({
@@ -45,23 +46,24 @@ const credentialObjectText = styled('div').attrs({
 `
 
 const credentialLabel = styled('h6').attrs({
-  className: 'f5 mv1 ttu uppercase'
+  className: 'f5 fw4 mv1 ttu uppercase'
 })`
 color: #2E998A;
 `
 
 const credentialTitleText = styled('h3').attrs({
-  className: 'f3 mv1'
+  className: 'f2 fw4 mv1'
 })`
 color: #006657;
 `
 
 const credentialDecoCircleLarge = styled('div').attrs({
-  className: 'absolute w4 h4 br-100 o-50 shadow-5'
+  className: 'absolute w4 h4 br-100 o-50 shadow-3'
 })`
 background-color: #4CB8B1;
 right: -80px;
-bottom:0px;
+bottom:90px;
+filter:blur(12px);
 `
 
 const credentialDecoCircleSmall = styled('div').attrs({
@@ -70,6 +72,7 @@ const credentialDecoCircleSmall = styled('div').attrs({
 background-color: #4CB8B1;
 left: 48px;
 bottom:0px;
+filter:blur(4px);
 `
 
 const credentialDecoTriLarge = styled('div').attrs({
@@ -80,9 +83,10 @@ height: 0;
 border-left: 80px solid transparent;
 border-right: 80px solid transparent;
 border-bottom: 80px solid #4CB8B1;
-left: -80px;
-bottom: 8px;
+left: -90px;
+bottom: 28px;
 transform:rotate(75deg);
+filter:blur(6px);
 `
 
 const credentialDecoTriSmall = styled('div').attrs({
@@ -96,18 +100,21 @@ border-bottom: 16px solid #4CB8B1;
 right: 80px;
 bottom:-24px;
 transform:rotate(24deg);
+filter:blur(4px);
 `
 
-const credentialContainerBottom = styled('div').attrs({className: 'flex flex-row content-between w-100 h-50 pb3 ph3'
+const credentialContainerBottom = styled('div').attrs({className: 'flex flex-row justify-between w-100 pb3 ph3'
 })`
+height: 40%;
 `
 
 const credentialContainerScore = styled('div').attrs({className: 'flex flex-column self-end items-center'
 })`
 `
 
-const credentialObjectScore = styled('div').attrs({className: 'flex self-end h3 w3  fw4 f2 shadow-4 items-center content-center align-center br-pill bg-dark-blue near-white ttu uppercase'
+const credentialObjectScore = styled('div').attrs({className: 'flex self-end h3 w3  fw4 shadow-4 items-center justify-center align-center br-pill bg-dark-blue near-white ttu uppercase'
 })`
+font-size:1.75rem;
 background-color: #2E998A; width: 80px; height: 80px;
 `
 
