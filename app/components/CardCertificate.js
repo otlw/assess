@@ -46,7 +46,7 @@ const credentialObjectText = styled('div').attrs({
 `
 
 const credentialLabel = styled('h6').attrs({
-  className: 'f5 fw4 mv1 ttu uppercase'
+  className: 'f5 fw4 mv1 ttu uppercase z-999'
 })`
 color: #2E998A;
 `
@@ -83,10 +83,11 @@ height: 0;
 border-left: 80px solid transparent;
 border-right: 80px solid transparent;
 border-bottom: 80px solid #4CB8B1;
-left: -90px;
-bottom: 28px;
-transform:rotate(75deg);
-filter:blur(6px);
+left: -54px;
+top: -38px;
+transform:rotate(35deg);
+filter:blur(14px);
+z-index:-9;
 `
 
 const credentialDecoTriSmall = styled('div').attrs({
@@ -97,8 +98,8 @@ height: 0;
 border-left: 16px solid transparent;
 border-right: 16px solid transparent;
 border-bottom: 16px solid #4CB8B1;
-right: 80px;
-bottom:-24px;
+right: 96px;
+bottom:-48px;
 transform:rotate(24deg);
 filter:blur(4px);
 `
