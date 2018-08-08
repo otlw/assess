@@ -107,7 +107,7 @@ async function create () {
   console.log('\n### -- 5. Create Assessments on those 2 Concepts -- ###\n')
 
   // define constants for assessments
-  const cost = 1
+  const cost = 1e9
   const size = 5
   const endTime = 7 * 24 * 3600
   const startTime = 3 * 24 * 3600

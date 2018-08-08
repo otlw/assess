@@ -70,7 +70,7 @@ export function loadConceptContractAndCreateAssessment (address, cost, callback)
       dispatch,
       () => {
         return conceptInstance.methods.makeAssessment(
-          cost, size, startTime, endTime
+          cost * 1e9, size, startTime, endTime
         ).send({from: userAddress})
       },
       'makeAssessment',
@@ -93,7 +93,7 @@ export function estimateAssessmentCreationGasCost (address, cost, cllbck) {
     const endTime = 7 * 24 * 3600
     const startTime = 3 * 24 * 3600
     // use estimateGas to get transaction gas cost before it is published
-    let estimate = await conceptInstance.methods.makeAssessment(cost, size, startTime, endTime).estimateGas({from: userAddress, gas: 3000000})
+    let estimate = await conceptInstance.methods.makeAssessment(cost * 1e9, size, startTime, endTime).estimateGas({from: userAddress, gas: 3000000})
     // then get current gasPrice
     let gasPrice = await getState().ethereum.web3.eth.getGasPrice()
     // then convert it to eth from wei and multiply it by the estimate
