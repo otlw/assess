@@ -325,20 +325,13 @@ export function processEvent (user, sender, topic) {
         }
         break
       case NotificationTopic.TokensPaidOut:
-        if (isUser) {
-          dispatch(updateAssessmentVariable(sender, 'stage', Stage.Done))
-          dispatch(fetchUserStage(sender))
-          dispatch(fetchPayout(sender, user))
-          dispatch(fetchFinalScore(sender, user))
-          dispatch(fetchUserBalance())
-        }
-        break
       case NotificationTopic.AssessmentFinished:
         if (isUser) {
           dispatch(updateAssessmentVariable(sender, 'stage', Stage.Done))
           dispatch(fetchUserStage(sender))
           dispatch(fetchPayout(sender, user))
           dispatch(fetchFinalScore(sender, user))
+          dispatch(fetchUserBalance())
         }
         break
       default:
