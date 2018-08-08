@@ -6,7 +6,7 @@ module.exports = function (deployer) {
     let accounts = await getAccounts(deployer.network, web3)
     let instance = await FathomToken.deployed()
     for (let i = 1; i < accounts.length; i++) {
-      await instance.transfer(accounts[i], 10000000000)
+      await instance.transfer(accounts[i], 100000000000)
     }
   })
 }
