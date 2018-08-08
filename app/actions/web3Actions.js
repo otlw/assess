@@ -32,14 +32,7 @@ export const connect = () => {
           dispatch(setMainDisplay('UnlockMetaMask'))
         } else {
           dispatch(receiveVariable('userAddress', accounts[0]))
-          // get balance from contract
-          let fathomTokenInstance = getInstance.fathomToken(getState())
-          if (fathomTokenInstance.error) {
-            dispatch(setMainDisplay('UndeployedNetwork'))
-          } else {
-            let userBalance = await fathomTokenInstance.methods.balanceOf(accounts[0]).call()
-            dispatch(receiveVariable('AhaBalance', userBalance))
-          }
+          dispatch(fetchUserBalance())
         }
 
         // set a second web3 instance to subscribe to events via websocket
@@ -159,6 +152,19 @@ export const loopCheckAddressAndNetwork = () => {
         }
       }
     }, 1000)
+  }
+}
+
+export const fetchUserBalance = () => {
+  return async (dispatch, getState) => {
+    let userAddress = getState().ethereum.userAddress
+    let fathomTokenInstance = getInstance.fathomToken(getState())
+    if (fathomTokenInstance.error) {
+      dispatch(setMainDisplay('UndeployedNetwork'))
+    } else {
+      let userBalance = await fathomTokenInstance.methods.balanceOf(userAddress).call()
+      dispatch(receiveVariable('AhaBalance', userBalance))
+    }
   }
 }
 
