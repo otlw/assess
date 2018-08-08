@@ -29,7 +29,7 @@ export class ConceptBoard extends Component {
       let ConceptHeader = h(ConceptHeaderDefault, 'Choose a Concept')
       if (this.state.selectedConceptAddress !== '0') {
         ConceptHeader = h(AssessmentCreation, {
-          conceptName: this.props.concepts[this.state.selectedConceptAddress],
+          conceptData: this.props.concepts[this.state.selectedConceptAddress],
           conceptAddress: this.state.selectedConceptAddress,
           loadConceptContractAndCreateAssessment: this.props.loadConceptContractAndCreateAssessment,
           estimateGasCost: this.props.estimateAssessmentCreationGasCost,
@@ -42,7 +42,8 @@ export class ConceptBoard extends Component {
         h(ConceptHeaderBox, [
           ConceptHeader
         ]),
-        h(ConceptList, {concepts, selectConceptAddress: this.selectConceptAddress.bind(this)})
+        // only display list when no concept is selected
+        this.state.selectedConceptAddress === '0' ? h(ConceptList, {concepts, selectConceptAddress: this.selectConceptAddress.bind(this)}) : null
       ])
     } else {
       return h('div', 'Loading Concepts')

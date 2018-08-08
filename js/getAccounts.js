@@ -1,10 +1,15 @@
 module.exports = async (network, web3, toBeAddedToMew) => {
+  let initialAccounts;
   switch (network) {
-    case 'rinkeby':
+
+    // TODO rinkeby isnt supported for now
+    // case 'rinkeby':
+    //   initialAccounts = require('../initialMembers.json')
+    //   return initialAccounts
     case 'ropsten':
     case 'mainnet':
     case 'kovan':
-      let initialAccounts = require('../initialMembers.json')
+      initialAccounts = require('../initialMembers.json')
       return initialAccounts
     case 'development':
       let accounts = (await web3.eth.accounts)

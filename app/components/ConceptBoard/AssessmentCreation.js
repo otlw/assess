@@ -174,7 +174,7 @@ export class AssessmentCreation extends Component {
       h(ConceptCreationCardFrame, [
         h(ConceptTitleBox, [
           h(TitleCaption, 'CONCEPT'),
-          h(ConceptTitle, this.props.conceptName)
+          h(ConceptTitle, this.props.conceptData.name)
         ]),
         BottomPartContent
       ]),
@@ -189,7 +189,9 @@ export default AssessmentCreation
 
 const MainFrame = styled('div').attrs({ className: 'flex flex-column w-100 h-100 bg-light-blue' })`
 text-align:center;
-padding:0 0 2em 0;
+padding:0 0 2rem 0;
+position:relative;
+top:-3.5rem;
 `
 
 const HeaderTitle = styled('div')`
