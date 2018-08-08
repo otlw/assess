@@ -12,13 +12,13 @@ export class AssessmentCreation extends Component {
     super(props)
     this.state = {
       step: 1,
-      amountPerAssessor: 5, // TODO set defualt value to 0 once bug is resolved (#277)
+      amountPerAssessor: 1, // TODO set defualt value to 0 once bug is resolved (#277)
       gasEstimate: 0
     }
   }
 
   setAmountPerAssessor (e) {
-    this.setState({amountPerAssessor: e.target.value})
+    this.setState({amountPerAssessor: Math.round(e.target.value)})
   }
 
   cancelButton () {
@@ -246,7 +246,7 @@ const ButtonCaptionBox = styled('div').attrs({className: 'flex justify-between f
 
 const ButtonGroup = styled('div').attrs({className: 'flex flex-row justify-between br1 ba b--mid-gray pv1 ph3 f4'})`
 `
-const AmountPerAssessor = styled('input').attrs({className: 'flex w-25 tl pa1 bn '})`
+const AmountPerAssessor = styled('input').attrs({className: 'flex w-40 tl pa1 bn '})`
 `
 const AHAUnit = styled('div').attrs({className: 'mid-gray'})`
 `

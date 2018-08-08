@@ -19,7 +19,7 @@ class FinalResultBar extends Component {
       return h(FinalScoreField, 'Your final score is ' + scoreString)
     } else if (this.props.userStage === Stage.Done) {
       // user is assessor
-      let gain = this.props.payout - this.props.cost
+      let gain = Math.round(this.props.payout - this.props.cost)
       return (
         h(FinalResultBox, [
           (this.cacheCommitData

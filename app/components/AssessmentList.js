@@ -1,4 +1,4 @@
-import AssessmentItem from './AssessmentItem'
+import AssessmentCard from './AssessmentCard'
 import h from 'react-hyperscript'
 import styled from 'styled-components'
 
@@ -20,7 +20,7 @@ export const AssessmentList = (props) => {
       h(listContainer, [
         h('h1', props.name),
         h(listContainerCards, props.assessments.map((assessment, k) => {
-          return h(AssessmentItem, {
+          return h(AssessmentCard, {
             assessment,
             userAddress: props.userAddress,
             networkID: props.networkID
