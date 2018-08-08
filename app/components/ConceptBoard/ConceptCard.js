@@ -4,18 +4,21 @@ import h from 'react-hyperscript'
 
 export class ConceptCard extends Component {
   render () {
+    // set LearnMore link if it's provided by the concept data
+    let LearnMore = null
+    if (this.props.conceptData.learnMore) {
+      LearnMore = h(LearnButtonLink, {href: this.props.conceptData.learnMore, target: '_blank'}, 'Learn')
+    }
     return h(ConceptCardFrame, [
       h(ConceptTitleBox, [
         h(TitleCaption, 'CONCEPT'),
-        h(ConceptTitle, this.props.conceptName)
+        h(ConceptTitle, this.props.conceptData.name)
       ]),
       h(BottomPart, [
-        // TODO handle concept description
-        h(ConceptDescription, 'Concept Description?'),
+        h(ConceptDescription, 'Description:\n' + this.props.conceptData.description),
         h(ButtonGroup, [
           h(GetAssessedButton, {onClick: this.props.selectConcept.bind(this), id: this.props.conceptAddress}, 'Get Assessed'),
-          // TODO add link from concept description JSON
-          h(LearnButton, 'Learn')
+          LearnMore
         ])
       ])
     ])
@@ -48,6 +51,7 @@ const ButtonGroup = styled('div').attrs({className: 'flex flex-row br4 ba justif
 const GetAssessedButton = styled('div').attrs({className: 'flex h2 pa2 w5 justify-center'})`
 cursor:pointer;
 `
-const LearnButton = styled('div').attrs({className: 'flex br4 br--right h2 pa2 w4 justify-center'})`
+const LearnButtonLink = styled('a').attrs({className: 'flex br4 br--right h2 pa2 w4 justify-center'})`
 background: #C4C4C4;
+text-decoration:none;
 `
