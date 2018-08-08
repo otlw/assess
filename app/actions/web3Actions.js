@@ -158,7 +158,6 @@ export const loopCheckAddressAndNetwork = () => {
 export const fetchUserBalance = () => {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
-    // get balance from contract
     let fathomTokenInstance = getInstance.fathomToken(getState())
     if (fathomTokenInstance.error) {
       dispatch(setMainDisplay('UndeployedNetwork'))
