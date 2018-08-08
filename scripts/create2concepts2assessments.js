@@ -17,7 +17,12 @@ let provider
 const network = process.argv[2]
 let printGasAnalysis = process.argv[2] === '--gas'
 
-async function test () {
+//variables for the two descriptions
+let description1="we dem boiz";
+let description2="Hol' up hol' up, Hol' up, we dem boyz Hol' up, we dem boyz Hol' up, hol' up, hol' up, we makin' noise Hol' up, hol' up, hol' up, hol' up, hol' up"
+let ipfsHash1,ipfsHash2;
+
+async function create () {
   // const Eth = require('ethjs');
   const Web3 = require('web3')
 
@@ -70,9 +75,9 @@ async function test () {
 
   // deploy one concept
   console.log('Creating first concept....')
-  // encode a title for this concept
-  const msg1 = '0x' + (Buffer.from('holla, ', 'utf8')).toString('hex')
-  let txResultConcept1 = await conceptRegContract.methods.makeConcept([mewAddress], [500], 60 * 60 * 24, msg1, accounts[0]).send({from: accounts[0], gas: 3200000})
+  // use ipfsHash for concept creation
+  let encryptedHash1 = '0x' + (Buffer.from(ipfsHash1, 'utf8')).toString('hex')
+  let txResultConcept1 = await conceptRegContract.methods.makeConcept([mewAddress], [500], 60 * 60 * 24, encryptedHash1, accounts[0]).send({from: accounts[0], gas: 3200000})
   // use the tx to get deployed concept address
   let concept1Address = txResultConcept1.events.ConceptCreation.returnValues._concept
   console.log('New concept created as child of mew concept at ' + concept1Address)
@@ -81,9 +86,9 @@ async function test () {
 
   // deploy a second concept
   console.log('Deploying second concept....')
-  // encode a title for this concept
-  const msg2 = '0x' + (Buffer.from('holla !!!', 'utf8')).toString('hex')
-  let txResultConcept2 = await conceptRegContract.methods.makeConcept([mewAddress], [500], 60 * 60 * 24, msg2, accounts[0]).send({from: accounts[0], gas: 3200000})
+  // use ipfsHash for concept creation
+  let encryptedHash2 = '0x' + (Buffer.from(ipfsHash2, 'utf8')).toString('hex')
+  let txResultConcept2 = await conceptRegContract.methods.makeConcept([mewAddress], [500], 60 * 60 * 24, encryptedHash2, accounts[0]).send({from: accounts[0], gas: 3200000})
   // use the tx to get deployed concept address
   let concept2Address = txResultConcept2.events.ConceptCreation.returnValues._concept
   console.log('New concept created as child of mew concept at ' + concept2Address)
@@ -102,16 +107,16 @@ async function test () {
   console.log('\n### -- 5. Create Assessments on those 2 Concepts -- ###\n')
 
   // define constants for assessments
-  const cost = 10
+  const cost = 1
   const size = 5
-  const endTime = 1000000000000
-  const startTime = 1000000000
+  const endTime = 7 * 24 * 3600
+  const startTime = 3 * 24 * 3600
   const assesseeAddress = accounts[0]
 
   // check balance of assessee
   fathomTokenContract = await new web3.eth.Contract(fathomTokenArtifact.abi, fathomTokenArtifact.networks[net].address, {from: assesseeAddress})
   let assesseeInitialBalance = await fathomTokenContract.methods.balanceOf(assesseeAddress).call()
-  console.log('Account 0 is : ' + accounts[0])
+  console.log('Account is : ' + assesseeAddress)
   console.log('Assessee initial AHA balance ' + Number(assesseeInitialBalance))
   let assesseeEthBalance = await web3.eth.getBalance(assesseeAddress)
   console.log('Assessee initial ETH balance ' + Number(assesseeEthBalance))
@@ -177,4 +182,57 @@ async function test () {
   // let assessmentContract2 = await new web3.eth.Contract(assessmentArtifact.abi, assessmentAddress2)
   // console.log('assessment2 instanciated')
 }
-test()
+
+//setup ipfs api
+const ipfsAPI = require('ipfs-api');
+const ipfs = ipfsAPI('ipfs.infura.io', '5001', {protocol: 'https'});
+
+
+async function uploadDescriptionToIPFS(string){
+  console.log("\n-------------- Storing string on IPFS : --------------")
+  try {
+    //Use a Buffer to send the string
+    var ifpsBuffer = Buffer.from(string);
+    console.log("String to be stored on IPFS : ",string)
+
+    //use ipfs-api to add file
+    let response= await ipfs.add([ifpsBuffer], {pin:false})
+
+    //log path of stored file
+    let path=response[0].path
+    console.log("path of description : ",path)
+
+    //verify that description is correctly stord and log it
+    let verif=await ipfs.get(path)
+    let decoded=verif[0].content.toString() 
+    console.log("Decoded string from IPFS : ",decoded)
+
+    // return hash of description to be stored on contract
+    console.log("-------------- string stored on IPFS --------------\n")
+    return path;
+  } catch (e) {
+        console.log('Error while uploading to ipfs:', e)
+  }
+}
+
+let stringifiedJson1=JSON.stringify({
+  "name":"Hol up... ",
+  "description":description1,
+  "learnMore":"https://www.youtube.com/watch?v=UX6K7waag5Q"
+})
+
+let stringifiedJson2=JSON.stringify({
+  "name":"Hol up !",
+  "description":description2,
+  "learnMore":"https://www.youtube.com/watch?v=UX6K7waag5Q"
+})
+
+async function execute(){
+  ipfsHash1= await uploadDescriptionToIPFS(stringifiedJson1)
+  ipfsHash2= await uploadDescriptionToIPFS(stringifiedJson2)
+  await create()
+  console.log("done !")
+  process.exit()
+}
+
+execute()
