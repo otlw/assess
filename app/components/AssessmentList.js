@@ -1,4 +1,3 @@
-import AssessmentItem from './AssessmentItem'
 import h from 'react-hyperscript'
 import styled from 'styled-components'
 
