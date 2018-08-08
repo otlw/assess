@@ -1,6 +1,6 @@
 import { getInstance, convertFromOnChainScoreToUIScore } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
-import { receiveVariable } from './web3Actions.js'
+import { receiveVariable, fetchUserBalance } from './web3Actions.js'
 import { Stage, LoadingStage, NotificationTopic } from '../constants.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
@@ -322,11 +322,17 @@ export function processEvent (user, sender, topic) {
     let isUser = user === userAddress
     switch (topic) {
       case NotificationTopic.AssessmentCreated:
+        dispatch(fetchUserBalance())
+        dispatch(fetchAssessmentData(sender))
+        break
       case NotificationTopic.CalledAsAssessor:
         dispatch(fetchAssessmentData(sender))
         break
       case NotificationTopic.ConfirmedAsAssessor:
-        if (isUser) dispatch(fetchUserStage(sender))
+        if (isUser) {
+          dispatch(fetchUserStage(sender))
+          dispatch(fetchUserBalance())
+        }
         dispatch(receiveAssessor(sender, user))
         break
       case NotificationTopic.AssessmentStarted:
@@ -348,6 +354,7 @@ export function processEvent (user, sender, topic) {
           dispatch(fetchUserStage(sender))
           dispatch(fetchPayout(sender, user))
           dispatch(fetchFinalScore(sender, user))
+          dispatch(fetchUserBalance())
         }
         break
       default:
