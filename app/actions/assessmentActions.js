@@ -300,6 +300,7 @@ export function processEvent (user, sender, topic) {
     switch (topic) {
       case NotificationTopic.AssessmentCreated:
         dispatch(fetchUserBalance())
+        dispatch(fetchAssessmentData(sender))
         break
       case NotificationTopic.CalledAsAssessor:
         dispatch(fetchAssessmentData(sender))
@@ -324,7 +325,13 @@ export function processEvent (user, sender, topic) {
         }
         break
       case NotificationTopic.TokensPaidOut:
-        dispatch(fetchUserBalance())
+        if (isUser) {
+          dispatch(updateAssessmentVariable(sender, 'stage', Stage.Done))
+          dispatch(fetchUserStage(sender))
+          dispatch(fetchPayout(sender, user))
+          dispatch(fetchFinalScore(sender, user))
+          dispatch(fetchUserBalance())
+        }
         break
       case NotificationTopic.AssessmentFinished:
         if (isUser) {
