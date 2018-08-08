@@ -1,12 +1,14 @@
 import { Component } from 'react'
 import { connect } from 'react-redux'
 import Header from './components/Header'
-import Dashboard from './components/Dashboard'
+import {NavTabs} from './components/NavTabs'
+import AssessmentFilterView from './components/AssessmentFilterView'
+import CertificateList from './components/CertificateList'
 import ConceptBoard from './components/ConceptBoard'
 import AssessmentView from './components/AssessmentView'
 import h from 'react-hyperscript'
 import { HashRouter, Route } from 'react-router-dom'
-import {ThemeProvider} from 'styled-components'
+import styled, {ThemeProvider} from 'styled-components'
 
 const theme = {
   primary: '#546e7a',
@@ -54,10 +56,12 @@ export class App extends Component {
             ? h('div', [
               h(Header),
               this.props.loadedWeb3
-                ? (h('div', [
-                  h(Route, {exact: true, path: '/', component: Dashboard}),
-                  h(Route, {exact: true, path: '/concepts', component: ConceptBoard}),
-                  h(Route, {path: '/assessment/:id', component: AssessmentView})
+                ? (h(appContainer, [
+                  h(NavTabs),
+                  h(Route, {exact: true, path: '/', component: AssessmentFilterView}),
+                  h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
+                  h(Route, {path: '/assessment/:id', component: AssessmentView}),
+                  h(Route, {path: '/certificates/', component: CertificateList})
                 ]))
                 : h('div', 'Loading web3')
             ]) : warningScreen
@@ -66,6 +70,8 @@ export class App extends Component {
     )
   }
 }
+
+const appContainer = styled('div').attrs({className: 'flex flex-column w-100 pa2'})``
 
 const mapStateToProps = state => {
   return {

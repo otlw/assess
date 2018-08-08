@@ -1,36 +1,23 @@
-import AssessmentList from './AssessmentList'
-
+import AssessmentList from '../AssessmentList'
+import { Stage } from '../../constants.js'
 import h from 'react-hyperscript'
-
-const Stage = {
-  None: 0,
-  Called: 1,
-  Confirmed: 2,
-  Committed: 3,
-  Done: 4,
-  Burned: 5
-}
 
 export const AssessmentFilterView = (props) => {
   let userAddress = props.userAddress
-
-  // map assessmentList from assessments object from redux store
-  let assessmentList = Object.keys(props.assessments).map((assessmentAddress) => {
-    return {...props.assessments[assessmentAddress], address: assessmentAddress}
-  })
+  let assessmentsAsList = Object.values(props.assessments)
 
   let assessmentLists = {
-    Current: assessmentList.filter(assessment => {
+    Current: assessmentsAsList.filter(assessment => {
       if (props.userAddress === assessment.assessee) {
         return assessment.stage < Stage.Done
       }
       return assessment.stage > Stage.Called && assessment.stage < Stage.Done
     }),
-    Available: assessmentList.filter(assessment => {
+    Available: assessmentsAsList.filter(assessment => {
       return (props.userAddress !== assessment.assessee &&
               assessment.stage === Stage.Called)
     }),
-    Completed: assessmentList.filter(assessment => assessment.stage === Stage.Done)
+    Completed: assessmentsAsList.filter(assessment => assessment.stage === Stage.Done)
   }
 
   // return view

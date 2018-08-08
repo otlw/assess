@@ -202,8 +202,8 @@
       "type": "event"
     }
   ],
-  "bytecode": "0x608060405234801561001057600080fd5b5061040c806100206000396000f3006080604052600436106100b95763ffffffff7c010000000000000000000000000000000000000000000000000000000060003504166313faede681146100be5780633197cbb6146100e557806347c20ab7146100fa5780636732e96614610138578063739d9dc11461014d578063949d225d146101625780639c6a1dfb14610177578063ae8421e1146101b0578063b90d3d0c146101c5578063bf1c696914610268578063bfa0b13314610296578063c2c4c5c1146102ab575b600080fd5b3480156100ca57600080fd5b506100d36102c0565b60408051918252519081900360200190f35b3480156100f157600080fd5b506100d36102c6565b34801561010657600080fd5b5061010f6102cc565b6040805173ffffffffffffffffffffffffffffffffffffffff9092168252519081900360200190f35b34801561014457600080fd5b5061010f6102e8565b34801561015957600080fd5b506100d3610309565b34801561016e57600080fd5b506100d361030f565b34801561018357600080fd5b5061018c610315565b6040518082600681111561019c57fe5b60ff16815260200191505060405180910390f35b3480156101bc57600080fd5b506100d361031e565b3480156101d157600080fd5b506101f373ffffffffffffffffffffffffffffffffffffffff60043516610324565b6040805160208082528351818301528351919283929083019185019080838360005b8381101561022d578181015183820152602001610215565b50505050905090810190601f16801561025a5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b34801561027457600080fd5b5061018c73ffffffffffffffffffffffffffffffffffffffff600435166103bf565b3480156102a257600080fd5b506100d36103d4565b3480156102b757600080fd5b506100d36103da565b60095481565b60065481565b60015473ffffffffffffffffffffffffffffffffffffffff1681565b600454610100900473ffffffffffffffffffffffffffffffffffffffff1681565b600d5481565b60085481565b60045460ff1681565b600b5481565b600f6020908152600091825260409182902080548351601f6002600019610100600186161502019093169290920491820184900484028101840190945280845290918301828280156103b75780601f1061038c576101008083540402835291602001916103b7565b820191906000526020600020905b81548152906001019060200180831161039a57829003601f168201915b505050505081565b60036020526000908152604090205460ff1681565b600e5481565b600754815600a165627a7a72305820f321a9078a6bfefe72b81e8585352ff49ca4a8a6ba0b406bf7a21bd7493447840029",
-  "deployedBytecode": "0x6080604052600436106100b95763ffffffff7c010000000000000000000000000000000000000000000000000000000060003504166313faede681146100be5780633197cbb6146100e557806347c20ab7146100fa5780636732e96614610138578063739d9dc11461014d578063949d225d146101625780639c6a1dfb14610177578063ae8421e1146101b0578063b90d3d0c146101c5578063bf1c696914610268578063bfa0b13314610296578063c2c4c5c1146102ab575b600080fd5b3480156100ca57600080fd5b506100d36102c0565b60408051918252519081900360200190f35b3480156100f157600080fd5b506100d36102c6565b34801561010657600080fd5b5061010f6102cc565b6040805173ffffffffffffffffffffffffffffffffffffffff9092168252519081900360200190f35b34801561014457600080fd5b5061010f6102e8565b34801561015957600080fd5b506100d3610309565b34801561016e57600080fd5b506100d361030f565b34801561018357600080fd5b5061018c610315565b6040518082600681111561019c57fe5b60ff16815260200191505060405180910390f35b3480156101bc57600080fd5b506100d361031e565b3480156101d157600080fd5b506101f373ffffffffffffffffffffffffffffffffffffffff60043516610324565b6040805160208082528351818301528351919283929083019185019080838360005b8381101561022d578181015183820152602001610215565b50505050905090810190601f16801561025a5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b34801561027457600080fd5b5061018c73ffffffffffffffffffffffffffffffffffffffff600435166103bf565b3480156102a257600080fd5b506100d36103d4565b3480156102b757600080fd5b506100d36103da565b60095481565b60065481565b60015473ffffffffffffffffffffffffffffffffffffffff1681565b600454610100900473ffffffffffffffffffffffffffffffffffffffff1681565b600d5481565b60085481565b60045460ff1681565b600b5481565b600f6020908152600091825260409182902080548351601f6002600019610100600186161502019093169290920491820184900484028101840190945280845290918301828280156103b75780601f1061038c576101008083540402835291602001916103b7565b820191906000526020600020905b81548152906001019060200180831161039a57829003601f168201915b505050505081565b60036020526000908152604090205460ff1681565b600e5481565b600754815600a165627a7a72305820f321a9078a6bfefe72b81e8585352ff49ca4a8a6ba0b406bf7a21bd7493447840029",
+  "bytecode": "0x608060405234801561001057600080fd5b5061040c806100206000396000f3006080604052600436106100b95763ffffffff7c010000000000000000000000000000000000000000000000000000000060003504166313faede681146100be5780633197cbb6146100e557806347c20ab7146100fa5780636732e96614610138578063739d9dc11461014d578063949d225d146101625780639c6a1dfb14610177578063ae8421e1146101b0578063b90d3d0c146101c5578063bf1c696914610268578063bfa0b13314610296578063c2c4c5c1146102ab575b600080fd5b3480156100ca57600080fd5b506100d36102c0565b60408051918252519081900360200190f35b3480156100f157600080fd5b506100d36102c6565b34801561010657600080fd5b5061010f6102cc565b6040805173ffffffffffffffffffffffffffffffffffffffff9092168252519081900360200190f35b34801561014457600080fd5b5061010f6102e8565b34801561015957600080fd5b506100d3610309565b34801561016e57600080fd5b506100d361030f565b34801561018357600080fd5b5061018c610315565b6040518082600681111561019c57fe5b60ff16815260200191505060405180910390f35b3480156101bc57600080fd5b506100d361031e565b3480156101d157600080fd5b506101f373ffffffffffffffffffffffffffffffffffffffff60043516610324565b6040805160208082528351818301528351919283929083019185019080838360005b8381101561022d578181015183820152602001610215565b50505050905090810190601f16801561025a5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b34801561027457600080fd5b5061018c73ffffffffffffffffffffffffffffffffffffffff600435166103bf565b3480156102a257600080fd5b506100d36103d4565b3480156102b757600080fd5b506100d36103da565b60095481565b60065481565b60015473ffffffffffffffffffffffffffffffffffffffff1681565b600454610100900473ffffffffffffffffffffffffffffffffffffffff1681565b600d5481565b60085481565b60045460ff1681565b600b5481565b600f6020908152600091825260409182902080548351601f6002600019610100600186161502019093169290920491820184900484028101840190945280845290918301828280156103b75780601f1061038c576101008083540402835291602001916103b7565b820191906000526020600020905b81548152906001019060200180831161039a57829003601f168201915b505050505081565b60036020526000908152604090205460ff1681565b600e5481565b600754815600a165627a7a72305820294f9c420bf652eec5aeeced1eca2301425134428af74e386bb26c587deaf2960029",
+  "deployedBytecode": "0x6080604052600436106100b95763ffffffff7c010000000000000000000000000000000000000000000000000000000060003504166313faede681146100be5780633197cbb6146100e557806347c20ab7146100fa5780636732e96614610138578063739d9dc11461014d578063949d225d146101625780639c6a1dfb14610177578063ae8421e1146101b0578063b90d3d0c146101c5578063bf1c696914610268578063bfa0b13314610296578063c2c4c5c1146102ab575b600080fd5b3480156100ca57600080fd5b506100d36102c0565b60408051918252519081900360200190f35b3480156100f157600080fd5b506100d36102c6565b34801561010657600080fd5b5061010f6102cc565b6040805173ffffffffffffffffffffffffffffffffffffffff9092168252519081900360200190f35b34801561014457600080fd5b5061010f6102e8565b34801561015957600080fd5b506100d3610309565b34801561016e57600080fd5b506100d361030f565b34801561018357600080fd5b5061018c610315565b6040518082600681111561019c57fe5b60ff16815260200191505060405180910390f35b3480156101bc57600080fd5b506100d361031e565b3480156101d157600080fd5b506101f373ffffffffffffffffffffffffffffffffffffffff60043516610324565b6040805160208082528351818301528351919283929083019185019080838360005b8381101561022d578181015183820152602001610215565b50505050905090810190601f16801561025a5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b34801561027457600080fd5b5061018c73ffffffffffffffffffffffffffffffffffffffff600435166103bf565b3480156102a257600080fd5b506100d36103d4565b3480156102b757600080fd5b506100d36103da565b60095481565b60065481565b60015473ffffffffffffffffffffffffffffffffffffffff1681565b600454610100900473ffffffffffffffffffffffffffffffffffffffff1681565b600d5481565b60085481565b60045460ff1681565b600b5481565b600f6020908152600091825260409182902080548351601f6002600019610100600186161502019093169290920491820184900484028101840190945280845290918301828280156103b75780601f1061038c576101008083540402835291602001916103b7565b820191906000526020600020905b81548152906001019060200180831161039a57829003601f168201915b505050505081565b60036020526000908152604090205460ff1681565b600e5481565b600754815600a165627a7a72305820294f9c420bf652eec5aeeced1eca2301425134428af74e386bb26c587deaf2960029",
   "sourceMap": "218:901:1:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;218:901:1;;;;;;;",
   "deployedSourceMap": "218:901:1:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;806:16;;8:9:-1;5:2;;;30:1;27;20:12;5:2;806:16:1;;;;;;;;;;;;;;;;;;;;617:19;;8:9:-1;5:2;;;30:1;27;20:12;5:2;617:19:1;;;;279:23;;8:9:-1;5:2;;;30:1;27;20:12;5:2;279:23:1;;;;;;;;;;;;;;;;;;;;;;;559:22;;8:9:-1;5:2;;;30:1;27;20:12;5:2;559:22:1;;;;996:21;;8:9:-1;5:2;;;30:1;27;20:12;5:2;996:21:1;;;;784:16;;8:9:-1;5:2;;;30:1;27;20:12;5:2;784:16:1;;;;387:28;;8:9:-1;5:2;;;30:1;27;20:12;5:2;387:28:1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;870:16;;8:9:-1;5:2;;;30:1;27;20:12;5:2;870:16:1;;;;1078:38;;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;1078:38:1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;8:100:-1;33:3;30:1;27:10;8:100;;;90:11;;;84:18;71:11;;;64:39;52:2;45:10;8:100;;;12:14;1078:38:1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;334:47;;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;334:47:1;;;;;;;1023:19;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1023:19:1;;;;756:22;;8:9:-1;5:2;;;30:1;27;20:12;5:2;756:22:1;;;;806:16;;;;:::o;617:19::-;;;;:::o;279:23::-;;;;;;:::o;559:22::-;;;;;;;;;:::o;996:21::-;;;;:::o;784:16::-;;;;:::o;387:28::-;;;;;;:::o;870:16::-;;;;:::o;1078:38::-;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;1078:38:1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;334:47::-;;;;;;;;;;;;;;;:::o;1023:19::-;;;;:::o;756:22::-;;;;:::o",
   "source": "pragma solidity ^0.4.23;\n\nimport \"./Math.sol\";\nimport \"./Concept.sol\";\nimport \"./FathomToken.sol\";\nimport \"./Proxy.sol\";\n\ncontract AssessmentHeader {\n  event DataChanged(address user, bytes oldData, bytes newData);\n}\n\ncontract AssessmentData is ProxyData, AssessmentHeader {\n    address public assessee;\n    address[] assessors;\n\n    mapping (address => State) public assessorState;\n    State public assessmentStage;\n    enum State {\n        None,\n        Called,\n        Confirmed,\n        Committed,\n        Done,\n        Burned,\n        Dissent\n    }\n\n    Concept public concept;\n    FathomToken fathomToken;\n\n    uint public endTime;\n    // will keep track of timelimits for 1) latest possible time to confirm and\n    // 2) earliest time to reveal\n    uint public checkpoint;\n    uint public size;\n    uint public cost;\n\n    mapping(address => bytes32) commits;\n    uint public done; //counter how many assessors have committed/revealed their score\n    mapping(address => int128) scores;\n    int public finalScore;\n    bytes32 public salt; //used for token distribution\n    mapping (address => bytes) public data;\n}\n\n// same as assessmentData but with all variables internal, so as to not produce getter methods on the Assessment-Proxy\ncontract AssessmentDataInternal is ProxyData, AssessmentHeader {\n  address internal assessee;\n  address[] internal assessors;\n\n  mapping (address => State) internal assessorState;\n  State internal assessmentStage;\n  enum State {\n    None,\n    Called,\n    Confirmed,\n    Committed,\n    Done,\n    Burned\n  }\n\n  Concept internal concept;\n  FathomToken internal fathomToken;\n\n  uint internal endTime;\n  // will keep track of timelimits for 1) latest possible time to confirm and\n  // 2) earliest time to reveal\n  uint internal checkpoint;\n  uint internal size;\n  uint internal cost;\n\n  mapping(address => bytes32) internal commits;\n  uint internal done; //counter how many assessors have committed/revealed their score\n  mapping(address => int128) internal scores;\n  int internal finalScore;\n  bytes32 internal salt; //used for token distribution\n  mapping (address => bytes) internal data;\n}\n",
@@ -241,7 +241,7 @@
         "id": 1059,
         "nodeType": "ImportDirective",
         "scope": 1179,
-        "sourceUnit": 2809,
+        "sourceUnit": 2801,
         "src": "26:20:1",
         "symbolAliases": [],
         "unitAlias": ""
@@ -252,7 +252,7 @@
         "id": 1060,
         "nodeType": "ImportDirective",
         "scope": 1179,
-        "sourceUnit": 1900,
+        "sourceUnit": 1892,
         "src": "47:23:1",
         "symbolAliases": [],
         "unitAlias": ""
@@ -263,7 +263,7 @@
         "id": 1061,
         "nodeType": "ImportDirective",
         "scope": 1179,
-        "sourceUnit": 2581,
+        "sourceUnit": 2573,
         "src": "71:27:1",
         "symbolAliases": [],
         "unitAlias": ""
@@ -274,7 +274,7 @@
         "id": 1062,
         "nodeType": "ImportDirective",
         "scope": 1179,
-        "sourceUnit": 3241,
+        "sourceUnit": 3176,
         "src": "99:21:1",
         "symbolAliases": [],
         "unitAlias": ""
@@ -401,10 +401,10 @@
               "id": 1072,
               "name": "ProxyData",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 3218,
+              "referencedDeclaration": 3153,
               "src": "245:9:1",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_ProxyData_$3218",
+                "typeIdentifier": "t_contract$_ProxyData_$3153",
                 "typeString": "contract ProxyData"
               }
             },
@@ -433,7 +433,7 @@
         ],
         "contractDependencies": [
           1071,
-          3218
+          3153
         ],
         "contractKind": "contract",
         "documentation": null,
@@ -442,7 +442,7 @@
         "linearizedBaseContracts": [
           1125,
           1071,
-          3218
+          3153
         ],
         "name": "AssessmentData",
         "nodeType": "ContractDefinition",
@@ -645,7 +645,7 @@
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_Concept_$1899",
+              "typeIdentifier": "t_contract$_Concept_$1891",
               "typeString": "contract Concept"
             },
             "typeName": {
@@ -653,10 +653,10 @@
               "id": 1095,
               "name": "Concept",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 1899,
+              "referencedDeclaration": 1891,
               "src": "559:7:1",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_Concept_$1899",
+                "typeIdentifier": "t_contract$_Concept_$1891",
                 "typeString": "contract Concept"
               }
             },
@@ -673,7 +673,7 @@
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_FathomToken_$2580",
+              "typeIdentifier": "t_contract$_FathomToken_$2572",
               "typeString": "contract FathomToken"
             },
             "typeName": {
@@ -681,10 +681,10 @@
               "id": 1097,
               "name": "FathomToken",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2580,
+              "referencedDeclaration": 2572,
               "src": "587:11:1",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_FathomToken_$2580",
+                "typeIdentifier": "t_contract$_FathomToken_$2572",
                 "typeString": "contract FathomToken"
               }
             },
@@ -1021,10 +1021,10 @@
               "id": 1126,
               "name": "ProxyData",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 3218,
+              "referencedDeclaration": 3153,
               "src": "1275:9:1",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_ProxyData_$3218",
+                "typeIdentifier": "t_contract$_ProxyData_$3153",
                 "typeString": "contract ProxyData"
               }
             },
@@ -1053,7 +1053,7 @@
         ],
         "contractDependencies": [
           1071,
-          3218
+          3153
         ],
         "contractKind": "contract",
         "documentation": null,
@@ -1062,7 +1062,7 @@
         "linearizedBaseContracts": [
           1178,
           1071,
-          3218
+          3153
         ],
         "name": "AssessmentDataInternal",
         "nodeType": "ContractDefinition",
@@ -1259,7 +1259,7 @@
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_Concept_$1899",
+              "typeIdentifier": "t_contract$_Concept_$1891",
               "typeString": "contract Concept"
             },
             "typeName": {
@@ -1267,10 +1267,10 @@
               "id": 1148,
               "name": "Concept",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 1899,
+              "referencedDeclaration": 1891,
               "src": "1549:7:1",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_Concept_$1899",
+                "typeIdentifier": "t_contract$_Concept_$1891",
                 "typeString": "contract Concept"
               }
             },
@@ -1287,7 +1287,7 @@
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_FathomToken_$2580",
+              "typeIdentifier": "t_contract$_FathomToken_$2572",
               "typeString": "contract FathomToken"
             },
             "typeName": {
@@ -1295,10 +1295,10 @@
               "id": 1150,
               "name": "FathomToken",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2580,
+              "referencedDeclaration": 2572,
               "src": "1577:11:1",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_FathomToken_$2580",
+                "typeIdentifier": "t_contract$_FathomToken_$2572",
                 "typeString": "contract FathomToken"
               }
             },
@@ -1662,7 +1662,7 @@
         "id": 1059,
         "nodeType": "ImportDirective",
         "scope": 1179,
-        "sourceUnit": 2809,
+        "sourceUnit": 2801,
         "src": "26:20:1",
         "symbolAliases": [],
         "unitAlias": ""
@@ -1673,7 +1673,7 @@
         "id": 1060,
         "nodeType": "ImportDirective",
         "scope": 1179,
-        "sourceUnit": 1900,
+        "sourceUnit": 1892,
         "src": "47:23:1",
         "symbolAliases": [],
         "unitAlias": ""
@@ -1684,7 +1684,7 @@
         "id": 1061,
         "nodeType": "ImportDirective",
         "scope": 1179,
-        "sourceUnit": 2581,
+        "sourceUnit": 2573,
         "src": "71:27:1",
         "symbolAliases": [],
         "unitAlias": ""
@@ -1695,7 +1695,7 @@
         "id": 1062,
         "nodeType": "ImportDirective",
         "scope": 1179,
-        "sourceUnit": 3241,
+        "sourceUnit": 3176,
         "src": "99:21:1",
         "symbolAliases": [],
         "unitAlias": ""
@@ -1822,10 +1822,10 @@
               "id": 1072,
               "name": "ProxyData",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 3218,
+              "referencedDeclaration": 3153,
               "src": "245:9:1",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_ProxyData_$3218",
+                "typeIdentifier": "t_contract$_ProxyData_$3153",
                 "typeString": "contract ProxyData"
               }
             },
@@ -1854,7 +1854,7 @@
         ],
         "contractDependencies": [
           1071,
-          3218
+          3153
         ],
         "contractKind": "contract",
         "documentation": null,
@@ -1863,7 +1863,7 @@
         "linearizedBaseContracts": [
           1125,
           1071,
-          3218
+          3153
         ],
         "name": "AssessmentData",
         "nodeType": "ContractDefinition",
@@ -2066,7 +2066,7 @@
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_Concept_$1899",
+              "typeIdentifier": "t_contract$_Concept_$1891",
               "typeString": "contract Concept"
             },
             "typeName": {
@@ -2074,10 +2074,10 @@
               "id": 1095,
               "name": "Concept",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 1899,
+              "referencedDeclaration": 1891,
               "src": "559:7:1",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_Concept_$1899",
+                "typeIdentifier": "t_contract$_Concept_$1891",
                 "typeString": "contract Concept"
               }
             },
@@ -2094,7 +2094,7 @@
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_FathomToken_$2580",
+              "typeIdentifier": "t_contract$_FathomToken_$2572",
               "typeString": "contract FathomToken"
             },
             "typeName": {
@@ -2102,10 +2102,10 @@
               "id": 1097,
               "name": "FathomToken",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2580,
+              "referencedDeclaration": 2572,
               "src": "587:11:1",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_FathomToken_$2580",
+                "typeIdentifier": "t_contract$_FathomToken_$2572",
                 "typeString": "contract FathomToken"
               }
             },
@@ -2442,10 +2442,10 @@
               "id": 1126,
               "name": "ProxyData",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 3218,
+              "referencedDeclaration": 3153,
               "src": "1275:9:1",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_ProxyData_$3218",
+                "typeIdentifier": "t_contract$_ProxyData_$3153",
                 "typeString": "contract ProxyData"
               }
             },
@@ -2474,7 +2474,7 @@
         ],
         "contractDependencies": [
           1071,
-          3218
+          3153
         ],
         "contractKind": "contract",
         "documentation": null,
@@ -2483,7 +2483,7 @@
         "linearizedBaseContracts": [
           1178,
           1071,
-          3218
+          3153
         ],
         "name": "AssessmentDataInternal",
         "nodeType": "ContractDefinition",
@@ -2680,7 +2680,7 @@
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_Concept_$1899",
+              "typeIdentifier": "t_contract$_Concept_$1891",
               "typeString": "contract Concept"
             },
             "typeName": {
@@ -2688,10 +2688,10 @@
               "id": 1148,
               "name": "Concept",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 1899,
+              "referencedDeclaration": 1891,
               "src": "1549:7:1",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_Concept_$1899",
+                "typeIdentifier": "t_contract$_Concept_$1891",
                 "typeString": "contract Concept"
               }
             },
@@ -2708,7 +2708,7 @@
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_FathomToken_$2580",
+              "typeIdentifier": "t_contract$_FathomToken_$2572",
               "typeString": "contract FathomToken"
             },
             "typeName": {
@@ -2716,10 +2716,10 @@
               "id": 1150,
               "name": "FathomToken",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2580,
+              "referencedDeclaration": 2572,
               "src": "1577:11:1",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_FathomToken_$2580",
+                "typeIdentifier": "t_contract$_FathomToken_$2572",
                 "typeString": "contract FathomToken"
               }
             },
@@ -3056,5 +3056,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.1",
-  "updatedAt": "2018-07-25T15:34:28.442Z"
+  "updatedAt": "2018-07-25T23:08:13.032Z"
 }
