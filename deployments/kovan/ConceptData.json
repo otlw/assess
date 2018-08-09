@@ -1,0 +1,2646 @@
+{
+  "contractName": "ConceptData",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "fathomToken",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "assessmentExists",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "lifetime",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "data",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "parents",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "availableMembers",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "memberData",
+      "outputs": [
+        {
+          "name": "recentAssessment",
+          "type": "address"
+        },
+        {
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b5061037d806100206000396000f30060806040526004361061008d5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416631684ae4d811461009257806321d39c2c146100c357806369d24f63146100f857806373d4a13a1461011f578063898572a6146101a95780638da5cb5b146101c15780638f33dcaa146101d65780639107d08e146101ee575b600080fd5b34801561009e57600080fd5b506100a7610232565b60408051600160a060020a039092168252519081900360200190f35b3480156100cf57600080fd5b506100e4600160a060020a0360043516610241565b604080519115158252519081900360200190f35b34801561010457600080fd5b5061010d610256565b60408051918252519081900360200190f35b34801561012b57600080fd5b5061013461025c565b6040805160208082528351818301528351919283929083019185019080838360005b8381101561016e578181015183820152602001610156565b50505050905090810190601f16801561019b5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b3480156101b557600080fd5b506100a76004356102e7565b3480156101cd57600080fd5b506100a761030f565b3480156101e257600080fd5b506100a760043561031e565b3480156101fa57600080fd5b5061020f600160a060020a036004351661032c565b60408051600160a060020a03909316835260208301919091528051918290030190f35b600454600160a060020a031681565b60076020526000908152604090205460ff1681565b60065481565b6002805460408051602060018416156101000260001901909316849004601f810184900484028201840190925281815292918301828280156102df5780601f106102b4576101008083540402835291602001916102df565b820191906000526020600020905b8154815290600101906020018083116102c257829003601f168201915b505050505081565b60018054829081106102f557fe5b600091825260209091200154600160a060020a0316905081565b600354600160a060020a031681565b60098054829081106102f557fe5b600a6020526000908152604090208054600190910154600160a060020a0390911690825600a165627a7a72305820ba26257fa0a5b4062fffeaebcf59bd9b8311d5974844e6381552cd1f79d8ec4d0029",
+  "deployedBytecode": "0x60806040526004361061008d5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416631684ae4d811461009257806321d39c2c146100c357806369d24f63146100f857806373d4a13a1461011f578063898572a6146101a95780638da5cb5b146101c15780638f33dcaa146101d65780639107d08e146101ee575b600080fd5b34801561009e57600080fd5b506100a7610232565b60408051600160a060020a039092168252519081900360200190f35b3480156100cf57600080fd5b506100e4600160a060020a0360043516610241565b604080519115158252519081900360200190f35b34801561010457600080fd5b5061010d610256565b60408051918252519081900360200190f35b34801561012b57600080fd5b5061013461025c565b6040805160208082528351818301528351919283929083019185019080838360005b8381101561016e578181015183820152602001610156565b50505050905090810190601f16801561019b5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b3480156101b557600080fd5b506100a76004356102e7565b3480156101cd57600080fd5b506100a761030f565b3480156101e257600080fd5b506100a760043561031e565b3480156101fa57600080fd5b5061020f600160a060020a036004351661032c565b60408051600160a060020a03909316835260208301919091528051918290030190f35b600454600160a060020a031681565b60076020526000908152604090205460ff1681565b60065481565b6002805460408051602060018416156101000260001901909316849004601f810184900484028201840190925281815292918301828280156102df5780601f106102b4576101008083540402835291602001916102df565b820191906000526020600020905b8154815290600101906020018083116102c257829003601f168201915b505050505081565b60018054829081106102f557fe5b600091825260209091200154600160a060020a0316905081565b600354600160a060020a031681565b60098054829081106102f557fe5b600a6020526000908152604090208054600190910154600160a060020a0390911690825600a165627a7a72305820ba26257fa0a5b4062fffeaebcf59bd9b8311d5974844e6381552cd1f79d8ec4d0029",
+  "sourceMap": "157:671:4:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;157:671:4;;;;;;;",
+  "deployedSourceMap": "157:671:4:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;345:30;;8:9:-1;5:2;;;30:1;27;20:12;5:2;345:30:4;;;;;;;;-1:-1:-1;;;;;345:30:4;;;;;;;;;;;;;;438:49;;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;438:49:4;-1:-1:-1;;;;;438:49:4;;;;;;;;;;;;;;;;;;;;;;;414:20;;8:9:-1;5:2;;;30:1;27;20:12;5:2;414:20:4;;;;;;;;;;;;;;;;;;;;300:17;;8:9:-1;5:2;;;30:1;27;20:12;5:2;300:17:4;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;8:100:-1;33:3;30:1;27:10;8:100;;;90:11;;;84:18;71:11;;;64:39;52:2;45:10;8:100;;;12:14;300:17:4;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;195:24;;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;195:24:4;;;;;321:20;;8:9:-1;5:2;;;30:1;27;20:12;5:2;321:20:4;;;;520:33;;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;520:33:4;;;;;557:49;;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;557:49:4;-1:-1:-1;;;;;557:49:4;;;;;;;;;-1:-1:-1;;;;;557:49:4;;;;;;;;;;;;;;;;;;;;;345:30;;;-1:-1:-1;;;;;345:30:4;;:::o;438:49::-;;;;;;;;;;;;;;;:::o;414:20::-;;;;:::o;300:17::-;;;;;;;;;;;;;;-1:-1:-1;;300:17:4;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;195:24::-;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;195:24:4;;-1:-1:-1;195:24:4;:::o;321:20::-;;;-1:-1:-1;;;;;321:20:4;;:::o;520:33::-;;;;;;;;;;;557:49;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;557:49:4;;;;;:::o",
+  "source": "pragma solidity ^0.4.23;\n\nimport \"./FathomToken.sol\";\nimport \"./ConceptRegistry.sol\";\nimport \"./Assessment.sol\";\nimport \"./Math.sol\";\nimport \"./Proxy.sol\";\n\ncontract ConceptData is ProxyData {\n  address[] public parents; //The concepts that this concept is child to (ie: Calculus is child to Math)\n  bytes public data;\n  address public owner;\n  FathomToken public fathomToken;\n  ConceptRegistry conceptRegistry;\n  uint public lifetime;\n  mapping (address => bool) public assessmentExists;\n\n  uint[] propagationRates;\n\n  address[] public availableMembers;\n  mapping (address => MemberData) public memberData;\n\n  struct MemberData {\n    address recentAssessment;\n    uint index;\n    ComponentWeight[] weights;\n    mapping(address => uint) componentWeightIndex;\n  }\n\n  struct ComponentWeight {\n    uint weight;\n    uint date;\n  }\n}\n\ncontract ConceptDataInternal is ProxyData {\n  address[] internal parents; //The concepts that this concept is child to (ie: Calculus is child to Math)\n  bytes internal data;\n  address internal owner;\n  FathomToken internal fathomToken;\n  ConceptRegistry internal conceptRegistry;\n  uint internal lifetime;\n  mapping (address => bool) internal assessmentExists;\n\n  uint[] internal propagationRates;\n\n  address[] internal availableMembers;\n  mapping (address => MemberData) internal memberData;\n\n  struct MemberData {\n    address recentAssessment;\n    uint index;\n    ComponentWeight[] weights;\n    mapping(address => uint) componentWeightIndex;\n  }\n\n  struct ComponentWeight {\n    uint weight;\n    uint date;\n    }\n}\n",
+  "sourcePath": "/home/djuju/ethereum/fathom/assess/contracts/ConceptData.sol",
+  "ast": {
+    "absolutePath": "/home/djuju/ethereum/fathom/assess/contracts/ConceptData.sol",
+    "exportedSymbols": {
+      "ConceptData": [
+        1953
+      ],
+      "ConceptDataInternal": [
+        2000
+      ]
+    },
+    "id": 2001,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1901,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".23"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:4"
+      },
+      {
+        "absolutePath": "/home/djuju/ethereum/fathom/assess/contracts/FathomToken.sol",
+        "file": "./FathomToken.sol",
+        "id": 1902,
+        "nodeType": "ImportDirective",
+        "scope": 2001,
+        "sourceUnit": 2581,
+        "src": "26:27:4",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/home/djuju/ethereum/fathom/assess/contracts/ConceptRegistry.sol",
+        "file": "./ConceptRegistry.sol",
+        "id": 1903,
+        "nodeType": "ImportDirective",
+        "scope": 2001,
+        "sourceUnit": 2263,
+        "src": "54:31:4",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/home/djuju/ethereum/fathom/assess/contracts/Assessment.sol",
+        "file": "./Assessment.sol",
+        "id": 1904,
+        "nodeType": "ImportDirective",
+        "scope": 2001,
+        "sourceUnit": 1057,
+        "src": "86:26:4",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/home/djuju/ethereum/fathom/assess/contracts/Math.sol",
+        "file": "./Math.sol",
+        "id": 1905,
+        "nodeType": "ImportDirective",
+        "scope": 2001,
+        "sourceUnit": 2809,
+        "src": "113:20:4",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/home/djuju/ethereum/fathom/assess/contracts/Proxy.sol",
+        "file": "./Proxy.sol",
+        "id": 1906,
+        "nodeType": "ImportDirective",
+        "scope": 2001,
+        "sourceUnit": 3184,
+        "src": "134:21:4",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 1907,
+              "name": "ProxyData",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 3161,
+              "src": "181:9:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ProxyData_$3161",
+                "typeString": "contract ProxyData"
+              }
+            },
+            "id": 1908,
+            "nodeType": "InheritanceSpecifier",
+            "src": "181:9:4"
+          }
+        ],
+        "contractDependencies": [
+          3161
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 1953,
+        "linearizedBaseContracts": [
+          1953,
+          3161
+        ],
+        "name": "ConceptData",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 1911,
+            "name": "parents",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "195:24:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_array$_t_address_$dyn_storage",
+              "typeString": "address[]"
+            },
+            "typeName": {
+              "baseType": {
+                "id": 1909,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "195:7:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "id": 1910,
+              "length": null,
+              "nodeType": "ArrayTypeName",
+              "src": "195:9:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                "typeString": "address[]"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 1913,
+            "name": "data",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "300:17:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_bytes_storage",
+              "typeString": "bytes"
+            },
+            "typeName": {
+              "id": 1912,
+              "name": "bytes",
+              "nodeType": "ElementaryTypeName",
+              "src": "300:5:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_bytes_storage_ptr",
+                "typeString": "bytes"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 1915,
+            "name": "owner",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "321:20:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1914,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "321:7:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 1917,
+            "name": "fathomToken",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "345:30:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_contract$_FathomToken_$2580",
+              "typeString": "contract FathomToken"
+            },
+            "typeName": {
+              "contractScope": null,
+              "id": 1916,
+              "name": "FathomToken",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 2580,
+              "src": "345:11:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_FathomToken_$2580",
+                "typeString": "contract FathomToken"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 1919,
+            "name": "conceptRegistry",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "379:31:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_contract$_ConceptRegistry_$2262",
+              "typeString": "contract ConceptRegistry"
+            },
+            "typeName": {
+              "contractScope": null,
+              "id": 1918,
+              "name": "ConceptRegistry",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 2262,
+              "src": "379:15:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ConceptRegistry_$2262",
+                "typeString": "contract ConceptRegistry"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1921,
+            "name": "lifetime",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "414:20:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 1920,
+              "name": "uint",
+              "nodeType": "ElementaryTypeName",
+              "src": "414:4:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 1925,
+            "name": "assessmentExists",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "438:49:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+              "typeString": "mapping(address => bool)"
+            },
+            "typeName": {
+              "id": 1924,
+              "keyType": {
+                "id": 1922,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "447:7:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "438:25:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+                "typeString": "mapping(address => bool)"
+              },
+              "valueType": {
+                "id": 1923,
+                "name": "bool",
+                "nodeType": "ElementaryTypeName",
+                "src": "458:4:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                }
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 1928,
+            "name": "propagationRates",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "492:23:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_array$_t_uint256_$dyn_storage",
+              "typeString": "uint256[]"
+            },
+            "typeName": {
+              "baseType": {
+                "id": 1926,
+                "name": "uint",
+                "nodeType": "ElementaryTypeName",
+                "src": "492:4:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                }
+              },
+              "id": 1927,
+              "length": null,
+              "nodeType": "ArrayTypeName",
+              "src": "492:6:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                "typeString": "uint256[]"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1931,
+            "name": "availableMembers",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "520:33:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_array$_t_address_$dyn_storage",
+              "typeString": "address[]"
+            },
+            "typeName": {
+              "baseType": {
+                "id": 1929,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "520:7:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "id": 1930,
+              "length": null,
+              "nodeType": "ArrayTypeName",
+              "src": "520:9:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                "typeString": "address[]"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 1935,
+            "name": "memberData",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "557:49:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1947_storage_$",
+              "typeString": "mapping(address => struct ConceptData.MemberData)"
+            },
+            "typeName": {
+              "id": 1934,
+              "keyType": {
+                "id": 1932,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "566:7:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "557:31:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1947_storage_$",
+                "typeString": "mapping(address => struct ConceptData.MemberData)"
+              },
+              "valueType": {
+                "contractScope": null,
+                "id": 1933,
+                "name": "MemberData",
+                "nodeType": "UserDefinedTypeName",
+                "referencedDeclaration": 1947,
+                "src": "577:10:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_struct$_MemberData_$1947_storage_ptr",
+                  "typeString": "struct ConceptData.MemberData"
+                }
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "ConceptData.MemberData",
+            "id": 1947,
+            "members": [
+              {
+                "constant": false,
+                "id": 1937,
+                "name": "recentAssessment",
+                "nodeType": "VariableDeclaration",
+                "scope": 1947,
+                "src": "635:24:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 1936,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "635:7:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 1939,
+                "name": "index",
+                "nodeType": "VariableDeclaration",
+                "scope": 1947,
+                "src": "665:10:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 1938,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "665:4:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 1942,
+                "name": "weights",
+                "nodeType": "VariableDeclaration",
+                "scope": 1947,
+                "src": "681:25:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1952_storage_$dyn_storage_ptr",
+                  "typeString": "struct ConceptData.ComponentWeight[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "contractScope": null,
+                    "id": 1940,
+                    "name": "ComponentWeight",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 1952,
+                    "src": "681:15:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_ComponentWeight_$1952_storage_ptr",
+                      "typeString": "struct ConceptData.ComponentWeight"
+                    }
+                  },
+                  "id": 1941,
+                  "length": null,
+                  "nodeType": "ArrayTypeName",
+                  "src": "681:17:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1952_storage_$dyn_storage_ptr",
+                    "typeString": "struct ConceptData.ComponentWeight[]"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 1946,
+                "name": "componentWeightIndex",
+                "nodeType": "VariableDeclaration",
+                "scope": 1947,
+                "src": "712:45:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_mapping$_t_address_$_t_uint256_$",
+                  "typeString": "mapping(address => uint256)"
+                },
+                "typeName": {
+                  "id": 1945,
+                  "keyType": {
+                    "id": 1943,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "720:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "nodeType": "Mapping",
+                  "src": "712:24:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_mapping$_t_address_$_t_uint256_$",
+                    "typeString": "mapping(address => uint256)"
+                  },
+                  "valueType": {
+                    "id": 1944,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "731:4:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "MemberData",
+            "nodeType": "StructDefinition",
+            "scope": 1953,
+            "src": "611:151:4",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "ConceptData.ComponentWeight",
+            "id": 1952,
+            "members": [
+              {
+                "constant": false,
+                "id": 1949,
+                "name": "weight",
+                "nodeType": "VariableDeclaration",
+                "scope": 1952,
+                "src": "795:11:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 1948,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "795:4:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 1951,
+                "name": "date",
+                "nodeType": "VariableDeclaration",
+                "scope": 1952,
+                "src": "812:9:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 1950,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "812:4:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "ComponentWeight",
+            "nodeType": "StructDefinition",
+            "scope": 1953,
+            "src": "766:60:4",
+            "visibility": "public"
+          }
+        ],
+        "scope": 2001,
+        "src": "157:671:4"
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 1954,
+              "name": "ProxyData",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 3161,
+              "src": "862:9:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ProxyData_$3161",
+                "typeString": "contract ProxyData"
+              }
+            },
+            "id": 1955,
+            "nodeType": "InheritanceSpecifier",
+            "src": "862:9:4"
+          }
+        ],
+        "contractDependencies": [
+          3161
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 2000,
+        "linearizedBaseContracts": [
+          2000,
+          3161
+        ],
+        "name": "ConceptDataInternal",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 1958,
+            "name": "parents",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "876:26:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_array$_t_address_$dyn_storage",
+              "typeString": "address[]"
+            },
+            "typeName": {
+              "baseType": {
+                "id": 1956,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "876:7:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "id": 1957,
+              "length": null,
+              "nodeType": "ArrayTypeName",
+              "src": "876:9:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                "typeString": "address[]"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1960,
+            "name": "data",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "983:19:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_bytes_storage",
+              "typeString": "bytes"
+            },
+            "typeName": {
+              "id": 1959,
+              "name": "bytes",
+              "nodeType": "ElementaryTypeName",
+              "src": "983:5:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_bytes_storage_ptr",
+                "typeString": "bytes"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1962,
+            "name": "owner",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "1006:22:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1961,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "1006:7:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1964,
+            "name": "fathomToken",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "1032:32:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_contract$_FathomToken_$2580",
+              "typeString": "contract FathomToken"
+            },
+            "typeName": {
+              "contractScope": null,
+              "id": 1963,
+              "name": "FathomToken",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 2580,
+              "src": "1032:11:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_FathomToken_$2580",
+                "typeString": "contract FathomToken"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1966,
+            "name": "conceptRegistry",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "1068:40:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_contract$_ConceptRegistry_$2262",
+              "typeString": "contract ConceptRegistry"
+            },
+            "typeName": {
+              "contractScope": null,
+              "id": 1965,
+              "name": "ConceptRegistry",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 2262,
+              "src": "1068:15:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ConceptRegistry_$2262",
+                "typeString": "contract ConceptRegistry"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1968,
+            "name": "lifetime",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "1112:22:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 1967,
+              "name": "uint",
+              "nodeType": "ElementaryTypeName",
+              "src": "1112:4:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1972,
+            "name": "assessmentExists",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "1138:51:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+              "typeString": "mapping(address => bool)"
+            },
+            "typeName": {
+              "id": 1971,
+              "keyType": {
+                "id": 1969,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "1147:7:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "1138:25:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+                "typeString": "mapping(address => bool)"
+              },
+              "valueType": {
+                "id": 1970,
+                "name": "bool",
+                "nodeType": "ElementaryTypeName",
+                "src": "1158:4:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                }
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1975,
+            "name": "propagationRates",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "1194:32:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_array$_t_uint256_$dyn_storage",
+              "typeString": "uint256[]"
+            },
+            "typeName": {
+              "baseType": {
+                "id": 1973,
+                "name": "uint",
+                "nodeType": "ElementaryTypeName",
+                "src": "1194:4:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                }
+              },
+              "id": 1974,
+              "length": null,
+              "nodeType": "ArrayTypeName",
+              "src": "1194:6:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                "typeString": "uint256[]"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1978,
+            "name": "availableMembers",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "1231:35:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_array$_t_address_$dyn_storage",
+              "typeString": "address[]"
+            },
+            "typeName": {
+              "baseType": {
+                "id": 1976,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "1231:7:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "id": 1977,
+              "length": null,
+              "nodeType": "ArrayTypeName",
+              "src": "1231:9:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                "typeString": "address[]"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1982,
+            "name": "memberData",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "1270:51:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1994_storage_$",
+              "typeString": "mapping(address => struct ConceptDataInternal.MemberData)"
+            },
+            "typeName": {
+              "id": 1981,
+              "keyType": {
+                "id": 1979,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "1279:7:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "1270:31:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1994_storage_$",
+                "typeString": "mapping(address => struct ConceptDataInternal.MemberData)"
+              },
+              "valueType": {
+                "contractScope": null,
+                "id": 1980,
+                "name": "MemberData",
+                "nodeType": "UserDefinedTypeName",
+                "referencedDeclaration": 1994,
+                "src": "1290:10:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_struct$_MemberData_$1994_storage_ptr",
+                  "typeString": "struct ConceptDataInternal.MemberData"
+                }
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "canonicalName": "ConceptDataInternal.MemberData",
+            "id": 1994,
+            "members": [
+              {
+                "constant": false,
+                "id": 1984,
+                "name": "recentAssessment",
+                "nodeType": "VariableDeclaration",
+                "scope": 1994,
+                "src": "1350:24:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 1983,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1350:7:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 1986,
+                "name": "index",
+                "nodeType": "VariableDeclaration",
+                "scope": 1994,
+                "src": "1380:10:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 1985,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1380:4:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 1989,
+                "name": "weights",
+                "nodeType": "VariableDeclaration",
+                "scope": 1994,
+                "src": "1396:25:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1999_storage_$dyn_storage_ptr",
+                  "typeString": "struct ConceptDataInternal.ComponentWeight[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "contractScope": null,
+                    "id": 1987,
+                    "name": "ComponentWeight",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 1999,
+                    "src": "1396:15:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_ComponentWeight_$1999_storage_ptr",
+                      "typeString": "struct ConceptDataInternal.ComponentWeight"
+                    }
+                  },
+                  "id": 1988,
+                  "length": null,
+                  "nodeType": "ArrayTypeName",
+                  "src": "1396:17:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1999_storage_$dyn_storage_ptr",
+                    "typeString": "struct ConceptDataInternal.ComponentWeight[]"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 1993,
+                "name": "componentWeightIndex",
+                "nodeType": "VariableDeclaration",
+                "scope": 1994,
+                "src": "1427:45:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_mapping$_t_address_$_t_uint256_$",
+                  "typeString": "mapping(address => uint256)"
+                },
+                "typeName": {
+                  "id": 1992,
+                  "keyType": {
+                    "id": 1990,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1435:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "nodeType": "Mapping",
+                  "src": "1427:24:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_mapping$_t_address_$_t_uint256_$",
+                    "typeString": "mapping(address => uint256)"
+                  },
+                  "valueType": {
+                    "id": 1991,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1446:4:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "MemberData",
+            "nodeType": "StructDefinition",
+            "scope": 2000,
+            "src": "1326:151:4",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "ConceptDataInternal.ComponentWeight",
+            "id": 1999,
+            "members": [
+              {
+                "constant": false,
+                "id": 1996,
+                "name": "weight",
+                "nodeType": "VariableDeclaration",
+                "scope": 1999,
+                "src": "1510:11:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 1995,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1510:4:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 1998,
+                "name": "date",
+                "nodeType": "VariableDeclaration",
+                "scope": 1999,
+                "src": "1527:9:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 1997,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1527:4:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "ComponentWeight",
+            "nodeType": "StructDefinition",
+            "scope": 2000,
+            "src": "1481:62:4",
+            "visibility": "public"
+          }
+        ],
+        "scope": 2001,
+        "src": "830:715:4"
+      }
+    ],
+    "src": "0:1546:4"
+  },
+  "legacyAST": {
+    "absolutePath": "/home/djuju/ethereum/fathom/assess/contracts/ConceptData.sol",
+    "exportedSymbols": {
+      "ConceptData": [
+        1953
+      ],
+      "ConceptDataInternal": [
+        2000
+      ]
+    },
+    "id": 2001,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1901,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".23"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:4"
+      },
+      {
+        "absolutePath": "/home/djuju/ethereum/fathom/assess/contracts/FathomToken.sol",
+        "file": "./FathomToken.sol",
+        "id": 1902,
+        "nodeType": "ImportDirective",
+        "scope": 2001,
+        "sourceUnit": 2581,
+        "src": "26:27:4",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/home/djuju/ethereum/fathom/assess/contracts/ConceptRegistry.sol",
+        "file": "./ConceptRegistry.sol",
+        "id": 1903,
+        "nodeType": "ImportDirective",
+        "scope": 2001,
+        "sourceUnit": 2263,
+        "src": "54:31:4",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/home/djuju/ethereum/fathom/assess/contracts/Assessment.sol",
+        "file": "./Assessment.sol",
+        "id": 1904,
+        "nodeType": "ImportDirective",
+        "scope": 2001,
+        "sourceUnit": 1057,
+        "src": "86:26:4",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/home/djuju/ethereum/fathom/assess/contracts/Math.sol",
+        "file": "./Math.sol",
+        "id": 1905,
+        "nodeType": "ImportDirective",
+        "scope": 2001,
+        "sourceUnit": 2809,
+        "src": "113:20:4",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/home/djuju/ethereum/fathom/assess/contracts/Proxy.sol",
+        "file": "./Proxy.sol",
+        "id": 1906,
+        "nodeType": "ImportDirective",
+        "scope": 2001,
+        "sourceUnit": 3184,
+        "src": "134:21:4",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 1907,
+              "name": "ProxyData",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 3161,
+              "src": "181:9:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ProxyData_$3161",
+                "typeString": "contract ProxyData"
+              }
+            },
+            "id": 1908,
+            "nodeType": "InheritanceSpecifier",
+            "src": "181:9:4"
+          }
+        ],
+        "contractDependencies": [
+          3161
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 1953,
+        "linearizedBaseContracts": [
+          1953,
+          3161
+        ],
+        "name": "ConceptData",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 1911,
+            "name": "parents",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "195:24:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_array$_t_address_$dyn_storage",
+              "typeString": "address[]"
+            },
+            "typeName": {
+              "baseType": {
+                "id": 1909,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "195:7:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "id": 1910,
+              "length": null,
+              "nodeType": "ArrayTypeName",
+              "src": "195:9:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                "typeString": "address[]"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 1913,
+            "name": "data",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "300:17:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_bytes_storage",
+              "typeString": "bytes"
+            },
+            "typeName": {
+              "id": 1912,
+              "name": "bytes",
+              "nodeType": "ElementaryTypeName",
+              "src": "300:5:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_bytes_storage_ptr",
+                "typeString": "bytes"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 1915,
+            "name": "owner",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "321:20:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1914,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "321:7:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 1917,
+            "name": "fathomToken",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "345:30:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_contract$_FathomToken_$2580",
+              "typeString": "contract FathomToken"
+            },
+            "typeName": {
+              "contractScope": null,
+              "id": 1916,
+              "name": "FathomToken",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 2580,
+              "src": "345:11:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_FathomToken_$2580",
+                "typeString": "contract FathomToken"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 1919,
+            "name": "conceptRegistry",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "379:31:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_contract$_ConceptRegistry_$2262",
+              "typeString": "contract ConceptRegistry"
+            },
+            "typeName": {
+              "contractScope": null,
+              "id": 1918,
+              "name": "ConceptRegistry",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 2262,
+              "src": "379:15:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ConceptRegistry_$2262",
+                "typeString": "contract ConceptRegistry"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1921,
+            "name": "lifetime",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "414:20:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 1920,
+              "name": "uint",
+              "nodeType": "ElementaryTypeName",
+              "src": "414:4:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 1925,
+            "name": "assessmentExists",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "438:49:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+              "typeString": "mapping(address => bool)"
+            },
+            "typeName": {
+              "id": 1924,
+              "keyType": {
+                "id": 1922,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "447:7:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "438:25:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+                "typeString": "mapping(address => bool)"
+              },
+              "valueType": {
+                "id": 1923,
+                "name": "bool",
+                "nodeType": "ElementaryTypeName",
+                "src": "458:4:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                }
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 1928,
+            "name": "propagationRates",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "492:23:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_array$_t_uint256_$dyn_storage",
+              "typeString": "uint256[]"
+            },
+            "typeName": {
+              "baseType": {
+                "id": 1926,
+                "name": "uint",
+                "nodeType": "ElementaryTypeName",
+                "src": "492:4:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                }
+              },
+              "id": 1927,
+              "length": null,
+              "nodeType": "ArrayTypeName",
+              "src": "492:6:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                "typeString": "uint256[]"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1931,
+            "name": "availableMembers",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "520:33:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_array$_t_address_$dyn_storage",
+              "typeString": "address[]"
+            },
+            "typeName": {
+              "baseType": {
+                "id": 1929,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "520:7:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "id": 1930,
+              "length": null,
+              "nodeType": "ArrayTypeName",
+              "src": "520:9:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                "typeString": "address[]"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 1935,
+            "name": "memberData",
+            "nodeType": "VariableDeclaration",
+            "scope": 1953,
+            "src": "557:49:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1947_storage_$",
+              "typeString": "mapping(address => struct ConceptData.MemberData)"
+            },
+            "typeName": {
+              "id": 1934,
+              "keyType": {
+                "id": 1932,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "566:7:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "557:31:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1947_storage_$",
+                "typeString": "mapping(address => struct ConceptData.MemberData)"
+              },
+              "valueType": {
+                "contractScope": null,
+                "id": 1933,
+                "name": "MemberData",
+                "nodeType": "UserDefinedTypeName",
+                "referencedDeclaration": 1947,
+                "src": "577:10:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_struct$_MemberData_$1947_storage_ptr",
+                  "typeString": "struct ConceptData.MemberData"
+                }
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "ConceptData.MemberData",
+            "id": 1947,
+            "members": [
+              {
+                "constant": false,
+                "id": 1937,
+                "name": "recentAssessment",
+                "nodeType": "VariableDeclaration",
+                "scope": 1947,
+                "src": "635:24:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 1936,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "635:7:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 1939,
+                "name": "index",
+                "nodeType": "VariableDeclaration",
+                "scope": 1947,
+                "src": "665:10:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 1938,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "665:4:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 1942,
+                "name": "weights",
+                "nodeType": "VariableDeclaration",
+                "scope": 1947,
+                "src": "681:25:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1952_storage_$dyn_storage_ptr",
+                  "typeString": "struct ConceptData.ComponentWeight[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "contractScope": null,
+                    "id": 1940,
+                    "name": "ComponentWeight",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 1952,
+                    "src": "681:15:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_ComponentWeight_$1952_storage_ptr",
+                      "typeString": "struct ConceptData.ComponentWeight"
+                    }
+                  },
+                  "id": 1941,
+                  "length": null,
+                  "nodeType": "ArrayTypeName",
+                  "src": "681:17:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1952_storage_$dyn_storage_ptr",
+                    "typeString": "struct ConceptData.ComponentWeight[]"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 1946,
+                "name": "componentWeightIndex",
+                "nodeType": "VariableDeclaration",
+                "scope": 1947,
+                "src": "712:45:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_mapping$_t_address_$_t_uint256_$",
+                  "typeString": "mapping(address => uint256)"
+                },
+                "typeName": {
+                  "id": 1945,
+                  "keyType": {
+                    "id": 1943,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "720:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "nodeType": "Mapping",
+                  "src": "712:24:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_mapping$_t_address_$_t_uint256_$",
+                    "typeString": "mapping(address => uint256)"
+                  },
+                  "valueType": {
+                    "id": 1944,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "731:4:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "MemberData",
+            "nodeType": "StructDefinition",
+            "scope": 1953,
+            "src": "611:151:4",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "ConceptData.ComponentWeight",
+            "id": 1952,
+            "members": [
+              {
+                "constant": false,
+                "id": 1949,
+                "name": "weight",
+                "nodeType": "VariableDeclaration",
+                "scope": 1952,
+                "src": "795:11:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 1948,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "795:4:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 1951,
+                "name": "date",
+                "nodeType": "VariableDeclaration",
+                "scope": 1952,
+                "src": "812:9:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 1950,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "812:4:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "ComponentWeight",
+            "nodeType": "StructDefinition",
+            "scope": 1953,
+            "src": "766:60:4",
+            "visibility": "public"
+          }
+        ],
+        "scope": 2001,
+        "src": "157:671:4"
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 1954,
+              "name": "ProxyData",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 3161,
+              "src": "862:9:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ProxyData_$3161",
+                "typeString": "contract ProxyData"
+              }
+            },
+            "id": 1955,
+            "nodeType": "InheritanceSpecifier",
+            "src": "862:9:4"
+          }
+        ],
+        "contractDependencies": [
+          3161
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 2000,
+        "linearizedBaseContracts": [
+          2000,
+          3161
+        ],
+        "name": "ConceptDataInternal",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 1958,
+            "name": "parents",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "876:26:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_array$_t_address_$dyn_storage",
+              "typeString": "address[]"
+            },
+            "typeName": {
+              "baseType": {
+                "id": 1956,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "876:7:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "id": 1957,
+              "length": null,
+              "nodeType": "ArrayTypeName",
+              "src": "876:9:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                "typeString": "address[]"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1960,
+            "name": "data",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "983:19:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_bytes_storage",
+              "typeString": "bytes"
+            },
+            "typeName": {
+              "id": 1959,
+              "name": "bytes",
+              "nodeType": "ElementaryTypeName",
+              "src": "983:5:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_bytes_storage_ptr",
+                "typeString": "bytes"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1962,
+            "name": "owner",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "1006:22:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 1961,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "1006:7:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1964,
+            "name": "fathomToken",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "1032:32:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_contract$_FathomToken_$2580",
+              "typeString": "contract FathomToken"
+            },
+            "typeName": {
+              "contractScope": null,
+              "id": 1963,
+              "name": "FathomToken",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 2580,
+              "src": "1032:11:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_FathomToken_$2580",
+                "typeString": "contract FathomToken"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1966,
+            "name": "conceptRegistry",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "1068:40:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_contract$_ConceptRegistry_$2262",
+              "typeString": "contract ConceptRegistry"
+            },
+            "typeName": {
+              "contractScope": null,
+              "id": 1965,
+              "name": "ConceptRegistry",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 2262,
+              "src": "1068:15:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ConceptRegistry_$2262",
+                "typeString": "contract ConceptRegistry"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1968,
+            "name": "lifetime",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "1112:22:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 1967,
+              "name": "uint",
+              "nodeType": "ElementaryTypeName",
+              "src": "1112:4:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1972,
+            "name": "assessmentExists",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "1138:51:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+              "typeString": "mapping(address => bool)"
+            },
+            "typeName": {
+              "id": 1971,
+              "keyType": {
+                "id": 1969,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "1147:7:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "1138:25:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
+                "typeString": "mapping(address => bool)"
+              },
+              "valueType": {
+                "id": 1970,
+                "name": "bool",
+                "nodeType": "ElementaryTypeName",
+                "src": "1158:4:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                }
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1975,
+            "name": "propagationRates",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "1194:32:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_array$_t_uint256_$dyn_storage",
+              "typeString": "uint256[]"
+            },
+            "typeName": {
+              "baseType": {
+                "id": 1973,
+                "name": "uint",
+                "nodeType": "ElementaryTypeName",
+                "src": "1194:4:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                }
+              },
+              "id": 1974,
+              "length": null,
+              "nodeType": "ArrayTypeName",
+              "src": "1194:6:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                "typeString": "uint256[]"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1978,
+            "name": "availableMembers",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "1231:35:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_array$_t_address_$dyn_storage",
+              "typeString": "address[]"
+            },
+            "typeName": {
+              "baseType": {
+                "id": 1976,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "1231:7:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "id": 1977,
+              "length": null,
+              "nodeType": "ArrayTypeName",
+              "src": "1231:9:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                "typeString": "address[]"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 1982,
+            "name": "memberData",
+            "nodeType": "VariableDeclaration",
+            "scope": 2000,
+            "src": "1270:51:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1994_storage_$",
+              "typeString": "mapping(address => struct ConceptDataInternal.MemberData)"
+            },
+            "typeName": {
+              "id": 1981,
+              "keyType": {
+                "id": 1979,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "1279:7:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "1270:31:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_MemberData_$1994_storage_$",
+                "typeString": "mapping(address => struct ConceptDataInternal.MemberData)"
+              },
+              "valueType": {
+                "contractScope": null,
+                "id": 1980,
+                "name": "MemberData",
+                "nodeType": "UserDefinedTypeName",
+                "referencedDeclaration": 1994,
+                "src": "1290:10:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_struct$_MemberData_$1994_storage_ptr",
+                  "typeString": "struct ConceptDataInternal.MemberData"
+                }
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "canonicalName": "ConceptDataInternal.MemberData",
+            "id": 1994,
+            "members": [
+              {
+                "constant": false,
+                "id": 1984,
+                "name": "recentAssessment",
+                "nodeType": "VariableDeclaration",
+                "scope": 1994,
+                "src": "1350:24:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 1983,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1350:7:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 1986,
+                "name": "index",
+                "nodeType": "VariableDeclaration",
+                "scope": 1994,
+                "src": "1380:10:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 1985,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1380:4:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 1989,
+                "name": "weights",
+                "nodeType": "VariableDeclaration",
+                "scope": 1994,
+                "src": "1396:25:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1999_storage_$dyn_storage_ptr",
+                  "typeString": "struct ConceptDataInternal.ComponentWeight[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "contractScope": null,
+                    "id": 1987,
+                    "name": "ComponentWeight",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 1999,
+                    "src": "1396:15:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_ComponentWeight_$1999_storage_ptr",
+                      "typeString": "struct ConceptDataInternal.ComponentWeight"
+                    }
+                  },
+                  "id": 1988,
+                  "length": null,
+                  "nodeType": "ArrayTypeName",
+                  "src": "1396:17:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_struct$_ComponentWeight_$1999_storage_$dyn_storage_ptr",
+                    "typeString": "struct ConceptDataInternal.ComponentWeight[]"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 1993,
+                "name": "componentWeightIndex",
+                "nodeType": "VariableDeclaration",
+                "scope": 1994,
+                "src": "1427:45:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_mapping$_t_address_$_t_uint256_$",
+                  "typeString": "mapping(address => uint256)"
+                },
+                "typeName": {
+                  "id": 1992,
+                  "keyType": {
+                    "id": 1990,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1435:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "nodeType": "Mapping",
+                  "src": "1427:24:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_mapping$_t_address_$_t_uint256_$",
+                    "typeString": "mapping(address => uint256)"
+                  },
+                  "valueType": {
+                    "id": 1991,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1446:4:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "MemberData",
+            "nodeType": "StructDefinition",
+            "scope": 2000,
+            "src": "1326:151:4",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "ConceptDataInternal.ComponentWeight",
+            "id": 1999,
+            "members": [
+              {
+                "constant": false,
+                "id": 1996,
+                "name": "weight",
+                "nodeType": "VariableDeclaration",
+                "scope": 1999,
+                "src": "1510:11:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 1995,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1510:4:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 1998,
+                "name": "date",
+                "nodeType": "VariableDeclaration",
+                "scope": 1999,
+                "src": "1527:9:4",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 1997,
+                  "name": "uint",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1527:4:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "ComponentWeight",
+            "nodeType": "StructDefinition",
+            "scope": 2000,
+            "src": "1481:62:4",
+            "visibility": "public"
+          }
+        ],
+        "scope": 2001,
+        "src": "830:715:4"
+      }
+    ],
+    "src": "0:1546:4"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.24+commit.e67f0147.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "2.0.1",
+  "updatedAt": "2018-08-08T13:16:37.906Z"
+}

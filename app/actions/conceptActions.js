@@ -84,7 +84,6 @@ export function loadConceptContractAndCreateAssessment (address, cost, callback)
 
 // estimate the gas of the transaction above
 export function estimateAssessmentCreationGasCost (address, cost, cllbck) {
-  // TODO handle the case where cost===0 (that throws an exception)
   return async (dispatch, getState) => {
     // instanciate Concept Contract
     let userAddress = getState().ethereum.userAddress
