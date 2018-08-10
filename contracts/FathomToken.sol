@@ -51,7 +51,7 @@ contract FathomToken is StandardToken{
         if(msg.sender != _concept) require(Concept(_concept).assessmentExists(msg.sender));
 
         require(balances[_from] >= _amount
-                && balances[_to] + _amount > balances[_to]);
+                && balances[_to] + _amount >= balances[_to]);
         balances[_from] -= _amount;
         balances[_to] += _amount;
         emit Transfer(_from, _to, _amount);

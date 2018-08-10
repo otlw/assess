@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 import { StageDisplayNames, Stage } from '../constants.js'
 
-export class AssessmentItem extends Component {
+export class AssessmentCard extends Component {
   render () {
     const assessment = this.props.assessment
     let userStage = assessment.userStage
@@ -47,7 +47,7 @@ export class AssessmentItem extends Component {
         h(cardContainerInfo, [
           h(cardTextObject, [
             h(cardTextTitle, 'Assessment'),
-            h(ConceptName, assessment.conceptData)
+            h(ConceptName, assessment.conceptData.name)
           ]),
           h(cardTextObject, [
             h(cardLabel, 'Assessee'),
@@ -75,7 +75,7 @@ export class AssessmentItem extends Component {
   }
 }
 
-export default AssessmentItem
+export default AssessmentCard
 
 // styles
 const cardContainer = styled('div').attrs({

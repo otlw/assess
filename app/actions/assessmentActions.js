@@ -1,6 +1,6 @@
 import { getInstance, convertFromOnChainScoreToUIScore } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
-import { receiveVariable } from './web3Actions.js'
+import { receiveVariable, fetchUserBalance } from './web3Actions.js'
 import { Stage, LoadingStage, NotificationTopic } from '../constants.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
@@ -12,6 +12,10 @@ export const SET_ASSESSMENT_AS_INVALID = 'SET_ASSESSMENT_AS_INVALID'
 export const UPDATE_ASSESSMENT_VARIABLE = 'UPDATE_ASSESSMENT_VARIABLE'
 
 const ethereumjsABI = require('ethereumjs-abi')
+
+// setup ipfs api
+const ipfsAPI = require('ipfs-api')
+const ipfs = ipfsAPI('ipfs.infura.io', '5001', {protocol: 'https'})
 
 export function hashScoreAndSalt (_score, _salt) {
   return '0x' + ethereumjsABI.soliditySHA3(
@@ -173,8 +177,27 @@ export function fetchAssessmentData (address) {
       let conceptInstance = getInstance.concept(getState(), conceptAddress)
       let stage = Number(await assessmentInstance.methods.assessmentStage().call())
 
+      // handle concept data
+
       let conceptDataHex = await conceptInstance.methods.data().call()
-      let conceptData = Buffer.from(conceptDataHex.slice(2), 'hex').toString('utf8')
+      let decodedConceptDataHash = Buffer.from(conceptDataHex.slice(2), 'hex').toString('utf8')
+      let decodedConceptData
+
+      // retrieve JSON from IPFS if the concept data is an IPFS hash
+      if (decodedConceptDataHash.substring(0, 2) === 'Qm') {
+        // verify that description is correctly stord and log it
+        let resp = await ipfs.get(decodedConceptDataHash)
+        decodedConceptData = resp[0].content.toString()
+
+        // parse JSON
+        decodedConceptData = JSON.parse(decodedConceptData)
+      } else {
+        // if no ipfs hash, just use data string decodedConceptDataHash
+        decodedConceptData = {
+          name: decodedConceptDataHash,
+          description: decodedConceptDataHash
+        }
+      }
 
       // Dynamic Info
       let done = Number(await assessmentInstance.methods.done().call())
@@ -220,7 +243,7 @@ export function fetchAssessmentData (address) {
         size,
         assessee,
         conceptAddress,
-        conceptData,
+        conceptData: decodedConceptData,
         finalScore,
         data,
         assessors,
@@ -299,11 +322,17 @@ export function processEvent (user, sender, topic) {
     let isUser = user === userAddress
     switch (topic) {
       case NotificationTopic.AssessmentCreated:
+        dispatch(fetchUserBalance())
+        dispatch(fetchAssessmentData(sender))
+        break
       case NotificationTopic.CalledAsAssessor:
         dispatch(fetchAssessmentData(sender))
         break
       case NotificationTopic.ConfirmedAsAssessor:
-        if (isUser) dispatch(fetchUserStage(sender))
+        if (isUser) {
+          dispatch(fetchUserStage(sender))
+          dispatch(fetchUserBalance())
+        }
         dispatch(receiveAssessor(sender, user))
         break
       case NotificationTopic.AssessmentStarted:
@@ -325,6 +354,7 @@ export function processEvent (user, sender, topic) {
           dispatch(fetchUserStage(sender))
           dispatch(fetchPayout(sender, user))
           dispatch(fetchFinalScore(sender, user))
+          dispatch(fetchUserBalance())
         }
         break
       default:
