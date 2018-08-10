@@ -2,7 +2,7 @@ import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
-import { StageDisplayNames, Stage } from '../constants.js'
+import { StageDisplayNames, Stage, TimeOutReasons, CompletedStages } from '../constants.js'
 
 export class AssessmentCard extends Component {
   render () {
@@ -18,27 +18,42 @@ export class AssessmentCard extends Component {
 
     let actionRequired = stage === userStage
     let nOtherAssessorsToBeActive = assessment.size - assessment.done - (actionRequired ? 1 : 0)
-    let status = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[stage]
-
-    if (stage < userStage) {
+    let status
+    // see if assessment is in an timed-out state because somebody didn't respect the timelimits
+    if (assessment.violation) {
+      // TODO figure out whether the user or another assessor was at fault and adjust refund message
+      status = 'Sorry, the assessment failed because'
+      if (assessment.violation === TimeOutReasons.NotEnoughAssessors) {
+        status += 'less than 5 assessors staked.'
+      }
+      if (assessment.violation === TimeOutReasons.NotEnoughCommits) {
+        status += 'X assessors didn\'t commit in time.' //TODO figure out X
+      } else {
+        status += 'X assessors did not reveal their scores.'
+      }
+    } else {
+      // all good -> describe active assessment status
+      status = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[stage]
+    }
+    // override with passive status if user is done already
+    if (!actionRequired) {
       status = 'Waiting...'
+    // if in stage finished -> set score/payout
     } else if (stage === Stage.Done) {
-      // if assessment stage is finished, set good message (an assessee would have userStage===0)
-      // display score for assessee and payout for assessor
+      // user = assessors -> display Payout
       if (!isAssessee) {
         let gain = this.props.assessment.payout - this.props.assessment.cost
         status = h('div', [
           h('div', 'Payout :'),
           h('div', (gain >= 0 ? '+' : '-') + gain.toString() + ' AHA')
         ])
+      // user is assessee -> display score
       } else {
         status = h('div', [
           h('div', 'Score :'),
           h('div', assessment.finalScore + ' %')
         ])
       }
-    } else if (stage === Stage.Burned) {
-      status = 'Canceled'
     }
 
     /* start styling below */
@@ -56,10 +71,10 @@ export class AssessmentCard extends Component {
         ]),
         h(cardContainerStatus, [
           h(cardContainerProgressBar, [
-            h(stage > 0 ? cardProgressBarObjectComplete : (stage === 0 || stage === 1) ? cardProgressBarObjectActive : cardProgressBarObjectInactive),
-            h(stage > 1 ? cardProgressBarObjectComplete : stage === 2 ? cardProgressBarObjectActive : cardProgressBarObjectInactive),
-            h(stage > 2 ? cardProgressBarObjectComplete : stage === 3 ? cardProgressBarObjectActive : cardProgressBarObjectInactive),
-            h(stage > 3 ? cardProgressBarObjectComplete : stage === 4 ? cardProgressBarObjectActive : cardProgressBarObjectInactive)
+            progressButton(stage, Stage.Called, actionRequired, assessment.violation || false),
+            progressButton(stage, Stage.Confirmed, actionRequired, assessment.violation || false),
+            progressButton(stage, Stage.Committed, actionRequired, assessment.violation || false),
+            progressButton(stage, Stage.Done, actionRequired, assessment.violation || false),
           ]),
           h(cardTextStatus, [
             h(cardLabel, 'Status'),
@@ -67,11 +82,38 @@ export class AssessmentCard extends Component {
           ]),
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
             h(cardButtonSecondary, 'Hide'),
-            h(cardButtonPrimary, { to: '/assessment/' + assessment.address }, StageDisplayNames[stage])
+            // TODO: use differently colored button when action is not required
+            h(cardButtonPrimary, { to: '/assessment/' + assessment.address }, actionRequired ? StageDisplayNames[stage] : CompletedStages[stage])
           ])
         ])
       ])
     )
+  }
+}
+
+function progressButton (assessmentStage, phase, actionRequired, violation) {
+  // check whether the assessment was aborted
+  if (violation === TimeOutReasons.NotEnoughCommits && assessmentStage === Stage.Called) {
+    return h(cardProgressBarObjectFailed)
+  } else if (violation === TimeOutReasons.NotEnoughCommits && assessmentStage === Stage.Confirmed) {
+    return h(cardProgressBarObjectFailed)
+  } else if (violation === TimeOutReasons.NotEnoughReveals && assessmentStage === Stage.Committed) {
+    return h(cardProgressBarObjectFailed)
+  }
+  // it was not! see whether the phase has been completed
+  if (assessmentStage > phase || assessmentStage === Stage.Done) {
+    return h(cardProgressBarObjectComplete)
+  }
+  // whether the stage is still ongoing
+  if (assessmentStage === phase && actionRequired) {
+    // and requires user input
+    return h(cardProgressBarObjectActive)
+    // or whether the stage is the last one -> no user action required
+  } else if (assessmentStage === Stage.Done) {
+    return h(cardProgressBarObjectComplete)
+  } else {
+    // the phase is on, but the user must no longer do anything
+    return h(cardProgressBarObjectInactive)
   }
 }
 
@@ -141,6 +183,11 @@ const cardProgressBarObjectActive = styled('div').attrs({
 const cardProgressBarObjectComplete = styled('div').attrs({
   className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
 })`width: 20px; height: 20px; background-color: #52CC91;
+`
+
+const cardProgressBarObjectFailed = styled('div').attrs({
+  className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
+})`width: 20px; height: 20px; background-color: #ff0000;
 `
 
 const cardTextStatusMsg = styled('div').attrs({

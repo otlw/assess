@@ -1,7 +1,7 @@
 import { getInstance, convertFromOnChainScoreToUIScore } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
 import { receiveVariable, fetchUserBalance } from './web3Actions.js'
-import { Stage, LoadingStage, NotificationTopic } from '../constants.js'
+import { Stage, LoadingStage, NotificationTopic, TimeOutReasons } from '../constants.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const REMOVE_ASSESSMENT = 'REMOVE_ASSESSMENT'
@@ -177,8 +177,23 @@ export function fetchAssessmentData (address) {
       let conceptInstance = getInstance.concept(getState(), conceptAddress)
       let stage = Number(await assessmentInstance.methods.assessmentStage().call())
 
-      // handle concept data
+      // see if assessment on track (not over timelimit)
+      let violation
+      switch (stage) {
+        case Stage.Called:
+          if (Date.now() > checkpoint) { violation = TimeOutReasons.NotEnoughAssessors }
+          break
+        case Stage.Confirmed:
+          if (Date.now() > endTime) { violation = TimeOutReasons.NotEnoughCommits }
+          break
+        case Stage.Committed:
+          if (Date.now() > endTime + 24 * 60 * 60) { violation = TimeOutReasons.NotEnoughReveals }
+          break
+        default:
+          violation = ''
+      }
 
+      // handle concept data
       let conceptDataHex = await conceptInstance.methods.data().call()
       let decodedConceptDataHash = Buffer.from(conceptDataHex.slice(2), 'hex').toString('utf8')
       let decodedConceptData
@@ -237,6 +252,7 @@ export function fetchAssessmentData (address) {
         cost,
         checkpoint,
         stage,
+        violation,
         userStage,
         endTime,
         done,

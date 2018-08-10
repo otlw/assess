@@ -7,6 +7,15 @@ export const StageDisplayNames = Object.freeze({
   5: 'Burned'
 })
 
+export const CompletedStages = Object.freeze({
+  0: 'Open',
+  1: 'Staked',
+  2: 'Committed',
+  3: 'Revealed',
+  4: 'Completed',
+  5: 'Burned'
+})
+
 export const Stage = Object.freeze({
   None: 0,
   Called: 1,
@@ -47,4 +56,10 @@ export const NotificationTopic = Object.freeze({
   RevealScore: 5,
   TokensPaidOut: 6,
   AssessmentFinished: 7
+})
+
+export const TimeOutReasons = Object.freeze({
+  0: 'NotEnoughAssessors',
+  1: 'NotEnoughCommits',
+  2: 'NotEnoughReveals'
 })
