@@ -7,7 +7,7 @@ export const cardCredential = (props) => {
       h(credentialContainerInfo, [
         h(credentialObjectText, [
           h(credentialLabel, 'Credential'),
-          h(credentialTitleText, props.assessment.conceptData),
+          h(credentialTitleText, props.assessment.conceptData.name),
           h(credentialLabel, 'Awarded To You')
         ]),
         h(credentialDecoCircleSmall),

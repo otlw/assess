@@ -31,7 +31,7 @@ module.exports = function (deployer) {
     let initialFundedAccount = (await new Promise(resolve => {
       web3.eth.getAccounts((err, accounts) => resolve(accounts[0]))
     }))
-    let initialAmount = 10000000000 * (accounts.length)
+    let initialAmount = 100000000000 * (accounts.length)
     await deployer.deploy(
       FathomToken,
       ConceptRegistry.address,

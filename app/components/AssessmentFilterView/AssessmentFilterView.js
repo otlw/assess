@@ -1,5 +1,5 @@
 import AssessmentList from '../AssessmentList'
-import AssessmentItem from '../AssessmentItem.js'
+import AssessmentCard from '../AssessmentCard.js'
 import { Stage } from '../../constants.js'
 import h from 'react-hyperscript'
 
@@ -24,7 +24,7 @@ export const AssessmentFilterView = (props) => {
   // return view
   return h('div', Object.keys(assessmentLists).map((key, index) => {
     return h(AssessmentList, {
-      assessmentCard: AssessmentItem,
+      assessmentCard: AssessmentCard,
       assessments: assessmentLists[key],
       name: key,
       userAddress: userAddress,

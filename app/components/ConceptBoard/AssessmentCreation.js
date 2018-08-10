@@ -12,13 +12,13 @@ export class AssessmentCreation extends Component {
     super(props)
     this.state = {
       step: 1,
-      amountPerAssessor: 5, // TODO set defualt value to 0 once bug is resolved (#277)
+      amountPerAssessor: 1, // TODO set defualt value to 0 once bug is resolved (#277)
       gasEstimate: 0
     }
   }
 
   setAmountPerAssessor (e) {
-    this.setState({amountPerAssessor: e.target.value})
+    this.setState({amountPerAssessor: Math.round(e.target.value)})
   }
 
   cancelButton () {
@@ -85,7 +85,7 @@ export class AssessmentCreation extends Component {
                   value: this.state.amountPerAssessor,
                   type: 'number',
                   step: 1,
-                  min: 1
+                  min: 0
                 }),
                 h(AHAUnit, 'AHA')
               ])
@@ -174,7 +174,7 @@ export class AssessmentCreation extends Component {
       h(ConceptCreationCardFrame, [
         h(ConceptTitleBox, [
           h(TitleCaption, 'CONCEPT'),
-          h(ConceptTitle, this.props.conceptName)
+          h(ConceptTitle, this.props.conceptData.name)
         ]),
         BottomPartContent
       ]),
@@ -246,7 +246,7 @@ const ButtonCaptionBox = styled('div').attrs({className: 'flex justify-between f
 
 const ButtonGroup = styled('div').attrs({className: 'flex flex-row justify-between br1 ba b--mid-gray pv1 ph3 f4'})`
 `
-const AmountPerAssessor = styled('input').attrs({className: 'flex w-25 tl pa1 bn '})`
+const AmountPerAssessor = styled('input').attrs({className: 'flex w-40 tl pa1 bn '})`
 `
 const AHAUnit = styled('div').attrs({className: 'mid-gray'})`
 `

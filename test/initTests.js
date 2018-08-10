@@ -72,12 +72,12 @@ contract('ConceptRegistry', function () {
 })
 
 contract('Initial User', function (accounts) {
-  it('should have a balance of 10000000000', async () => {
+  it('should have a balance of 100000000000', async () => {
     aha = await FathomToken.deployed()
-    balance = await aha.balanceOf.call(accounts[0])
-    assert.equal(balance.toNumber(), 10000000000, 'User0 does not have 10 billion Ahas')
+    let balance = await aha.balanceOf.call(accounts[0])
+    assert.equal(balance.toNumber(), 100000000000, 'User0 does not have 10 billion Ahas')
     balance = await aha.balanceOf.call(accounts[4])
-    assert.equal(balance.toNumber(), 10000000000, 'User4 does not have 10 billion Ahas')
+    assert.equal(balance.toNumber(), 100000000000, 'User4 does not have 10 billion Ahas')
   })
 })
 
