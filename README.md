@@ -15,7 +15,7 @@ Install all dependencies:
 Make sure your Metamask is set to the kovan or rinkeby testnet, then serve the
 frontend by running
 
-> npm run serve
+> npm run dev
 
 Developing
 ========
@@ -30,11 +30,11 @@ Developing
 
 > ganache-cli -m 'your twelve seed words should be here in bla bla blub'
 
-3) Change into the fathom-contracts module
+3) Change into the fathom-contracts module folder
 
 > cd ./node_modules/fathom-contracts
 
-4) Deploy the contracts 
+4) From there, deploy the contracts 
 
 > truffle migrate --reset
 
