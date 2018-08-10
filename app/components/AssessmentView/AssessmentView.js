@@ -3,6 +3,7 @@ import MeetingPointEditBox from './MeetingPoint/'
 import AssessorList from './AssessorList.js'
 import ProgressAndInputBar from './ProgressAndInputBar'
 import FinalResultBar from './FinalResultBar.js'
+import FailedBar from './FailedBar.js'
 import { StageDisplayNames, Stage } from '../../constants.js'
 import { convertDate } from '../../utils.js'
 // Do we still need this? -> import { ViewMeetingPoint } from './MeetingPoint/MeetingPointEditBox.js'
@@ -32,7 +33,7 @@ export class AssessmentData extends Component {
           h(assessmentRowSubHeader, [
             h(assessmentContainerStatus, [
               h(assessmentLabelBody, 'STATUS'),
-              h(assessmentTextBody, assessment.stage === Stage.Done ? 'Assessment Complete' : statusString)
+              h(assessmentTextBody, assessment.violation ? 'Failed' : assessment.stage === Stage.Done ? 'Assessment Complete' : statusString)
             ]),
             h(assessmentContainerDate, [
               h(assessmentLabelBody, assessment.stage === Stage.Done ? 'Completed on: ' : 'Due Date:'),
@@ -74,19 +75,28 @@ export class AssessmentData extends Component {
               ])
             ])
           ]),
-          // progress-button or FinalResultBor
+          // progress-button, FinalResultBor or FailureIndicator
           h(assessmentFooter, [
-            assessment.stage === Stage.Done
-              ? h(FinalResultBar, {
+            // if failed
+            assessment.violation
+              ? h(FailedBar, {
                 address: assessment.address,
                 userAddress: this.props.userAddress,
-                userStage: assessment.userStage,
-                assessee: assessment.assessee,
-                payout: assessment.payout,
-                finalScore: assessment.finalScore,
-                cost: assessment.cost
+                stage: assessment.stage
               })
-              : h(ProgressAndInputBar, {address: assessment.address})
+              // if completed
+              : assessment.stage === Stage.Done
+                ? h(FinalResultBar, {
+                  address: assessment.address,
+                  userAddress: this.props.userAddress,
+                  userStage: assessment.userStage,
+                  assessee: assessment.assessee,
+                  payout: assessment.payout,
+                  finalScore: assessment.finalScore,
+                  cost: assessment.cost
+                })
+                // regular ProgressBar
+                : h(ProgressAndInputBar, {address: assessment.address})
           ])
         ])
       )

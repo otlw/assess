@@ -88,6 +88,27 @@ export function storeDataOnAssessment (address, data) {
   }
 }
 
+// refunds the user & cancels the assessment by calling the stage-specific action
+// then updates the userStage & marks the assessment as refunded
+export function refund (address, stage) {
+  return async (dispatch, getState) => {
+    switch (stage) {
+      case Stage.Called:
+        dispatch(confirmAssessor(address))
+        break
+      case Stage.Confirmed:
+        dispatch(commit(address, 10, 'hihi'))
+        break
+      case Stage.Revealed:
+        dispatch(reveal(address, 10, 'hihi'))
+        break
+      default:
+        console.log('something went wrong with the refunding!!!')
+    }
+    dispatch(updateAssessmentVariable(address, 'refunded', true))
+  }
+}
+
 /*
   Called ONLY ONCE via the loading-hoc of FilterView-component.
   Fetches all data for all assessments (static, dynamic info & assessor-related info)
@@ -178,7 +199,7 @@ export function fetchAssessmentData (address) {
       let stage = Number(await assessmentInstance.methods.assessmentStage().call())
 
       // see if assessment on track (not over timelimit)
-      let violation
+      let violation = false
       switch (stage) {
         case Stage.Called:
           if (Date.now() > checkpoint) { violation = TimeOutReasons.NotEnoughAssessors }
@@ -190,7 +211,7 @@ export function fetchAssessmentData (address) {
           if (Date.now() > endTime + 24 * 60 * 60) { violation = TimeOutReasons.NotEnoughReveals }
           break
         default:
-          violation = ''
+          violation = false
       }
 
       // handle concept data

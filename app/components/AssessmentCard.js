@@ -27,7 +27,7 @@ export class AssessmentCard extends Component {
         status += 'less than 5 assessors staked.'
       }
       if (assessment.violation === TimeOutReasons.NotEnoughCommits) {
-        status += 'X assessors didn\'t commit in time.' //TODO figure out X
+        status += 'X assessors didn\'t commit in time.' // TODO figure out X
       } else {
         status += 'X assessors did not reveal their scores.'
       }
@@ -74,7 +74,7 @@ export class AssessmentCard extends Component {
             progressButton(stage, Stage.Called, actionRequired, assessment.violation || false),
             progressButton(stage, Stage.Confirmed, actionRequired, assessment.violation || false),
             progressButton(stage, Stage.Committed, actionRequired, assessment.violation || false),
-            progressButton(stage, Stage.Done, actionRequired, assessment.violation || false),
+            progressButton(stage, Stage.Done, actionRequired, assessment.violation || false)
           ]),
           h(cardTextStatus, [
             h(cardLabel, 'Status'),
