@@ -174,13 +174,11 @@ export class ProgressAndInputBar extends Component {
         return (
           h(containerProgressBar, [
             h(buttonClose, {onClick: this.closeInputBar.bind(this)}, 'X'),
-            h(rowObjectText, 'Add a meeting Point:'),
-            h('div', {style: {display: 'inline-block'}}, [
-              h(CommitInput, {
-                placeholder: 'e.g. a gitLab repo',
-                type: 'string',
-                onChange: this.setMeetingPointToBeStored.bind(this) })
-            ]),
+            h(rowObjectInput, 'Add a meeting Point:'),
+            h(inputMeetingPoint, {
+              placeholder: 'e.g. a GitLab repo',
+              type: 'string',
+              onChange: this.setMeetingPointToBeStored.bind(this) }),
             h(buttonSubmit, {onClick: this.storeData.bind(this)}, 'Submit')
           ])
         )
@@ -224,7 +222,11 @@ export const StageDescriptor = styled('div').attrs({className: 'flex w-100 items
 
 export const rowObjectText = styled('div').attrs({className: 'flex w-100 items-center justify-center pv2 bl br b--light-gray f5 gray ttu uppercase'})`;
 `
-export const buttonSubmit = styled('button').attrs({className: 'flex h-100 items-center justify-center pv3 bn ph4 bg-light-green pointer ttu uppercase f4 '})`
+
+export const rowObjectInput = styled('div').attrs({className: 'flex w-100 items-center justify-center pv2 b--light-gray f5 gray ttu uppercase'})`;
+`
+
+export const buttonSubmit = styled('button').attrs({className: 'flex h-100 items-center justify-center pv3 bn ph4 bg-light-green pointer ttu uppercase f5 '})`
 
 `
 
@@ -234,9 +236,6 @@ export const Feedback = styled.div`
   color:${props => props.invalidScoreRange ? 'red' : 'lightgrey'};
 `
 
-export const CommitInput = styled('input')`
-  display: inline-block;
-  padding: 0.25em 1em;
-  width: 400px;
-  border: 2px solid palevioletred;
+export const inputMeetingPoint = styled('input').attrs({className: 'flex w-100 h-100 ph2 bg-light-gray bn '})`
+outline: none;
 `
