@@ -39,10 +39,7 @@ let Stage = Object.freeze({
   reveal: 3
 })
 
-let conceptRegArtifact = require('../build/contracts/ConceptRegistry.json')
-let assessmentArtifact = require('../build/contracts/Assessment.json')
-let conceptArtifact = require('../build/contracts/Concept.json')
-let fathomTokenArtifact = require('../build/contracts/FathomToken.json')
+let {ConceptRegistry, Assessment, Concept, FathomToken} = require('fathom-contracts')
 
 let runUntil = Stage.reveal
 let conceptAddress
@@ -161,8 +158,8 @@ async function test () {
   // log deployed contracts
 
   // Instanciate Concept Registry
-  let conceptRegAddress = conceptRegArtifact.networks[net].address
-  conceptRegContract = await new web3.eth.Contract(conceptRegArtifact.abi, conceptRegAddress, {from: accounts[0]})
+  let conceptRegAddress = ConceptRegistry.networks[net].address
+  conceptRegContract = await new web3.eth.Contract(ConceptRegistry.abi, conceptRegAddress, {from: accounts[0]})
 
   let mewAddress = await conceptRegContract.methods.mewAddress().call()
 
@@ -176,7 +173,7 @@ async function test () {
     }
   } else if (assessmentAddress) {
     // check whether the given assessment adddress is from a valid concept
-    assessmentContract = await new web3.eth.Contract(assessmentArtifact.abi, assessmentAddress, {from: accounts[0]})
+    assessmentContract = await new web3.eth.Contract(Assessment.abi, assessmentAddress, {from: accounts[0]})
     conceptAddress = await assessmentContract.methods.concept().call()
     if (await conceptRegContract.methods.conceptExists(conceptAddress).call()) {
       console.log('using assessment at ', assessmentAddress)
@@ -203,7 +200,7 @@ async function test () {
   }
 
   // Create assessments on concept
-  conceptContract = await new web3.eth.Contract(conceptArtifact.abi, conceptAddress, {from: accounts[0]})
+  conceptContract = await new web3.eth.Contract(Concept.abi, conceptAddress, {from: accounts[0]})
   if (createAssessment) {
     // define constants for assessments
     console.log('Creating assessment....')
@@ -215,14 +212,14 @@ async function test () {
     // create an assessment on concept
     await conceptContract.methods.makeAssessment(cost, size, startTime, endTime).send({from: assessee, gas: 3200000})
     // use token events to get assessment address
-    fathomTokenContract = await new web3.eth.Contract(fathomTokenArtifact.abi, fathomTokenArtifact.networks[net].address, {from: accounts[0]})
+    fathomTokenContract = await new web3.eth.Contract(FathomToken.abi, FathomToken.networks[net].address, {from: accounts[0]})
     let events = await fathomTokenContract.getPastEvents({fromBlock: 0, toBlock: 'latest'})
     assessmentAddress = events[events.length - 1].returnValues.sender
     console.log('New assessment with size', size, 'and cost', cost, ' created at address: ' + assessmentAddress)
   }
 
   // run assessment
-  assessmentContract = await new web3.eth.Contract(assessmentArtifact.abi, assessmentAddress, {from: accounts[0]})
+  assessmentContract = await new web3.eth.Contract(Assessment.abi, assessmentAddress, {from: accounts[0]})
   // console.log('assessmentContract ', assessmentContract )
   let assessors = accounts.slice(1, size + 1)
 

@@ -16,26 +16,13 @@ lint:
   stage: prebuild
   script: npm run lint
 
-compile:
-  stage: prebuild
-  script: npm run compile
-  artifacts:
-    paths:
-      - build
-
 webPackBuild:
   stage: build
   script:
-    - bash scripts/loadDeployment.sh
     - npm run build
   artifacts:
     paths:
       - dist
-
-runTests:
-  stage: build
-  script:
-    - npm test
 
 pages:
   stage: deploy
