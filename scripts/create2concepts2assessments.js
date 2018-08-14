@@ -6,9 +6,7 @@
 // the development network deployed by ganache-cli):
 // Example: 'node create2concepts2assessments.js rinkeby'
 
-let conceptRegArtifact = require('../build/contracts/ConceptRegistry.json')
-let conceptArtifact = require('../build/contracts/Concept.json')
-let fathomTokenArtifact = require('../build/contracts/FathomToken.json')
+let {ConceptRegistry, Concept, FathomToken} = require('fathom-contracts')
 
 let conceptRegContract
 let fathomTokenContract
@@ -28,11 +26,11 @@ async function create () {
 
   // detect network and declare variables accordingly
   if (network === 'rinkeby') {
-    let truffleConfig = await require('../truffle.js')
-    provider = await truffleConfig.networks.rinkeby.provider
+    let truffleConfig = await require('../node-modules/fathom-contracts/truffle.js')
+    provider = await truffleConfig.networks.rinkeby.provider()
   } else if (network === 'kovan') {
-    let truffleConfig = await require('../truffle.js')
-    provider = await truffleConfig.networks.kovan.provider
+    let truffleConfig = await require('../node-modules/fathom-contracts/truffle.js')
+    provider = await truffleConfig.networks.kovan.provider()
   } else {
     // use Ganache by default (last deployed contract version)
     provider = 'http://localhost:8545'
@@ -57,15 +55,15 @@ async function create () {
   console.log(net)
   // log deployed contracts
   console.log('-- deployed version of concept reg on different networks -- :')
-  console.log(conceptRegArtifact.networks)
+  console.log(ConceptRegistry.networks)
 
   console.log('\n### -- 2. Instanciate Concept Registry -- ###\n')
 
   // set contract address from ABI
-  let conceptRegAddress = conceptRegArtifact.networks[net].address
+  let conceptRegAddress = ConceptRegistry.networks[net].address
   console.log('Concept registery Address is : ' + conceptRegAddress)
   // instantiate contracts
-  conceptRegContract = await new web3.eth.Contract(conceptRegArtifact.abi, conceptRegAddress, {from: accounts[0]})
+  conceptRegContract = await new web3.eth.Contract(ConceptRegistry.abi, conceptRegAddress, {from: accounts[0]})
 
   let mewAddress = await conceptRegContract.methods.mewAddress().call()
   console.log('MEW address is :')
@@ -81,7 +79,7 @@ async function create () {
   // use the tx to get deployed concept address
   let concept1Address = txResultConcept1.events.ConceptCreation.returnValues._concept
   console.log('New concept created as child of mew concept at ' + concept1Address)
-  let conceptContract1 = await new web3.eth.Contract(conceptArtifact.abi, concept1Address, {from: accounts[0]})
+  let conceptContract1 = await new web3.eth.Contract(Concept.abi, concept1Address, {from: accounts[0]})
   console.log('Concept1 instantiated')
 
   // deploy a second concept
@@ -92,7 +90,7 @@ async function create () {
   // use the tx to get deployed concept address
   let concept2Address = txResultConcept2.events.ConceptCreation.returnValues._concept
   console.log('New concept created as child of mew concept at ' + concept2Address)
-  let conceptContract2 = await new web3.eth.Contract(conceptArtifact.abi, concept2Address, {from: accounts[0]})
+  let conceptContract2 = await new web3.eth.Contract(Concept.abi, concept2Address, {from: accounts[0]})
   console.log('Concept2 instantiated')
 
   console.log('\n### -- 4. List Concepts created from this Registry -- ###\n')
@@ -114,7 +112,7 @@ async function create () {
   const assesseeAddress = accounts[0]
 
   // check balance of assessee
-  fathomTokenContract = await new web3.eth.Contract(fathomTokenArtifact.abi, fathomTokenArtifact.networks[net].address, {from: assesseeAddress})
+  fathomTokenContract = await new web3.eth.Contract(FathomToken.abi, FathomToken.networks[net].address, {from: assesseeAddress})
   let assesseeInitialBalance = await fathomTokenContract.methods.balanceOf(assesseeAddress).call()
   console.log('Account is : ' + assesseeAddress)
   console.log('Assessee initial AHA balance ' + Number(assesseeInitialBalance))
