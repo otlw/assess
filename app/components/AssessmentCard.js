@@ -20,16 +20,17 @@ export class AssessmentCard extends Component {
     let nOtherAssessorsToBeActive = assessment.size - assessment.done - (actionRequired ? 1 : 0)
     let status
     // see if assessment is in an timed-out state because somebody didn't respect the timelimits
+    // console.log('vio', assessment.violation)
     if (assessment.violation) {
       // TODO figure out whether the user or another assessor was at fault and adjust refund message
-      status = 'Sorry, the assessment failed because'
+      status = 'Sorry, the assessment failed because ' + (assessment.size - assessment.done).toString()
       if (assessment.violation === TimeOutReasons.NotEnoughAssessors) {
         status += 'less than 5 assessors staked.'
       }
       if (assessment.violation === TimeOutReasons.NotEnoughCommits) {
-        status += 'X assessors didn\'t commit in time.' // TODO figure out X
+        status += ' assessors didn\'t commit in time.' // TODO figure out X
       } else {
-        status += 'X assessors did not reveal their scores.'
+        status += ' assessors did not reveal their scores.'
       }
     } else {
       // all good -> describe active assessment status
@@ -56,6 +57,7 @@ export class AssessmentCard extends Component {
       }
     }
 
+    console.log('ass;', assessment)
     /* start styling below */
     return (
       h(cardContainer, [
@@ -82,8 +84,11 @@ export class AssessmentCard extends Component {
           ]),
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
             h(cardButtonSecondary, 'Hide'),
-            // TODO: use differently colored button when action is not required
-            h(cardButtonPrimary, { to: '/assessment/' + assessment.address }, actionRequired ? StageDisplayNames[stage] : CompletedStages[stage])
+            h(cardButtonPrimary, {to: '/assessment/' + assessment.address},
+              assessment.refunded ? 'Refunded'
+                : assessment.violation ? 'Refund'
+                  : actionRequired ? StageDisplayNames[stage]
+                    : CompletedStages[stage])
           ])
         ])
       ])
@@ -93,11 +98,14 @@ export class AssessmentCard extends Component {
 
 function progressButton (assessmentStage, phase, actionRequired, violation) {
   // check whether the assessment was aborted
-  if (violation === TimeOutReasons.NotEnoughCommits && assessmentStage === Stage.Called) {
+  if (violation === TimeOutReasons.NotEnoughCommits && phase === Stage.Called) {
+    console.log('fired1')
     return h(cardProgressBarObjectFailed)
-  } else if (violation === TimeOutReasons.NotEnoughCommits && assessmentStage === Stage.Confirmed) {
+  } else if (violation === TimeOutReasons.NotEnoughCommits && phase === Stage.Confirmed) {
+    console.log('fired2')
     return h(cardProgressBarObjectFailed)
-  } else if (violation === TimeOutReasons.NotEnoughReveals && assessmentStage === Stage.Committed) {
+  } else if (violation === TimeOutReasons.NotEnoughReveals && phase === Stage.Committed) {
+    console.log('fired3')
     return h(cardProgressBarObjectFailed)
   }
   // it was not! see whether the phase has been completed

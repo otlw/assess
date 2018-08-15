@@ -3,7 +3,7 @@ import MeetingPointEditBox from './MeetingPoint/'
 import AssessorList from './AssessorList.js'
 import ProgressAndInputBar from './ProgressAndInputBar'
 import FinalResultBar from './FinalResultBar.js'
-// import FailedBar from './FailedBar'
+import FailedBar from './FailedBar'
 import { StageDisplayNames, Stage } from '../../constants.js'
 import { convertDate } from '../../utils.js'
 // Do we still need this? -> import { ViewMeetingPoint } from './MeetingPoint/MeetingPointEditBox.js'
@@ -81,6 +81,9 @@ export class AssessmentData extends Component {
             assessment.violation
               ? h(FailedBar, {
                 address: assessment.address,
+                violation: assessment.violation,
+                refunded: assessment.refunded,
+                failed: (assessment.size - assessment.done).toString(),
                 userAddress: this.props.userAddress,
                 stage: assessment.stage
               })

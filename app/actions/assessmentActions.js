@@ -199,18 +199,19 @@ export function fetchAssessmentData (address) {
       let stage = Number(await assessmentInstance.methods.assessmentStage().call())
 
       // see if assessment on track (not over timelimit)
-      let violation = false
+      let violation = 0
       switch (stage) {
         case Stage.Called:
-          if (Date.now() > checkpoint) { violation = TimeOutReasons.NotEnoughAssessors }
+          if (Date.now() > Number(checkpoint)) { violation = TimeOutReasons.NotEnoughAssessors }
           break
         case Stage.Confirmed:
-          if (Date.now() > endTime) { violation = TimeOutReasons.NotEnoughCommits }
+          if (Date.now() > Number(endTime)) { violation = TimeOutReasons.NotEnoughCommits }
           break
         case Stage.Committed:
-          if (Date.now() > endTime + 24 * 60 * 60) { violation = TimeOutReasons.NotEnoughReveals }
+          if (Date.now() > Number(endTime) + 24 * 60 * 60) { violation = TimeOutReasons.NotEnoughReveals }
           break
         default:
+          console.log('no violation. done:', stage === Stage.Done)
           violation = false
       }
 
