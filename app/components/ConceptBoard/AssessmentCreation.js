@@ -73,7 +73,7 @@ export class AssessmentCreation extends Component {
 
     switch (this.state.step) {
       case 1:
-        BottomPartContent = h(BottomPart, [
+        BottomPartContent = h(cardContainerInput, [
           h(Question1, 'Your Assessment Fee'),
           h(ButtonCaptionContainer, [
             h(ButtonCaptionBox
@@ -92,60 +92,60 @@ export class AssessmentCreation extends Component {
             ])
           ]),
           h(helpTextContainer, [
-            h(helpTextItem, 'This fee will be paid to each of your assessors.'),
-            h(helpTextItem, 'The more you pay, the more likely you will find assessors to assess you.')
+            h(cardTextObjectHelp, 'This fee will be paid to each of your assessors.'),
+            h(cardTextObjectHelp, 'The more you pay, the more likely you will find assessors to assess you.')
           ])
         ])
         break
       case 2:
-        BottomPartContent = h(BottomPart, [
-          h(ParameterBox, [
-            h(ParameterKey, 'ASSESSEE'),
-            h(ParameterValue, 'YOU')
+        BottomPartContent = h(cardContainerInput, [
+          h(cardContainerParameters, [
+            h(cardLabel, 'ASSESSEE'),
+            h(cardTextObject, 'YOU')
           ]),
-          h(ParameterBox, [
-            h(ParameterKey, 'NO. OF ASSESSORS'),
-            h(ParameterValue, '5')
+          h(cardContainerParameters, [
+            h(cardLabel, 'NO. OF ASSESSORS'),
+            h(cardTextObject, '5')
           ]),
-          h(ParameterBox, [
-            h(ParameterKey, 'TOTAL COST'),
-            h(ParameterValue, this.state.amountPerAssessor * 5 + ' AHA')
+          h(cardContainerParameters, [
+            h(cardLabel, 'TOTAL COST'),
+            h(cardTextObject, this.state.amountPerAssessor * 5 + ' AHA')
           ])
         ])
         break
       case 3:
-        BottomPartContent = h(BottomPart, [
-          h(Step3P, 'Ethereum charges a transaction fee to process & create your assessment. Once completed, this step is irreversible.'),
-          h(EstimateBox, [
-            h(TransactionCostTitle, 'TRANSACTION COST'),
-            h(CostEstimate, this.state.gasEstimate.toString().substring(0, 8) + 'ETH')
+        BottomPartContent = h(cardContainerInput, [
+          h(cardContainerCostEstimate, [
+            h(cardLabel, 'TRANSACTION COST'),
+            h(cardTextObject, this.state.gasEstimate.toString().substring(0, 8) + 'ETH')
           ]),
-          h(Step3Bottom, "Clicking 'Next' will launch MetaMask so you can complete the transaction")
+          h(cardTextObjectHelp, 'Ethereum charges a transaction fee to process & create your assessment. Once completed, this step is irreversible.'),
+          h(cardTextObjectHelp, "Clicking 'Next' will launch MetaMask so you can complete the transaction")
         ])
         break
       case 4:
-        BottomPartContent = h(BottomPart, [
-          h(Step4Title, 'Submitted & Pending'),
-          h(P1, 'Your assessment has been sent to the Ethereum blockchain and is pending confirmation.'),
-          h(BottomP, 'We’ll notify you once the transaction has been confirmed & your assessment is created.')
+        BottomPartContent = h(cardContainerInput, [
+          h(cardTitle, 'Submitted & Pending'),
+          h(cardTextObjectHelp, 'Your assessment has been sent to the Ethereum blockchain and is pending confirmation.'),
+          h(cardTextObjectHelp, 'We’ll notify you once the transaction has been confirmed & your assessment is created.')
         ])
         break
     }
 
     // set Navigation buttons according to step
-    let Navigation = (h(NavigationButtonGroup, [
-      h(CancelButton, {onClick: this.cancelButton.bind(this)}, [
+    let Navigation = (h(createAssessmentContainerNavigate, [
+      h(createAssessmentButtonCancel, {onClick: this.cancelButton.bind(this)}, [
         h('img', {alt: 'icoClose', src: icoClose, className: 'h1 ma1'}),
         h('span', 'Cancel')
       ]),
-      h(NextButton, {onClick: this.nextButton.bind(this)}, [
+      h(createAssessmentButtonNext, {onClick: this.nextButton.bind(this)}, [
         h('span', 'Next'),
         h('img', {alt: 'icoArrowForward', src: icoArrowForward})
       ])
     ]))
 
     if ((this.state.step === 4)) {
-      Navigation = (h(NavigationButtonGroup, [
+      Navigation = (h(createAssessmentContainerNavigate, [
         h(CloseButton, {onClick: this.cancelButton.bind(this)}, [
           h('img', {alt: 'icoClose', src: icoClose, className: 'h1 ma1'}),
           h('span', 'Close')
@@ -162,19 +162,19 @@ export class AssessmentCreation extends Component {
       CancelCrossButton = h(CancelCrossContainer, '')
     }
 
-    return h(MainFrame, [
+    return h(createAssessmentContainer, [
       CancelCrossButton,
-      h(StepBox, [
-        h(Step, {current: this.state.step === 1, past: this.state.step > 1}, '1'),
-        h(Step, {current: this.state.step === 2, past: this.state.step > 2}, '2'),
-        h(Step, {current: this.state.step === 3, past: this.state.step > 3}, '3'),
-        h(Step4, {current: this.state.step === 4, past: this.state.step > 4, alt: 'icoConfirm', src: icoConfirm})
+      h(createAssessmentContainerProgressBar, [
+        h(createAssessmentProgressBarObject, {current: this.state.step === 1, past: this.state.step > 1}, '1'),
+        h(createAssessmentProgressBarObject, {current: this.state.step === 2, past: this.state.step > 2}, '2'),
+        h(createAssessmentProgressBarObject, {current: this.state.step === 3, past: this.state.step > 3}, '3'),
+        h(createAssessmentProgressBarObjectFinal, {current: this.state.step === 4, past: this.state.step > 4, alt: 'icoConfirm', src: icoConfirm})
       ]),
-      h(HeaderTitle, "LET'S CREATE YOUR ASSESSMENT"),
-      h(ConceptCreationCardFrame, [
-        h(ConceptTitleBox, [
-          h(TitleCaption, 'CONCEPT'),
-          h(ConceptTitle, this.props.conceptData.name)
+      h(createAssessmentTitle, "Let's create your assessment"),
+      h(createAssessmentCardContainer, [
+        h(createAssessmentCardContainerConcept, [
+          h(cardLabelTitle, 'Concept'),
+          h(cardTitle, this.props.conceptName)
         ]),
         BottomPartContent
       ]),
@@ -187,48 +187,45 @@ export default AssessmentCreation
 
 // styles
 
-const MainFrame = styled('div').attrs({ className: 'flex flex-column w-100 h-100 bg-light-blue' })`
-text-align:center;
-padding:0 0 2rem 0;
-position:relative;
-top:-3.5rem;
+const createAssessmentContainer = styled('div').attrs({ className: 'flex flex-column w-100 h-100 bg-white pa2 tc' })`
+
 `
 
-const HeaderTitle = styled('div')`
-font-size:1.5em;
-margin:1em auto;
+const createAssessmentTitle = styled('h3').attrs({className: 'f3 fw4 tc ttu uppercase '})`
 `
 
 // steps
 
-const StepBox = styled('div').attrs({className: 'flex flex-row self-center justify-around w-100 mw5'})`
+const createAssessmentContainerProgressBar = styled('div').attrs({className: 'flex flex-row self-center justify-around w-100 mw5'})`
 `
 
-const Step = styled('div').attrs({className: 'flex items-center justify-center w2 h2 br-100 ba'})`
+const createAssessmentProgressBarObject = styled('div').attrs({className: 'flex items-center justify-center w2 h2 br-100 ba'})`
 background-color:${props => props.past ? props.theme.lightgreen : props.current ? '#C4C4C4' : 'transparent'}
 border:${props => props.past ? '1px solid ' + props.theme.lightgreen : '1px solid #C4C4C4'};
 `
-const Step4 = styled('img').attrs({className: 'flex items-center justify-center w2 h2 br-100 ba'})`
+const createAssessmentProgressBarObjectFinal = styled('img').attrs({className: 'flex items-center justify-center pa1 br-100 ba'})`
+height: 22px;
+width: 22px;
 background-color:${props => props.past ? props.theme.lightgreen : props.current ? '#C4C4C4' : 'transparent'}
 border:${props => props.past ? '1px solid ' + props.theme.lightgreen : '1px solid #C4C4C4'};
 `
 
 // main card designs
 
-const ConceptCreationCardFrame = styled('div').attrs({className: 'flex flex-column self-center bg-white br1 shadow-3'})`
-width: 300px;
-height: 420px;
+const createAssessmentCardContainer = styled('div').attrs({className: 'flex flex-column self-center ma3 br2 shadow-4'
+})`height: 420px; width: 300px;background: linear-gradient(180.1deg, #FFFFFF 0.05%, #E9F7FD 52.48%, #f5fcff 85.98%);
 `
 
-const ConceptTitleBox = styled('div').attrs({className: 'flex flex-column justify-center align-center pa4'})`
-background: #C4C4C4;
+const createAssessmentCardContainerConcept = styled('div').attrs({className: 'flex content-start flex-column w-100 h-50 pa3 bg-none'})`
 `
-const TitleCaption = styled('div').attrs({className: 'flex w-100 f6 dark-gray'})`
+const cardLabelTitle = styled('div').attrs({className: 'flex flex-column tl ttu uppercase'})`
+color: #0A4A66;
 `
-const ConceptTitle = styled('div').attrs({className: 'flex w-100 f3 mv1 dark-gray'})`
+const cardTitle = styled('h3').attrs({className: 'f3 fw4 mv1 w-100 tl'})`
+color: #117099;
 `
 
-const BottomPart = styled('div').attrs({className: 'flex flex-column h-100 pa3 justify-between'})`
+const cardContainerInput = styled('div').attrs({className: 'flex flex-column h-100 pa3 justify-between bg-lightest-blue'})`
 `
 
 // step 1
@@ -246,66 +243,46 @@ const ButtonCaptionBox = styled('div').attrs({className: 'flex justify-between f
 
 const ButtonGroup = styled('div').attrs({className: 'flex flex-row justify-between br1 ba b--mid-gray pv1 ph3 f4'})`
 `
-const AmountPerAssessor = styled('input').attrs({className: 'flex w-40 tl pa1 bn '})`
+const AmountPerAssessor = styled('input').attrs({className: 'flex w-25 tl pa1 bn bg-transparent '})`
 `
 const AHAUnit = styled('div').attrs({className: 'mid-gray'})`
 `
 const helpTextContainer = styled('div').attrs({className: 'flex flex-column h-100 justify-end'})`
 `
 
-const helpTextItem = styled('div').attrs({className: 'flex f6 gray lh-copy tl pv1'})`
+const cardTextObjectHelp = styled('h6').attrs({className: 'flex f6 fw4 lh-copy tl mv2'})`
+color:#0A4A66;
 `
 
 // step 2
 
-const ParameterBox = styled('div').attrs({className: 'flex flex-column self-center'})`
+const cardContainerParameters = styled('div').attrs({className: 'flex w-100 flex-column items-start fw4'})`
 `
 
-const ParameterKey = styled('div').attrs({className: 'f6 pt3 self-center'})`
+const cardLabel = styled('h6').attrs({className: 'f5 fw4 tl mv1'})`
+color: #0A4A66;
 `
-const ParameterValue = styled('div').attrs({className: 'f5 pt1 self-center'})`
+const cardTextObject = styled('h4').attrs({className: 'f4 fw4 tl mv1'})`
+color: #117099;
 `
 
 // step 3
 
-const Step3P = styled('div').attrs({className: 'flex flex-row f6 lh-copy'})`
-color:#666666;
-`
-const EstimateBox = styled('div').attrs({className: 'flex flex-column self-center'})`
-`
-const TransactionCostTitle = styled('div').attrs({className: 'flex flex-row f6 mt3 self-center'})`
-color:#666666;
-`
-const CostEstimate = styled('div').attrs({className: 'flex flex-row f5 fw3 self-center'})`
-color:#444444;
-`
-const Step3Bottom = styled('div').attrs({className: 'flex flex-row f6 lh-copy mt3'})`
-color:#666666;
+const cardContainerCostEstimate = styled('div').attrs({className: 'flex w-100 flex-column self-center'})`
 `
 
 // step 4
 
-const Step4Title = styled('div').attrs({className: 'flex flex-row f5 fw2 self-center'})`
-color:##444444;
-`
-const P1 = styled('div').attrs({className: 'flex flex-row f6 fw2 lh-copy mt3'})`
-color:#666666;
-`
-const BottomP = styled('div').attrs({className: 'flex flex-row f6 fw2 lh-copy mt3'})`
-color:#666666;
-`
+// Custom styles no longer necessary for Step 4
+
 // navigation buttons
 
-const NavigationButtonGroup = styled('div').attrs({className: 'flex flex-row items-center self-center justify-around h3'})`
-width: 450px;
+const createAssessmentContainerNavigate = styled('div').attrs({className: 'flex w-100 mw7 flex-row items-center self-center justify-around h3'})`
 `
-const CancelButton = styled('div').attrs({className: 'flex items-center justify-center w4 h2 br4 ba'})`
-border-color: #C4C4C4;
+const createAssessmentButtonCancel = styled('div').attrs({className: 'flex items-center justify-center w4 pv2 br-pill ba bg-transparent'})`
 cursor:pointer;
 `
-const NextButton = styled('div').attrs({className: 'flex flex-row items-center justify-center w4 h2 br4 ba'})`
-border-color: #C4C4C4;
-background-color:#C4C4C4;
+const createAssessmentButtonNext = styled('div').attrs({className: 'flex flex-row items-center justify-center w4 pv2 br-pill ba bg-light-green dark-gray'})`
 cursor:pointer;
 `
 const CloseButton = styled('div').attrs({className: 'flex self-center items-center justify-center w4 h2 br4 ba'})`
