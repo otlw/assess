@@ -51,7 +51,7 @@ let validArgs = true
 
 // process command line args:
 if (process.argv.length > 2) {
-  for (let i = 2; i <= 4; i += 2) {
+  for (let i = 2; i <= 3; i += 2) {
     switch (process.argv[i]) {
       case ('-c'):
         conceptAddress = process.argv[i + 1]

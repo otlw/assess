@@ -95,6 +95,7 @@ const initializeEventWatcher = () => {
         }
       })
     } else {
+      // local testnet
       let web3WS = getState().ethereum.web3events
       let notificationJSON = FathomToken.abi.filter(x => x.name === 'Notification')[0]
       let ahadress = FathomToken.networks[getState().ethereum.networkID].address
