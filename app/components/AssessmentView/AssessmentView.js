@@ -19,7 +19,7 @@ export class AssessmentData extends Component {
       let actionRequired = assessment.stage === assessment.userStage
       let nOtherAssessorsToBeActive = assessment.size - (assessment.stage === Stage.Called ? assessment.assessors.length : assessment.done) - (actionRequired ? 1 : 0)
       let statusString = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive +
-          (nOtherAssessorsToBeActive !== 1 ? ' assessors' : 'assessor') +
+          (nOtherAssessorsToBeActive !== 1 ? ' assessors' : ' assessor') +
           ' to ' + StageDisplayNames[assessment.stage]
       return (
         h(SuperFrame, [
@@ -149,5 +149,5 @@ const assessmentRow = styled('div').attrs({className: 'flex flex-row w-100 mw5 j
 const fathomButtonPrimary = styled('button').attrs({className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'})`
 `
 
-const assessmentFooter = styled('div').attrs({className: 'flex flex-row w-100'})`
+const assessmentFooter = styled('div').attrs({className: 'relative flex flex-row w-100'})`
 `
