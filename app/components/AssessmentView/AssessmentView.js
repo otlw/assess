@@ -96,7 +96,7 @@ export class AssessmentData extends Component {
 
 export default AssessmentData
 
-const SuperFrame = styled('div').attrs({className: 'flex flex-column w-100 mw8 bg-white shadow-4'})`
+const SuperFrame = styled('div').attrs({className: 'flex flex-column w-100 mw8 self-center mt3 bg-white shadow-4'})`
 font-family:'system-ui',sans-serif;
 `
 
