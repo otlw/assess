@@ -8,7 +8,7 @@ class AssessorList extends Component {
     return (
       h(containerListAssessors,
         this.props.assessors.map((assessor, k) => {
-          return h('li', assessor)
+          return h('li', assessor === this.props.userAddress ? 'You' : assessor)
         }))
     )
   }

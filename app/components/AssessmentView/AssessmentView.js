@@ -69,7 +69,10 @@ export class AssessmentData extends Component {
               h(assessmentObjectTextRight, [
                 h(assessmentLabelBody, 'Assessors'),
                 h(assessmentObjectText, [
-                  h(AssessorList, {assessors: assessment.assessors})
+                  h(AssessorList, {
+                    assessors: assessment.assessors,
+                    userAddress: this.props.userAddress
+                  })
                 ])
               ])
             ])

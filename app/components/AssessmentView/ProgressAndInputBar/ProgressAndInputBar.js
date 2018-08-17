@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import { TxList } from '../../TxList.js'
 import h from 'react-hyperscript'
-import { Stage } from '../../../constants.js'
+import { Stage, StageDisplayNames, PassiveStageDisplayNames } from '../../../constants.js'
 import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
 import styled from 'styled-components'
 import icoClose from '../../../assets/ico-close.svg'
@@ -116,7 +116,6 @@ export class ProgressAndInputBar extends Component {
   }
 
   render () {
-    console.log('rending txLIst on ', this.props.transactions.length > 0, this.props.transactions, this.props.transactions && this.props.transactions.length > 0) 
     let view = this.props.inputType || this.state.view
     switch (view) {
       case 'progressView': {
@@ -124,24 +123,9 @@ export class ProgressAndInputBar extends Component {
         // and the general progress of the assessment
         return (
           h(containerProgressBar, [
-            // Stake Button
-            h(containerProgressButton, [
-              h(buttonProgressPast, {
-                onClick: this.setStakeAction.bind(this),
-                disabled: !(this.props.stage === Stage.Called && this.props.stage === this.props.userStage)
-              }, this.props.userStage > Stage.Called ? 'Staked' : 'Stake')]),
-            // Commit Button
-            h(containerProgressButton, [
-              h(this.props.stage >= Stage.Confirmed ? buttonProgressPast : buttonProgressFuture, {
-                onClick: this.setCommitAction.bind(this),
-                disabled: !(this.props.stage === Stage.Confirmed && this.props.stage === this.props.userStage)
-              }, this.props.userStage > Stage.Committed ? 'Committed' : 'Commit')]),
-            // Reveal Button
-            h(containerProgressButton, [
-              h(this.props.stage >= Stage.Committed ? buttonProgressPast : buttonProgressFuture, {
-                onClick: this.setRevealAction.bind(this),
-                disabled: !(this.props.stage === Stage.Committed && this.props.stage === this.props.userStage)
-              }, this.props.userStage >= Stage.Done ? 'Revealed' : 'Reveal')]),
+            this.progressButton(Stage.Called, this.props.stage, this.props.userStage),
+            this.progressButton(Stage.Confirmed, this.props.stage, this.props.userStage),
+            this.progressButton(Stage.Committed, this.props.stage, this.props.userStage),
             this.props.transactions && this.props.transactions.length > 0
               ? h(TxList, {transactions: this.props.transactions})
               : null
@@ -196,6 +180,48 @@ export class ProgressAndInputBar extends Component {
         return h('div', 'Ooopsi, something went wrong here!')
     }
   }
+
+  // helper function to return the right kind of progressButton
+  // past, present (active/passive), future
+  // dependent on stage, userRole, userStage
+  progressButton (phase, assessmentStage, userStage) {
+    let stageFunctions = {
+      [Stage.Called]: this.setStakeAction.bind(this),
+      [Stage.Confirmed]: this.setCommitAction.bind(this),
+      [Stage.Committed]: this.setRevealAction.bind(this)
+    }
+    console.log('args:============', StageDisplayNames[phase])
+    // console.log('phase', phase)
+    // console.log('assessmentStage', assessmentStage)
+    // console.log('userStage', userStage)
+    if (phase < assessmentStage) {
+      // -> phase is completed:
+      console.log('past')
+      return h(containerProgressButton, [
+        h(buttonProgressPast, PassiveStageDisplayNames[phase])
+      ])
+    } else if (phase === assessmentStage) {
+      // -> phase is not completed and...
+      if (userStage > assessmentStage) {
+        //  ...user is done already
+        console.log('inaxtive')
+        return h(containerProgressBar, [h(buttonProgressInactive, PassiveStageDisplayNames[phase])])
+      } else {
+        // ...user needs to do something
+        console.log('active', userStage === Stage.None ? 'but disabled' : '')
+        return h(containerProgressBar, [
+          h(buttonProgressActive, {
+            onClick: stageFunctions[assessmentStage],
+            disabled: userStage === Stage.None
+          }, StageDisplayNames[assessmentStage])
+        ])
+      }
+    } else {
+      // -> phase is in the future
+      console.log('future')
+      return h(containerProgressButton, [h(buttonProgressFuture, StageDisplayNames[phase])])
+    }
+  }
 }
 
 export default ProgressAndInputBar
@@ -219,6 +245,18 @@ export const containerProgressButton = styled('div').attrs({className: 'flex w-1
 `
 
 export const buttonProgressPast = styled('button').attrs({className: 'flex pv2 ph3 items-center justify-center br-pill bn ttu uppercase pointer'})`
+color: #EAF7FD;
+background-color: hsla(155, 70%, 40%, 1);
+`
+
+// TODO alex please fill this in!
+export const buttonProgressActive = styled('button').attrs({className: 'flex pv2 ph3 items-center justify-center br-pill bn ttu uppercase pointer'})`
+color: #EAF7FD;
+background-color: hsla(155, 70%, 40%, 1);
+`
+
+// TODO this one too
+export const buttonProgressInactive = styled('button').attrs({className: 'flex pv2 ph3 items-center justify-center br-pill bn ttu uppercase pointer'})`
 color: #EAF7FD;
 background-color: hsla(155, 70%, 40%, 1);
 `

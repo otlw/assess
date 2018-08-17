@@ -7,6 +7,14 @@ export const StageDisplayNames = Object.freeze({
   5: 'Burned'
 })
 
+export const PassiveStageDisplayNames = Object.freeze({
+  1: 'Staked',
+  2: 'Committed',
+  3: 'Revealed',
+  4: 'Done',
+  5: 'Burned'
+})
+
 export const Stage = Object.freeze({
   None: 0,
   Called: 1,
