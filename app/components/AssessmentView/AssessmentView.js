@@ -5,7 +5,6 @@ import ProgressAndInputBar from './ProgressAndInputBar'
 import FinalResultBar from './FinalResultBar.js'
 import { StageDisplayNames, Stage } from '../../constants.js'
 import { convertDate } from '../../utils.js'
-// Do we still need this? -> import { ViewMeetingPoint } from './MeetingPoint/MeetingPointEditBox.js'
 import styled from 'styled-components'
 var h = require('react-hyperscript')
 
@@ -16,6 +15,7 @@ export class AssessmentData extends Component {
       return h('div', 'invalid assessment address!! (maybe you are on the wrong network)')
     } else {
       let assessment = this.props.assessment
+      let isAssessee = assessment.assessee === this.props.userAddress
       let actionRequired = assessment.stage === assessment.userStage
       let nOtherAssessorsToBeActive = assessment.size - (assessment.stage === Stage.Called ? assessment.assessors.length : assessment.done) - (actionRequired ? 1 : 0)
       let statusString = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive +
@@ -25,8 +25,8 @@ export class AssessmentData extends Component {
         h(SuperFrame, [
           // holds role and concept title
           h(assessmentHeader, [
-            h(assessmentLabelRole, assessment.assessee !== this.props.userAddress ? 'Assessing' : 'Getting assessed in'),
-            h(assessmentTextTitle, assessment.conceptData)
+            h(assessmentLabelRole, isAssessee ? 'Getting assessed in' : 'Assessing'),
+            h(assessmentTextTitle, assessment.conceptData.name)
           ]),
           // indicates status of assesssment
           h(assessmentRowSubHeader, [
@@ -45,7 +45,7 @@ export class AssessmentData extends Component {
             h(assessmentColumnLeft, [
               h(assessmentObjectText, [
                 h(assessmentLabelBody, 'Assessee'),
-                h(assessmentTextBody, assessment.assessee)
+                h(assessmentTextBody, isAssessee ? 'You' : assessment.assessee)
               ]),
               h(assessmentObjectText, [
                 h(assessmentLabelBody, 'Fee'),
@@ -53,11 +53,11 @@ export class AssessmentData extends Component {
               ]),
               h(assessmentObjectText, [
                 h(assessmentLabelBody, 'Meeting Point'),
-                h(assessmentTextBody, assessment.data || 'You haven\'t set a meeting point'),
+                h(assessmentTextBody, assessment.data || isAssessee ? 'You haven\'t set a meeting point' : 'No meeting point has been set yet'),
                 h(assessmentRow, [
                   h(fathomButtonPrimary, {href: assessment.data, disabled: assessment.data === ''}, 'View'),
                   assessment.assessee === this.props.userAddress
-                    ? h(MeetingPointEditBox, { // same here ALEX
+                    ? h(MeetingPointEditBox, {
                       assessee: assessment.assessee,
                       address: assessment.address
                     })
@@ -69,7 +69,7 @@ export class AssessmentData extends Component {
               h(assessmentObjectTextRight, [
                 h(assessmentLabelBody, 'Assessors'),
                 h(assessmentObjectText, [
-                  h(AssessorList, {assessors: assessment.assessors}) // ALEX, i meddled here
+                  h(AssessorList, {assessors: assessment.assessors})
                 ])
               ])
             ])

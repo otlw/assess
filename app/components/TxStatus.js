@@ -15,6 +15,7 @@ export class TxStatus extends Component {
 
   render () {
     let tx = this.props.transaction
+    console.log('tx', tx)
     let targetURL = 'https://' + (networkName(this.props.networkID) === 'Mainnet' ? '' : networkName(this.props.networkID) + '.') + 'etherscan.io/tx/' + tx.txHash
     return h(rowTransaction, [
       h(textTransaction, ': ' + tx.status + '  '),

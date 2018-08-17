@@ -116,6 +116,7 @@ export class ProgressAndInputBar extends Component {
   }
 
   render () {
+    console.log('rending txLIst on ', this.props.transactions.length > 0, this.props.transactions, this.props.transactions && this.props.transactions.length > 0) 
     let view = this.props.inputType || this.state.view
     switch (view) {
       case 'progressView': {
@@ -128,18 +129,20 @@ export class ProgressAndInputBar extends Component {
               h(buttonProgressPast, {
                 onClick: this.setStakeAction.bind(this),
                 disabled: !(this.props.stage === Stage.Called && this.props.stage === this.props.userStage)
-              }, 'Stake')]),
+              }, this.props.userStage > Stage.Called ? 'Staked' : 'Stake')]),
+            // Commit Button
             h(containerProgressButton, [
               h(this.props.stage >= Stage.Confirmed ? buttonProgressPast : buttonProgressFuture, {
                 onClick: this.setCommitAction.bind(this),
                 disabled: !(this.props.stage === Stage.Confirmed && this.props.stage === this.props.userStage)
-              }, 'Commit')]),
+              }, this.props.userStage > Stage.Committed ? 'Committed' : 'Commit')]),
+            // Reveal Button
             h(containerProgressButton, [
               h(this.props.stage >= Stage.Committed ? buttonProgressPast : buttonProgressFuture, {
                 onClick: this.setRevealAction.bind(this),
                 disabled: !(this.props.stage === Stage.Committed && this.props.stage === this.props.userStage)
-              }, 'Reveal')]),
-            this.props.transactions
+              }, this.props.userStage >= Stage.Done ? 'Revealed' : 'Reveal')]),
+            this.props.transactions && this.props.transactions.length > 0
               ? h(TxList, {transactions: this.props.transactions})
               : null
           ])
@@ -166,7 +169,7 @@ export class ProgressAndInputBar extends Component {
                 )
                 : h(StageDescriptor, this.state.displayText)
             ]),
-            h(buttonSubmit, {onClick: this.state.action.bind(this)}, 'Go')
+            h(buttonSubmit, {onClick: this.state.action.bind(this)}, view)
           ])
         )
       }
