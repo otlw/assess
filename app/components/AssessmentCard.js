@@ -110,7 +110,7 @@ function statusMessage (isAssessee, actionRequired, assessment) {
 
 function progressButton (assessmentStage, phase, actionRequired, violation) {
   // check whether the assessment was aborted
-  if (violation === TimeOutReasons.NotEnoughCommits && phase === Stage.Called) {
+  if (violation === TimeOutReasons.NotEnoughAssessors && phase === Stage.Called) {
     console.log('fired1')
     return h(cardProgressBarObjectFailed)
   } else if (violation === TimeOutReasons.NotEnoughCommits && phase === Stage.Confirmed) {
