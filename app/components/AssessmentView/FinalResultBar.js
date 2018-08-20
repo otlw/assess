@@ -13,34 +13,32 @@ class FinalResultBar extends Component {
   }
 
   render () {
-    let scoreString = this.props.finalScore + ' out of 100 ' + (this.props.finalScore > 50 ? '(Pass)' : '(Fail)')
+    let scoreString = this.props.finalScore + ' out of 100 ' + (this.props.finalScore > 50 ? 'and passed! Congratulations' : 'and failed. We can help you pass next time.')
     if (this.props.userAddress === this.props.assessee) {
       console.log()
-      return h(FinalScoreField, 'Your final score is ' + scoreString)
+      return h(containerFinalScore, 'You scored ' + scoreString)
     } else if (this.props.userStage === Stage.Done) {
       // user is assessor
       let gain = Math.round(this.props.payout - this.props.cost)
       return (
         h(FinalResultBox, [
           (this.cacheCommitData
-            ? h(AssessorScore, 'Your score was: ' + Number(this.cacheCommitData))
+            ? h(AssessorScore, 'You scred: ' + Number(this.cacheCommitData))
             : null), // user used a different way or machine to enter the score than our app
-          h(FinalScoreField, 'Final score is:' + scoreString),
+          h(containerFinalScore, 'Final score is:' + scoreString),
           h(EarnedReward, 'You earned ' + (gain >= 0 ? '+' : '-') + gain.toString() + ' AHA')
         ])
       )
     } else {
       // user is visitor
-      return h(FinalScoreField, 'The final score is ' + scoreString)
+      return h(containerFinalScore, 'The final score is ' + scoreString)
     }
   }
 }
 
 export default FinalResultBar
 
-export const FinalScoreField = styled('span')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+export const containerFinalScore = styled('div').attrs({className: 'flex flex-row w-100 h3 items-center justify-center bt b--light-gray'})`
 `
 export const FinalResultBox = styled('div')`
   padding: 0.25em 1em;
