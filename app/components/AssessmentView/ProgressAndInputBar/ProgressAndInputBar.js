@@ -204,12 +204,12 @@ export class ProgressAndInputBar extends Component {
       // -> phase is not completed and...
       if (userStage > assessmentStage) {
         //  ...user is done already
-        console.log('inaxtive')
+        console.log('inactive')
         return h(containerProgressBar, [h(buttonProgressInactive, PassiveStageDisplayNames[phase])])
       } else {
         // ...user needs to do something
         console.log('active', userStage === Stage.None ? 'but disabled' : '')
-        return h(containerProgressBar, [
+        return h(containerProgressButton, [
           h(buttonProgressActive, {
             onClick: stageFunctions[assessmentStage],
             disabled: userStage === Stage.None
@@ -249,13 +249,11 @@ color: #EAF7FD;
 background-color: hsla(155, 70%, 40%, 1);
 `
 
-// TODO alex please fill this in!
 export const buttonProgressActive = styled('button').attrs({className: 'flex pv2 ph3 items-center justify-center br-pill bn ttu uppercase pointer'})`
 color: #EAF7FD;
-background-color: hsla(155, 70%, 40%, 1);
+background-color: #0A4A66;
 `
 
-// TODO this one too
 export const buttonProgressInactive = styled('button').attrs({className: 'flex pv2 ph3 items-center justify-center br-pill bn ttu uppercase pointer'})`
 color: #EAF7FD;
 background-color: hsla(155, 70%, 40%, 1);
@@ -265,8 +263,9 @@ export const buttonProgressFuture = styled('button').attrs({className: 'flex pv2
   color: #0A4A66;
   background: transparent;
   border-color: #0A4A66;
+  opacity: 0.25;
 `
-// need to rename to progressBarTextDescription
+// TODO need to rename to progressBarTextDescription
 export const StageDescriptor = styled('div').attrs({className: 'flex w-100 items-center justify-center f5 gray pv3'})`
 `
 
