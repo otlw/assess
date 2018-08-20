@@ -11,53 +11,10 @@ export class AssessmentCard extends Component {
     let stage = assessment.stage
 
     // set assessee/assessor view
-    let isAssessee = false
-    if (this.props.userAddress === assessment.assessee) {
-      isAssessee = true
-    }
-
+    let isAssessee = this.props.userAddress === assessment.assessee
     let actionRequired = stage === userStage
-    let nOtherAssessorsToBeActive = assessment.size - assessment.done - (actionRequired ? 1 : 0)
-    let status
-    // see if assessment is in an timed-out state because somebody didn't respect the timelimits
-    // console.log('vio', assessment.violation)
-    if (assessment.violation) {
-      // TODO figure out whether the user or another assessor was at fault and adjust refund message
-      status = 'Sorry, the assessment failed because ' + (assessment.size - assessment.done).toString()
-      if (assessment.violation === TimeOutReasons.NotEnoughAssessors) {
-        status += 'less than 5 assessors staked.'
-      }
-      if (assessment.violation === TimeOutReasons.NotEnoughCommits) {
-        status += ' assessors didn\'t commit in time.' // TODO figure out X
-      } else {
-        status += ' assessors did not reveal their scores.'
-      }
-    } else {
-      // all good -> describe active assessment status
-      status = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[stage]
-    }
-    // override with passive status if user is done already
-    if (!actionRequired) {
-      status = 'Waiting...'
-    // if in stage finished -> set score/payout
-    } else if (stage === Stage.Done) {
-      // user = assessors -> display Payout
-      if (!isAssessee) {
-        let gain = this.props.assessment.payout - this.props.assessment.cost
-        status = h('div', [
-          h('div', 'Payout :'),
-          h('div', (gain >= 0 ? '+' : '-') + gain.toString() + ' AHA')
-        ])
-      // user is assessee -> display score
-      } else {
-        status = h('div', [
-          h('div', 'Score :'),
-          h('div', assessment.finalScore + ' %')
-        ])
-      }
-    }
+    let status = statusMessage(isAssessee, actionRequired, assessment)
 
-    console.log('ass;', assessment)
     /* start styling below */
     return (
       h(cardContainer, [
@@ -94,6 +51,61 @@ export class AssessmentCard extends Component {
       ])
     )
   }
+}
+/*
+returns the message to be displayed on the assessment Card, which is different depending on
+whether the user needs to be active, the assessment was cancelled and the phase of the assessment
+*/
+function statusMessage (isAssessee, actionRequired, assessment) {
+  let status = ''
+  // assessment Failed?
+  if (assessment.violation) {
+    if (actionRequired) {
+      status += 'The assessment failed because you didn\'t ' + StageDisplayNames[assessment.stage] + '. Your fee has been burned.'
+    } else {
+      // other assessors are at fault
+      status += 'The assessment failed because ' + (assessment.size - assessment.done).toString() 
+      if (assessment.violation === TimeOutReasons.NotEnoughAssessors) {
+        status += 'less than 5 assessors staked.'
+      }
+      if (assessment.violation === TimeOutReasons.NotEnoughCommits) {
+        status += ' assessors didn\'t commit in time.'
+      } else {
+        status += ' assessors did not reveal their scores.'
+      }
+      if (assessment.refunded) {
+        status += 'Your fee has been refunded to you.'
+      }
+    }
+  } else {
+    // assessment is completed ?
+    if (assessment.stage === Stage.Done) {
+      // display payout (or score)?
+      if (!isAssessee) {
+        let gain = this.props.assessment.payout - this.props.assessment.cost
+        status = h('div', [
+          h('div', 'Payout :'),
+          h('div', (gain >= 0 ? '+' : '-') + gain.toString() + ' AHA')
+        ])
+      } else {
+        // user is assessee -> display score
+        status = h('div', [
+          h('div', 'Score :'),
+          h('div', assessment.finalScore + ' %')
+        ])
+      }
+    }
+    // not done, but user must not do something
+    else if (!actionRequired) {
+      status += 'Waiting...'
+    } else {
+      // not done because user (and others) need to do something
+      let nOtherAssessorsToBeActive = assessment.size - assessment.done - (actionRequired ? 1 : 0)
+      // user must do something
+      status += 'Waiting for you and ' + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[assessment.stage]
+    }
+  }
+  return status
 }
 
 function progressButton (assessmentStage, phase, actionRequired, violation) {
