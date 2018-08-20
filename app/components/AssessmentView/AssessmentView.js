@@ -14,10 +14,10 @@ export class AssessmentData extends Component {
   render () {
     if (!this.props.assessment) return h('div', 'Loading Data...')
     if (this.props.assessment.invalid) {
-      return h('div', 'invalid assessment address!! (maybe you are on the wrong network)')
+      return h('div', 'invalid assessment address!! (you may be on the wrong network OR the assessment has been cancelled and refunded)')
     } else {
       let assessment = this.props.assessment
-      let actionRequired = assessment.stage === assessment.userStage
+      let actionRequired = assessment.stage === assessment.userStage && assessment.stage !== Stage.Done
       let nOtherAssessorsToBeActive = assessment.size - (assessment.stage === Stage.Called ? assessment.assessors.length : assessment.done) - (actionRequired ? 1 : 0)
       let statusString = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive +
           (nOtherAssessorsToBeActive !== 1 ? ' assessors' : 'assessor') +
@@ -80,12 +80,8 @@ export class AssessmentData extends Component {
             // if failed
             assessment.violation
               ? h(FailedBar, {
-                address: assessment.address,
-                violation: assessment.violation,
-                refunded: assessment.refunded,
-                failed: (assessment.size - assessment.done).toString(),
-                userAddress: this.props.userAddress,
-                stage: assessment.stage
+                assessment: assessment,
+                userAddress: this.props.userAddress
               })
               // if completed
               : assessment.stage === Stage.Done

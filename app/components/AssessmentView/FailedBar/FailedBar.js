@@ -1,12 +1,13 @@
 import { Component } from 'react'
 import styled from 'styled-components'
-import { TimeOutReasons } from '../../../constants.js'
+import TxList from '../../TxList.js'
+import { statusMessage } from '../../../utils.js'
 var h = require('react-hyperscript')
 
 // component to display all assessors
 class FailedBar extends Component {
   refund () {
-    this.props.refund(this.props.address, this.props.stage)
+    this.props.refund(this.props.assessment.address, this.props.assessment.stage)
   }
 
   showWhy () {
@@ -14,41 +15,26 @@ class FailedBar extends Component {
   }
 
   render () {
-    console.log('porps', this.props)
-    let userFault = this.props.userStage === this.props.stage
-    let statusText
-    let violation = this.props.violation
-    let failedAct
-    if (violation) {
-      if (violation === TimeOutReasons.NotEnoughAssessors) {
-        failedAct = 'stake.'
-      } else if (violation === TimeOutReasons.NotEnoughCommits) {
-        failedAct = 'commit.'
-      } else if (violation === TimeOutReasons.NotEnoughReveals) {
-        failedAct = 'reveal.'
-      }
-    }
-    if (userFault) {
-      statusText = 'You forgot to ' + failedAct + ' Your stake and fee have been burned!'
-    } else {
-      statusText = 'Sorry, the assessment failed because ' + this.props.failedAssessors + ' assessor(s) failed to ' + failedAct
-    }
-    // add refund string
-    if (this.props.refunded) {
-      statusText += ' You have been refunded.'
-    }
+    console.log('props', this.props)
+    let assessment = this.props.assessment
+    // let failedAssessors = (assessment.size - assessment.done).toString(),
+    let userFault = assessment.userStage === assessment.stage
+    let statusText = statusMessage(this.props.userAddress === assessment.assessee, assessment)
     return (
       h('div', [
         h(FailedStatusText, statusText),
-        h(WhyButton, {onClick: this.showWhy.bind(this)}, 'Why?'),
+        (h(WhyButton, {onClick: this.showWhy.bind(this)}, 'Why?'),
         // has the user been at fault?
-        !userFault
-        // if not, has he been refunded yet?
-          ? this.props.refunded
-          // user has not been refunded yet -> show button
-            ? h(RefundButton, {onClick: this.refund.bind(this)}, 'Refund')
-            : h(RefundedButton, 'Refunded')
-          : undefined
+          !userFault
+          // if not, has he been refunded yet?
+            ? !assessment.refunded
+            // user has not been refunded yet -> show button
+              ? h(RefundButton, {onClick: this.refund.bind(this)}, 'Get refund')
+              : h(RefundedButton, 'Refunded')
+            : undefined),
+        this.props.transactions
+          ? h(TxList, {transactions: this.props.transactions})
+          : null
       ])
     )
   }

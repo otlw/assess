@@ -1,7 +1,7 @@
-import { getInstance, convertFromOnChainScoreToUIScore } from '../utils.js'
+import { convertDate, getInstance, convertFromOnChainScoreToUIScore } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
-import { receiveVariable, fetchUserBalance } from './web3Actions.js'
-import { Stage, LoadingStage, NotificationTopic, TimeOutReasons } from '../constants.js'
+import { fetchUserBalance } from './web3Actions.js'
+import { StageDisplayNames, Stage, LoadingStage, NotificationTopic, TimeOutReasons } from '../constants.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const REMOVE_ASSESSMENT = 'REMOVE_ASSESSMENT'
@@ -132,6 +132,8 @@ export function fetchLatestAssessments () {
         fromBlock: 0,
         toBlock: 'latest'
       })
+
+      // filter out all assessments where the user is involved
       let assessmentAddresses = pastNotifications.reduce((accumulator, notification) => {
         let assessment = notification.returnValues.sender
         // save all addressess where the user is involved
@@ -141,13 +143,96 @@ export function fetchLatestAssessments () {
         return accumulator
       }, [])
 
-      dispatch(receiveVariable('userAssessments', assessmentAddresses))
+      // filter out destructed-assessments
+      let destructedAssessments = pastNotifications.reduce((accumulator, notification) => {
+        let assessment = notification.returnValues.sender
+        // console.log('notification',notification.returnValues)
+        // save all addressess where the user is involved but which were destructed
+        if (assessmentAddresses.indexOf(assessment) !== -1 &&
+          Number(notification.returnValues.topic) === NotificationTopic.AssessmentCancelled) {
+          accumulator.push(assessment)
+        }
+        return accumulator
+      }, [])
+      // console.log('destructedAssessments ',destructedAssessments )
+
+      // remove destruced assessments from list
+      for (let add of destructedAssessments) {
+        let idx = assessmentAddresses.indexOf(add)
+        if (idx > -1) { assessmentAddresses.splice(idx, 1) }
+      }
+      console.log('after', assessmentAddresses.length)
+
+      // and fetch the data for them by reconstruction from events
+      destructedAssessments.forEach((address) => {
+        dispatch(reconstructAssessment(address, pastNotifications.filter(x => x.returnValues.sender === address)))
+      })
 
       // fetch data for assessments
       assessmentAddresses.forEach((address) => {
         dispatch(fetchAssessmentData(address))
       })
       dispatch(endLoadingAssessments())
+    }
+  }
+}
+
+/*
+  reads the information needed to display an assessmentCard from events:
+  - last assessment stage
+  - userStage
+  - assessee
+  - concept (NOT YET)
+  NOTE: this assumes events are in chronological order -> TODO only save if value is > than what is saved so far
+  */
+export function reconstructAssessment (address, pastNotifications) {
+  return async (dispatch, getState) => {
+    let stage = Stage.Called
+    let userStage = Stage.Called
+    let violation = TimeOutReasons.NotEnoughAssessors
+    let assessee = null
+    let userAddress = getState().ethereum.userAddress
+    // let concept = pastNotifications[0].returnvalues.sender // TODO figure out where to get this from
+    for (let not of pastNotifications) {
+      switch (Number(not.returnValues.topic)) {
+        case NotificationTopic.AssessmentCreated:
+          userStage = Stage.None
+          assessee = not.returnValues.user
+          break
+        case NotificationTopic.ConfirmedAsAssessor:
+          if (not.returnValues.user === userAddress) {
+            userStage = Stage.Confirmed
+          }
+          break
+        case NotificationTopic.AssessmentStarted:
+          stage = Stage.Confirmed
+          violation = TimeOutReasons.NotEnoughCommits
+          break
+        case NotificationTopic.RevealScore:
+          stage = Stage.Committed
+          violation = TimeOutReasons.NotEnoughReveals
+          if (not.returnValues.user === userAddress) {
+            userStage = Stage.Committed
+          }
+          break
+        default:
+          if (Number(not.returnValues.topic) !== NotificationTopic.CalledAsAssessor ||
+              Number(not.returnValues.topic) !== NotificationTopic.AssessmentCancelled) {
+            console.log('whooopsi. this should not be reached! topic:', Number(not.returnValues.topic)) //TODO no idea why this is reached sometimes, but it does not seem to hurt anything
+          }
+      }
+    }
+    if (userStage > Stage.Called || assessee === userAddress) {
+      // console.log('interesting destructed assment:', stage, userStage, violation)
+      dispatch(receiveAssessment({
+        address,
+        stage,
+        userStage,
+        violation,
+        concept: 'Unknown',
+        refunded: true,
+        assessee: assessee || null
+      }))
     }
   }
 }
@@ -177,7 +262,7 @@ export function validateAndFetchAssessmentData (address) {
         dispatch(setAssessmentAsInvalid(address))
       }
     } catch (e) {
-      console.log('error trying tovalidate assessment: ', e)
+      console.log('Error trying to validate assessment: ', e)
       dispatch(setAssessmentAsInvalid(address))
     }
   }
@@ -203,23 +288,6 @@ export function fetchAssessmentData (address) {
       let conceptAddress = await assessmentInstance.methods.concept().call()
       let conceptInstance = getInstance.concept(getState(), conceptAddress)
       let stage = Number(await assessmentInstance.methods.assessmentStage().call())
-
-      // see if assessment on track (not over timelimit)
-      let violation = 0
-      switch (stage) {
-        case Stage.Called:
-          if (Date.now() > Number(checkpoint)) { violation = TimeOutReasons.NotEnoughAssessors }
-          break
-        case Stage.Confirmed:
-          if (Date.now() > Number(endTime)) { violation = TimeOutReasons.NotEnoughCommits }
-          break
-        case Stage.Committed:
-          if (Date.now() > Number(endTime) + 24 * 60 * 60) { violation = TimeOutReasons.NotEnoughReveals }
-          break
-        default:
-          console.log('no violation. done:', stage === Stage.Done)
-          violation = false
-      }
 
       // handle concept data
       let conceptDataHex = await conceptInstance.methods.data().call()
@@ -275,12 +343,41 @@ export function fetchAssessmentData (address) {
         }
       }
 
+      // see if assessment on track (not over timelimit)
+      let realNow = Date.now()  
+      console.log('realNow', convertDate(realNow))
+      let testNow = (await getState().ethereum.web3.eth.getBlock('latest')).timestamp
+      // console.log('testnnow', testNow, convertDate(testNow))
+      // console.log('endTime', convertDate(Number(endTime)), testNow > Number(endTime))
+      // console.log('checking point:', convertDate(Number(checkpoint)), testNow > Number(checkpoint))
+      // console.log('stage', StageDisplayNames[stage])
+
+      let violation = 0
+      switch (stage) {
+        case Stage.Called:
+          if (testNow > Number(checkpoint)) { violation = TimeOutReasons.NotEnoughAssessors }
+          break
+        case Stage.Confirmed:
+          if (testNow > Number(endTime)) { violation = TimeOutReasons.NotEnoughCommits }
+          break
+        case Stage.Committed:
+        console.log('condition is:', testNow , Number(endTime) + 24*60*60)
+          if (testNow > Number(endTime) + 24 * 60 * 60) { violation = TimeOutReasons.NotEnoughReveals }
+          break
+        default:
+          console.log('no violation. done:', stage === Stage.Done)
+          violation = false
+      }
+      // console.log('vio', violation)
+      violation = 3
+
       dispatch(receiveAssessment({
         address,
         cost,
         checkpoint,
         stage,
         violation,
+        refunded: false,
         userStage,
         endTime,
         done,
@@ -399,6 +496,11 @@ export function processEvent (user, sender, topic) {
           dispatch(fetchPayout(sender, user))
           dispatch(fetchFinalScore(sender, user))
           dispatch(fetchUserBalance())
+        }
+        break
+      case NotificationTopic.AssessmentCancelled:
+        if (isUser) {
+          dispatch(updateAssessmentVariable(sender, 'refunded', true))
         }
         break
       default:

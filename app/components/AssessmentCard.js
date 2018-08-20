@@ -3,6 +3,7 @@ import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 import { StageDisplayNames, Stage, TimeOutReasons, CompletedStages } from '../constants.js'
+import { statusMessage } from '../utils.js'
 
 export class AssessmentCard extends Component {
   render () {
@@ -12,16 +13,19 @@ export class AssessmentCard extends Component {
 
     // set assessee/assessor view
     let isAssessee = this.props.userAddress === assessment.assessee
-    let actionRequired = stage === userStage
-    let status = statusMessage(isAssessee, actionRequired, assessment)
-
+    let actionRequired = stage === userStage && stage !== Stage.Done
+    let status = statusMessage(isAssessee, assessment)
+    // size is only present if the assessmentData has been read before it was self-destructed
+    // let hasLoadedDetails = this.props.assessment.size
     /* start styling below */
+    console.log('ass', assessment)
     return (
       h(cardContainer, [
         h(cardContainerInfo, [
           h(cardTextObject, [
             h(cardTextTitle, 'Assessment'),
-            h(ConceptName, assessment.conceptData.name)
+            // h(ConceptName, assessment.conceptData.name || assessment.conceptData)
+            h(ConceptName, assessment.conceptData)
           ]),
           h(cardTextObject, [
             h(cardLabel, 'Assessee'),
@@ -39,85 +43,52 @@ export class AssessmentCard extends Component {
             h(cardLabel, 'Status'),
             h(cardTextStatusMsg, status)
           ]),
-          h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
-            h(cardButtonSecondary, 'Hide'),
-            h(cardButtonPrimary, {to: '/assessment/' + assessment.address},
-              assessment.refunded ? 'Refunded'
-                : assessment.violation ? 'Refund'
-                  : actionRequired ? StageDisplayNames[stage]
-                    : CompletedStages[stage])
-          ])
+          h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, linkButtons(assessment))
         ])
       ])
     )
   }
 }
-/*
-returns the message to be displayed on the assessment Card, which is different depending on
-whether the user needs to be active, the assessment was cancelled and the phase of the assessment
-*/
-function statusMessage (isAssessee, actionRequired, assessment) {
-  let status = ''
-  // assessment Failed?
+
+function linkButtons (assessment, location) {
+  let userFault = (assessment.violation && assessment.userStage === assessment.stage) || assessment.userStage === Stage.Burned
   if (assessment.violation) {
-    if (actionRequired) {
-      status += 'The assessment failed because you didn\'t ' + StageDisplayNames[assessment.stage] + '. Your fee has been burned.'
+    if (userFault) {
+      return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/'}, 'Closed')] // TODO why should be a link
     } else {
-      // other assessors are at fault
-      status += 'The assessment failed because ' + (assessment.size - assessment.done).toString() 
-      if (assessment.violation === TimeOutReasons.NotEnoughAssessors) {
-        status += 'less than 5 assessors staked.'
-      }
-      if (assessment.violation === TimeOutReasons.NotEnoughCommits) {
-        status += ' assessors didn\'t commit in time.'
-      } else {
-        status += ' assessors did not reveal their scores.'
-      }
+      // not  userFault
       if (assessment.refunded) {
-        status += 'Your fee has been refunded to you.'
+        // no assessment contract exits -> no link to detail-view
+        return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/'}, 'Refunded')]
+      } else {
+        // not refunded yet -> provide link
+        return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/assessment/' + assessment.address}, 'Get refunded')]
       }
     }
   } else {
-    // assessment is completed ?
-    if (assessment.stage === Stage.Done) {
-      // display payout (or score)?
-      if (!isAssessee) {
-        let gain = this.props.assessment.payout - this.props.assessment.cost
-        status = h('div', [
-          h('div', 'Payout :'),
-          h('div', (gain >= 0 ? '+' : '-') + gain.toString() + ' AHA')
-        ])
-      } else {
-        // user is assessee -> display score
-        status = h('div', [
-          h('div', 'Score :'),
-          h('div', assessment.finalScore + ' %')
-        ])
-      }
-    }
-    // not done, but user must not do something
-    else if (!actionRequired) {
-      status += 'Waiting...'
+    // NOTE this section could be refactored to be smaller, as the only thing that varies is the text of the button. But i am keeping this
+    // longer structure becasue once we want to provide different links on the why-button, it will come in handy to have the cases be more explicit.
+    // no violation!
+    // is the user done (for the respective stage?)
+    if (assessment.stage < Stage.Done && assessment.userStage === assessment.stage) {
+      return [h(cardButtonSecondary, 'Hide'), h(cardButtonPrimary, {to: '/assessment/' + assessment.address}, StageDisplayNames[assessment.stage])]
     } else {
-      // not done because user (and others) need to do something
-      let nOtherAssessorsToBeActive = assessment.size - assessment.done - (actionRequired ? 1 : 0)
-      // user must do something
-      status += 'Waiting for you and ' + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[assessment.stage]
+      // no. he needs to do something
+      return [h(cardButtonSecondary, 'Hide'), h(cardButtonPrimary, {to: '/assessment/' + assessment.address}, CompletedStages[assessment.stage])]
     }
   }
-  return status
 }
 
 function progressButton (assessmentStage, phase, actionRequired, violation) {
   // check whether the assessment was aborted
   if (violation === TimeOutReasons.NotEnoughAssessors && phase === Stage.Called) {
-    console.log('fired1')
+    // console.log('fired1')
     return h(cardProgressBarObjectFailed)
   } else if (violation === TimeOutReasons.NotEnoughCommits && phase === Stage.Confirmed) {
-    console.log('fired2')
+    // console.log('fired2')
     return h(cardProgressBarObjectFailed)
   } else if (violation === TimeOutReasons.NotEnoughReveals && phase === Stage.Committed) {
-    console.log('fired3')
+    // console.log('fired3')
     return h(cardProgressBarObjectFailed)
   }
   // it was not! see whether the phase has been completed

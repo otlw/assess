@@ -20,13 +20,13 @@ assessmentAddress : {
   stage: [0,4]
   finalScore: [-127, 127],
   userStage: 0,
-  refunded: false,
-  violation: false,
   data: {
      address: dataString,
      ...
   },
   payout: 20,
+  violation: false,
+  refunded: false
 }
  */
 

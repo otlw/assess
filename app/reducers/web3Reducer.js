@@ -15,8 +15,7 @@ let initialState = {
   web3_version: 'none',
   userAddress: '',
   networkID: 4,
-  AhaBalance: 0,
-  userAssessments: []
+  AhaBalance: 0
 }
 
 function ethereum (state = initialState, action) {
