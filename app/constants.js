@@ -60,6 +60,6 @@ export const NotificationTopic = Object.freeze({
 
 export const TimeOutReasons = Object.freeze({
   NotEnoughAssessors: 1,
-  NotEnoughCommit: 2,
+  NotEnoughCommits: 2,
   NotEnoughReveals: 3
 })

@@ -184,6 +184,8 @@ async function test () {
       console.log('Staking failed:', e.toString().substring(0, 200), '...')
     }
   } else {
+    console.log('assessors 0 ', assessors[0], ' does confirm, but then the rest fails!')
+    await assessmentContract.methods.confirmAssessor().send({from: assessors[0], gas: 3200000})
     console.log('travelling in time: to the future!!!')
     evmIncreaseTime(web3, startTime * 2)
   }
@@ -203,10 +205,12 @@ async function test () {
       console.log('Committing failed:', e.toString().substring(0, 200), '...')
     }
   } else {
+    console.log('assessor 0 ', assessors[0], ' does commit, but then the rest fails!')
+    let tx = await assessmentContract.methods.commit(hashScoreAndSalt(80, 'hihi')).send({from: assessors[0], gas: 3200000})
+    console.log('tx', tx)
     console.log('travelling in time: to the future!!!')
     evmIncreaseTime(web3, (endTime + startTime) * 2)
   }
-
 
   // reveal
   if (runUntil >= Stage.reveal) {
@@ -220,6 +224,7 @@ async function test () {
       console.log('Revealing failed:', e.toString().substring(0, 200), '...')
     }
   } else {
+    console.log('assessors 0 ', assessors[0], ' does reveal, but then the rest fails!')
     console.log('travelling in time: to the future!!!')
     evmIncreaseTime(web3, (endTime + startTime) * 2)
   }
