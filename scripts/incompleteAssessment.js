@@ -22,7 +22,7 @@ let Stage = Object.freeze({
   reveal: 3
 })
 
-let runUntil = Stage.reveal
+let runUntil = Stage.create
 let conceptAddress
 let assessmentAddress
 let size = 5
@@ -35,6 +35,9 @@ if (process.argv.length > 2) {
     switch (process.argv[i]) {
       case ('-s'):
         switch (process.argv[i + 1]) {
+          case ('create'):
+            runUntil = Stage.create
+            break
           case ('stake'):
             runUntil = Stage.stake
             break
@@ -166,7 +169,10 @@ async function test () {
   let events = await fathomTokenContract.getPastEvents({fromBlock: 0, toBlock: 'latest'})
   assessmentAddress = events[events.length - 1].returnValues.sender
   console.log('New assessment with size', size, 'and cost', cost, ' created at address: ' + assessmentAddress)
-
+  let timeFromBlock = (await web3.eth.getBlock('latest')).timestamp
+  let date = new Date(timeFromBlock * 1000) // input in milliseconds
+  let timeFromBlockReadable = date.toDateString()
+  console.log('TIME:', timeFromBlockReadable)
 
   // run assessment
   assessmentContract = await new web3.eth.Contract(Assessment.abi, assessmentAddress, {from: accounts[0]})
@@ -187,7 +193,12 @@ async function test () {
     console.log('assessors 0 ', assessors[0], ' does confirm, but then the rest fails!')
     await assessmentContract.methods.confirmAssessor().send({from: assessors[0], gas: 3200000})
     console.log('travelling in time: to the future!!!')
-    evmIncreaseTime(web3, startTime * 2)
+    await evmIncreaseTime(web3, 3600 * 24 * 31)
+    let timeFromBlock = (await web3.eth.getBlock('latest')).timestamp
+    let date = new Date(timeFromBlock * 1000) // input in milliseconds
+    let timeFromBlockReadable = date.toDateString()
+    console.log('TIME:', timeFromBlockReadable)
+    return
   }
 
   // commit
@@ -205,16 +216,20 @@ async function test () {
       console.log('Committing failed:', e.toString().substring(0, 200), '...')
     }
   } else {
-    console.log('assessor 0 ', assessors[0], ' does commit, but then the rest fails!')
+    await evmIncreaseTime(web3, 60)
     let tx = await assessmentContract.methods.commit(hashScoreAndSalt(80, 'hihi')).send({from: assessors[0], gas: 3200000})
+    if (tx) {
+      console.log('assessor 0 ', assessors[0], ' does commit, but then the rest fails!')
+    }
     console.log('tx', tx)
     console.log('travelling in time: to the future!!!')
-    evmIncreaseTime(web3, (endTime + startTime) * 2)
+    evmIncreaseTime(web3, (endTime + startTime) * 600)
+    return
   }
 
   // reveal
   if (runUntil >= Stage.reveal) {
-    await evmIncreaseTime(web3, 60 * 60 * 13) // let 12h challenge period pass
+    await evmIncreaseTime(web3, 60 * 60 * 12) // let 12h challenge period pass
     try {
       for (let i in assessors) {
         await assessmentContract.methods.reveal(scores[i], 'hihi').send({from: assessors[i], gas: 3200000})
@@ -224,9 +239,12 @@ async function test () {
       console.log('Revealing failed:', e.toString().substring(0, 200), '...')
     }
   } else {
+    await evmIncreaseTime(web3, 60 * 60 * 12) // let 12h challenge period pass
     console.log('assessors 0 ', assessors[0], ' does reveal, but then the rest fails!')
+    await assessmentContract.methods.reveal(scores[0], 'hihi').send({from: assessors[0], gas: 3200000})
     console.log('travelling in time: to the future!!!')
-    evmIncreaseTime(web3, (endTime + startTime) * 2)
+    evmIncreaseTime(web3, (endTime + startTime) * 6)
+    return
   }
 
   let finalScore = await assessmentContract.methods.finalScore().call()
