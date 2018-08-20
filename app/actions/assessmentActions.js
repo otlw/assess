@@ -26,47 +26,54 @@ export function hashScoreAndSalt (_score, _salt) {
 
 // ============== async actions ===================
 
-export function confirmAssessor (address) {
+export function confirmAssessor (address, triggeringRefund = false) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
     sendAndReactToTransaction(
       dispatch,
-      () => { return assessmentInstance.methods.confirmAssessor().send({from: userAddress}) },
-      Stage.Called,
+      // TODO figure out how high this needs to be so fucking high for refund to work
+      () => { return assessmentInstance.methods.confirmAssessor().send({from: userAddress, gas: 320000}) },
+      triggeringRefund ? 'Refund' : Stage.Called,
       userAddress,
       address,
-      () => { dispatch(fetchUserStage(address)) }
+      triggeringRefund
+        ? (err) => { if (!err) { dispatch(updateAssessmentVariable(address, 'refunded', true)) } }
+        : () => { dispatch(fetchUserStage(address)) }
     )
   }
 }
 
-export function commit (address, score, salt) {
+export function commit (address, score, salt, triggeringRefund = false) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
     sendAndReactToTransaction(
       dispatch,
       () => { return assessmentInstance.methods.commit(hashScoreAndSalt(score, salt)).send({from: userAddress}) },
-      Stage.Confirmed,
+      triggeringRefund ? 'Refund' : Stage.Confirmed,
       userAddress,
       address,
-      () => { dispatch(fetchUserStage(address)) }
+      triggeringRefund
+        ? (err) => { if (!err) { dispatch(updateAssessmentVariable(address, 'refunded', true)) } }
+        : () => { dispatch(fetchUserStage(address)) }
     )
   }
 }
 
-export function reveal (address, score, salt) {
+export function reveal (address, score, salt, triggeringRefund = false) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
     sendAndReactToTransaction(
       dispatch,
       () => { return assessmentInstance.methods.reveal(score, salt).send({from: userAddress}) },
-      Stage.Committed,
+      triggeringRefund ? 'Refund' : Stage.Committed,
       userAddress,
       address,
-      () => { dispatch(fetchUserStage(address)) }
+      triggeringRefund
+        ? (err) => { if (!err) { dispatch(updateAssessmentVariable(address, 'refunded', true)) } }
+        : () => { dispatch(fetchUserStage(address)) }
     )
   }
 }
@@ -94,25 +101,24 @@ export function refund (address, stage) {
   return async (dispatch, getState) => {
     switch (stage) {
       case Stage.Called:
-        dispatch(confirmAssessor(address))
+      dispatch(confirmAssessor(address, true, ))
         break
       case Stage.Confirmed:
-        dispatch(commit(address, 10, 'hihi'))
+        dispatch(commit(address, 10, 'hihi', true))
         break
-      case Stage.Revealed:
-        dispatch(reveal(address, 10, 'hihi'))
+      case Stage.Committed:
+        dispatch(reveal(address, 10, 'hihi', true))
         break
       default:
         console.log('something went wrong with the refunding!!!')
     }
-    dispatch(updateAssessmentVariable(address, 'refunded', true))
   }
 }
 
 /*
   Called ONLY ONCE via the loading-hoc of FilterView-component.
   Fetches all data for all assessments (static, dynamic info & assessor-related info)
-  and sorts staked assessors to assessments.
+  using different methods for existing and cancelled (self-destructed) assessments
 */
 export function fetchLatestAssessments () {
   return async (dispatch, getState) => {

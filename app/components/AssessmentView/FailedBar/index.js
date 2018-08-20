@@ -3,7 +3,12 @@ import FailedBar from './FailedBar.js'
 import { refund } from '../../../actions/assessmentActions.js'
 
 const mapStateToProps = (state, ownProps) => {
-  return {}
+  return {
+    transactions: Object.values(state.transactions).filter(
+      tx => (tx.address === ownProps.assessment.address &&
+             tx.data === 'Refund')
+    )
+  }
 }
 
 const mapDispatchToProps = {
