@@ -45,7 +45,7 @@ export default FinalResultBar
 export const containerScore = styled('div').attrs({className: 'flex flex-row w-100 h3 items-center justify-center bt b--light-gray'})`
 `
 
-export const objectScoreText = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-center bl b--light-gray'})`
+export const objectScoreText = styled('div').attrs({className: 'flex flex-row w-100 h-100 items-center justify-center bl b--light-gray'})`
 `
 
 export const scoreTextResult = styled('h5').attrs({className: 'f5 fw4 dark-gray'})`
