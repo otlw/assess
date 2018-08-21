@@ -1,5 +1,6 @@
 import AssessmentList from '../AssessmentList'
-import AssessmentCard from '../AssessmentCard.js'
+// import AssessmentCard from '../AssessmentCard.js'
+import AssessmentCard from '../AssessmentCard'
 import { Stage } from '../../constants.js'
 import h from 'react-hyperscript'
 
@@ -20,6 +21,8 @@ export const AssessmentFilterView = (props) => {
     }),
     Completed: assessmentsAsList.filter(assessment => assessment.stage === Stage.Done)
   }
+
+  // console.log('----AssessmentLists: ', assessmentLists) // DEBUG ------
 
   // return view
   return h('div', Object.keys(assessmentLists).map((key, index) => {

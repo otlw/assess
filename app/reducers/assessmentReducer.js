@@ -26,6 +26,7 @@ assessmentAddress : {
      ...
   },
   payout: 20,
+  hidden: false
 }
  */
 function assessments (state = initialState, action) {

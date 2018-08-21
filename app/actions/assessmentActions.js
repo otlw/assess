@@ -230,6 +230,7 @@ export function fetchAssessmentData (address) {
           payout = pastEvents[0].returnValues['_value']
         }
       }
+      let hidden = await assessmentInstance.methods.hidden().call() || false
 
       dispatch(receiveAssessment({
         address,
@@ -246,7 +247,8 @@ export function fetchAssessmentData (address) {
         finalScore,
         data,
         assessors,
-        payout
+        payout,
+        hidden
       }))
     } catch (e) {
       console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
@@ -312,6 +314,7 @@ export function fetchStoredData (selectedAssessment) {
   }
 }
 
+
 /*
   Updates the store by calling the respective function for each type of event.
 */
@@ -360,6 +363,13 @@ export function processEvent (user, sender, topic) {
         console.log('no condition applied!', user, sender, topic)
     }
   }
+}
+
+export function toggleCardVisibility (address, hiddenStatus) {
+  console.log('----> INSIDE toggleCardVisibility')
+  console.log('address: ', address)
+  console.log('hiddenStatus: ', hiddenStatus)
+  return async (dispatch, getState) => dispatch(updateAssessmentVariable(address, 'hidden', hiddenStatus))
 }
 
 export function receiveAssessor (address, assessor) {
@@ -411,3 +421,17 @@ export function setAssessmentAsInvalid (address) {
     address
   }
 }
+
+// toggleCardVisibility
+// export function toggleCardVisibility (address, name = 'hidden', value = false) {
+//   return {
+//     type: UPDATE_ASSESSMENT_VARIABLE,
+//     address,
+//     name,
+//     value
+//   }
+// }
+
+
+
+

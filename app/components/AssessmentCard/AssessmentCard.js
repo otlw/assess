@@ -2,13 +2,18 @@ import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
-import { StageDisplayNames, Stage } from '../constants.js'
+import { StageDisplayNames, Stage } from '../../constants.js'
 
+// this.props.toggleCardVisibility (address, hiddenStatus)
 export class AssessmentCard extends Component {
   render () {
     const assessment = this.props.assessment
     let userStage = assessment.userStage
     let stage = assessment.stage
+
+    // TODO:
+    const setButton = (hidden) => hidden ? 'unhide' : 'hide'
+    let toggleHideButton = setButton(assessment.hidden)
 
     // set assessee/assessor view
     let isAssessee = false
@@ -65,8 +70,15 @@ export class AssessmentCard extends Component {
             h(cardLabel, 'Status'),
             h(cardTextStatusMsg, status)
           ]),
+
+          // TODO: 
+          // attach onClick method to toggleCardVisibility ==> dispatchAction
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
-            h(cardButtonSecondary, 'Hide'),
+            // h(cardButtonSecondary, {onClick: toggleCardVisibility}, visibilityButtonText),
+            h(cardButtonSecondary, {
+              onClick: () => this.props.toggleCardVisibility(this.props.userAddress, assessment.hidden = false)
+            }, toggleHideButton),
+
             h(cardButtonPrimary, { to: '/assessment/' + assessment.address }, StageDisplayNames[stage])
           ])
         ])
@@ -74,7 +86,10 @@ export class AssessmentCard extends Component {
     )
   }
 }
-
+// const toggleVisibility = (address, hidden) => {
+//   this.props.toggleCardVisibility (address, !hidden)
+//   toggleHideButton = setButton(!hidden)
+// }
 export default AssessmentCard
 
 // styles

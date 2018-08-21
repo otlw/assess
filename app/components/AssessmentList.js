@@ -1,3 +1,6 @@
+import { Component } from 'react'
+import AssessmentListTabbed from './AssessmentFilterView/AssessmentListTabbed'
+
 import h from 'react-hyperscript'
 import styled from 'styled-components'
 
@@ -9,12 +12,19 @@ const assessmentListStyle = {
 }
 
 export const AssessmentList = (props) => {
+
   if (props.assessments.length === 0) {
     return h('div', {style: assessmentListStyle.frame}, [
       h('h1', props.name),
       'None'
     ])
-  } else {
+  }
+
+  if (props.name === 'Available') {
+    return (h(AssessmentListTabbed, props))
+  }
+   
+  else {
     return (
       h(listContainer, [
         h('h1', props.name),
