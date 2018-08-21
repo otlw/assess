@@ -11,7 +11,6 @@ export class AssessmentCard extends Component {
     let userStage = assessment.userStage
     let stage = assessment.stage
 
-    // TODO:
     const setButton = (hidden) => hidden ? 'unhide' : 'hide'
     let toggleHideButton = setButton(assessment.hidden)
 
@@ -71,10 +70,7 @@ export class AssessmentCard extends Component {
             h(cardTextStatusMsg, status)
           ]),
 
-          // TODO: 
-          // attach onClick method to toggleCardVisibility ==> dispatchAction
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
-            // h(cardButtonSecondary, {onClick: toggleCardVisibility}, visibilityButtonText),
             h(cardButtonSecondary, {
               onClick: () => this.props.toggleCardVisibility(this.props.userAddress, assessment.hidden = false)
             }, toggleHideButton),
@@ -86,10 +82,7 @@ export class AssessmentCard extends Component {
     )
   }
 }
-// const toggleVisibility = (address, hidden) => {
-//   this.props.toggleCardVisibility (address, !hidden)
-//   toggleHideButton = setButton(!hidden)
-// }
+
 export default AssessmentCard
 
 // styles

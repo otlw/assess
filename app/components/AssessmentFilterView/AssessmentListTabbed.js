@@ -65,8 +65,6 @@ export class AssessmentListTabbed extends Component {
   } 
 }
 
-// const tabContainer = styled('div').attrs({className: 'flex flex-row self-center ba br1 blue mv2'})
-
 const listContainer = styled('div').attrs({className: 'flex flex-column w-100'})``
 
 const listContainerCards = styled('div').attrs({className: 'flex flex-row flex-wrap w-100 justify-center'})``

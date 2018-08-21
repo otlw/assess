@@ -366,9 +366,6 @@ export function processEvent (user, sender, topic) {
 }
 
 export function toggleCardVisibility (address, hiddenStatus) {
-  console.log('----> INSIDE toggleCardVisibility')
-  console.log('address: ', address)
-  console.log('hiddenStatus: ', hiddenStatus)
   return async (dispatch, getState) => dispatch(updateAssessmentVariable(address, 'hidden', hiddenStatus))
 }
 
@@ -422,15 +419,6 @@ export function setAssessmentAsInvalid (address) {
   }
 }
 
-// toggleCardVisibility
-// export function toggleCardVisibility (address, name = 'hidden', value = false) {
-//   return {
-//     type: UPDATE_ASSESSMENT_VARIABLE,
-//     address,
-//     name,
-//     value
-//   }
-// }
 
 
 
