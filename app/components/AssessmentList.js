@@ -20,13 +20,14 @@ export const AssessmentList = (props) => {
     ])
   }
 
-  if (props.name === 'Available') {
-    return (h(AssessmentListTabbed, props))
-  }
+  // if (props.name === 'Available') {
+  //   return (h(AssessmentListTabbed, props))
+  // }
    
   else {
     return (
       h(listContainer, [
+        // TODO add ShowHiddenButton-component here IF props.name = available
         h('h1', props.name),
         h(listContainerCards, props.assessments.map((assessment, k) => {
           return h(props.assessmentCard, {

@@ -11,9 +11,6 @@ export class AssessmentCard extends Component {
     let userStage = assessment.userStage
     let stage = assessment.stage
 
-    const setButton = (hidden) => hidden ? 'unhide' : 'hide'
-    let toggleHideButton = setButton(assessment.hidden)
-
     // set assessee/assessor view
     let isAssessee = false
     if (this.props.userAddress === assessment.assessee) {
@@ -72,8 +69,8 @@ export class AssessmentCard extends Component {
 
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
             h(cardButtonSecondary, {
-              onClick: () => this.props.toggleCardVisibility(this.props.userAddress, assessment.hidden = false)
-            }, toggleHideButton),
+              onClick: () => this.props.toggleCardVisibility(this.props.userAddress, !assessment.hidden)
+            }, assessment.hidden ? 'Unhide' : 'Hide'),
 
             h(cardButtonPrimary, { to: '/assessment/' + assessment.address }, StageDisplayNames[stage])
           ])

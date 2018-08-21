@@ -230,7 +230,7 @@ export function fetchAssessmentData (address) {
           payout = pastEvents[0].returnValues['_value']
         }
       }
-      let hidden = await assessmentInstance.methods.hidden().call() || false
+      let hidden = false
 
       dispatch(receiveAssessment({
         address,
@@ -366,7 +366,10 @@ export function processEvent (user, sender, topic) {
 }
 
 export function toggleCardVisibility (address, hiddenStatus) {
-  return async (dispatch, getState) => dispatch(updateAssessmentVariable(address, 'hidden', hiddenStatus))
+  console.log('called')
+  return async (dispatch, getState) => {
+    dispatch(updateAssessmentVariable(address, 'hidden', hiddenStatus))
+  }
 }
 
 export function receiveAssessor (address, assessor) {
