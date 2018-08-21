@@ -14,7 +14,6 @@ const assessmentListStyle = {
 // TODO: tabs should be rendered mo' better (e.g., in single row)
 // TODO: set a `loading` property in state, render 'loading...' until data is loaded
 export class AssessmentListTabbed extends Component {
-
   constructor (props) {
     super(props)
     this.state = {
@@ -44,11 +43,11 @@ export class AssessmentListTabbed extends Component {
     if (renderList.length === 0) {
       listContent = h('div', {style: assessmentListStyle.frame}, ['None'])
     } else {
-    	listContent = h(listContainerCards, renderList.map((assessment, k) => {
+      listContent = h(listContainerCards, renderList.map((assessment, k) => {
         return h(this.props.assessmentCard, {
           assessment,
           userAddress: this.props.userAddress,
-          networkID: this.props.networkID,
+          networkID: this.props.networkID
         })
       }))
     }
@@ -62,7 +61,7 @@ export class AssessmentListTabbed extends Component {
         listContent
       ])
     )
-  } 
+  }
 }
 
 const listContainer = styled('div').attrs({className: 'flex flex-column w-100'})``

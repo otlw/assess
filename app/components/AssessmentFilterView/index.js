@@ -11,6 +11,7 @@ const mapStateToProps = state => {
     assessments: state.assessments,
     userAddress: state.ethereum.userAddress,
     networkID: state.ethereum.networkID
+    // showHidden: state.navigation.showHidden // TODO write a button component that changes this
   }
 }
 
