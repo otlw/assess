@@ -1,11 +1,10 @@
 import { connect } from 'react-redux'
-import { compose } from 'redux'
 import AssessmentCard from './AssessmentCard.js'
 
 import { toggleCardVisibility } from '../../actions/assessmentActions.js'
 
 const mapDispatchToProps = {
-	toggleCardVisibility
+  toggleCardVisibility
 }
 
 export default connect(null, mapDispatchToProps)(AssessmentCard)

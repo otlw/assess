@@ -314,7 +314,6 @@ export function fetchStoredData (selectedAssessment) {
   }
 }
 
-
 /*
   Updates the store by calling the respective function for each type of event.
 */
@@ -421,8 +420,3 @@ export function setAssessmentAsInvalid (address) {
     address
   }
 }
-
-
-
-
-
