@@ -35,7 +35,7 @@ export class ProgressAndInputBar extends Component {
   setStakeAction () {
     this.setState({
       view: 'Stake',
-      displayText: 'Click to stake ' + Math.round(this.props.cost / 1e9) + ' AHA and become an assessor.',
+      displayText: 'Click to stake ' + this.props.cost + ' AHA and become an assessor.',
       action: this.stake
     })
   }

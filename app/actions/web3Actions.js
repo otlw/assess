@@ -1,5 +1,4 @@
-import Web3 from 'web3'
-import { getInstance } from '../utils.js'
+import { getInstance, hmmmToAha } from '../utils.js'
 import { networkName, LoadingStage } from '../constants.js'
 import { processEvent } from './assessmentActions.js'
 import { setMainDisplay } from './navigationActions.js'
@@ -162,7 +161,7 @@ export const fetchUserBalance = () => {
     if (fathomTokenInstance.error) {
       dispatch(setMainDisplay('UndeployedNetwork'))
     } else {
-      let userBalance = await fathomTokenInstance.methods.balanceOf(userAddress).call()
+      let userBalance = hmmmToAha(await fathomTokenInstance.methods.balanceOf(userAddress).call())
       dispatch(receiveVariable('AhaBalance', userBalance))
     }
   }
