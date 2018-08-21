@@ -2,7 +2,7 @@ import { Component } from 'react'
 import styled from 'styled-components'
 var h = require('react-hyperscript')
 
-export class modal extends Component {
+export class Modal extends Component {
   render () {
     return (
       h(appContainerObscurer, [
@@ -42,4 +42,4 @@ export const modalFooter = styled('div').attrs({className: 'flex flex-column ite
 export const modalButtonPrimary = styled('button').attrs({className: 'flex ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'})`
 background-color: #116187;`
 
-export default modal
+export default Modal

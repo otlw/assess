@@ -1,5 +1,6 @@
 import h from 'react-hyperscript'
 import styled from 'styled-components'
+import Modal from './uxobjects/Modal.js'
 
 const assessmentListStyle = {
   frame: {
@@ -15,8 +16,10 @@ export const AssessmentList = (props) => {
       'None'
     ])
   } else {
+    console.log(Modal)
     return (
       h(listContainer, [
+        h(Modal),
         h('h1', props.name),
         h(listContainerCards, props.assessments.map((assessment, k) => {
           return h(props.assessmentCard, {
