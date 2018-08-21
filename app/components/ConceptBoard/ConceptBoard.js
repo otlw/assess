@@ -56,10 +56,9 @@ export default ConceptBoard
 // styles
 
 const ConceptHeaderBox = styled('div')`
-background: #F2F2F2;
 width:100%;
 text-align:center;
 `
 
-const ConceptHeaderDefault = styled('div')`
+const ConceptHeaderDefault = styled('h3').attrs({className: 'f3 gray fw4'})`
 `
