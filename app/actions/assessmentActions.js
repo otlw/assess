@@ -36,7 +36,10 @@ export function confirmAssessor (address) {
       Stage.Called,
       userAddress,
       address,
-      () => { dispatch(fetchUserStage(address)) }
+      () => { 
+        dispatch(fetchUserStage(address)) 
+        dispatch(fetchUserBalance()) 
+      }
     )
   }
 }
