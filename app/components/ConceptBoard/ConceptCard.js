@@ -4,11 +4,14 @@ import h from 'react-hyperscript'
 
 export class ConceptCard extends Component {
   render () {
+    // NOTE once the concept definition process is more defined we will want to
+    // use the learnMore field that the ipfs description of a concept provides
+
     // set LearnMore link if it's provided by the concept data
-    let LearnMore = null
-    if (this.props.conceptData.learnMore) {
-      LearnMore = h(cardButtonSecondary, {href: this.props.conceptData.learnMore, target: '_blank'}, 'Learn')
-    }
+    // let LearnMore = null
+    // if (this.props.conceptData.learnMore) {
+    //   LearnMore = h(cardButtonSecondary, {href: this.props.conceptData.learnMore, target: '_blank'}, 'Learn')
+    // }
     return h(cardContainer, [
       h(cardContainerInfo, [
         h(cardTextObject, [
@@ -85,7 +88,7 @@ const cardButtonPrimary = styled('button').attrs({
 })`background-color: #116187;text-decoration:none;
 `
 
-const cardButtonSecondary = styled('div').attrs({
-  className: 'flex self-end ph4 pv2 fw4 f5 items-center align-center br-pill dark-blue'
-})`box-shadow: 0px 0px 0px 1px hsla(214, 100%, 31%, 0.1);
-`
+// const cardButtonSecondary = styled('div').attrs({
+//   className: 'flex self-end ph4 pv2 fw4 f5 items-center align-center br-pill dark-blue'
+// })`box-shadow: 0px 0px 0px 1px hsla(214, 100%, 31%, 0.1);
+// `
