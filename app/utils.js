@@ -8,7 +8,8 @@ function getContractInstance (web3, abi, address) {
 
 export const convertDate = (unixTimestamp) => {
   let date = new Date(unixTimestamp * 1000) // input in milliseconds
-  return date.toDateString()
+  // return date.toDateString()
+  return date.toLocaleString()
 }
 
 export const getInstance = {
@@ -44,6 +45,10 @@ export function convertFromUIScoreToOnChainScore (x) {
   return (x * 2) - 100
 }
 
+export function hmmmToAha (aha) {
+  return Math.round(Number(aha) / 1e9)
+}
+
 /*
 returns the message to be displayed on the assessment Card and DetailView, which is different depending on
 whether the user needs to be active, the assessment was cancelled and the phase of the assessment
@@ -58,7 +63,7 @@ export function statusMessage (isAssessee, assessment) {
       status += 'The assessment failed because you didn\'t ' + StageDisplayNames[assessment.stage] + '. Your fee has been burned.'
     } else {
       // other assessors are at fault
-      let nFailedAssessors = (assessment.size - assessment.done).toString()
+      let nFailedAssessors = assessment.size ? (assessment.size - assessment.done).toString() : 'some'
       status += 'The assessment failed because '
       if (assessment.violation === TimeOutReasons.NotEnoughAssessors) {
         status += 'less than 5 assessors staked.'
@@ -77,16 +82,10 @@ export function statusMessage (isAssessee, assessment) {
       // display payout (or score)?
       if (!isAssessee) {
         let gain = assessment.payout - assessment.cost
-        status = h('div', [
-          h('div', 'Payout :'),
-          h('div', (gain >= 0 ? '+' : '-') + gain.toString() + ' AHA')
-        ])
+        status = 'You risked ' + assessment.cost + ' and earned ' +  (gain >= 0 ? '+' : '-') + gain.toString() + ' AHA'
       } else {
         // user is assessee -> display score
-        status = h('div', [
-          h('div', 'Score :'),
-          h('div', assessment.finalScore + ' %')
-        ])
+          status += 'You finished with a score of ' + assessment.finalScore + ' %'
       }
     } else if (!actionRequired) {
       // assessment not done, but user must not do something

@@ -28,6 +28,10 @@ let assessmentAddress
 let size = 5
 let scores
 let validArgs = true
+let endTime = 7 * 24 * 3600
+let startTime = 3 * 24 * 3600
+startTime = 4
+endTime = 8
 
 // process command line args:
 if (process.argv.length > 2) {
@@ -114,6 +118,15 @@ async function uploadDescriptionToIPFS (string) {
   }
 }
 
+// prints the time of the chain and returns it in milliseconds
+async function getChainTime (web3, occasion) {
+  let timeFromBlock = (await web3.eth.getBlock('latest')).timestamp
+  let date = new Date(timeFromBlock * 1000) // input in milliseconds
+  let timeFromBlockReadable = date.toDateString()
+  console.log('TIME on ' + occasion, timeFromBlockReadable)
+  return {onchain: timeFromBlock, date: date, inMilliseconds: timeFromBlock * 1000, readable: timeFromBlockReadable}
+}
+
 async function test () {
   let conceptRegContract
   let fathomTokenContract
@@ -158,21 +171,16 @@ async function test () {
   // define constants for assessments
   console.log('Creating assessment....')
   const cost = 1e9
-  const endTime = 7 * 24 * 3600
-  const startTime = 3 * 24 * 3600
   let assessee = accounts[0]
 
   // create an assessment on concept
+  await getChainTime(web3, ' assessment creation: ')
   await conceptContract.methods.makeAssessment(cost, size, startTime, endTime).send({from: assessee, gas: 3200000})
   // use token events to get assessment address
   fathomTokenContract = await new web3.eth.Contract(FathomToken.abi, FathomToken.networks[net].address, {from: accounts[0]})
   let events = await fathomTokenContract.getPastEvents({fromBlock: 0, toBlock: 'latest'})
   assessmentAddress = events[events.length - 1].returnValues.sender
   console.log('New assessment with size', size, 'and cost', cost, ' created at address: ' + assessmentAddress)
-  let timeFromBlock = (await web3.eth.getBlock('latest')).timestamp
-  let date = new Date(timeFromBlock * 1000) // input in milliseconds
-  let timeFromBlockReadable = date.toDateString()
-  console.log('TIME:', timeFromBlockReadable)
 
   // run assessment
   assessmentContract = await new web3.eth.Contract(Assessment.abi, assessmentAddress, {from: accounts[0]})
@@ -194,16 +202,12 @@ async function test () {
     await assessmentContract.methods.confirmAssessor().send({from: assessors[0], gas: 3200000})
     console.log('travelling in time: to the future!!!')
     await evmIncreaseTime(web3, 3600 * 24 * 31)
-    let timeFromBlock = (await web3.eth.getBlock('latest')).timestamp
-    let date = new Date(timeFromBlock * 1000) // input in milliseconds
-    let timeFromBlockReadable = date.toDateString()
-    console.log('TIME:', timeFromBlockReadable)
     return
   }
 
   // commit
   if (runUntil >= Stage.commit) {
-    await evmIncreaseTime(web3, 60)
+    await evmIncreaseTime(web3, 2)
     if (!scores) {
       scores = new Array(size).fill(100)
     }
@@ -216,7 +220,7 @@ async function test () {
       console.log('Committing failed:', e.toString().substring(0, 200), '...')
     }
   } else {
-    await evmIncreaseTime(web3, 60)
+    await evmIncreaseTime(web3, 2)
     let tx = await assessmentContract.methods.commit(hashScoreAndSalt(80, 'hihi')).send({from: assessors[0], gas: 3200000})
     if (tx) {
       console.log('assessor 0 ', assessors[0], ' does commit, but then the rest fails!')

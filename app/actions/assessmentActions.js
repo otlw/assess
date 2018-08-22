@@ -1,4 +1,4 @@
-import { convertDate, getInstance, convertFromOnChainScoreToUIScore } from '../utils.js'
+import { convertDate, getInstance, convertFromOnChainScoreToUIScore, hmmmToAha } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
 import { fetchUserBalance } from './web3Actions.js'
 import { StageDisplayNames, Stage, LoadingStage, NotificationTopic, TimeOutReasons } from '../constants.js'
@@ -30,10 +30,15 @@ export function confirmAssessor (address, triggeringRefund = false) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
+    // TODO figure out how high this needs to be so fucking high for refund to work
+    let params = {from: userAddress}
+    if (triggeringRefund) {
+      params.gas = 320000
+    }
+    console.log('params', params)
     sendAndReactToTransaction(
       dispatch,
-      // TODO figure out how high this needs to be so fucking high for refund to work
-      () => { return assessmentInstance.methods.confirmAssessor().send({from: userAddress, gas: 320000}) },
+      () => { return assessmentInstance.methods.confirmAssessor().send(params) },
       triggeringRefund ? 'Refund' : Stage.Called,
       userAddress,
       address,
@@ -48,9 +53,14 @@ export function commit (address, score, salt, triggeringRefund = false) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
+    // TODO figure out how high this needs to be so fucking high for refund to work
+    let params = {from: userAddress}
+    if (triggeringRefund) {
+      params.gas = 320000
+    }
     sendAndReactToTransaction(
       dispatch,
-      () => { return assessmentInstance.methods.commit(hashScoreAndSalt(score, salt)).send({from: userAddress}) },
+      () => { return assessmentInstance.methods.commit(hashScoreAndSalt(score, salt)).send(params) },
       triggeringRefund ? 'Refund' : Stage.Confirmed,
       userAddress,
       address,
@@ -65,9 +75,14 @@ export function reveal (address, score, salt, triggeringRefund = false) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
+    let params = {from: userAddress}
+    if (triggeringRefund) {
+      // TODO figure out how high this needs to be so fucking high for refund to work
+      params.gas = 320000
+    }
     sendAndReactToTransaction(
       dispatch,
-      () => { return assessmentInstance.methods.reveal(score, salt).send({from: userAddress}) },
+      () => { return assessmentInstance.methods.reveal(score, salt).send(params) },
       triggeringRefund ? 'Refund' : Stage.Committed,
       userAddress,
       address,
@@ -156,6 +171,7 @@ export function fetchLatestAssessments () {
       }, [])
       // console.log('destructedAssessments ',destructedAssessments )
 
+      console.log('before', assessmentAddresses.length)
       // remove destruced assessments from list
       for (let add of destructedAssessments) {
         let idx = assessmentAddresses.indexOf(add)
@@ -224,7 +240,7 @@ export function reconstructAssessment (address, pastNotifications) {
     }
     if (userStage > Stage.Called || assessee === userAddress) {
       // console.log('interesting destructed assment:', stage, userStage, violation)
-      dispatch(receiveAssessment({
+      let reconstructedAssessment = {
         address,
         stage,
         userStage,
@@ -232,7 +248,9 @@ export function reconstructAssessment (address, pastNotifications) {
         concept: 'Unknown',
         refunded: true,
         assessee: assessee || null
-      }))
+      }
+      console.log('reconstructedAssessment', reconstructedAssessment)
+      dispatch(receiveAssessment(reconstructedAssessment))
     }
   }
 }
@@ -278,7 +296,7 @@ export function fetchAssessmentData (address) {
     try {
       // get static assessment info
       let assessmentInstance = getInstance.assessment(getState(), address)
-      let cost = await assessmentInstance.methods.cost().call()
+      let cost = hmmmToAha(await assessmentInstance.methods.cost().call())
       let endTime = await assessmentInstance.methods.endTime().call()
 
       // checkpoint -> keeps track of timelimits for 1) latest possible time to confirm and 2) earliest time to reveal
@@ -339,37 +357,36 @@ export function fetchAssessmentData (address) {
             toBlock: 'latest'
           }
           let pastEvents = await fathomTokenInstance.getPastEvents('Transfer', filter)
-          payout = pastEvents[0].returnValues['_value']
+          payout = hmmmToAha(pastEvents[0].returnValues['_value'])
         }
       }
 
       // see if assessment on track (not over timelimit)
-      let realNow = Date.now()  
+      let realNow = Date.now() / 1000
       console.log('realNow', convertDate(realNow))
       let testNow = (await getState().ethereum.web3.eth.getBlock('latest')).timestamp
       // console.log('testnnow', testNow, convertDate(testNow))
       // console.log('endTime', convertDate(Number(endTime)), testNow > Number(endTime))
-      // console.log('checking point:', convertDate(Number(checkpoint)), testNow > Number(checkpoint))
+      console.log('checking point:', convertDate(Number(checkpoint)), realNow > Number(checkpoint))
       // console.log('stage', StageDisplayNames[stage])
 
       let violation = 0
       switch (stage) {
         case Stage.Called:
-          if (testNow > Number(checkpoint)) { violation = TimeOutReasons.NotEnoughAssessors }
+          if (realNow > Number(checkpoint)) { violation = TimeOutReasons.NotEnoughAssessors }
           break
         case Stage.Confirmed:
-          if (testNow > Number(endTime)) { violation = TimeOutReasons.NotEnoughCommits }
+          if (realNow > Number(endTime)) { violation = TimeOutReasons.NotEnoughCommits }
           break
         case Stage.Committed:
-        console.log('condition is:', testNow , Number(endTime) + 24*60*60)
-          if (testNow > Number(endTime) + 24 * 60 * 60) { violation = TimeOutReasons.NotEnoughReveals }
+          // console.log('condition is:', testNow , Number(endTime) + 24*60*60)
+          if (realNow > Number(endTime) + 24 * 60 * 60) { violation = TimeOutReasons.NotEnoughReveals }
           break
         default:
           console.log('no violation. done:', stage === Stage.Done)
           violation = false
       }
-      // console.log('vio', violation)
-      violation = 3
+      console.log('assessment' + address + ' has timed out. reason: ', violation)
 
       dispatch(receiveAssessment({
         address,
