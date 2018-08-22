@@ -43,6 +43,7 @@ export class AssessmentCard extends Component {
     }
 
     /* start styling below */
+    console.log('ass', assessment)
     return (
       h(cardContainer, [
         h(cardContainerInfo, [
@@ -69,7 +70,7 @@ export class AssessmentCard extends Component {
 
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
             h(cardButtonSecondary, {
-              onClick: () => this.props.toggleCardVisibility(this.props.userAddress, !assessment.hidden)
+              onClick: () => this.props.toggleCardVisibility(assessment.address, !assessment.hidden)
             }, assessment.hidden ? 'Unhide' : 'Hide'),
 
             h(cardButtonPrimary, { to: '/assessment/' + assessment.address }, StageDisplayNames[stage])
