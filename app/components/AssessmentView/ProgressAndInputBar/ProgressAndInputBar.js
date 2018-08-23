@@ -44,7 +44,7 @@ export class ProgressAndInputBar extends Component {
   setCommitAction () {
     this.setState({
       view: 'Commit',
-      displayText: 'Enter the score you want to commit.',
+      displayText: 'Enter the score you want to commit:',
       action: this.commit
     })
   }
@@ -142,16 +142,19 @@ export class ProgressAndInputBar extends Component {
               h('img', {alt: 'icoClose', src: icoClose, className: ''})
             ]),
             h(rowObjectText, [
-              this.props.stage === Stage.Confirmed
+              h(StageDescriptor, this.state.displayText),
+              (this.props.stage === Stage.Confirmed
                 ? (
-                  h(rowObjectInput),
-                  h(inputProgressBar, {
-                    placeholder: 'Input your score here, from 0 to 100',
-                    step: 0.5,
-                    type: 'number',
-                    onChange: this.setScore.bind(this)})
+                  h(rowObjectInput, [
+                    h(inputProgressBar, {
+                      placeholder: 'Input your score here, from 0 to 100',
+                      step: 0.5,
+                      type: 'number',
+                      onChange: this.setScore.bind(this)})
+                  ])
                 )
-                : h(StageDescriptor, this.state.displayText)
+                : null
+              )
             ]),
             h(buttonSubmit, {onClick: this.state.action.bind(this)}, view)
           ])
@@ -272,7 +275,7 @@ export const StageDescriptor = styled('div').attrs({className: 'flex w-100 items
 export const rowObjectText = styled('div').attrs({className: 'flex w-100 items-center justify-between br b--light-gray f5 gray ttu uppercase'})`;
 `
 
-export const rowObjectInput = styled('div').attrs({className: 'flex w-100 h-100 items-center justify-center pv2 b--light-gray  f5 gray ttu uppercase'})`;
+export const rowObjectInput = styled('div').attrs({className: 'flex w-100 h-100 items-center justify-end pv2 b--light-gray  f5 gray ttu uppercase'})`;
 `
 
 export const buttonSubmit = styled('button').attrs({className: 'flex h3 items-center justify-center pv3 bn ph4 bg-light-green pointer ttu uppercase f5 '})`
@@ -290,6 +293,6 @@ export const inputMeetingPoint = styled('input').attrs({className: 'flex w-50 h3
 outline: none;
 `
 
-export const inputProgressBar = styled('input').attrs({className: 'flex w-20 h3 pv0 bg-light-gray bn '})`
+export const inputProgressBar = styled('input').attrs({className: 'flex w-80 h3 pv0 pl3 bg-light-gray bn '})`
 outline: none;
 `
