@@ -1,7 +1,7 @@
 import { Component } from 'react'
-
 import h from 'react-hyperscript'
 import styled from 'styled-components'
+import ToggleButton from 'react-toggle-button'
 
 const assessmentListStyle = {
   frame: {
@@ -10,59 +10,60 @@ const assessmentListStyle = {
   }
 }
 
-// TODO: activeTab should be highlighted in UI
-// TODO: tabs should be rendered mo' better (e.g., in single row)
 // TODO: set a `loading` property in state, render 'loading...' until data is loaded
 export class AssessmentListTabbed extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      activeTab: 'unhidden'// <-> 'hidden'
+      activateHidden: false
     }
-    this.selectTab = this.selectTab.bind(this)
+    this.toggleHidden = this.toggleHidden.bind(this)
   }
 
-  selectTab (e) {
-    e.preventDefault()
-    let activeTab = this.state.activeTab
-    let clickedTab = e.target.value
-    if (clickedTab !== activeTab) {
-      this.setState({activeTab: clickedTab})
-    }
+  toggleHidden (e) {
+    this.setState({activateHidden: !this.state.activateHidden})
   }
 
   render () {
-    let activeTab = this.state.activeTab
-    let listReducer = (accumulator, assessment) => {
-      assessment.hidden ? accumulator.hidden.push(assessment) : accumulator.unhidden.push(assessment)
-      return accumulator
-    }
-    let renderList = this.props.assessments.reduce(listReducer, {unhidden: [], hidden: []})[activeTab]
+    let hiddenPrefs = this.state.activateHidden
+    let filteredList = this.props.assessments.filter(assessment => assessment.hidden === hiddenPrefs)
 
-    let listContent
-    if (renderList.length === 0) {
-      listContent = h('div', {style: assessmentListStyle.frame}, ['None'])
-    } else {
-      listContent = h(listContainerCards, renderList.map((assessment, k) => {
+    let listContent = (filteredList.length === 0)
+      ? h('div', {style: assessmentListStyle.frame}, ['None'])
+      : h(listContainerCards, filteredList.map((assessment, k) => {
         return h(this.props.assessmentCard, {
           assessment,
           userAddress: this.props.userAddress,
           networkID: this.props.networkID
         })
       }))
-    }
 
-    return (
-      h(listContainer, [
+    return (h(listContainer, [
+      h(availableHeader, [
         h('h1', this.props.name),
-        h('div', 'Show:'),
-        h('input', {readOnly: true, value: 'unhidden', onClick: this.selectTab}),
-        h('input', {readOnly: true, value: 'hidden', onClick: this.selectTab}),
-        listContent
-      ])
-    )
+        h(styledToggleWrapper, [
+          h(styledToggleLabel, {active: this.state.activateHidden}, 'Show Hidden'),
+          h(ToggleButton, {value: this.state.activateHidden, onToggle: this.toggleHidden})
+        ])
+      ]),
+      listContent
+    ]))
   }
 }
+
+const availableHeader = styled('div')`
+  display: flex;
+  justify-content: space-between;
+`
+const styledToggleWrapper = styled('div')`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: baseline;
+  width: 200px;
+`
+const styledToggleLabel = styled('h4')`
+  color: ${props => props.active ? 'green' : '#8c8c8c'}
+`
 
 const listContainer = styled('div').attrs({className: 'flex flex-column w-100'})``
 

@@ -41,9 +41,9 @@ export class AssessmentCard extends Component {
     } else if (stage === Stage.Burned) {
       status = 'Canceled'
     }
+    // console.log('assessment: ', assessment)
 
     /* start styling below */
-    console.log('ass', assessment)
     return (
       h(cardContainer, [
         h(cardContainerInfo, [
