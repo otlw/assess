@@ -1,5 +1,5 @@
 // import { Component } from 'react'
-import AssessmentListTabbed from './AssessmentFilterView/AssessmentListTabbed'
+import AssessmentListToggle from './AssessmentFilterView/AssessmentListToggle'
 
 import h from 'react-hyperscript'
 import styled from 'styled-components'
@@ -19,22 +19,21 @@ export const AssessmentList = (props) => {
     ])
   }
   if (props.name === 'Available') {
-    return (h(AssessmentListTabbed, props))
-  } else {
-    return (
-      h(listContainer, [
-        // TODO add ShowHiddenButton-component here IF props.name = available
-        h('h1', props.name),
-        h(listContainerCards, props.assessments.map((assessment, k) => {
-          return h(props.assessmentCard, {
-            assessment,
-            userAddress: props.userAddress,
-            networkID: props.networkID
-          })
-        }))
-      ])
-    )
+    return (h(AssessmentListToggle, props))
   }
+  return (
+    h(listContainer, [
+      // TODO add ShowHiddenButton-component here IF props.name = available
+      h('h1', props.name),
+      h(listContainerCards, props.assessments.map((assessment, k) => {
+        return h(props.assessmentCard, {
+          assessment,
+          userAddress: props.userAddress,
+          networkID: props.networkID
+        })
+      }))
+    ])
+  )
 }
 
 const listContainer = styled('div').attrs({className: 'flex flex-column w-100'})``

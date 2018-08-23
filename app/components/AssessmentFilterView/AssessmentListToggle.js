@@ -11,7 +11,7 @@ const assessmentListStyle = {
 }
 
 // TODO: set a `loading` property in state, render 'loading...' until data is loaded
-export class AssessmentListTabbed extends Component {
+export class AssessmentListToggle extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -69,4 +69,4 @@ const listContainer = styled('div').attrs({className: 'flex flex-column w-100'})
 
 const listContainerCards = styled('div').attrs({className: 'flex flex-row flex-wrap w-100 justify-center'})``
 
-export default AssessmentListTabbed
+export default AssessmentListToggle
