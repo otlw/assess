@@ -15,9 +15,8 @@ export const AssessmentFilterView = (props) => {
       return assessment.stage > Stage.Called && assessment.stage < Stage.Done
     }),
     Available: assessmentsAsList.filter(assessment => {
-      return (props.userAddress !== assessment.assessee && assessment.stage === Stage.Called
-      // && (!assessment.hidden || (assessment.hidden && props.showHidden))
-      )
+      return (props.userAddress !== assessment.assessee && assessment.stage === Stage.Called &&
+              (!assessment.hidden || (assessment.hidden && props.showHidden)))
     }),
     Completed: assessmentsAsList.filter(assessment => assessment.stage === Stage.Done)
   }
@@ -27,6 +26,8 @@ export const AssessmentFilterView = (props) => {
       assessmentCard: AssessmentCard,
       assessments: assessmentLists[key],
       name: key,
+      showHidden: props.showHidden,
+      toggleHidden: props.toggleHidden,
       userAddress: userAddress,
       networkID: props.networkID
     })

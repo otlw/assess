@@ -2,7 +2,8 @@ import {
   SET_DASHBOARD_TAB,
   SET_MAIN_DISPLAY,
   SET_INPUT_BAR,
-  SET_NOTIFICATION_BAR
+  SET_NOTIFICATION_BAR,
+  TOGGLE_HIDDEN_CARDS
 } from '../actions/navigationActions.js'
 
 const initialState = {
@@ -11,7 +12,8 @@ const initialState = {
   notificationBar: {
     display: false
   },
-  inputBar: ''
+  inputBar: '',
+  showHiddenCards: false
 }
 
 export default function navigation (state = initialState, action) {
@@ -35,6 +37,11 @@ export default function navigation (state = initialState, action) {
       return {
         ...state,
         inputBar: action.inputType
+      }
+    case TOGGLE_HIDDEN_CARDS:
+      return {
+        ...state,
+        showHiddenCards: !state.showHiddenCards
       }
     default: return state
   }
