@@ -1,3 +1,12 @@
+const AssessorStage = Object.freeze({
+  None: 0,
+  Called: 1,
+  Confirmed: 2,
+  Committed: 3,
+  Done: 4,
+  Burned: 5
+})
+
 let options = {}
 options['-s'] = {
   'stage until to run the assessment': ['stake', 'commit', 'reveal (default)'],
@@ -221,11 +230,16 @@ async function test () {
     }
   } else {
     await evmIncreaseTime(web3, 2)
-    let tx = await assessmentContract.methods.commit(hashScoreAndSalt(80, 'hihi')).send({from: assessors[0], gas: 3200000})
-    if (tx) {
+    await assessmentContract.methods.commit(hashScoreAndSalt(80, 'hihi')).send({from: assessors[0], gas: 3200000})
+    // check whether this works
+    let assessorStatus = await assessmentContract.methods.assessorState(assessors[0]).call()
+    console.log('status', assessorStatus, ' 3 is committed')
+    if (Number(assessorStatus) === 3) {
+      console.log('all good')
       console.log('assessor 0 ', assessors[0], ' does commit, but then the rest fails!')
+    } else {
+      console.log('WARNING, assessor 0 has not committed.')
     }
-    console.log('tx', tx)
     console.log('travelling in time: to the future!!!')
     evmIncreaseTime(web3, (endTime + startTime) * 600)
     return
@@ -234,6 +248,7 @@ async function test () {
   // reveal
   if (runUntil >= Stage.reveal) {
     await evmIncreaseTime(web3, 60 * 60 * 12) // let 12h challenge period pass
+    console.log('try revealing...')
     try {
       for (let i in assessors) {
         await assessmentContract.methods.reveal(scores[i], 'hihi').send({from: assessors[i], gas: 3200000})
@@ -243,9 +258,20 @@ async function test () {
       console.log('Revealing failed:', e.toString().substring(0, 200), '...')
     }
   } else {
+    console.log('let reveal period pass')
     await evmIncreaseTime(web3, 60 * 60 * 12) // let 12h challenge period pass
-    console.log('assessors 0 ', assessors[0], ' does reveal, but then the rest fails!')
+    console.log('try have the first assessor reveals')
     await assessmentContract.methods.reveal(scores[0], 'hihi').send({from: assessors[0], gas: 3200000})
+    // check whether this works
+    console.log('checking assessor state')
+    let assessorStatus = await assessmentContract.methods.assessorState(assessors[0]).call()
+    console.log('status', assessorStatus, ' 3 is committed')
+    if (Number(assessorStatus) === 4) {
+      console.log('all good')
+      console.log('assessors 0 ', assessors[0], ' does reveal, but then the rest fails!')
+    } else {
+      console.log('WARNING, assessor 0 has not revealed.')
+    }
     console.log('travelling in time: to the future!!!')
     evmIncreaseTime(web3, (endTime + startTime) * 6)
     return

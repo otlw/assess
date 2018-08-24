@@ -1,6 +1,5 @@
-let { Assessment, Concept, FathomToken, ConceptRegistry } = require('fathom-contracts')
 import { Stage, TimeOutReasons, StageDisplayNames } from './constants.js'
-import h from 'react-hyperscript'
+let { Assessment, Concept, FathomToken, ConceptRegistry } = require('fathom-contracts')
 
 function getContractInstance (web3, abi, address) {
   return new web3.eth.Contract(abi, address)
@@ -82,10 +81,10 @@ export function statusMessage (isAssessee, assessment) {
       // display payout (or score)?
       if (!isAssessee) {
         let gain = assessment.payout - assessment.cost
-        status = 'You risked ' + assessment.cost + ' and earned ' +  (gain >= 0 ? '+' : '-') + gain.toString() + ' AHA'
+        status = 'You risked ' + assessment.cost + ' and earned ' + (gain >= 0 ? '+' : '-') + gain.toString() + ' AHA'
       } else {
         // user is assessee -> display score
-          status += 'You finished with a score of ' + assessment.finalScore + ' %'
+        status += 'You finished with a score of ' + assessment.finalScore + ' %'
       }
     } else if (!actionRequired) {
       // assessment not done, but user must not do something
@@ -99,4 +98,3 @@ export function statusMessage (isAssessee, assessment) {
   }
   return status
 }
-

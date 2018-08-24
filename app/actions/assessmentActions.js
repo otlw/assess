@@ -1,7 +1,7 @@
 import { convertDate, getInstance, convertFromOnChainScoreToUIScore, hmmmToAha } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
 import { fetchUserBalance } from './web3Actions.js'
-import { StageDisplayNames, Stage, LoadingStage, NotificationTopic, TimeOutReasons } from '../constants.js'
+import { Stage, LoadingStage, NotificationTopic, TimeOutReasons } from '../constants.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const REMOVE_ASSESSMENT = 'REMOVE_ASSESSMENT'
@@ -116,7 +116,7 @@ export function refund (address, stage) {
   return async (dispatch, getState) => {
     switch (stage) {
       case Stage.Called:
-      dispatch(confirmAssessor(address, true, ))
+        dispatch(confirmAssessor(address, true))
         break
       case Stage.Confirmed:
         dispatch(commit(address, 10, 'hihi', true))
@@ -234,7 +234,7 @@ export function reconstructAssessment (address, pastNotifications) {
         default:
           if (Number(not.returnValues.topic) !== NotificationTopic.CalledAsAssessor ||
               Number(not.returnValues.topic) !== NotificationTopic.AssessmentCancelled) {
-            console.log('whooopsi. this should not be reached! topic:', Number(not.returnValues.topic)) //TODO no idea why this is reached sometimes, but it does not seem to hurt anything
+            console.log('whooopsi. this should not be reached! topic:', Number(not.returnValues.topic)) // TODO no idea why this is reached sometimes, but it does not seem to hurt anything
           }
       }
     }
@@ -364,7 +364,7 @@ export function fetchAssessmentData (address) {
       // see if assessment on track (not over timelimit)
       let realNow = Date.now() / 1000
       console.log('realNow', convertDate(realNow))
-      let testNow = (await getState().ethereum.web3.eth.getBlock('latest')).timestamp
+      // let testNow = (await getState().ethereum.web3.eth.getBlock('latest')).timestamp
       // console.log('testnnow', testNow, convertDate(testNow))
       // console.log('endTime', convertDate(Number(endTime)), testNow > Number(endTime))
       console.log('checking point:', convertDate(Number(checkpoint)), realNow > Number(checkpoint))
@@ -518,6 +518,7 @@ export function processEvent (user, sender, topic) {
       case NotificationTopic.AssessmentCancelled:
         if (isUser) {
           dispatch(updateAssessmentVariable(sender, 'refunded', true))
+          dispatch(fetchUserBalance())
         }
         break
       default:
