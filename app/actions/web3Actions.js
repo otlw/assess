@@ -1,3 +1,4 @@
+import Web3 from 'web3'
 import { getInstance, hmmmToAha } from '../utils.js'
 import { networkName, LoadingStage } from '../constants.js'
 import { processEvent } from './assessmentActions.js'

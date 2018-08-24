@@ -36,7 +36,6 @@ export function hmmmToAha (aha) {
   return Math.round(Number(aha) / 1e9)
 }
 
-
 // convert score UI/SmartContracts
 
 export function convertFromOnChainScoreToUIScore (x) {
