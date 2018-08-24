@@ -5,7 +5,6 @@ import ProgressAndInputBar from './ProgressAndInputBar'
 import FinalResultBar from './FinalResultBar.js'
 import { StageDisplayNames, Stage } from '../../constants.js'
 import { convertDate } from '../../utils.js'
-// Do we still need this? -> import { ViewMeetingPoint } from './MeetingPoint/MeetingPointEditBox.js'
 import styled from 'styled-components'
 var h = require('react-hyperscript')
 
@@ -49,7 +48,7 @@ export class AssessmentData extends Component {
               ]),
               h(assessmentObjectText, [
                 h(assessmentLabelBody, 'Fee'),
-                h(assessmentTextBody, Math.round(assessment.cost / 1e9) + 'AHA')
+                h(assessmentTextBody, assessment.cost + ' AHA')
               ]),
               h(assessmentObjectText, [
                 h(assessmentLabelBody, 'Meeting Point'),
