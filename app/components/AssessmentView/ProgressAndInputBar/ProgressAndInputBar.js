@@ -193,13 +193,8 @@ export class ProgressAndInputBar extends Component {
       [Stage.Confirmed]: this.setCommitAction.bind(this),
       [Stage.Committed]: this.setRevealAction.bind(this)
     }
-    console.log('args:============', StageDisplayNames[phase])
-    // console.log('phase', phase)
-    // console.log('assessmentStage', assessmentStage)
-    // console.log('userStage', userStage)
     if (phase < assessmentStage) {
       // -> phase is completed:
-      console.log('past')
       return h(containerProgressButton, [
         h(buttonProgressPast, PassiveStageDisplayNames[phase])
       ])
@@ -207,11 +202,9 @@ export class ProgressAndInputBar extends Component {
       // -> phase is not completed and...
       if (userStage > assessmentStage) {
         //  ...user is done already
-        console.log('inactive')
         return h(containerProgressBar, [h(buttonProgressInactive, PassiveStageDisplayNames[phase])])
       } else {
         // ...user needs to do something
-        console.log('active', userStage === Stage.None ? 'but disabled' : '')
         return h(containerProgressButton, [
           h(buttonProgressActive, {
             onClick: stageFunctions[assessmentStage],
@@ -221,7 +214,6 @@ export class ProgressAndInputBar extends Component {
       }
     } else {
       // -> phase is in the future
-      console.log('future')
       return h(containerProgressButton, [h(buttonProgressFuture, StageDisplayNames[phase])])
     }
   }

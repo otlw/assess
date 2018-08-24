@@ -42,16 +42,16 @@ class FinalResultBar extends Component {
 
 export default FinalResultBar
 
-export const containerScore = styled('div').attrs({className: 'flex flex-row w-100 h3 items-center justify-center bt b--light-gray'})`
+const containerScore = styled('div').attrs({className: 'flex flex-row w-100 h3 items-center justify-center bt b--light-gray'})`
 `
 
-export const objectScoreText = styled('div').attrs({className: 'flex flex-row w-100 h-100 items-center justify-center bl b--light-gray'})`
+const objectScoreText = styled('div').attrs({className: 'flex flex-row w-100 h-100 items-center justify-center bl b--light-gray'})`
 `
 
-export const scoreTextResult = styled('h5').attrs({className: 'f5 fw4 dark-gray'})`
+const scoreTextResult = styled('h5').attrs({className: 'f5 fw4 dark-gray'})`
 `
 
-export const scoreTextAssessor = styled('div').attrs({className: 'flex f-100'})`
+const scoreTextAssessor = styled('div').attrs({className: 'flex f-100'})`
 `
-export const scoreTextReward = styled('h5').attrs({className: 'f5 fw4 dark-gray'})`
+const scoreTextReward = styled('h5').attrs({className: 'f5 fw4 dark-gray'})`
 `
