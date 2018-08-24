@@ -17,25 +17,20 @@ export const AssessmentList = (props) => {
         : h('h1', props.name)),
       // show assessments or string 'None'
       (props.assessments.length === 0
-       ? 'None'
-       : h(listContainerCards, props.assessments.map((assessment, k) => {
-         return h(props.assessmentCard, {
-           assessment,
-           userAddress: props.userAddress,
-           networkID: props.networkID
-         })
-       }))
+        ? 'None'
+        : h(listContainerCards, props.assessments.map((assessment, k) => {
+          return h(props.assessmentCard, {
+            assessment,
+            userAddress: props.userAddress,
+            networkID: props.networkID
+          })
+        }))
       )
     ])
   )
 }
 
-const assessmentListStyle = {
-  frame: {
-    padding: '1em',
-    border: '0.5px solid lightgrey'
-  }
-}
+export default AssessmentList
 
 const listContainer = styled('div').attrs({className: 'flex flex-column w-100'})``
 
@@ -55,4 +50,3 @@ const availableHeader = styled('div')`
   display: flex;
   justify-content: space-between;
 `
-export default AssessmentList
