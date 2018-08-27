@@ -14,7 +14,7 @@ export const CertificateList = (props) => {
   return h(AssessmentList, {
     assessmentCard: CardCertificate,
     assessments: completedAsAssessee,
-    name: 'You successfully completed these assessments:',
+    name: 'Your Certificates',
     userAddress: props.userAddress
   })
 }

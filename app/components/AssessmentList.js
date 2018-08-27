@@ -2,7 +2,13 @@ import ToggleButton from 'react-toggle-button'
 import h from 'react-hyperscript'
 import styled from 'styled-components'
 
-export const AssessmentList = (props) => {
+const listDescriptions = Object.freeze({
+  Current: 'This is where you\'ll see the assessments you are involved in!',
+  Available: 'This is where you\'ll see assessments you can help assess. ',
+  Completed: 'This is where you\'ll the see assessments that you have participated in the past.'
+})
+
+const AssessmentList = (props) => {
   return (
     h(listContainer, [
       // show toggle button if it's the available list

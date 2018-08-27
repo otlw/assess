@@ -71,7 +71,7 @@ export class App extends Component {
   }
 }
 
-const appContainer = styled('div').attrs({className: 'flex flex-column w-100 pa2'})``
+const appContainer = styled('div').attrs({className: 'flex flex-column w-100'})``
 
 const mapStateToProps = state => {
   return {
