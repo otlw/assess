@@ -38,7 +38,8 @@
     "truffle": "4.1.7",
     "webpack": "^4.2.0",
     "webpack-cli": "^2.0.12",
-    "webpack-dev-server": "^3.1.1"
+    "webpack-dev-server": "^3.1.1",
+    "websocket": "^1.0.26"
   },
   "dependencies": {
     "bignumber.js": "^6.0.0",
