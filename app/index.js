@@ -9,6 +9,7 @@ import styled from 'styled-components'
 
 const topLevelStyles = styled('div')`
 font-family:'system-ui', 'Helvetica Neue', sans-serif;
+font-weight: 400;
 `
 
 const store = createStore(
