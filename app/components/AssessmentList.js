@@ -1,23 +1,22 @@
 import h from 'react-hyperscript'
 import styled from 'styled-components'
 
-const assessmentListStyle = {
-  frame: {
-    padding: '1em',
-    border: '0.5px solid lightgrey'
-  }
-}
+const listDescriptions = Object.freeze({
+  Current: 'This is where you\'ll see the assessments you are involved in!',
+  Available: 'This is where you\'ll see assessments you can help assess. ',
+  Completed: 'This is where you\'ll the see assessments that you have participated in the past.'
+})
 
 export const AssessmentList = (props) => {
   if (props.assessments.length === 0) {
-    return h('div', {style: assessmentListStyle.frame}, [
-      h('h1', props.name),
-      'None'
+    return h(listContainer, [
+      h(listTextTitle, props.name),
+      h(listTextDescription, listDescriptions[props.name])
     ])
   } else {
     return (
       h(listContainer, [
-        h('h1', props.name),
+        h(listTextTitle, props.name),
         h(listContainerCards, props.assessments.map((assessment, k) => {
           return h(props.assessmentCard, {
             assessment,
@@ -30,8 +29,12 @@ export const AssessmentList = (props) => {
   }
 }
 
-const listContainer = styled('div').attrs({className: 'flex flex-column w-100'})``
+const listContainer = styled('div').attrs({className: 'flex flex-column w-100 pa2'})``
 
 const listContainerCards = styled('div').attrs({className: 'flex flex-row flex-wrap w-100 justify-center'})``
+
+const listTextTitle = styled('h3').attrs({className: 'f3 fw4 gray tc ttu uppercase'})``
+
+const listTextDescription = styled('h4').attrs({className: 'f4 fw4 gray tc'})``
 
 export default AssessmentList
