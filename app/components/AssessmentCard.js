@@ -20,8 +20,7 @@ export class AssessmentCard extends Component {
         h(cardContainerInfo, [
           h(cardTextObject, [
             h(cardTextTitle, 'Assessment'),
-            // h(ConceptName, assessment.conceptData.name || assessment.conceptData)
-            h(ConceptName, assessment.conceptData)
+            h(ConceptName, assessment.conceptData.name)
           ]),
           h(cardTextObject, [
             h(cardLabel, 'Assessee'),

@@ -1,4 +1,4 @@
-import { convertDate, getInstance, convertFromOnChainScoreToUIScore, hmmmToAha } from '../utils.js'
+import { getInstance, convertFromOnChainScoreToUIScore, hmmmToAha } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
 import { fetchUserBalance } from './web3Actions.js'
 import { Stage, LoadingStage, NotificationTopic, TimeOutReasons } from '../constants.js'
@@ -159,7 +159,7 @@ export function fetchLatestAssessments () {
       // get notification events from fathomToken contract
       const fathomTokenInstance = getInstance.fathomToken(getState())
       let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {
-        fromBlock: 0,
+        fromBlock: 0, // TODO avoid this
         toBlock: 'latest'
       })
 
@@ -176,7 +176,6 @@ export function fetchLatestAssessments () {
       // filter out destructed-assessments
       let destructedAssessments = pastNotifications.reduce((accumulator, notification) => {
         let assessment = notification.returnValues.sender
-        // console.log('notification',notification.returnValues)
         // save all addressess where the user is involved but which were destructed
         if (assessmentAddresses.indexOf(assessment) !== -1 &&
           Number(notification.returnValues.topic) === NotificationTopic.AssessmentCancelled) {
@@ -184,15 +183,12 @@ export function fetchLatestAssessments () {
         }
         return accumulator
       }, [])
-      // console.log('destructedAssessments ',destructedAssessments )
 
-      console.log('before', assessmentAddresses.length)
       // remove destruced assessments from list
       for (let add of destructedAssessments) {
         let idx = assessmentAddresses.indexOf(add)
         if (idx > -1) { assessmentAddresses.splice(idx, 1) }
       }
-      console.log('after', assessmentAddresses.length)
 
       // and fetch the data for them by reconstruction from events
       destructedAssessments.forEach((address) => {
@@ -213,58 +209,61 @@ export function fetchLatestAssessments () {
   - last assessment stage
   - userStage
   - assessee
-  - concept (NOT YET)
-  NOTE: this assumes events are in chronological order -> TODO only save if value is > than what is saved so far
+  - concept (TODO)
   */
 export function reconstructAssessment (address, pastNotifications) {
   return async (dispatch, getState) => {
-    let stage = Stage.Called
-    let userStage = Stage.Called
+    // let's not rely on events to be chronologically ordered
+    const updateStage = (newStage, value) => { return newStage >= value ? newStage : value }
+    let stage = Stage.None
+    let userStage = Stage.None
     let violation = TimeOutReasons.NotEnoughAssessors
     let assessee = null
     let userAddress = getState().ethereum.userAddress
     // let concept = pastNotifications[0].returnvalues.sender // TODO figure out where to get this from
-    for (let not of pastNotifications) {
-      switch (Number(not.returnValues.topic)) {
+    for (let notification of pastNotifications) {
+      switch (Number(notification.returnValues.topic)) {
         case NotificationTopic.AssessmentCreated:
-          userStage = Stage.None
-          assessee = not.returnValues.user
+          assessee = notification.returnValues.user
+          break
+        case NotificationTopic.CalledAsAssessor:
+          if (notification.returnValues.user === userAddress) {
+            userStage = updateStage(userStage, Stage.Called)
+          }
           break
         case NotificationTopic.ConfirmedAsAssessor:
-          if (not.returnValues.user === userAddress) {
-            userStage = Stage.Confirmed
+          if (notification.returnValues.user === userAddress) {
+            userStage = updateStage(userStage, Stage.Confirmed)
           }
           break
         case NotificationTopic.AssessmentStarted:
-          stage = Stage.Confirmed
+          stage = updateStage(stage, Stage.Confirmed)
           violation = TimeOutReasons.NotEnoughCommits
           break
         case NotificationTopic.RevealScore:
-          stage = Stage.Committed
+          stage = updateStage(stage, Stage.Committed)
           violation = TimeOutReasons.NotEnoughReveals
-          if (not.returnValues.user === userAddress) {
-            userStage = Stage.Committed
+          if (notification.returnValues.user === userAddress) {
+            userStage = updateStage(userStage, Stage.Committed)
           }
           break
         default:
-          if (Number(not.returnValues.topic) !== NotificationTopic.CalledAsAssessor ||
-              Number(not.returnValues.topic) !== NotificationTopic.AssessmentCancelled) {
-            console.log('whooopsi. this should not be reached! topic:', Number(not.returnValues.topic)) // TODO no idea why this is reached sometimes, but it does not seem to hurt anything
+          if (Number(notification.returnValues.topic) !== NotificationTopic.CalledAsAssessor ||
+              Number(notification.returnValues.topic) !== NotificationTopic.AssessmentCancelled) {
+            console.log('whooopsi. this should not be reached! topic:', Number(notification.returnValues.topic)) // TODO no idea why this is reached sometimes, but it does not seem to hurt anything
           }
       }
     }
     if (userStage > Stage.Called || assessee === userAddress) {
-      // console.log('interesting destructed assment:', stage, userStage, violation)
       let reconstructedAssessment = {
         address,
         stage,
         userStage,
         violation,
-        concept: 'Unknown',
+        conceptData: {name: 'Unknown', description: 'Unknown'}, // TODO get this from local storage
         refunded: true,
         assessee: assessee || null
       }
-      console.log('reconstructedAssessment', reconstructedAssessment)
       dispatch(receiveAssessment(reconstructedAssessment))
     }
   }
