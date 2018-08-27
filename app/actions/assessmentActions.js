@@ -43,7 +43,12 @@ export function confirmAssessor (address, triggeringRefund = false) {
       userAddress,
       address,
       triggeringRefund
-        ? (err) => { if (!err) { dispatch(updateAssessmentVariable(address, 'refunded', true)) } }
+        ? (err) => {
+          if (!err) {
+            dispatch(updateAssessmentVariable(address, 'refunded', true))
+            dispatch(fetchUserBalance(address))
+          }
+        }
         : () => { dispatch(fetchUserStage(address)) }
     )
   }
@@ -65,7 +70,12 @@ export function commit (address, score, salt, triggeringRefund = false) {
       userAddress,
       address,
       triggeringRefund
-        ? (err) => { if (!err) { dispatch(updateAssessmentVariable(address, 'refunded', true)) } }
+        ? (err) => {
+          if (!err) {
+            dispatch(updateAssessmentVariable(address, 'refunded', true))
+            dispatch(fetchUserBalance(address))
+          }
+        }
         : () => { dispatch(fetchUserStage(address)) }
     )
   }
@@ -87,7 +97,12 @@ export function reveal (address, score, salt, triggeringRefund = false) {
       userAddress,
       address,
       triggeringRefund
-        ? (err) => { if (!err) { dispatch(updateAssessmentVariable(address, 'refunded', true)) } }
+        ? (err) => {
+          if (!err) {
+            dispatch(updateAssessmentVariable(address, 'refunded', true))
+            dispatch(fetchUserBalance(address))
+          }
+        }
         : () => { dispatch(fetchUserStage(address)) }
     )
   }
@@ -363,13 +378,6 @@ export function fetchAssessmentData (address) {
 
       // see if assessment on track (not over timelimit)
       let realNow = Date.now() / 1000
-      console.log('realNow', convertDate(realNow))
-      // let testNow = (await getState().ethereum.web3.eth.getBlock('latest')).timestamp
-      // console.log('testnnow', testNow, convertDate(testNow))
-      // console.log('endTime', convertDate(Number(endTime)), testNow > Number(endTime))
-      console.log('checking point:', convertDate(Number(checkpoint)), realNow > Number(checkpoint))
-      // console.log('stage', StageDisplayNames[stage])
-
       let violation = 0
       switch (stage) {
         case Stage.Called:
@@ -379,15 +387,11 @@ export function fetchAssessmentData (address) {
           if (realNow > Number(endTime)) { violation = TimeOutReasons.NotEnoughCommits }
           break
         case Stage.Committed:
-          // console.log('condition is:', testNow , Number(endTime) + 24*60*60)
           if (realNow > Number(endTime) + 24 * 60 * 60) { violation = TimeOutReasons.NotEnoughReveals }
           break
         default:
-          console.log('no violation. done:', stage === Stage.Done)
-          violation = false
+          console.log('no violation')
       }
-      console.log('assessment' + address + ' has timed out. reason: ', violation)
-
       dispatch(receiveAssessment({
         address,
         cost,

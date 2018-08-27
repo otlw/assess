@@ -265,7 +265,7 @@ async function test () {
     // check whether this works
     console.log('checking assessor state')
     let assessorStatus = await assessmentContract.methods.assessorState(assessors[0]).call()
-    console.log('status', assessorStatus, ' 3 is committed')
+    console.log('status', assessorStatus, ' 4 is revealed')
     if (Number(assessorStatus) === 4) {
       console.log('all good')
       console.log('assessors 0 ', assessors[0], ' does reveal, but then the rest fails!')

@@ -15,10 +15,6 @@ export class AssessmentCard extends Component {
     let isAssessee = this.props.userAddress === assessment.assessee
     let actionRequired = stage === userStage && stage !== Stage.Done
     let status = statusMessage(isAssessee, assessment)
-    // size is only present if the assessmentData has been read before it was self-destructed
-    // let hasLoadedDetails = this.props.assessment.size
-    /* start styling below */
-    console.log('ass', assessment)
     return (
       h(cardContainer, [
         h(cardContainerInfo, [
