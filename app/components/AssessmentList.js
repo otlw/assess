@@ -5,7 +5,7 @@ import styled from 'styled-components'
 const listDescriptions = Object.freeze({
   Current: 'This is where you\'ll see the assessments you are involved in!',
   Available: 'This is where you\'ll see assessments you can help assess. ',
-  Completed: 'This is where you\'ll the see assessments that you have participated in the past.'
+  Past: 'This is where you\'ll the see assessments that you have participated in the past.'
 })
 
 const AssessmentList = (props) => {
@@ -23,7 +23,7 @@ const AssessmentList = (props) => {
         : h('h1', props.name)),
       // show assessments or string 'None'
       (props.assessments.length === 0
-        ? 'None'
+        ? (listTextDescription, listDescriptions[props.name])
         : h(listContainerCards, props.assessments.map((assessment, k) => {
           return h(props.assessmentCard, {
             assessment,
@@ -56,3 +56,5 @@ const availableHeader = styled('div')`
   display: flex;
   justify-content: space-between;
 `
+
+const listTextDescription = styled('h4').attrs({className: 'f4 fw4 gray tc'})``
