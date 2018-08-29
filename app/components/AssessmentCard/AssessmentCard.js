@@ -73,7 +73,7 @@ export class AssessmentCard extends Component {
               onClick: () => this.props.toggleCardVisibility(assessment.address, !assessment.hidden)
             }, assessment.hidden ? 'Unhide' : 'Hide'),
 
-            h(cardButtonPrimary, { to: '/assessment/' + assessment.address }, StageDisplayNames[stage])
+            h(cardButtonPrimary, { to: '/assessment/' + assessment.address }, userStage === Stage.None ? 'View' : StageDisplayNames[stage])
           ])
         ])
       ])
