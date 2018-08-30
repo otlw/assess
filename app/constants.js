@@ -35,7 +35,6 @@ export function networkName (id) {
       return 'Kovan'
     default:
       return id.toString()
-      // return 'Local'
   }
 }
 

@@ -37,8 +37,8 @@ export const connect = () => {
           dispatch(fetchUserBalance())
         }
 
-        // load persistedState for the respective network
-        dispatch(loadPersistedState(networkID))
+        // load persistedState for the respective network and the user
+        dispatch(loadPersistedState(networkID, accounts[0]))
 
         // set a second web3 instance to subscribe to events via websocket
         if (networkName(networkID) === 'Kovan') {
@@ -70,12 +70,12 @@ export const connect = () => {
   }
 }
 
-const loadPersistedState = (networkID) => {
+const loadPersistedState = (networkID, userAddress) => {
   return async (dispatch, getState) => {
     console.log('called loadPersistedState ')
     let persistedState
     try {
-      let key = networkName(networkID) + 'State'
+      let key = networkName(networkID) + 'State' + userAddress
       const serializedState = localStorage.getItem(key)
       if (serializedState === null) {
         return undefined

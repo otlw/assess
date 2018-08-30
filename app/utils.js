@@ -45,16 +45,13 @@ export function convertFromUIScoreToOnChainScore (x) {
 
 export const saveState = (state) => {
   if (state.ethereum.isConnected) {
-    console.log('state in save', state)
     try {
       let stateToSave = {
         assessments: state.assessments,
         concepts: state.concepts,
         latestBlock: state.ethereum.latestBlock
       }
-      console.log('save this State :', stateToSave)
-      let key = networkName(state.ethereum.networkID) + 'State'
-      console.log('under this key ', key )
+      let key = networkName(state.ethereum.networkID) + 'State' + state.ethereum.userAddress
       const serializedState = JSON.stringify(stateToSave)
       localStorage.setItem(key, serializedState)
     } catch (err) {
