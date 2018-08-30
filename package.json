@@ -12,7 +12,8 @@
     "lint": "standard --verbose './app/index.js' './app/**/*.js'| snazzy ",
     "fix": "standard --fix './app/index.js' './app/**/*.js' ",
     "build": "webpack",
-    "dev": "webpack-dev-server --open"
+    "dev": "webpack-dev-server --open",
+    "test:react": "jest"
   },
   "author": "Jared Pereira",
   "license": "MIT",
@@ -32,6 +33,7 @@
     "fathom-contracts": "^1.2.2",
     "file-loader": "^1.1.11",
     "ganache-cli": "^6.1.0",
+    "jest": "^23.5.0",
     "snazzy": "^7.1.1",
     "standard": "^11.0.1",
     "styled-components": "^3.2.5",
@@ -47,8 +49,8 @@
     "ethereumjs-abi": "^0.6.4",
     "hyperscript": "^2.0.2",
     "ipfs-api": "^22.2.4",
-    "react": "^15.5.0",
-    "react-dom": "^15.5.0",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
     "react-hyperscript": "^3.2.0",
     "react-redux": "^5.0.5",
     "react-router-dom": "^4.2.2",
