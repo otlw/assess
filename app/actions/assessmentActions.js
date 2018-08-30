@@ -178,7 +178,6 @@ export function fetchAssessmentData (address) {
       let stage = Number(await assessmentInstance.methods.assessmentStage().call())
 
       // handle concept data
-
       let conceptDataHex = await conceptInstance.methods.data().call()
       let decodedConceptDataHash = Buffer.from(conceptDataHex.slice(2), 'hex').toString('utf8')
       let decodedConceptData

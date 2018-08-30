@@ -4,6 +4,7 @@ import { networkName, LoadingStage } from '../constants.js'
 import { processEvent } from './assessmentActions.js'
 import { setMainDisplay } from './navigationActions.js'
 var Dagger = require('eth-dagger')
+const { FathomToken } = require('fathom-contracts')
 
 export const WEB3_CONNECTED = 'WEB3_CONNECTED'
 export const WEB3EVENTS_CONNECTED = 'WEB3EVENTS_CONNECTED'
@@ -94,10 +95,10 @@ const initializeEventWatcher = () => {
         }
       })
     } else {
-      const fathomTokenArtifact = require('../../build/contracts/FathomToken.json')
+      // local testnet
       let web3WS = getState().ethereum.web3events
-      let notificationJSON = fathomTokenArtifact.abi.filter(x => x.name === 'Notification')[0]
-      let ahadress = fathomTokenArtifact.networks[getState().ethereum.networkID].address
+      let notificationJSON = FathomToken.abi.filter(x => x.name === 'Notification')[0]
+      let ahadress = FathomToken.networks[getState().ethereum.networkID].address
       web3WS.eth.subscribe('logs', {
         address: ahadress,
         topics: ['0xe41f8f86e0c2a4bb86f57d2698c1704cd23b5f42a84336cdb49377cdca96d876'] // notification topic

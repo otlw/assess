@@ -29,6 +29,7 @@
   "devDependencies": {
     "enzyme": "^2.8.2",
     "ethjs-abi": "^0.2.0",
+    "fathom-contracts": "^1.2.2",
     "file-loader": "^1.1.11",
     "ganache-cli": "^6.1.0",
     "snazzy": "^7.1.1",

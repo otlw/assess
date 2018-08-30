@@ -10,6 +10,7 @@ import extend from 'xtend'
 
 let initialState = {
 }
+
 /*
   further assessments are stored like this:
 
@@ -27,7 +28,6 @@ assessmentAddress : {
   payout: 20,
 }
  */
-
 function assessments (state = initialState, action) {
   switch (action.type) {
     case RECEIVE_ASSESSMENT: {
