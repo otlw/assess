@@ -139,7 +139,7 @@ export class ProgressAndInputBar extends Component {
         return (
           h(containerProgressBar, [
             h(buttonClose, {onClick: this.closeInputBar.bind(this)}, [
-              h('img', {alt: 'icoClose', src: icoClose, className: ''})
+              h('img', {alt: 'icoClose', src: icoClose})
             ]),
             h(rowObjectText, [
               h(StageDescriptor, this.state.displayText),

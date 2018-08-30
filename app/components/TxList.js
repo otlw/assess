@@ -8,7 +8,6 @@ export class TxList extends Component {
     // this should not be necessary but somehow if this next line is not here
     // a big green empty field will be displayed
     if (this.props.transactions.length === 0) { return null }
-    console.log('rendeirng')
     return h(containerTransaction, this.props.transactions.map((tx) => {
       return h(TxStatus, {transaction: tx})
     }))
