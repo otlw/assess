@@ -43,6 +43,12 @@ export function convertFromUIScoreToOnChainScore (x) {
   return (x * 2) - 100
 }
 
+export const getLocalStorageKey = (networkID, userAddress, web3) => {
+  // the address of the FathomToken is appended so that redeployments on a local
+  // testnet do not show assessment from earlier migrations
+  return 'State' + networkName(networkID) + userAddress + FathomToken.networks[networkID].address
+}
+
 export const saveState = (state) => {
   if (state.ethereum.isConnected) {
     try {
@@ -51,7 +57,7 @@ export const saveState = (state) => {
         concepts: state.concepts,
         latestBlock: state.ethereum.latestBlock
       }
-      let key = networkName(state.ethereum.networkID) + 'State' + state.ethereum.userAddress
+      let key = getLocalStorageKey(state.ethereum.networkID, state.ethereum.userAddress, state.ethereum.web3)
       const serializedState = JSON.stringify(stateToSave)
       localStorage.setItem(key, serializedState)
     } catch (err) {

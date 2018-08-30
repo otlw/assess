@@ -1,5 +1,5 @@
 import Web3 from 'web3'
-import { getInstance } from '../utils.js'
+import { getInstance, getLocalStorageKey } from '../utils.js'
 import { networkName, LoadingStage } from '../constants.js'
 import { processEvent } from './assessmentActions.js'
 import { setMainDisplay } from './navigationActions.js'
@@ -38,7 +38,7 @@ export const connect = () => {
         }
 
         // load persistedState for the respective network and the user
-        dispatch(loadPersistedState(networkID, accounts[0]))
+        dispatch(loadPersistedState(networkID, accounts[0], w3))
 
         // set a second web3 instance to subscribe to events via websocket
         if (networkName(networkID) === 'Kovan') {
@@ -70,12 +70,13 @@ export const connect = () => {
   }
 }
 
-const loadPersistedState = (networkID, userAddress) => {
+const loadPersistedState = (networkID, userAddress, web3) => {
   return async (dispatch, getState) => {
     console.log('called loadPersistedState ')
     let persistedState
     try {
-      let key = networkName(networkID) + 'State' + userAddress
+      let key = getLocalStorageKey(networkID, userAddress, web3)
+      // let key = networkName(networkID) + 'State' + userAddress
       const serializedState = localStorage.getItem(key)
       if (serializedState === null) {
         return undefined
