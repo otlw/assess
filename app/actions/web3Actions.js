@@ -21,7 +21,6 @@ export const connect = () => {
       let w3 = new Web3(window.web3.currentProvider)
       // after web3 is instanciated, fetch networkID and user address
       if (w3) {
-
         // get networkID and THEN set isConnected
         let networkID = await w3.eth.net.getId()
         dispatch(receiveVariable('networkID', networkID))
@@ -72,32 +71,21 @@ export const connect = () => {
 
 const loadPersistedState = (networkID, userAddress, web3) => {
   return async (dispatch, getState) => {
-    console.log('called loadPersistedState ')
-    let persistedState
     try {
       let key = getLocalStorageKey(networkID, userAddress, web3)
       // let key = networkName(networkID) + 'State' + userAddress
-      const serializedState = localStorage.getItem(key)
+      const serializedState = localStorage.getItem(key) // eslint-disable-line no-undef
       if (serializedState === null) {
         return undefined
       }
-      persistedState = JSON.parse(serializedState)
-      console.log('persistedState ', persistedState )
+      let persistedState = JSON.parse(serializedState)
+      console.log('loaded persistedState ', persistedState)
       dispatch(receivePersistedState(persistedState))
     } catch (e) {
       console.log('ERROR reading from localStorage')
     }
   }
 }
-
-// to save something from the chain in state
-export function receivePersistedState (persistedState) {
-  return {
-    type: RECEIVE_PERSISTED_STATE,
-    persistedState
-  }
-}
-
 
 const initializeEventWatcher = () => {
   return async (dispatch, getState) => {
@@ -237,5 +225,13 @@ export function receiveVariable (name, value) {
     type: RECEIVE_VARIABLE,
     name,
     value
+  }
+}
+
+// to save something from the chain in state
+export function receivePersistedState (persistedState) {
+  return {
+    type: RECEIVE_PERSISTED_STATE,
+    persistedState
   }
 }

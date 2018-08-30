@@ -59,7 +59,7 @@ export const saveState = (state) => {
       }
       let key = getLocalStorageKey(state.ethereum.networkID, state.ethereum.userAddress, state.ethereum.web3)
       const serializedState = JSON.stringify(stateToSave)
-      localStorage.setItem(key, serializedState)
+      localStorage.setItem(key, serializedState) // eslint-disable-line no-undef
     } catch (err) {
       console.log('error saving state', err)
     }

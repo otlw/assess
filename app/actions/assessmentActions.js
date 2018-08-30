@@ -119,7 +119,6 @@ export function fetchLatestAssessments () {
         return accumulator
       }, [])
 
-      console.log('latestBlock ', latestBlock )
       // fetch data for assessments
       assessmentAddresses.forEach((address) => {
         dispatch(fetchAssessmentData(address))
