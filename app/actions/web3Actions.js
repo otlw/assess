@@ -10,6 +10,7 @@ export const WEB3_CONNECTED = 'WEB3_CONNECTED'
 export const WEB3EVENTS_CONNECTED = 'WEB3EVENTS_CONNECTED'
 export const WEB3_DISCONNECTED = 'WEB3_DISCONNECTED'
 export const RECEIVE_VARIABLE = 'RECEIVE_VARIABLE'
+export const RECEIVE_PERSISTED_STATE = 'RECEIVE_PERSISTED_STATE'
 
 // actions to instantiate web3 related info
 export const connect = () => {
@@ -20,11 +21,11 @@ export const connect = () => {
       let w3 = new Web3(window.web3.currentProvider)
       // after web3 is instanciated, fetch networkID and user address
       if (w3) {
-        dispatch(web3Connected(w3))
 
-        // get networkID
+        // get networkID and THEN set isConnected
         let networkID = await w3.eth.net.getId()
         dispatch(receiveVariable('networkID', networkID))
+        dispatch(web3Connected(w3))
 
         // get userAddress
         let accounts = await w3.eth.getAccounts()
@@ -35,6 +36,9 @@ export const connect = () => {
           dispatch(receiveVariable('userAddress', accounts[0]))
           dispatch(fetchUserBalance())
         }
+
+        // load persistedState for the respective network
+        dispatch(loadPersistedState(networkID))
 
         // set a second web3 instance to subscribe to events via websocket
         if (networkName(networkID) === 'Kovan') {
@@ -66,6 +70,34 @@ export const connect = () => {
   }
 }
 
+const loadPersistedState = (networkID) => {
+  return async (dispatch, getState) => {
+    console.log('called loadPersistedState ')
+    let persistedState
+    try {
+      let key = networkName(networkID) + 'State'
+      const serializedState = localStorage.getItem(key)
+      if (serializedState === null) {
+        return undefined
+      }
+      persistedState = JSON.parse(serializedState)
+      console.log('persistedState ', persistedState )
+      dispatch(receivePersistedState(persistedState))
+    } catch (e) {
+      console.log('ERROR reading from localStorage')
+    }
+  }
+}
+
+// to save something from the chain in state
+export function receivePersistedState (persistedState) {
+  return {
+    type: RECEIVE_PERSISTED_STATE,
+    persistedState
+  }
+}
+
+
 const initializeEventWatcher = () => {
   return async (dispatch, getState) => {
     let networkID = getState().ethereum.networkID
@@ -90,7 +122,8 @@ const initializeEventWatcher = () => {
           dispatch(processEvent(
             data.returnValues.user,
             data.returnValues.sender,
-            Number(data.returnValues.topic)
+            Number(data.returnValues.topic),
+            data.blockNumber
           ))
         }
       })
@@ -106,7 +139,6 @@ const initializeEventWatcher = () => {
         if (error) {
           console.log('event subscirption error!:')
         }
-
         let decodedLog = web3WS.eth.abi.decodeLog(
           notificationJSON.inputs,
           log.data,
@@ -117,8 +149,9 @@ const initializeEventWatcher = () => {
         // they come from an assessment the user is involved in AND one of the following
         // a) the user is looking at it
         // b) the user has already been on the dashboard page once
+        console.log('blockNumber in web3', log.blockNumber)
         if ((getState().assessments[decodedLog.sender] || decodedLog.user === userAddress)) {
-          dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic)))
+          dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic), log.blockNumber))
         } else {
           console.log('not updating!')
         }
