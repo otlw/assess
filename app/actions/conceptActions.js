@@ -1,4 +1,4 @@
-import { getInstance } from '../utils.js'
+import { getInstance, getBlockDeployedAt } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
 export const RECEIVE_CONCEPTS = 'RECEIVE_CONCEPTS'
 export const BEGIN_LOADING_CONCEPTS = 'BEGIN_LOADING_CONCEPTS'
@@ -8,9 +8,12 @@ export function loadConceptsFromConceptRegistery () {
   return async (dispatch, getState) => {
     dispatch(beginLoadingConcepts())
     const conceptRegistryInstance = getInstance.conceptRegistry(getState())
+    let deployedBlock = await getBlockDeployedAt.conceptRegistry(getState())
+    console.log(deployedBlock)
 
     // get concepts from registry
-    let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {fromBlock: 0, toBlock: 'latest'})
+    let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {fromBlock: deployedBlock, toBlock: 'latest'})
+    console.log(pastevents)
 
     let concepts = {}
     await Promise.all(pastevents.map(async (event) => {
