@@ -13,7 +13,8 @@
     "fix": "standard --fix './app/index.js' './app/**/*.js' ",
     "build": "webpack",
     "dev": "webpack-dev-server --open",
-    "test:react": "jest"
+    "test:app": "jest",
+    "test:watch": "npm run test:app -- --watch"
   },
   "author": "Jared Pereira",
   "license": "MIT",
