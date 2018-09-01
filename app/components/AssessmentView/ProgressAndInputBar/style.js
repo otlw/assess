@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const ProgressButtonBox = styled('div').attrs({className: 'flex flex-row w-100 bt b--gray'})`
+export const ProgressButtonBox = styled('div').attrs({ className: 'flex flex-row w-100 bt b--gray' })`
 `
 
 export const CloseButton = styled('button')`
@@ -12,10 +12,10 @@ export const ProgressButton = styled('button')`
   border: 2px solid palevioletred;
 `
 
-export const PastOrPresentPhaseButton = styled('button').attrs({className: 'flex bg-light-green flex-grow-1 pv3 justify-center pointer dark-blue ttu uppercase f5 bn'})`
+export const PastOrPresentPhaseButton = styled('button').attrs({ className: 'flex bg-light-green flex-grow-1 pv3 justify-center pointer dark-blue ttu uppercase f5 bn' })`
 `
 
-export const FuturePhaseButton = styled('button').attrs({className: 'flex bg-lightest-blue flex-grow-1 pv3 justify-center pointer dark-blue ttu uppercase f5 bn'})`
+export const FuturePhaseButton = styled('button').attrs({ className: 'flex bg-lightest-blue flex-grow-1 pv3 justify-center pointer dark-blue ttu uppercase f5 bn' })`
 `
 
 export const StageDescriptor = styled('div')`

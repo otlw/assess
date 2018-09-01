@@ -42,7 +42,7 @@ function ethereum (state = initialState, action) {
         web3_version: 'none'
       }
     case RECEIVE_VARIABLE:
-      return extend(state, {[action.name]: action.value})
+      return extend(state, { [action.name]: action.value })
     default:
       return state
   }

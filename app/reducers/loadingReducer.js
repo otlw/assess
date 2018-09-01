@@ -8,7 +8,7 @@ import {
   END_LOADING_CONCEPTS
 } from '../actions/conceptActions.js'
 
-import {LoadingStage} from '../constants.js'
+import { LoadingStage } from '../constants.js'
 
 let initialState = {
   assessments: LoadingStage.None,

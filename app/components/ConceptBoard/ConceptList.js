@@ -21,5 +21,5 @@ export class ConceptList extends Component {
 
 export default ConceptList
 
-const ConceptListBox = styled('div').attrs({className: 'flex flex-row flex-wrap bg-white justify-center content-around'})`
+const ConceptListBox = styled('div').attrs({ className: 'flex flex-row flex-wrap bg-white justify-center content-around' })`
 `

@@ -20,7 +20,7 @@ export const getInstance = {
         FathomToken.networks[state.ethereum.networkID].address
       )
     } else {
-      return {error: true}
+      return { error: true }
     }
   },
   conceptRegistry: (state) => {

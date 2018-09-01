@@ -12,13 +12,13 @@ import {
 // RECEIVE_ASSESSMENT
 describe('assessmentReducer', () => {
   const initialState = {}
-  const priorState = {'0x123': {'address': '0x123', 'assessee': '0x456', 'assessors': ['0x789']}}
+  const priorState = { '0x123': { 'address': '0x123', 'assessee': '0x456', 'assessors': ['0x789'] } }
 
   test('should add a new assessment to initial state', () => {
     const address = '0x9f0D'
     const assessee = '0x749'
     const assessors = ['0xf2a']
-    const assessment = {address, assessee, assessors}
+    const assessment = { address, assessee, assessors }
     const action = {
       type: RECEIVE_ASSESSMENT,
       assessment
@@ -33,7 +33,7 @@ describe('assessmentReducer', () => {
     const address = '0x9f0D'
     const assessee = '0x749'
     const assessors = ['0xf2a']
-    const assessment = {address, assessee, assessors}
+    const assessment = { address, assessee, assessors }
     const action = {
       type: RECEIVE_ASSESSMENT,
       assessment

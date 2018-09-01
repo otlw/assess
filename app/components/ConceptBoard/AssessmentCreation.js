@@ -18,7 +18,7 @@ export class AssessmentCreation extends Component {
   }
 
   setAmountPerAssessor (e) {
-    this.setState({amountPerAssessor: Math.round(e.target.value)})
+    this.setState({ amountPerAssessor: Math.round(e.target.value) })
   }
 
   cancelButton () {
@@ -29,7 +29,7 @@ export class AssessmentCreation extends Component {
     let step = this.state.step
 
     if (step === 1) {
-      this.setState({step: 2})
+      this.setState({ step: 2 })
     } else if (step === 2) {
       this.estimateGasCost()
     } else if (step === 3) {
@@ -42,7 +42,7 @@ export class AssessmentCreation extends Component {
       this.props.conceptAddress,
       this.state.amountPerAssessor,
       (cost) => {
-        this.setState({gasEstimate: cost, step: 3})
+        this.setState({ gasEstimate: cost, step: 3 })
       }
     )
   }
@@ -54,15 +54,15 @@ export class AssessmentCreation extends Component {
       (err, receipt) => {
         if (err) {
           console.log(err)
-          this.props.setNotificationBar({display: true, type: 'error'})
+          this.props.setNotificationBar({ display: true, type: 'error' })
           this.props.cancelCreation()
         } else if (receipt.status) {
           let receiptAddress = receipt.events[0].raw.topics[2]
           let assessmentAddress = '0x' + receiptAddress.substring(26, receiptAddress.length)
-          this.props.setNotificationBar({display: true, type: 'success', assessmentId: assessmentAddress})
+          this.props.setNotificationBar({ display: true, type: 'success', assessmentId: assessmentAddress })
           this.props.cancelCreation()
         } else {
-          this.setState({step: 4})
+          this.setState({ step: 4 })
         }
       }
     )
@@ -134,20 +134,20 @@ export class AssessmentCreation extends Component {
 
     // set Navigation buttons according to step
     let Navigation = (h(createAssessmentContainerNavigate, [
-      h(createAssessmentButtonCancel, {onClick: this.cancelButton.bind(this)}, [
-        h('img', {alt: 'icoClose', src: icoClose, className: 'h1 ma1'}),
+      h(createAssessmentButtonCancel, { onClick: this.cancelButton.bind(this) }, [
+        h('img', { alt: 'icoClose', src: icoClose, className: 'h1 ma1' }),
         h('span', 'Cancel')
       ]),
-      h(createAssessmentButtonNext, {onClick: this.nextButton.bind(this)}, [
+      h(createAssessmentButtonNext, { onClick: this.nextButton.bind(this) }, [
         h('span', 'Next'),
-        h('img', {alt: 'icoArrowForward', src: icoArrowForward})
+        h('img', { alt: 'icoArrowForward', src: icoArrowForward })
       ])
     ]))
 
     if ((this.state.step === 4)) {
       Navigation = (h(createAssessmentContainerNavigate, [
-        h(CloseButton, {onClick: this.cancelButton.bind(this)}, [
-          h('img', {alt: 'icoClose', src: icoClose, className: 'h1 ma1'}),
+        h(CloseButton, { onClick: this.cancelButton.bind(this) }, [
+          h('img', { alt: 'icoClose', src: icoClose, className: 'h1 ma1' }),
           h('span', 'Close')
         ])
       ]))
@@ -156,7 +156,7 @@ export class AssessmentCreation extends Component {
 
     // set cancelCross according to step
     let CancelCrossButton = (h(CancelCrossContainer, [
-      h(CancelCross, {onClick: this.cancelButton.bind(this), alt: 'icoClose', src: icoClose})
+      h(CancelCross, { onClick: this.cancelButton.bind(this), alt: 'icoClose', src: icoClose })
     ]))
     if (this.state.step === 4) {
       CancelCrossButton = h(CancelCrossContainer, '')
@@ -165,10 +165,10 @@ export class AssessmentCreation extends Component {
     return h(createAssessmentContainer, [
       CancelCrossButton,
       h(createAssessmentContainerProgressBar, [
-        h(createAssessmentProgressBarObject, {current: this.state.step === 1, past: this.state.step > 1}, '1'),
-        h(createAssessmentProgressBarObject, {current: this.state.step === 2, past: this.state.step > 2}, '2'),
-        h(createAssessmentProgressBarObject, {current: this.state.step === 3, past: this.state.step > 3}, '3'),
-        h(createAssessmentProgressBarObjectFinal, {current: this.state.step === 4, past: this.state.step > 4, alt: 'icoConfirm', src: icoConfirm})
+        h(createAssessmentProgressBarObject, { current: this.state.step === 1, past: this.state.step > 1 }, '1'),
+        h(createAssessmentProgressBarObject, { current: this.state.step === 2, past: this.state.step > 2 }, '2'),
+        h(createAssessmentProgressBarObject, { current: this.state.step === 3, past: this.state.step > 3 }, '3'),
+        h(createAssessmentProgressBarObjectFinal, { current: this.state.step === 4, past: this.state.step > 4, alt: 'icoConfirm', src: icoConfirm })
       ]),
       h(createAssessmentTitle, "Let's create your assessment"),
       h(createAssessmentCardContainer, [
@@ -191,19 +191,19 @@ const createAssessmentContainer = styled('div').attrs({ className: 'flex flex-co
 
 `
 
-const createAssessmentTitle = styled('h3').attrs({className: 'f3 fw4 tc ttu uppercase '})`
+const createAssessmentTitle = styled('h3').attrs({ className: 'f3 fw4 tc ttu uppercase ' })`
 `
 
 // steps
 
-const createAssessmentContainerProgressBar = styled('div').attrs({className: 'flex flex-row self-center justify-around w-100 mw5'})`
+const createAssessmentContainerProgressBar = styled('div').attrs({ className: 'flex flex-row self-center justify-around w-100 mw5' })`
 `
 
-const createAssessmentProgressBarObject = styled('div').attrs({className: 'flex items-center justify-center w2 h2 br-100 ba'})`
+const createAssessmentProgressBarObject = styled('div').attrs({ className: 'flex items-center justify-center w2 h2 br-100 ba' })`
 background-color:${props => props.past ? props.theme.lightgreen : props.current ? '#C4C4C4' : 'transparent'}
 border:${props => props.past ? '1px solid ' + props.theme.lightgreen : '1px solid #C4C4C4'};
 `
-const createAssessmentProgressBarObjectFinal = styled('img').attrs({className: 'flex items-center justify-center pa1 br-100 ba'})`
+const createAssessmentProgressBarObjectFinal = styled('img').attrs({ className: 'flex items-center justify-center pa1 br-100 ba' })`
 height: 22px;
 width: 22px;
 background-color:${props => props.past ? props.theme.lightgreen : props.current ? '#C4C4C4' : 'transparent'}
@@ -212,63 +212,63 @@ border:${props => props.past ? '1px solid ' + props.theme.lightgreen : '1px soli
 
 // main card designs
 
-const createAssessmentCardContainer = styled('div').attrs({className: 'flex flex-column self-center ma3 br2 shadow-4'
+const createAssessmentCardContainer = styled('div').attrs({ className: 'flex flex-column self-center ma3 br2 shadow-4'
 })`height: 420px; width: 300px;background: linear-gradient(180.1deg, #FFFFFF 0.05%, #E9F7FD 52.48%, #f5fcff 85.98%);
 `
 
-const createAssessmentCardContainerConcept = styled('div').attrs({className: 'flex content-start flex-column w-100 h-50 pa3 bg-none'})`
+const createAssessmentCardContainerConcept = styled('div').attrs({ className: 'flex content-start flex-column w-100 h-50 pa3 bg-none' })`
 `
-const cardLabelTitle = styled('div').attrs({className: 'flex flex-column tl ttu uppercase'})`
+const cardLabelTitle = styled('div').attrs({ className: 'flex flex-column tl ttu uppercase' })`
 color: #0A4A66;
 `
-const cardTitle = styled('h3').attrs({className: 'f3 fw4 mv1 w-100 tl'})`
+const cardTitle = styled('h3').attrs({ className: 'f3 fw4 mv1 w-100 tl' })`
 color: #117099;
 `
 
-const cardContainerInput = styled('div').attrs({className: 'flex flex-column h-100 pa3 justify-between bg-lightest-blue'})`
+const cardContainerInput = styled('div').attrs({ className: 'flex flex-column h-100 pa3 justify-between bg-lightest-blue' })`
 `
 
 // step 1
-const Question1 = styled('div').attrs({className: 'f5 lh-copy dark-gray tl ttu uppercase'})`
+const Question1 = styled('div').attrs({ className: 'f5 lh-copy dark-gray tl ttu uppercase' })`
 `
 
-const ButtonCaptionContainer = styled('div').attrs({className: 'flex flex-column w-70 align-center justify-between'})`
+const ButtonCaptionContainer = styled('div').attrs({ className: 'flex flex-column w-70 align-center justify-between' })`
 `
 
-const InputContainer = styled('div').attrs({className: 'flex flex-row justify-between items-center pv2'})`
+const InputContainer = styled('div').attrs({ className: 'flex flex-row justify-between items-center pv2' })`
 `
 
-const ButtonCaptionBox = styled('div').attrs({className: 'flex justify-between f6'})`
+const ButtonCaptionBox = styled('div').attrs({ className: 'flex justify-between f6' })`
 `
 
-const ButtonGroup = styled('div').attrs({className: 'flex flex-row justify-between br1 ba b--mid-gray pv1 ph3 f4'})`
+const ButtonGroup = styled('div').attrs({ className: 'flex flex-row justify-between br1 ba b--mid-gray pv1 ph3 f4' })`
 `
-const AmountPerAssessor = styled('input').attrs({className: 'flex w-25 tl pa1 bn bg-transparent '})`
+const AmountPerAssessor = styled('input').attrs({ className: 'flex w-25 tl pa1 bn bg-transparent ' })`
 `
-const AHAUnit = styled('div').attrs({className: 'mid-gray'})`
+const AHAUnit = styled('div').attrs({ className: 'mid-gray' })`
 `
-const helpTextContainer = styled('div').attrs({className: 'flex flex-column h-100 justify-end'})`
+const helpTextContainer = styled('div').attrs({ className: 'flex flex-column h-100 justify-end' })`
 `
 
-const cardTextObjectHelp = styled('h6').attrs({className: 'flex f6 fw4 lh-copy tl mv2'})`
+const cardTextObjectHelp = styled('h6').attrs({ className: 'flex f6 fw4 lh-copy tl mv2' })`
 color:#0A4A66;
 `
 
 // step 2
 
-const cardContainerParameters = styled('div').attrs({className: 'flex w-100 flex-column items-start fw4'})`
+const cardContainerParameters = styled('div').attrs({ className: 'flex w-100 flex-column items-start fw4' })`
 `
 
-const cardLabel = styled('h6').attrs({className: 'f5 fw4 tl mv1'})`
+const cardLabel = styled('h6').attrs({ className: 'f5 fw4 tl mv1' })`
 color: #0A4A66;
 `
-const cardTextObject = styled('h4').attrs({className: 'f4 fw4 tl mv1'})`
+const cardTextObject = styled('h4').attrs({ className: 'f4 fw4 tl mv1' })`
 color: #117099;
 `
 
 // step 3
 
-const cardContainerCostEstimate = styled('div').attrs({className: 'flex w-100 flex-column self-center'})`
+const cardContainerCostEstimate = styled('div').attrs({ className: 'flex w-100 flex-column self-center' })`
 `
 
 // step 4
@@ -277,21 +277,21 @@ const cardContainerCostEstimate = styled('div').attrs({className: 'flex w-100 fl
 
 // navigation buttons
 
-const createAssessmentContainerNavigate = styled('div').attrs({className: 'flex w-100 mw7 flex-row items-center self-center justify-around h3'})`
+const createAssessmentContainerNavigate = styled('div').attrs({ className: 'flex w-100 mw7 flex-row items-center self-center justify-around h3' })`
 `
-const createAssessmentButtonCancel = styled('div').attrs({className: 'flex items-center justify-center w4 pv2 br-pill ba bg-transparent'})`
+const createAssessmentButtonCancel = styled('div').attrs({ className: 'flex items-center justify-center w4 pv2 br-pill ba bg-transparent' })`
 cursor:pointer;
 `
-const createAssessmentButtonNext = styled('div').attrs({className: 'flex flex-row items-center justify-center w4 pv2 br-pill ba bg-light-green dark-gray'})`
+const createAssessmentButtonNext = styled('div').attrs({ className: 'flex flex-row items-center justify-center w4 pv2 br-pill ba bg-light-green dark-gray' })`
 cursor:pointer;
 `
-const CloseButton = styled('div').attrs({className: 'flex self-center items-center justify-center w4 h2 br4 ba'})`
+const CloseButton = styled('div').attrs({ className: 'flex self-center items-center justify-center w4 h2 br4 ba' })`
 border-color: #C4C4C4;
 background-color:#C4C4C4;
 cursor:pointer;
 `
-const CancelCrossContainer = styled('div').attrs({className: 'flex justify-end w-100 h2'})`
+const CancelCrossContainer = styled('div').attrs({ className: 'flex justify-end w-100 h2' })`
 `
-const CancelCross = styled('img').attrs({className: 'ma2 f4'})`
+const CancelCross = styled('img').attrs({ className: 'ma2 f4' })`
 cursor:pointer;
 `

@@ -1,28 +1,28 @@
 import { Component } from 'react'
 import h from 'react-hyperscript'
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 export class NotificationBar extends Component {
   closeBar () {
-    this.props.setNotificationBar({display: false})
+    this.props.setNotificationBar({ display: false })
   }
 
   render () {
     return (
       h('div', {},
         this.props.status.type === 'success'
-          ? h(NotificationBarFrame, {type: 'success'}, [
+          ? h(NotificationBarFrame, { type: 'success' }, [
             h('span', 'Success! Your assessment has been created. Click '),
-            h(Link, {to: '/assessment/' + this.props.status.assessmentId}, 'here'),
+            h(Link, { to: '/assessment/' + this.props.status.assessmentId }, 'here'),
             h('span', ' to view the assessment details.'),
-            h(closeButton, {onClick: this.closeBar.bind(this)}, 'X')
+            h(closeButton, { onClick: this.closeBar.bind(this) }, 'X')
           ])
-          : h(NotificationBarFrame, {type: 'error'}, [
+          : h(NotificationBarFrame, { type: 'error' }, [
             h('span', 'Oops! Your assessment wasn’t created due to a technical error. Click '),
-            h(Link, {to: '/concepts'}, 'here'),
+            h(Link, { to: '/concepts' }, 'here'),
             h('span', ' to try again.'),
-            h(closeButton, {onClick: this.closeBar.bind(this)}, 'X')
+            h(closeButton, { onClick: this.closeBar.bind(this) }, 'X')
           ])
       )
     )

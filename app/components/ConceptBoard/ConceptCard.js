@@ -24,7 +24,7 @@ export class ConceptCard extends Component {
           h(cardTextDescription, this.props.conceptData.description)
         ]),
         h(cardContainerButtons, [
-          h(cardButtonPrimary, {onClick: this.props.selectConcept.bind(this), id: this.props.conceptAddress}, 'Get Assessed')
+          h(cardButtonPrimary, { onClick: this.props.selectConcept.bind(this), id: this.props.conceptAddress }, 'Get Assessed')
         ])
       ])
     ])
@@ -80,7 +80,7 @@ const cardTextDescription = styled('div').attrs({
 color: #117099;
 `
 
-const cardContainerButtons = styled('div').attrs({className: 'flex flex-row justify-center w-100 pb3 ph3'})`
+const cardContainerButtons = styled('div').attrs({ className: 'flex flex-row justify-center w-100 pb3 ph3' })`
 `
 
 const cardButtonPrimary = styled('button').attrs({

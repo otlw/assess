@@ -10,7 +10,7 @@ export function loadConceptsFromConceptRegistery () {
     const conceptRegistryInstance = getInstance.conceptRegistry(getState())
 
     // get concepts from registry
-    let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {fromBlock: 0, toBlock: 'latest'})
+    let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', { fromBlock: 0, toBlock: 'latest' })
 
     let concepts = {}
     await Promise.all(pastevents.map(async (event) => {
@@ -27,7 +27,7 @@ export function loadConceptsFromConceptRegistery () {
       if (decodedConceptDataHash.substring(0, 2) === 'Qm') {
         // setup ipfs api
         const ipfsAPI = require('ipfs-api')
-        const ipfs = ipfsAPI('ipfs.infura.io', '5001', {protocol: 'https'})
+        const ipfs = ipfsAPI('ipfs.infura.io', '5001', { protocol: 'https' })
 
         // verify that description is correctly stord and log it
         let resp = await ipfs.get(decodedConceptDataHash)
@@ -71,7 +71,7 @@ export function loadConceptContractAndCreateAssessment (address, cost, callback)
       () => {
         return conceptInstance.methods.makeAssessment(
           cost * 1e9, size, startTime, endTime
-        ).send({from: userAddress})
+        ).send({ from: userAddress })
       },
       'makeAssessment',
       userAddress,
@@ -92,7 +92,7 @@ export function estimateAssessmentCreationGasCost (address, cost, cllbck) {
     const endTime = 7 * 24 * 3600
     const startTime = 3 * 24 * 3600
     // use estimateGas to get transaction gas cost before it is published
-    let estimate = await conceptInstance.methods.makeAssessment(cost * 1e9, size, startTime, endTime).estimateGas({from: userAddress, gas: 3000000})
+    let estimate = await conceptInstance.methods.makeAssessment(cost * 1e9, size, startTime, endTime).estimateGas({ from: userAddress, gas: 3000000 })
     // then get current gasPrice
     let gasPrice = await getState().ethereum.web3.eth.getGasPrice()
     // then convert it to eth from wei and multiply it by the estimate

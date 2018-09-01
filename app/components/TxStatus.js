@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { removeTransaction } from '../actions/transActions.js'
 
-import {networkName} from '../constants.js'
+import { networkName } from '../constants.js'
 
 var h = require('react-hyperscript')
 
@@ -21,10 +21,10 @@ export class TxStatus extends Component {
     let targetURL = 'https://' + (networkName(this.props.networkID) === 'Mainnet' ? '' : networkName(this.props.networkID) + '.') + 'etherscan.io/tx/' + tx.txHash
     return h(txItem, [
       h('span', 'Transaction sent: '),
-      h('a', {href: targetURL, target: '_blank'},
+      h('a', { href: targetURL, target: '_blank' },
         tx.txHash.substring(0, 5) + '...' + tx.txHash.substring(60)),
       h('span', ': ' + tx.status + '  '),
-      h('button', {onClick: this.deleteTX.bind(this)}, 'X')
+      h('button', { onClick: this.deleteTX.bind(this) }, 'X')
     ])
   }
 }

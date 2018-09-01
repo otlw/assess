@@ -55,7 +55,7 @@ export class AssessmentData extends Component {
                 h(assessmentLabelBody, 'Meeting Point'),
                 h(assessmentTextBody, assessment.data || 'You haven\'t set a meeting point'),
                 h(assessmentRow, [
-                  h(fathomButtonPrimary, {href: assessment.data, disabled: assessment.data === ''}, 'View'),
+                  h(fathomButtonPrimary, { href: assessment.data, disabled: assessment.data === '' }, 'View'),
                   assessment.assessee === this.props.userAddress
                     ? h(MeetingPointEditBox, { // same here ALEX
                       assessee: assessment.assessee,
@@ -69,7 +69,7 @@ export class AssessmentData extends Component {
               h(assessmentObjectTextRight, [
                 h(assessmentLabelBody, 'Assessors'),
                 h(assessmentObjectText, [
-                  h(AssessorList, {assessors: assessment.assessors}) // ALEX, i meddled here
+                  h(AssessorList, { assessors: assessment.assessors }) // ALEX, i meddled here
                 ])
               ])
             ])
@@ -86,7 +86,7 @@ export class AssessmentData extends Component {
                 finalScore: assessment.finalScore,
                 cost: assessment.cost
               })
-              : h(ProgressAndInputBar, {address: assessment.address})
+              : h(ProgressAndInputBar, { address: assessment.address })
           ])
         ])
       )
@@ -96,58 +96,58 @@ export class AssessmentData extends Component {
 
 export default AssessmentData
 
-const SuperFrame = styled('div').attrs({className: 'flex flex-column w-100 mw8 bg-white shadow-4'})`
+const SuperFrame = styled('div').attrs({ className: 'flex flex-column w-100 mw8 bg-white shadow-4' })`
 font-family:'system-ui',sans-serif;
 `
 
-const assessmentHeader = styled('div').attrs({className: 'flex flex-column w-100 pv4 ph3 bg-lightest-blue'})`
+const assessmentHeader = styled('div').attrs({ className: 'flex flex-column w-100 pv4 ph3 bg-lightest-blue' })`
 `
 
-const assessmentLabelRole = styled('h6').attrs({className: 'f6 tl ttu uppercase dark-blue mv0 fw4'})`
+const assessmentLabelRole = styled('h6').attrs({ className: 'f6 tl ttu uppercase dark-blue mv0 fw4' })`
 `
 
-const assessmentTextTitle = styled('h2').attrs({className: 'f2 tl ttu uppercase dark-blue mt2 mb0 fw4'})`
+const assessmentTextTitle = styled('h2').attrs({ className: 'f2 tl ttu uppercase dark-blue mt2 mb0 fw4' })`
 `
 
-const assessmentRowSubHeader = styled('div').attrs({className: 'flex flex-row w-100 items-center bt bb b--gray'})`
+const assessmentRowSubHeader = styled('div').attrs({ className: 'flex flex-row w-100 items-center bt bb b--gray' })`
 `
 
-const assessmentContainerStatus = styled('div').attrs({className: 'flex flex-row w-50 items-center justify-between pa3'})`
+const assessmentContainerStatus = styled('div').attrs({ className: 'flex flex-row w-50 items-center justify-between pa3' })`
 `
 
-const assessmentLabelBody = styled('h6').attrs({className: 'f6 mid-gray mv0 fw4 ttu uppercase'})`
+const assessmentLabelBody = styled('h6').attrs({ className: 'f6 mid-gray mv0 fw4 ttu uppercase' })`
 `
 
-const assessmentTextBody = styled('h5').attrs({className: 'f5 gray mv2 mb0 fw4 gray'})`
+const assessmentTextBody = styled('h5').attrs({ className: 'f5 gray mv2 mb0 fw4 gray' })`
 `
 
-const assessmentContainerDate = styled('div').attrs({className: 'flex flex-row w-50 items-center justify-between pa3 bl b--gray'})`
+const assessmentContainerDate = styled('div').attrs({ className: 'flex flex-row w-50 items-center justify-between pa3 bl b--gray' })`
 `
 
-const assessmentContainerBody = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-between'})`
+const assessmentContainerBody = styled('div').attrs({ className: 'flex flex-row w-100 items-center justify-between' })`
 `
 
-const assessmentColumnLeft = styled('div').attrs({className: 'flex flex-column w-50 items-around justify-around pa3'})`
+const assessmentColumnLeft = styled('div').attrs({ className: 'flex flex-column w-50 items-around justify-around pa3' })`
 `
 
-const assessmentObjectText = styled('div').attrs({className: 'flex flex-column w-100  items-start justify-center self-start mv3'})`
+const assessmentObjectText = styled('div').attrs({ className: 'flex flex-column w-100  items-start justify-center self-start mv3' })`
 `
 
-const assessmentObjectTextRight = styled('div').attrs({className: 'flex flex-column w-100  items-end justify-center self-start mv3'})`
+const assessmentObjectTextRight = styled('div').attrs({ className: 'flex flex-column w-100  items-end justify-center self-start mv3' })`
 `
 
 // Commented out as we may need to re-implement this very soon
 // const assessmentListAssessors = styled('div').attrs({className: 'flex flex-column w-100 h-100
 // self-start  items-start justify-center self-start mv3'})``
 
-const assessmentColumnRight = styled('div').attrs({className: 'flex flex-column w-50 h-100 self-start items-start justify-around pa3'})`
+const assessmentColumnRight = styled('div').attrs({ className: 'flex flex-column w-50 h-100 self-start items-start justify-around pa3' })`
 `
 
-const assessmentRow = styled('div').attrs({className: 'flex flex-row w-100 mw5 justify-between mt3 '})`
+const assessmentRow = styled('div').attrs({ className: 'flex flex-row w-100 mw5 justify-between mt3 ' })`
 `
 
-const fathomButtonPrimary = styled('button').attrs({className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'})`
+const fathomButtonPrimary = styled('button').attrs({ className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase' })`
 `
 
-const assessmentFooter = styled('div').attrs({className: 'flex flex-row w-100'})`
+const assessmentFooter = styled('div').attrs({ className: 'flex flex-row w-100' })`
 `

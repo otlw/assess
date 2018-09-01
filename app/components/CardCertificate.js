@@ -28,7 +28,7 @@ export const cardCredential = (props) => {
 
 export default cardCredential
 
-const credentialContainer = styled('div').attrs({className: 'flex flex-column ma3 br2 shadow-4 overflow-hidden'
+const credentialContainer = styled('div').attrs({ className: 'flex flex-column ma3 br2 shadow-4 overflow-hidden'
 })`
 height: 420px; width: 300px;
 background: linear-gradient(144.78deg, rgba(61, 204, 196, 0.7) 0%, #CCFFFC 100%);
@@ -104,22 +104,22 @@ transform:rotate(24deg);
 filter:blur(4px);
 `
 
-const credentialContainerBottom = styled('div').attrs({className: 'flex flex-row justify-between w-100 pb3 ph3'
+const credentialContainerBottom = styled('div').attrs({ className: 'flex flex-row justify-between w-100 pb3 ph3'
 })`
 height: 40%;
 `
 
-const credentialContainerScore = styled('div').attrs({className: 'flex flex-column self-end items-center'
+const credentialContainerScore = styled('div').attrs({ className: 'flex flex-column self-end items-center'
 })`
 `
 
-const credentialObjectScore = styled('div').attrs({className: 'flex self-end h3 w3  fw4 shadow-4 items-center justify-center align-center br-pill bg-dark-blue near-white ttu uppercase'
+const credentialObjectScore = styled('div').attrs({ className: 'flex self-end h3 w3  fw4 shadow-4 items-center justify-center align-center br-pill bg-dark-blue near-white ttu uppercase'
 })`
 font-size:1.75rem;
 background-color: #2E998A; width: 80px; height: 80px;
 `
 
-const buttonPrimaryShare = styled('div').attrs({className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'
+const buttonPrimaryShare = styled('div').attrs({ className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'
 })`
 background-color: #2E998A;
 `

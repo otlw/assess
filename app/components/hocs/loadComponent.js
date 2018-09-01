@@ -9,7 +9,7 @@ export function LoadComponent (WrappedComponent) {
 
     render () {
       // return <WrappedComponent {...this.props} />
-      return h(WrappedComponent, {...this.props})
+      return h(WrappedComponent, { ...this.props })
     }
   }
 }

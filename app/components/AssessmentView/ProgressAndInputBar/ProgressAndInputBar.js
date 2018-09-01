@@ -74,7 +74,7 @@ export class ProgressAndInputBar extends Component {
     let onChainScore = convertFromUIScoreToOnChainScore(this.state.score)
     this.props.commit(this.props.assessmentAddress, onChainScore, this.state.salt)
     // save salt and score in local storage
-    let cacheCommitData = JSON.stringify({score: this.state.score, salt: this.state.salt})
+    let cacheCommitData = JSON.stringify({ score: this.state.score, salt: this.state.salt })
     window.localStorage.setItem(this.props.assessmentAddress + this.props.userAddress, cacheCommitData)
     this.setProgressView()
   }
@@ -91,9 +91,9 @@ export class ProgressAndInputBar extends Component {
     // make sure number is a multiple of 0.5%
     let score = (Math.floor((Number(e.target.value)) * 2)) / 2
     if (score >= 0 && score <= 100 && (((Number(e.target.value)) * 10) % 5) === 0) {
-      this.setState({score: score, invalidScoreRange: false})
+      this.setState({ score: score, invalidScoreRange: false })
     } else {
-      this.setState({invalidScoreRange: true})
+      this.setState({ invalidScoreRange: true })
     }
   }
 
@@ -136,7 +136,7 @@ export class ProgressAndInputBar extends Component {
               disabled: !(this.props.stage === Stage.Committed && this.props.stage === this.props.userStage)
             }, '3. Reveal'),
             this.props.transactions
-              ? h(TxList, {transactions: this.props.transactions})
+              ? h(TxList, { transactions: this.props.transactions })
               : null
           ])
         )
@@ -147,20 +147,20 @@ export class ProgressAndInputBar extends Component {
         // show actionView, where the user can input data and interact with the assessment
         return (
           h(ProgressButtonBox, [
-            h(CloseButton, {onClick: this.closeInputBar.bind(this)}, 'X'),
+            h(CloseButton, { onClick: this.closeInputBar.bind(this) }, 'X'),
             h(StageName, this.state.view + ':'),
             this.props.stage === Stage.Confirmed
               ? (
-                h('div', {style: {display: 'inline-block'}}, [
-                  h(Feedback, {invalidScoreRange: this.state.invalidScoreRange}, 'must be 0% <= score <= 100%, 0.5% granularity'),
+                h('div', { style: { display: 'inline-block' } }, [
+                  h(Feedback, { invalidScoreRange: this.state.invalidScoreRange }, 'must be 0% <= score <= 100%, 0.5% granularity'),
                   h(CommitInput, {
                     placeholder: 'What score do you want to give the assessee?',
                     step: 0.5,
                     type: 'number',
-                    onChange: this.setScore.bind(this)})
+                    onChange: this.setScore.bind(this) })
                 ]))
               : h(StageDescriptor, this.state.displayText),
-            h(SubmitButton, {onClick: this.state.action.bind(this)}, 'Go')
+            h(SubmitButton, { onClick: this.state.action.bind(this) }, 'Go')
           ])
         )
       }
@@ -168,15 +168,15 @@ export class ProgressAndInputBar extends Component {
         // add Meeting Point
         return (
           h(ProgressButtonBox, [
-            h(CloseButton, {onClick: this.closeInputBar.bind(this)}, 'X'),
+            h(CloseButton, { onClick: this.closeInputBar.bind(this) }, 'X'),
             h(StageName, 'Add a meeting Point:'),
-            h('div', {style: {display: 'inline-block'}}, [
+            h('div', { style: { display: 'inline-block' } }, [
               h(CommitInput, {
                 placeholder: 'e.g. a gitLab repo',
                 type: 'string',
                 onChange: this.setMeetingPointToBeStored.bind(this) })
             ]),
-            h(SubmitButton, {onClick: this.storeData.bind(this)}, 'Submit')
+            h(SubmitButton, { onClick: this.storeData.bind(this) }, 'Submit')
           ])
         )
       }

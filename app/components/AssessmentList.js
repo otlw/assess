@@ -29,12 +29,12 @@ export const AssessmentList = (props) => {
   }
 }
 
-const listContainer = styled('div').attrs({className: 'flex flex-column w-100 pa2'})``
+const listContainer = styled('div').attrs({ className: 'flex flex-column w-100 pa2' })``
 
-const listContainerCards = styled('div').attrs({className: 'flex flex-row flex-wrap w-100 justify-center'})``
+const listContainerCards = styled('div').attrs({ className: 'flex flex-row flex-wrap w-100 justify-center' })``
 
-const listTextTitle = styled('h3').attrs({className: 'f3 fw4 gray tc ttu uppercase'})``
+const listTextTitle = styled('h3').attrs({ className: 'f3 fw4 gray tc ttu uppercase' })``
 
-const listTextDescription = styled('h4').attrs({className: 'f4 fw4 gray tc'})``
+const listTextDescription = styled('h4').attrs({ className: 'f4 fw4 gray tc' })``
 
 export default AssessmentList

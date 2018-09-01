@@ -15,11 +15,11 @@ export class ConceptBoard extends Component {
 
   selectConceptAddress (e) {
     window.scrollTo(0, 0)
-    this.setState({selectedConceptAddress: e.target.id})
+    this.setState({ selectedConceptAddress: e.target.id })
   }
 
   cancelCreation () {
-    this.setState({selectedConceptAddress: '0'})
+    this.setState({ selectedConceptAddress: '0' })
   }
 
   render () {
@@ -43,7 +43,7 @@ export class ConceptBoard extends Component {
           ConceptHeader
         ]),
         // only display list when no concept is selected
-        this.state.selectedConceptAddress === '0' ? h(ConceptList, {concepts, selectConceptAddress: this.selectConceptAddress.bind(this)}) : null
+        this.state.selectedConceptAddress === '0' ? h(ConceptList, { concepts, selectConceptAddress: this.selectConceptAddress.bind(this) }) : null
       ])
     } else {
       return h('div', 'Loading Concepts')
@@ -60,5 +60,5 @@ width:100%;
 text-align:center;
 `
 
-const ConceptHeaderDefault = styled('h3').attrs({className: 'f3 gray fw4'})`
+const ConceptHeaderDefault = styled('h3').attrs({ className: 'f3 gray fw4' })`
 `

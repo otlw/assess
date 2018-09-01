@@ -38,10 +38,10 @@ function transactions (state = initialState, action) {
     case UPDATE_TRANSACTION:
       return {
         ...state,
-        [action.txHash]: extend(state[action.txHash], {status: action.status})
+        [action.txHash]: extend(state[action.txHash], { status: action.status })
       }
     case REMOVE_TRANSACTION: {
-      let newState = {...state}
+      let newState = { ...state }
       delete newState[action.txHash]
       return newState
     }

@@ -19,6 +19,6 @@ const store = createStore(
 console.log('defaultState', store.getState())
 
 render(
-  h(Provider, {store}, h(topLevelStyles, [h(App)])),
+  h(Provider, { store }, h(topLevelStyles, [h(App)])),
   document.getElementById('root')
 )

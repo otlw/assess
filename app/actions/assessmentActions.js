@@ -15,7 +15,7 @@ const ethereumjsABI = require('ethereumjs-abi')
 
 // setup ipfs api
 const ipfsAPI = require('ipfs-api')
-const ipfs = ipfsAPI('ipfs.infura.io', '5001', {protocol: 'https'})
+const ipfs = ipfsAPI('ipfs.infura.io', '5001', { protocol: 'https' })
 
 export function hashScoreAndSalt (_score, _salt) {
   return '0x' + ethereumjsABI.soliditySHA3(
@@ -32,7 +32,7 @@ export function confirmAssessor (address) {
     let assessmentInstance = getInstance.assessment(getState(), address)
     sendAndReactToTransaction(
       dispatch,
-      () => { return assessmentInstance.methods.confirmAssessor().send({from: userAddress}) },
+      () => { return assessmentInstance.methods.confirmAssessor().send({ from: userAddress }) },
       Stage.Called,
       userAddress,
       address,
@@ -47,7 +47,7 @@ export function commit (address, score, salt) {
     let assessmentInstance = getInstance.assessment(getState(), address)
     sendAndReactToTransaction(
       dispatch,
-      () => { return assessmentInstance.methods.commit(hashScoreAndSalt(score, salt)).send({from: userAddress}) },
+      () => { return assessmentInstance.methods.commit(hashScoreAndSalt(score, salt)).send({ from: userAddress }) },
       Stage.Confirmed,
       userAddress,
       address,
@@ -62,7 +62,7 @@ export function reveal (address, score, salt) {
     let assessmentInstance = getInstance.assessment(getState(), address)
     sendAndReactToTransaction(
       dispatch,
-      () => { return assessmentInstance.methods.reveal(score, salt).send({from: userAddress}) },
+      () => { return assessmentInstance.methods.reveal(score, salt).send({ from: userAddress }) },
       Stage.Committed,
       userAddress,
       address,
@@ -79,7 +79,7 @@ export function storeDataOnAssessment (address, data) {
     let dataAsBytes = getState().ethereum.web3.utils.utf8ToHex(data)
     sendAndReactToTransaction(
       dispatch,
-      () => { return assessmentInstance.methods.addData(dataAsBytes).send({from: userAddress}) },
+      () => { return assessmentInstance.methods.addData(dataAsBytes).send({ from: userAddress }) },
       'meetingPointChange',
       userAddress,
       address,
@@ -208,7 +208,7 @@ export function fetchAssessmentData (address) {
 
       const fathomTokenInstance = getInstance.fathomToken(getState())
       let pastEvents = await fathomTokenInstance.getPastEvents('Notification', {
-        filter: {sender: address, topic: 2},
+        filter: { sender: address, topic: 2 },
         fromBlock: 0, // TODO don't use from 0
         toBlock: 'latest'
       })
