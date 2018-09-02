@@ -111,22 +111,22 @@ describe('assessmentActions', () => {
 // confirmAssessor
 // => Import: getInstance.assessment
 // => Import: sendAndReactToTransaction
-// => Async: fetchUserStage
+// ==> Async: fetchUserStage
 
 // commit
 // => Import: getInstance.assessment
 // => Import: sendAndReactToTransaction
-// => Async: fetchUserStage
+// ==> Async: fetchUserStage
 
 // reveal
 // => Import: getInstance.assessment
 // => Import: sendAndReactToTransaction
-// => Async: fetchUserStage
+// ==> Async: fetchUserStage
 
 // storeDataOnAssessment
 // => Import: getInstance.assessment
 // => Import: sendAndReactToTransaction
-// => Async: fetchUserStage
+// ==> Async: fetchUserStage
 
 // fetchLatestAssessments
 // => Basic: beginLoadingAssessments
@@ -169,13 +169,13 @@ describe('assessmentActions', () => {
 
 // processEvent
 // => Import: NotificationTopic
-// => Import: fetchUserBalance
-// => Async: fetchAssessmentData
-// => Async: fetchUserStage
+// ==> Import: fetchUserBalance
+// ==> Async: fetchAssessmentData
+// ==> Async: fetchUserStage
 // => Basic: receiveAssessor
 // => Basic: updateAssessmentVariable
-// => Async: fetchPayout
-// => Async: fetchFinalScore
+// ==> Async: fetchPayout
+// ==> Async: fetchFinalScore
 
 /* BASIC ACTION CREATORS */
 
