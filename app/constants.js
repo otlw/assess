@@ -48,3 +48,25 @@ export const NotificationTopic = Object.freeze({
   TokensPaidOut: 6,
   AssessmentFinished: 7
 })
+
+export function helperScreens (key) {
+  switch (key) {
+    case 'Staking':
+      return {
+        title: 'What\'s staking?',
+        text: 'Staking is where each Assessor needs to pay a small fee to assess you. It’s done so that they have “skin in the game” and are more likely to assess you fairly.',
+        followUp: {
+          linkText: 'And after that?',
+          target: 'AfterStaking'
+        }
+      }
+    case 'AfterStaking':
+      return {
+        title: 'After staking, you will be assessed',
+        text: 'You designate a Meeting Point, like a chatroom and a time and date. Then, you & the Assessors meet. It looks like you haven’t set one yet, lets do it now, we’ll help you!',
+        followUp: 'SetMeetingPoint'
+      }
+    default:
+      return false
+  }
+}

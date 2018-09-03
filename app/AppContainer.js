@@ -10,6 +10,7 @@ import AssessmentView from './components/AssessmentView'
 import h from 'react-hyperscript'
 import { HashRouter, Route } from 'react-router-dom'
 import styled, {ThemeProvider} from 'styled-components'
+import { helperScreens } from './constants.js'
 
 const theme = {
   primary: '#546e7a',
@@ -56,7 +57,9 @@ export class App extends Component {
           warningScreen === null
             ? h('div', [
               h(Header),
-              h(HelperBar),
+              (this.props.helperScreen
+                ? h(HelperBar, {screen: this.props.helperScreen})
+                : null),
               // tx-list component here
               this.props.loadedWeb3
                 ? (h(appContainer, [
@@ -79,7 +82,8 @@ const appContainer = styled('div').attrs({className: 'flex flex-column w-100'})`
 const mapStateToProps = state => {
   return {
     loadedWeb3: state.ethereum.isConnected && state.ethereum.userAddress && state.ethereum.networkID && state.ethereum.webSocketIsConnected,
-    mainDisplay: state.navigation.mainDisplay
+    mainDisplay: state.navigation.mainDisplay,
+    helperScreen: helperScreens(state.navigation.helperScreen)
   }
 }
 

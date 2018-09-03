@@ -5,6 +5,7 @@ export const SET_INPUT_BAR = 'SET_INPUT_BAR'
 export const ADD_VISIT = 'ADD_VISIT'
 export const RESET_VISITS = 'RESET_VISITS'
 export const SAVE_PROGRESSION = 'SAVE_PROGRESSION'
+export const SET_HELPER_SCREEN = 'SET_HELPER_SCREEN'
 
 export function setDashboardTab (tab) {
   if (tab === 'Past' ||
@@ -66,14 +67,15 @@ export function saveProgression (role, stage) {
   }
 }
 
-export function dispatchResetVisits () {
-  return async (dispatch) => {
-    dispatch(resetVisits())
-  }
-}
-
 export function resetVisits () {
   return {
     type: RESET_VISITS
+  }
+}
+
+export function setHelperScreen (screen) {
+  return {
+    type: SET_HELPER_SCREEN,
+    screen
   }
 }

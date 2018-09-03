@@ -4,6 +4,7 @@ import {
   SET_INPUT_BAR,
   SET_NOTIFICATION_BAR,
   ADD_VISIT,
+  SET_HELPER_SCREEN,
   RESET_VISITS,
   SAVE_PROGRESSION
 } from '../actions/navigationActions.js'
@@ -21,7 +22,8 @@ const initialState = {
     site: 0,
     assessor: Stage.None,
     assessee: Stage.None
-  }
+  },
+  helperScreen: 'Staking'
 }
 
 export default function navigation (state = initialState, action) {
@@ -70,6 +72,11 @@ export default function navigation (state = initialState, action) {
           ...state.visits,
           [action.role]: action.stage > state.visits[action.role] ? action.stage : state.visits[action.role]
         }
+      }
+    case SET_HELPER_SCREEN:
+      return {
+        ...state,
+        helperScreen: action.screen
       }
     default: return state
   }
