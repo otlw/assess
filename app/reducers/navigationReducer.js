@@ -23,7 +23,7 @@ const initialState = {
     assessor: Stage.None,
     assessee: Stage.None
   },
-  helperScreen: 'Staking'
+  helperScreen: 'Welcome'
 }
 
 export default function navigation (state = initialState, action) {

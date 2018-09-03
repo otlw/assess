@@ -1,3 +1,4 @@
+import { Stage } from './constants.js'
 let { Assessment, Concept, FathomToken, ConceptRegistry } = require('fathom-contracts')
 
 function getContractInstance (web3, abi, address) {
@@ -40,4 +41,14 @@ export function convertFromOnChainScoreToUIScore (x) {
 
 export function convertFromUIScoreToOnChainScore (x) {
   return (x * 2) - 100
+}
+
+// define whether or not a helper Screen should be chosen and if so, which one.
+export function showScreen (visits, assessment, userAddress) {
+  if (visits.site === 0) {
+    if (assessment.assessee === userAddress) return 'FirstTimeAsAssessee'
+    if (assessment.userStage === Stage.Called) return 'Staking'
+  } else {
+    return 'none'
+  }
 }
