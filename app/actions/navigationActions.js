@@ -1,3 +1,5 @@
+import { showScreen } from '../utils.js'
+
 export const SET_DASHBOARD_TAB = 'SET_DASHBOARD_TAB'
 export const SET_MAIN_DISPLAY = 'SET_MAIN_DISPLAY'
 export const SET_NOTIFICATION_BAR = 'SET_NOTIFICATION_BAR'
@@ -47,12 +49,6 @@ export function setInputBar (inputType) {
   }
 }
 
-// export function dispatchNavigationAction (navigationAction) {
-//   return async (dispatch) => {
-//     dispatch(navigationAction)
-//   }
-// }
-
 export function addVisit () {
   return {
     type: ADD_VISIT
@@ -77,5 +73,15 @@ export function setHelperScreen (screen) {
   return {
     type: SET_HELPER_SCREEN,
     screen
+  }
+}
+
+export function updateHelperScreen (location, params) {
+  return async (dispatch, getState) => {
+    let helperScreen = showScreen(getState().navigation.helperScreen, getState().navigation.visits, location, params)
+    if (helperScreen && helperScreen !== getState().navigation.helperScreen) {
+      console.log('changing helperScreen to: ', helperScreen)
+      dispatch(setHelperScreen(helperScreen))
+    }
   }
 }

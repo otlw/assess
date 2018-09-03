@@ -2,6 +2,7 @@ import { getInstance, convertFromOnChainScoreToUIScore } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
 import { receiveVariable, fetchUserBalance } from './web3Actions.js'
 import { Stage, LoadingStage, NotificationTopic } from '../constants.js'
+import { updateHelperScreen } from './navigationActions.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const REMOVE_ASSESSMENT = 'REMOVE_ASSESSMENT'
@@ -36,7 +37,10 @@ export function confirmAssessor (address) {
       Stage.Called,
       userAddress,
       address,
-      () => { dispatch(fetchUserStage(address)) }
+      () => {
+        dispatch(fetchUserStage(address))
+        dispatch(updateHelperScreen('Staked'))
+      }
     )
   }
 }
@@ -51,7 +55,10 @@ export function commit (address, score, salt) {
       Stage.Confirmed,
       userAddress,
       address,
-      () => { dispatch(fetchUserStage(address)) }
+      () => {
+        dispatch(fetchUserStage(address))
+        dispatch(updateHelperScreen('Committed'))
+      }
     )
   }
 }
@@ -66,7 +73,10 @@ export function reveal (address, score, salt) {
       Stage.Committed,
       userAddress,
       address,
-      () => { dispatch(fetchUserStage(address)) }
+      () => {
+        dispatch(fetchUserStage(address))
+        dispatch(updateHelperScreen('Revealed'))
+      }
     )
   }
 }
@@ -83,7 +93,12 @@ export function storeDataOnAssessment (address, data) {
       'meetingPointChange',
       userAddress,
       address,
-      () => { dispatch(fetchStoredData(address)) }
+      () => {
+        dispatch(fetchStoredData(address))
+        dispatch(updateHelperScreen('StoredMeetingPoint', {
+          previousMeetingPointExisted: getState().assessments[address].data !== ''
+        }))
+      }
     )
   }
 }
@@ -122,6 +137,7 @@ export function fetchLatestAssessments () {
       })
       dispatch(endLoadingAssessments())
     }
+    dispatch(updateHelperScreen('dashboard'))
   }
 }
 
@@ -131,7 +147,7 @@ export function fetchLatestAssessments () {
   concept which also knows about the assessment, and if so
   calls fetchAssessmentData()
 */
-export function validateAndFetchAssessmentData (address) {
+export function validateAndFetchAssessmentData (address, callback) {
   return async (dispatch, getState) => {
     try {
       let assessmentInstance = getInstance.assessment(getState(), address)
@@ -145,7 +161,7 @@ export function validateAndFetchAssessmentData (address) {
       // if concept is from Registry and assessment is from concept,
       // go ahead and fetch data, otherwise, add an invalid assessment object
       if (isValidConcept && isValidAssessment) {
-        dispatch(fetchAssessmentData(address))
+        dispatch(fetchAssessmentData(address, callback))
       } else {
         dispatch(setAssessmentAsInvalid(address))
       }
@@ -161,7 +177,7 @@ export function validateAndFetchAssessmentData (address) {
  is already in state (), it only fetches what could have changed via
  updateAssessment()
  */
-export function fetchAssessmentData (address) {
+export function fetchAssessmentData (address, callback) {
   return async (dispatch, getState) => {
     try {
       // get static assessment info
@@ -231,7 +247,7 @@ export function fetchAssessmentData (address) {
         }
       }
 
-      dispatch(receiveAssessment({
+      let assessment = {
         address,
         cost,
         checkpoint,
@@ -247,7 +263,9 @@ export function fetchAssessmentData (address) {
         data,
         assessors,
         payout
-      }))
+      }
+      dispatch(receiveAssessment(assessment))
+      if (callback) callback(assessment)
     } catch (e) {
       console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
     }

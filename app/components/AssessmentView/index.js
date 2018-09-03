@@ -2,8 +2,7 @@ import { connect } from 'react-redux'
 import { Component } from 'react'
 import AssessmentView from './AssessmentView.js'
 import {validateAndFetchAssessmentData} from '../../actions/assessmentActions'
-import { setHelperScreen } from '../../actions/navigationActions.js'
-import { showScreen } from '../../utils.js'
+import { updateHelperScreen } from '../../actions/navigationActions.js'
 var h = require('react-hyperscript')
 
 const mapStateToProps = (state, ownProps) => {
@@ -17,20 +16,24 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = {
   validateAndFetchAssessmentData,
-  setHelperScreen
+  updateHelperScreen
 }
 
 class AssessmentViewUnconnected extends Component {
   componentWillMount () {
     let address = this.props.match.params.id
     if (!this.props.assessment) {
-      this.props.validateAndFetchAssessmentData(address)
+      this.props.validateAndFetchAssessmentData(address, (assessment) => {
+        this.props.updateHelperScreen('assessmentView', {
+          assessment: assessment,
+          userAddress: this.props.userAddress
+        })
+      })
     } else {
-      let helperScreen = showScreen(this.props.visits, this.props.assessment, this.props.userAddress)
-      if (helperScreen && helperScreen !== this.props.helperScreen) {
-        console.log('displauing helper: ', helperScreen)
-        this.props.setHelperScreen(helperScreen)
-      }
+      this.props.updateHelperScreen('assessmentView', {
+        assessment: this.props.assessment,
+        userAddress: this.props.userAddress
+      })
     }
   }
 

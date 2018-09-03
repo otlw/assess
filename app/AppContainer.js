@@ -57,9 +57,8 @@ export class App extends Component {
           warningScreen === null
             ? h('div', [
               h(Header),
-              (this.props.helperScreen
-                ? h(HelperBar, {screen: this.props.helperScreen})
-                : null),
+              // TODO make helperbar decide for itself whether or not to render something or an empty thing
+              h(HelperBar),
               // tx-list component here
               this.props.loadedWeb3
                 ? (h(appContainer, [
@@ -82,8 +81,7 @@ const appContainer = styled('div').attrs({className: 'flex flex-column w-100'})`
 const mapStateToProps = state => {
   return {
     loadedWeb3: state.ethereum.isConnected && state.ethereum.userAddress && state.ethereum.networkID && state.ethereum.webSocketIsConnected,
-    mainDisplay: state.navigation.mainDisplay,
-    helperScreen: helperScreens(state.navigation.helperScreen)
+    mainDisplay: state.navigation.mainDisplay
   }
 }
 

@@ -44,11 +44,18 @@ export function convertFromUIScoreToOnChainScore (x) {
 }
 
 // define whether or not a helper Screen should be chosen and if so, which one.
-export function showScreen (visits, assessment, userAddress) {
-  if (visits.site === 0) {
-    if (assessment.assessee === userAddress) return 'FirstTimeAsAssessee'
-    if (assessment.userStage === Stage.Called) return 'Staking'
+// TODO define more cases where should return a key
+export function showScreen (currentScreen, visits, location, params) {
+  if (location === 'assessmentView') {
+    if (visits.site === 0) {
+      // e.g.
+      // if (params.assessment.assessee === params.userAddress) return 'FirstTimeAsAssessee'
+      if (params.assessment.userStage === Stage.Called) return 'Staking'
+    } else {
+      return 'none'
+    }
   } else {
     return 'none'
   }
+
 }

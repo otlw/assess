@@ -20,3 +20,4 @@ export const AssessmentLoader = (props) => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AssessmentLoader)
+// TODO delete this component
