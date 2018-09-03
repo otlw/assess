@@ -10,7 +10,6 @@ import AssessmentView from './components/AssessmentView'
 import h from 'react-hyperscript'
 import { HashRouter, Route } from 'react-router-dom'
 import styled, {ThemeProvider} from 'styled-components'
-import { helperScreens } from './constants.js'
 
 const theme = {
   primary: '#546e7a',

@@ -34,7 +34,6 @@ export const getInstance = {
 }
 
 // convert score UI/SmartContracts
-
 export function convertFromOnChainScoreToUIScore (x) {
   return (x + 100) / 2
 }
@@ -44,8 +43,9 @@ export function convertFromUIScoreToOnChainScore (x) {
 }
 
 // define whether or not a helper Screen should be chosen and if so, which one.
-// TODO define more cases where should return a key
+// TODO define more cases that return a key and their correspondant texts in constans.js
 export function showScreen (currentScreen, visits, location, params) {
+  // when visiting the assessmentView from another place / the first time on the page
   if (location === 'assessmentView') {
     if (visits.site === 0) {
       // e.g.
@@ -54,8 +54,16 @@ export function showScreen (currentScreen, visits, location, params) {
     } else {
       return 'none'
     }
-  } else {
-    return 'none'
-  }
-
+    // when completing a stage action
+  } else if (location === 'Staked') return 'none'
+  else if (location === 'Committed') return 'none'
+  else if (location === 'Revealed') return 'none'
+  // when setting a meeting point
+  else if (location === 'StoredMeetingPoint') {
+    // for the first time
+    if (params.previousMeetingPointExisted) return 'none'
+    // or updating it
+    else return 'none'
+  // default case
+  } else return 'none'
 }
