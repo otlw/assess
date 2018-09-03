@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import Header from './components/Header'
 import {NavTabs} from './components/NavTabs'
 import AssessmentFilterView from './components/AssessmentFilterView'
+import HelperBar from './components/HelperBar'
 import CertificateList from './components/CertificateList'
 import ConceptBoard from './components/ConceptBoard'
 import AssessmentView from './components/AssessmentView'
@@ -55,6 +56,8 @@ export class App extends Component {
           warningScreen === null
             ? h('div', [
               h(Header),
+              h(HelperBar),
+              // tx-list component here
               this.props.loadedWeb3
                 ? (h(appContainer, [
                   h(NavTabs),
