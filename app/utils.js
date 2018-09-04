@@ -1,4 +1,3 @@
-import { Stage } from './constants.js'
 let { Assessment, Concept, FathomToken, ConceptRegistry } = require('fathom-contracts')
 
 function getContractInstance (web3, abi, address) {

@@ -6,7 +6,7 @@ import { helperScreens } from '../../../constants.js'
 const mapStateToProps = state => {
   return {
     visits: state.navigation.visits,
-    screen: helperScreens(state.navigation.helperScreen)
+    topic: helperScreens(state.navigation.helperBarTopic)
   }
 }
 

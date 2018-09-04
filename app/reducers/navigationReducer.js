@@ -23,7 +23,7 @@ const initialState = {
     assessor: Stage.None,
     assessee: Stage.None
   },
-  helperScreen: 'Welcome'
+  helperBarTopic: ''
 }
 
 export default function navigation (state = initialState, action) {
@@ -76,7 +76,7 @@ export default function navigation (state = initialState, action) {
     case SET_HELPER_SCREEN:
       return {
         ...state,
-        helperScreen: action.key
+        helperBarTopic: action.key
       }
     default: return state
   }

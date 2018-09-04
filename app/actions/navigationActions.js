@@ -82,7 +82,6 @@ export function setHelperBar (key) {
   */
 export function updateHelperScreen (keyWord, params) {
   return async (dispatch, getState) => {
-
     // cases when we want to show a full screen takeOver
     if (keyWord === 'NoMetaMask') {
       // here we could use the visit-history to be conditional, e.g.:
@@ -95,8 +94,8 @@ export function updateHelperScreen (keyWord, params) {
       dispatch(setMainDisplay('UnlockMetaMask'))
     } else {
       // cases where we just want to show a HelperBar
-      let helperBar = getHelperBar(getState().navigation.helperScreen, getState().navigation.visits, keyWord, params)
-      if (helperBar && helperBar !== getState().navigation.helperScreen) {
+      let helperBar = getHelperBar(getState().navigation.helperBarTopic, getState().navigation.visits, keyWord, params)
+      if (helperBar && helperBar !== getState().navigation.helperBarTopic) {
         console.log('changing helperBar to: ', helperBar)
         dispatch(setHelperBar(helperBar))
       }

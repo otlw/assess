@@ -19,19 +19,19 @@ export class HelperBar extends Component {
   }
 
   nextScreen () {
-    this.props.setHelperBar(this.props.screen.followUp.target)
+    this.props.setHelperBar(this.props.topic.followUp.target)
   }
 
   render () {
-    let screen = this.props.screen
-    if (screen) {
+    let topic = this.props.topic
+    if (topic) {
       if (this.state.showHelper) {
         return (
           h('div', [
-            h(HelperTitle, screen.title),
-            h(HelperText, screen.text),
-            (screen.followUp
-              ? h(HelperFollowUpButton, {onClick: this.nextScreen.bind(this)}, screen.followUp.linkText)
+            h(HelperTitle, topic.title),
+            h(HelperText, topic.text),
+            (topic.followUp
+              ? h(HelperFollowUpButton, {onClick: this.nextScreen.bind(this)}, topic.followUp.linkText)
               : null),
             h('button', {onClick: this.gotIt.bind(this)}, 'got it!'), // TODO this could set a mark in state that the info has been seen already
             h('button', {onClick: this.resetVisits.bind(this)}, 'resetToNoob!') // this is for us, so we can pretend being a first timer

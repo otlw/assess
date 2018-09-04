@@ -9,8 +9,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     assessment: state.assessments[ownProps.match.params.id],
     userAddress: state.ethereum.userAddress,
-    visits: state.navigation.visits,
-    helperScreen: state.navigation.helperScreen
+    visits: state.navigation.visits
   }
 }
 

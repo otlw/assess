@@ -49,8 +49,8 @@ export const NotificationTopic = Object.freeze({
   AssessmentFinished: 7
 })
 
-export function helperScreens (key) {
-  switch (key) {
+export function helperScreens (topic) {
+  switch (topic) {
     case 'Staking':
       return {
         title: 'What\'s staking?',

@@ -3,7 +3,7 @@ import AssessmentList from '../AssessmentList.js'
 import h from 'react-hyperscript'
 import { Stage } from '../../constants.js'
 
-// TODO if this should display a notification bar, this needs to be turned into class-component
+// NOTE if this should display a helperBar, this needs to be turned into class-component
 export const CertificateList = (props) => {
   let completedAsAssessee = Object.values(props.assessments).filter(
     assessment =>
