@@ -138,7 +138,6 @@ const initializeEventWatcher = () => {
         // they come from an assessment the user is involved in AND one of the following
         // a) the user is looking at it
         // b) the user has already been on the dashboard page once
-        console.log('blockNumber in web3', log.blockNumber)
         if ((getState().assessments[decodedLog.sender] || decodedLog.user === userAddress)) {
           dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic), log.blockNumber))
         } else {

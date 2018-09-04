@@ -16,7 +16,7 @@ let initialState = {
   userAddress: '',
   networkID: 4,
   AhaBalance: 0,
-  latestBlock: 0
+  lastUpdatedAt: 0
 }
 
 function ethereum (state = initialState, action) {
@@ -46,7 +46,7 @@ function ethereum (state = initialState, action) {
     case RECEIVE_PERSISTED_STATE:
       return {
         ...state,
-        latestBlock: action.persistedState.latestBlock
+        lastUpdatedAt: action.persistedState.lastUpdatedAt
       }
     default:
       return state
