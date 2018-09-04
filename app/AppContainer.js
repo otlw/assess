@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import Header from './components/Header'
 import {NavTabs} from './components/NavTabs'
 import AssessmentFilterView from './components/AssessmentFilterView'
-import HelperBar from './components/HelperBar'
+import HelperBar from './components/Helpers/HelperBar'
+import HelperTakeOver from './components/Helpers/HelperTakeOver.js'
 import CertificateList from './components/CertificateList'
 import ConceptBoard from './components/ConceptBoard'
 import AssessmentView from './components/AssessmentView'
@@ -35,40 +36,32 @@ const theme = {
 
 export class App extends Component {
   render () {
-    // use the mainDisplay variable to know wether to display the App or a warning screen
     let mainDisplay = this.props.mainDisplay
-    let warningScreen = null
-
-    if (mainDisplay === 'UnlockMetaMask') {
-      // if user needs to enter password
-      warningScreen = h('p', 'You need to unlock Metamask by entering your password.\n')
-    } else if (mainDisplay === 'NoMetaMask') {
-      // if user doesn't have MetaMask
-      warningScreen = h('p', "You don't have the MetaMask browser extension that allows to use this app.\n Please Download it to use the features of this interface")
-    } else if (mainDisplay === 'UndeployedNetwork') {
-      // if there arent anydeployed contract on this network
-      warningScreen = h('p', "You are connected to a network on which you haven't deployed contracts. Please use an appropriate script")
-    } // else, just display the normal App
-
+    if (mainDisplay === 'NoMetaMask' ||
+        mainDisplay === 'educateAboutMetaMask' ||
+        mainDisplay === 'UnlockMetaMask') {
+      return h(HelperTakeOver, {mainDisplay: mainDisplay})
+    }
+    // else, there is an account, just display the normal App
     return (
       h(HashRouter, [
         h(ThemeProvider, {theme},
-          warningScreen === null
-            ? h('div', [
-              h(Header),
-              // TODO make helperbar decide for itself whether or not to render something or an empty thing
-              h(HelperBar),
-              // tx-list component here
-              this.props.loadedWeb3
-                ? (h(appContainer, [
-                  h(NavTabs),
-                  h(Route, {exact: true, path: '/', component: AssessmentFilterView}),
-                  h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
-                  h(Route, {path: '/assessment/:id', component: AssessmentView}),
-                  h(Route, {path: '/certificates/', component: CertificateList})
-                ]))
-                : h('div', 'Loading web3')
-            ]) : warningScreen
+          h('div', [
+            h(Header),
+            h(HelperBar),
+            this.props.loadedWeb3
+              ? (h(appContainer,
+                this.props.mainDisplay
+                  ? [h(NavTabs), h(HelperTakeOver, {mainDisplay: mainDisplay})]
+                  : [h(NavTabs),
+                    h(Route, {exact: true, path: '/', component: AssessmentFilterView}),
+                    h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
+                    h(Route, {path: '/assessment/:id', component: AssessmentView}),
+                    h(Route, {path: '/certificates/', component: CertificateList})
+                  ])
+              )
+              : h('div', 'Loading web3')
+          ])
         )
       ])
     )

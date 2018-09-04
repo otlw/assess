@@ -13,7 +13,7 @@ import { Stage } from '../constants.js'
 
 const initialState = {
   dashboardTab: 'Current',
-  mainDisplay: 'Main',
+  mainDisplay: '',
   notificationBar: {
     display: false
   },
@@ -76,7 +76,7 @@ export default function navigation (state = initialState, action) {
     case SET_HELPER_SCREEN:
       return {
         ...state,
-        helperScreen: action.screen
+        helperScreen: action.key
       }
     default: return state
   }

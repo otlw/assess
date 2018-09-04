@@ -2,7 +2,7 @@ import Web3 from 'web3'
 import { getInstance } from '../utils.js'
 import { networkName, LoadingStage } from '../constants.js'
 import { processEvent } from './assessmentActions.js'
-import { setMainDisplay } from './navigationActions.js'
+import { setMainDisplay, updateHelperScreen } from './navigationActions.js'
 var Dagger = require('eth-dagger')
 const { FathomToken } = require('fathom-contracts')
 
@@ -30,7 +30,7 @@ export const connect = () => {
         let accounts = await w3.eth.getAccounts()
         if (accounts.length === 0) {
           // this is when MM is locked
-          dispatch(setMainDisplay('UnlockMetaMask'))
+          dispatch(updateHelperScreen('UnlockMetaMask'))
         } else {
           dispatch(receiveVariable('userAddress', accounts[0]))
           dispatch(fetchUserBalance())
@@ -60,7 +60,7 @@ export const connect = () => {
       }
     } else {
       // If the user has no MetaMask extension, a different screen will be displayed instead of the App
-      dispatch(setMainDisplay('NoMetaMask'))
+      dispatch(updateHelperScreen('NoMetaMask'))
       window.alert("You don't have the MetaMask browser extension.")
     }
   }

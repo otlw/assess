@@ -19,7 +19,7 @@ export class HelperBar extends Component {
   }
 
   nextScreen () {
-    this.props.setHelperScreen(this.props.screen.followUp.target)
+    this.props.setHelperBar(this.props.screen.followUp.target)
   }
 
   render () {

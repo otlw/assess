@@ -1,5 +1,4 @@
-import { showScreen } from '../utils.js'
-
+import { Stage } from '../constants.js'
 export const SET_DASHBOARD_TAB = 'SET_DASHBOARD_TAB'
 export const SET_MAIN_DISPLAY = 'SET_MAIN_DISPLAY'
 export const SET_NOTIFICATION_BAR = 'SET_NOTIFICATION_BAR'
@@ -69,19 +68,68 @@ export function resetVisits () {
   }
 }
 
-export function setHelperScreen (screen) {
+export function setHelperBar (key) {
   return {
     type: SET_HELPER_SCREEN,
-    screen
+    key
   }
 }
 
-export function updateHelperScreen (location, params) {
+/*
+  function to update the helperScreens by saving the approprioate keyword to the store
+  either setHelperBar() for the notificationBar OR
+  setMainDisplay() for the HelperTakeOver
+  */
+export function updateHelperScreen (keyWord, params) {
   return async (dispatch, getState) => {
-    let helperScreen = showScreen(getState().navigation.helperScreen, getState().navigation.visits, location, params)
-    if (helperScreen && helperScreen !== getState().navigation.helperScreen) {
-      console.log('changing helperScreen to: ', helperScreen)
-      dispatch(setHelperScreen(helperScreen))
+
+    // cases when we want to show a full screen takeOver
+    if (keyWord === 'NoMetaMask') {
+      // here we could use the visit-history to be conditional, e.g.:
+      if (getState().vists.site === 0) {
+        dispatch(setMainDisplay('educateAboutMetaMask'))
+      } else {
+        dispatch(setMainDisplay('NoMetaMask'))
+      }
+    } else if (keyWord === 'UnlockMetaMask') {
+      dispatch(setMainDisplay('UnlockMetaMask'))
+    } else {
+      // cases where we just want to show a HelperBar
+      let helperBar = getHelperBar(getState().navigation.helperScreen, getState().navigation.visits, keyWord, params)
+      if (helperBar && helperBar !== getState().navigation.helperScreen) {
+        console.log('changing helperBar to: ', helperBar)
+        dispatch(setHelperBar(helperBar))
+      }
     }
+  }
+}
+
+// define whether a situation should set a helper Bar or not, and if so, which one.
+// TODO define more cases that return a key and their correspondant texts in constans.js
+function getHelperBar (currentScreen, visits, keyWord, params) {
+  // when visiting the assessmentView from another place / the first time on the page
+  switch (keyWord) {
+    case 'assessmentView': {
+      if (visits.site === 0) {
+        if (params.assessment.userStage === Stage.Called) return 'Staking'
+        // TODO add more stages here
+      } else {
+        return 'none'
+      }
+      break
+    }
+    case 'Staked':
+    case 'Committed':
+    case 'Revealed':
+      return 'none'
+      // when setting a meeting point
+    case 'StoredMeetingPoint': {
+      // for the first time
+      if (params.previousMeetingPointExisted) return 'none'
+      // or updating it
+      else return 'none'
+    }
+    default:
+      return 'none'
   }
 }
