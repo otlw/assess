@@ -100,10 +100,11 @@ export function fetchLatestAssessments () {
       dispatch(beginLoadingAssessments())
 
       // get notification events from fathomToken contract
+      let lastUpdatedAt = getState().ethereum.lastUpdatedAt
       const fathomTokenInstance = getInstance.fathomToken(getState())
       const deployedBlock = await getBlockDeployedAt.fathomToken(getState())
       let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {
-        fromBlock: deployedBlock,
+        fromBlock: lastUpdatedAt,
         toBlock: 'latest'
       })
       let assessmentAddresses = pastNotifications.reduce((accumulator, notification) => {
@@ -112,15 +113,18 @@ export function fetchLatestAssessments () {
         if (notification.returnValues.user === userAddress && accumulator.indexOf(assessment) === -1) {
           accumulator.push(assessment)
         }
+        // and save the greatest blockNumber
+        if (notification.blockNumber > lastUpdatedAt) {
+          lastUpdatedAt = notification.blockNumber
+        }
         return accumulator
       }, [])
-
-      dispatch(receiveVariable('userAssessments', assessmentAddresses))
 
       // fetch data for assessments
       assessmentAddresses.forEach((address) => {
         dispatch(fetchAssessmentData(address))
       })
+      dispatch(receiveVariable('lastUpdatedAt', lastUpdatedAt))
       dispatch(endLoadingAssessments())
     }
   }
@@ -318,10 +322,11 @@ export function fetchStoredData (selectedAssessment) {
 /*
   Updates the store by calling the respective function for each type of event.
 */
-export function processEvent (user, sender, topic) {
+export function processEvent (user, sender, topic, blockNumber) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let isUser = user === userAddress
+    dispatch(receiveVariable('lastUpdatedAt', blockNumber))
     switch (topic) {
       case NotificationTopic.AssessmentCreated:
         dispatch(fetchUserBalance())

@@ -42,7 +42,7 @@ Developing
 
 Use the script to create assessments in new concepts
 
-> node scripts/create2concepts2assessments.json
+> node scripts/create2concepts2assessments.js
 
 You can also pass 'kovan' or 'rinkeby' as an argument to create the concepts and
 assessments on the respective testnet.

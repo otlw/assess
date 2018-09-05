@@ -2,9 +2,9 @@ import {
   RECEIVE_VARIABLE,
   WEB3_CONNECTED,
   WEB3EVENTS_CONNECTED,
-  WEB3_DISCONNECTED
+  WEB3_DISCONNECTED,
+  RECEIVE_PERSISTED_STATE
 } from '../actions/web3Actions.js'
-
 import extend from 'xtend'
 
 let initialState = {
@@ -16,7 +16,7 @@ let initialState = {
   userAddress: '',
   networkID: 4,
   AhaBalance: 0,
-  userAssessments: []
+  lastUpdatedAt: 0
 }
 
 function ethereum (state = initialState, action) {
@@ -43,6 +43,11 @@ function ethereum (state = initialState, action) {
       }
     case RECEIVE_VARIABLE:
       return extend(state, {[action.name]: action.value})
+    case RECEIVE_PERSISTED_STATE:
+      return {
+        ...state,
+        lastUpdatedAt: action.persistedState.lastUpdatedAt
+      }
     default:
       return state
   }
