@@ -109,8 +109,10 @@ function getHelperBar (currentScreen, visits, keyWord, params) {
   // when visiting the assessmentView from another place / the first time on the page
   switch (keyWord) {
     case 'assessmentView': {
-      if (visits.site < 10) {
+      if (visits.site < 100) {
         if (params.assessment.userStage === Stage.Called) return 'Staking'
+        if (params.assessment.userStage === Stage.Confirmed) return 'Committing'
+        if (params.assessment.userStage === Stage.Confirmed) return 'Revealing'
         // TODO add more stages here
       } else {
         return 'none'

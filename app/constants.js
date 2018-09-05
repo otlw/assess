@@ -74,6 +74,24 @@ export function helperScreens (topic) {
         text: 'You designate a Meeting Point, like a chatroom and a time and date. Then, you & the Assessors meet. It looks like you haven’t set one yet, lets do it now, we’ll help you!',
         followUp: 'SetMeetingPoint'
       }
+    case 'Committing':
+      return {
+        title: 'What\'s committing?',
+        text: 'This is were you rate the assessee. Give him 100 points if you think he is smüs.',
+        followUp: {
+          linkText: 'What the hell is "smüs"?',
+          target: 'smues'
+        }
+      }
+    case 'smues':
+      return {
+        title: 'You\'re a curious person. Cool!',
+        text: 'That\'s best explained by an example. Take this totally smüs sentence: "Is it smüs how saying sentences backwards creates backwards sentences saying how smüs it is? \n',
+        followUp: {
+          linkText: 'Oh, I see. totally smüs indeed...',
+          target: false
+        }
+      }
     default:
       return false
   }
