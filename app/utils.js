@@ -1,3 +1,4 @@
+import { networkName } from './constants.js'
 let { Assessment, Concept, FathomToken, ConceptRegistry } = require('fathom-contracts')
 
 function getContractInstance (web3, abi, address) {
@@ -40,4 +41,29 @@ export function convertFromOnChainScoreToUIScore (x) {
 
 export function convertFromUIScoreToOnChainScore (x) {
   return (x * 2) - 100
+}
+
+export const getLocalStorageKey = (networkID, userAddress, web3) => {
+  // the address of the FathomToken is appended so that redeployments on a local
+  // testnet do not show assessment from earlier migrations
+  return 'State' + networkName(networkID) + userAddress + FathomToken.networks[networkID].address
+}
+
+export const saveState = (state) => {
+  if (state.ethereum.isConnected) {
+    try {
+      let stateToSave = {
+        assessments: state.assessments,
+        concepts: state.concepts,
+        lastUpdatedAt: state.ethereum.lastUpdatedAt
+      }
+      let key = getLocalStorageKey(state.ethereum.networkID, state.ethereum.userAddress, state.ethereum.web3)
+      const serializedState = JSON.stringify(stateToSave)
+      localStorage.setItem(key, serializedState) // eslint-disable-line no-undef
+    } catch (err) {
+      console.log('error saving state', err)
+    }
+  } else {
+    console.log('do not store Store yet')
+  }
 }

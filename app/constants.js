@@ -42,7 +42,7 @@ export function networkName (id) {
     case 42:
       return 'Kovan'
     default:
-      return 'Local'
+      return id.toString()
   }
 }
 

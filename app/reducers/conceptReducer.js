@@ -1,6 +1,7 @@
 import {
   RECEIVE_CONCEPTS
 } from '../actions/conceptActions'
+import {RECEIVE_PERSISTED_STATE} from '../actions/web3Actions.js'
 
 let initialState = {}
 
@@ -34,6 +35,8 @@ function concepts (state = initialState, action) {
   switch (action.type) {
     case RECEIVE_CONCEPTS:
       return action.concepts
+    case RECEIVE_PERSISTED_STATE:
+      return action.persistedState.concepts
     default:
       return state
   }
