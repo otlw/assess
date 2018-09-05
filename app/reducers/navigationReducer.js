@@ -8,7 +8,7 @@ import {
   RESET_VISITS,
   SAVE_PROGRESSION
 } from '../actions/navigationActions.js'
-
+import { RECEIVE_PERSISTED_STATE } from '../actions/web3Actions.js'
 import { Stage } from '../constants.js'
 
 const initialState = {
@@ -77,6 +77,11 @@ export default function navigation (state = initialState, action) {
       return {
         ...state,
         helperBarTopic: action.key
+      }
+    case RECEIVE_PERSISTED_STATE:
+      return {
+        ...state,
+        visits: action.persistedState.visits
       }
     default: return state
   }

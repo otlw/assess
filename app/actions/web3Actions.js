@@ -2,7 +2,7 @@ import Web3 from 'web3'
 import { getInstance, getLocalStorageKey } from '../utils.js'
 import { networkName, LoadingStage } from '../constants.js'
 import { processEvent } from './assessmentActions.js'
-import { setMainDisplay, updateHelperScreen } from './navigationActions.js'
+import { setMainDisplay, updateHelperScreen, addVisit } from './navigationActions.js'
 var Dagger = require('eth-dagger')
 const { FathomToken } = require('fathom-contracts')
 
@@ -38,6 +38,7 @@ export const connect = () => {
 
         // load persistedState for the respective network and the user
         dispatch(loadPersistedState(networkID, accounts[0], w3))
+        dispatch(addVisit())
 
         // set a second web3 instance to subscribe to events via websocket
         if (networkName(networkID) === 'Kovan') {
