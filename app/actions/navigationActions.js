@@ -56,7 +56,7 @@ export function addVisit () {
 
 export function saveProgression (role, stage) {
   return {
-    type: ADD_VISIT,
+    type: SAVE_PROGRESSION,
     role,
     stage
   }
@@ -109,7 +109,7 @@ function getHelperBar (currentScreen, visits, keyWord, params) {
   // when visiting the assessmentView from another place / the first time on the page
   switch (keyWord) {
     case 'assessmentView': {
-      if (visits.site === 0) {
+      if (visits.site < 10) {
         if (params.assessment.userStage === Stage.Called) return 'Staking'
         // TODO add more stages here
       } else {

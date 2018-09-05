@@ -2,7 +2,7 @@ import { getInstance, convertFromOnChainScoreToUIScore } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
 import { receiveVariable, fetchUserBalance } from './web3Actions.js'
 import { Stage, LoadingStage, NotificationTopic } from '../constants.js'
-import { updateHelperScreen } from './navigationActions.js'
+import { updateHelperScreen, saveProgression } from './navigationActions.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const REMOVE_ASSESSMENT = 'REMOVE_ASSESSMENT'
@@ -40,6 +40,7 @@ export function confirmAssessor (address) {
       () => {
         dispatch(fetchUserStage(address))
         dispatch(updateHelperScreen('Staked'))
+        dispatch(saveProgression('assessor', Stage.Confirmed))
       }
     )
   }
@@ -58,6 +59,7 @@ export function commit (address, score, salt) {
       () => {
         dispatch(fetchUserStage(address))
         dispatch(updateHelperScreen('Committed'))
+        dispatch(saveProgression('assessor', Stage.Committed))
       }
     )
   }
@@ -76,6 +78,7 @@ export function reveal (address, score, salt) {
       () => {
         dispatch(fetchUserStage(address))
         dispatch(updateHelperScreen('Revealed'))
+        dispatch(saveProgression('assessor', Stage.Done))
       }
     )
   }
@@ -87,6 +90,7 @@ export function storeDataOnAssessment (address, data) {
     let assessmentInstance = getInstance.assessment(getState(), address)
     // also salt should be saved in state
     let dataAsBytes = getState().ethereum.web3.utils.utf8ToHex(data)
+    let firstEdit = getState().assessments[address].data === ''
     sendAndReactToTransaction(
       dispatch,
       () => { return assessmentInstance.methods.addData(dataAsBytes).send({from: userAddress}) },
@@ -96,7 +100,7 @@ export function storeDataOnAssessment (address, data) {
       () => {
         dispatch(fetchStoredData(address))
         dispatch(updateHelperScreen('StoredMeetingPoint', {
-          previousMeetingPointExisted: getState().assessments[address].data !== ''
+          previousMeetingPointExisted: !firstEdit
         }))
       }
     )
