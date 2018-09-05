@@ -10,12 +10,12 @@ Build
 
 Install all dependencies:
 
-> npm i
+` npm i`
 
 Make sure your Metamask is set to the kovan or rinkeby testnet, then serve the
 frontend by running
 
-> npm run dev
+` npm run dev`
 
 Developing
 ========
@@ -35,7 +35,7 @@ ganache-cli -m 'your twelve seed words should be here in bla bla blub'
 
 Use the script to create assessments in new concepts
 
-> node scripts/create2concepts2assessments.js
+`node scripts/create2concepts2assessments.js`
 
 You can also pass 'kovan' or 'rinkeby' as an argument to create the concepts and
 assessments on the respective testnet.
@@ -47,7 +47,7 @@ On you local testnet (only!), you can also run assessments (new ones or existing
 ones) until a given stage, e.g. to have 5 assessors commit the scores four 90's
 and a 70:
 
-> node scripts/completeAssessment -s commit 90,90,90,90,70
+` node scripts/completeAssessment -s commit 90,90,90,90,70`
 
 See the comments in the first lines of completeAssessment.js for more options.
 
