@@ -22,21 +22,14 @@ Developing
 
 ### Deploy the contracts to your local development testnet
 
-1) Make sure you have ganache-cli installed
+1. If you don't have ganache install it with: `npm i -g ganache-cli`
 
-> npm i -g ganache-cli
+2. Fire up ganache with the seedwords of your Metamask instance
+```
+ganache-cli -m 'your twelve seed words should be here in bla bla blub'
+```
 
-2) Fire up ganache with the seedwords of your Metamask instance
-
-> ganache-cli -m 'your twelve seed words should be here in bla bla blub'
-
-3) Change into the fathom-contracts module folder
-
-> cd ./node_modules/fathom-contracts
-
-4) From there, deploy the contracts 
-
-> truffle migrate --reset
+3. Deploy the contracts by running `npm run deploy-testnet`
 
 ### Create new concepts and assessments
 
