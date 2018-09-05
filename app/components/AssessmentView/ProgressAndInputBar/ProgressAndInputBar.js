@@ -1,9 +1,10 @@
 import { Component } from 'react'
 import { TxList } from '../../TxList.js'
 import h from 'react-hyperscript'
-import { Stage } from '../../../constants.js'
+import { Stage, StageDisplayNames, PassiveStageDisplayNames } from '../../../constants.js'
 import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
 import styled from 'styled-components'
+import icoClose from '../../../assets/ico-close.svg'
 
 // component to display an individual assessor slot address and options
 export class ProgressAndInputBar extends Component {
@@ -43,7 +44,7 @@ export class ProgressAndInputBar extends Component {
   setCommitAction () {
     this.setState({
       view: 'Commit',
-      displayText: 'Enter the score you want to commit.',
+      displayText: 'Enter the score you want to commit:',
       action: this.commit
     })
   }
@@ -121,21 +122,11 @@ export class ProgressAndInputBar extends Component {
         // show overview with differently colored Buttons that indicate the activity of the stage
         // and the general progress of the assessment
         return (
-          h(ProgressButtonBox, [
-            // Stake Button
-            h(PastOrPresentPhaseButton, {
-              onClick: this.setStakeAction.bind(this),
-              disabled: !(this.props.stage === Stage.Called && this.props.stage === this.props.userStage)
-            }, '1. Stake'),
-            h(this.props.stage >= Stage.Confirmed ? PastOrPresentPhaseButton : FuturePhaseButton, {
-              onClick: this.setCommitAction.bind(this),
-              disabled: !(this.props.stage === Stage.Confirmed && this.props.stage === this.props.userStage)
-            }, '2. Commit'),
-            h(this.props.stage >= Stage.Committed ? PastOrPresentPhaseButton : FuturePhaseButton, {
-              onClick: this.setRevealAction.bind(this),
-              disabled: !(this.props.stage === Stage.Committed && this.props.stage === this.props.userStage)
-            }, '3. Reveal'),
-            this.props.transactions
+          h(containerProgressBar, [
+            this.progressButton(Stage.Called, this.props.stage, this.props.userStage),
+            this.progressButton(Stage.Confirmed, this.props.stage, this.props.userStage),
+            this.progressButton(Stage.Committed, this.props.stage, this.props.userStage),
+            this.props.transactions && this.props.transactions.length > 0
               ? h(TxList, {transactions: this.props.transactions})
               : null
           ])
@@ -146,37 +137,44 @@ export class ProgressAndInputBar extends Component {
       case 'Reveal': {
         // show actionView, where the user can input data and interact with the assessment
         return (
-          h(ProgressButtonBox, [
-            h(CloseButton, {onClick: this.closeInputBar.bind(this)}, 'X'),
-            h(StageName, this.state.view + ':'),
-            this.props.stage === Stage.Confirmed
-              ? (
-                h('div', {style: {display: 'inline-block'}}, [
-                  h(Feedback, {invalidScoreRange: this.state.invalidScoreRange}, 'must be 0% <= score <= 100%, 0.5% granularity'),
-                  h(CommitInput, {
-                    placeholder: 'What score do you want to give the assessee?',
-                    step: 0.5,
-                    type: 'number',
-                    onChange: this.setScore.bind(this)})
-                ]))
-              : h(StageDescriptor, this.state.displayText),
-            h(SubmitButton, {onClick: this.state.action.bind(this)}, 'Go')
+          h(containerProgressBar, [
+            h(buttonClose, {onClick: this.closeInputBar.bind(this)}, [
+              h('img', {alt: 'icoClose', src: icoClose})
+            ]),
+            h(rowObjectText, [
+              h(StageDescriptor, this.state.displayText),
+              (this.props.stage === Stage.Confirmed
+                ? (
+                  h(rowObjectInput, [
+                    h(inputProgressBar, {
+                      placeholder: 'Input your score here, from 0 to 100',
+                      step: 0.5,
+                      type: 'number',
+                      onChange: this.setScore.bind(this)})
+                  ])
+                )
+                : null
+              )
+            ]),
+            h(buttonSubmit, {onClick: this.state.action.bind(this)}, view)
           ])
         )
       }
       case 'editMeetingPoint': {
         // add Meeting Point
         return (
-          h(ProgressButtonBox, [
-            h(CloseButton, {onClick: this.closeInputBar.bind(this)}, 'X'),
-            h(StageName, 'Add a meeting Point:'),
-            h('div', {style: {display: 'inline-block'}}, [
-              h(CommitInput, {
-                placeholder: 'e.g. a gitLab repo',
+          h(containerProgressBar, [
+            h(buttonClose, {onClick: this.closeInputBar.bind(this)}, [
+              h('img', {alt: 'icoClose', src: icoClose, className: ''})
+            ]),
+            h(rowObjectText, [
+              h(rowObjectInput, 'Add a meeting Point:'),
+              h(inputMeetingPoint, {
+                placeholder: 'e.g. a GitLab repo',
                 type: 'string',
                 onChange: this.setMeetingPointToBeStored.bind(this) })
             ]),
-            h(SubmitButton, {onClick: this.storeData.bind(this)}, 'Submit')
+            h(buttonSubmit, {onClick: this.storeData.bind(this)}, 'Submit')
           ])
         )
       }
@@ -185,53 +183,96 @@ export class ProgressAndInputBar extends Component {
         return h('div', 'Ooopsi, something went wrong here!')
     }
   }
+
+  // helper function to return the right kind of progressButton
+  // past, present (active/passive), future
+  // dependent on stage, userRole, userStage
+  progressButton (phase, assessmentStage, userStage) {
+    let stageFunctions = {
+      [Stage.Called]: this.setStakeAction.bind(this),
+      [Stage.Confirmed]: this.setCommitAction.bind(this),
+      [Stage.Committed]: this.setRevealAction.bind(this)
+    }
+    if (phase < assessmentStage) {
+      // -> phase is completed:
+      return h(containerProgressButton, [
+        h(buttonProgressPast, PassiveStageDisplayNames[phase])
+      ])
+    } else if (phase === assessmentStage) {
+      // -> phase is not completed and...
+      if (userStage > assessmentStage) {
+        //  ...user is done already
+        return h(containerProgressBar, [h(buttonProgressInactive, PassiveStageDisplayNames[phase])])
+      } else {
+        // ...user needs to do something
+        return h(containerProgressButton, [
+          h(buttonProgressActive, {
+            onClick: stageFunctions[assessmentStage],
+            disabled: userStage === Stage.None
+          }, StageDisplayNames[assessmentStage])
+        ])
+      }
+    } else {
+      // -> phase is in the future
+      return h(containerProgressButton, [h(buttonProgressFuture, StageDisplayNames[phase])])
+    }
+  }
 }
 
 export default ProgressAndInputBar
 
-export const ProgressButtonBox = styled('div')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+export const containerProgressBar = styled('div').attrs({className: 'flex flex-row w-100 h3 items-center bt b--light-gray'})`
 `
 
-export const CloseButton = styled('button')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+export const buttonClose = styled('button').attrs({className: 'flex h-100 items-center justify-center ph4 br b--light-gray pointer'})`
+transition:0.2s ease-in-out;
+border-top: 0px;
+border-left: 0px;
+border-bottom: 0px;
+:hover {background-color:#eee;}
 `
 export const ProgressButton = styled('button')`
   padding: 0.25em 1em;
   border: 2px solid palevioletred;
 `
 
-export const PastOrPresentPhaseButton = styled('button')`
-  width:33%;
-  background: palegreen;
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+export const containerProgressButton = styled('div').attrs({className: 'flex w-100 items-center justify-center pv3  '})`
 `
 
-export const FuturePhaseButton = styled('button')`
-  width:33%;
-  background: paleturquoise;
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+export const buttonProgressPast = styled('button').attrs({className: 'flex pv2 ph3 items-center justify-center br-pill bn ttu uppercase pointer'})`
+color: #EAF7FD;
+background-color: hsla(155, 70%, 40%, 1);
 `
 
-export const StageDescriptor = styled('div')`
-  display: inline-block;
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+export const buttonProgressActive = styled('button').attrs({className: 'flex pv2 ph3 items-center justify-center br-pill bn ttu uppercase pointer'})`
+color: #EAF7FD;
+background-color: #0A4A66;
 `
 
-export const StageName = styled('div')`
-  display: inline-block;
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+export const buttonProgressInactive = styled('button').attrs({className: 'flex pv2 ph3 items-center justify-center br-pill bn ttu uppercase pointer'})`
+color: #EAF7FD;
+background-color: hsla(155, 70%, 40%, 1);
 `
-export const SubmitButton = styled('button')`
-  display: inline-block;
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+
+export const buttonProgressFuture = styled('button').attrs({className: 'flex pv2 ph3 items-center justify-center br-pill ba ttu uppercase pointer'})`
+  color: #0A4A66;
+  background: transparent;
+  border-color: #0A4A66;
+  opacity: 0.25;
+`
+// TODO need to rename to progressBarTextDescription
+export const StageDescriptor = styled('div').attrs({className: 'flex w-100 items-center justify-center f5 gray pv3'})`
+`
+
+export const rowObjectText = styled('div').attrs({className: 'flex w-100 items-center justify-between br b--light-gray f5 gray ttu uppercase'})`;
+`
+
+export const rowObjectInput = styled('div').attrs({className: 'flex w-100 h-100 items-center justify-end pv2 b--light-gray  f5 gray ttu uppercase'})`;
+`
+
+export const buttonSubmit = styled('button').attrs({className: 'flex h3 items-center justify-center pv3 bn ph4 bg-light-green pointer ttu uppercase f5 '})`
+transition:0.2s ease-in-out;
+:hover {background-color:hsla(158, 46%, 57%, 1);}
 `
 
 export const Feedback = styled.div`
@@ -240,9 +281,10 @@ export const Feedback = styled.div`
   color:${props => props.invalidScoreRange ? 'red' : 'lightgrey'};
 `
 
-export const CommitInput = styled('input')`
-  display: inline-block;
-  padding: 0.25em 1em;
-  width: 400px;
-  border: 2px solid palevioletred;
+export const inputMeetingPoint = styled('input').attrs({className: 'flex w-50 h3 pv0 pl3 bg-light-gray bn '})`
+outline: none;
+`
+
+export const inputProgressBar = styled('input').attrs({className: 'flex w-80 h3 pv0 pl3 bg-light-gray bn '})`
+outline: none;
 `
