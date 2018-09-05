@@ -1,4 +1,4 @@
-import { getInstance, convertFromOnChainScoreToUIScore, getBlockDeployedAt } from '../utils.js'
+import { getInstance, convertFromOnChainScoreToUIScore } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
 import { receiveVariable, fetchUserBalance } from './web3Actions.js'
 import { Stage, LoadingStage, NotificationTopic } from '../constants.js'
@@ -102,9 +102,8 @@ export function fetchLatestAssessments () {
       // get notification events from fathomToken contract
       let lastUpdatedAt = getState().ethereum.lastUpdatedAt
       const fathomTokenInstance = getInstance.fathomToken(getState())
-      const deployedBlock = await getBlockDeployedAt.fathomToken(getState())
       let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {
-        fromBlock: lastUpdatedAt,
+        fromBlock: getState().ethereum.lastUpdatedAt,
         toBlock: 'latest'
       })
       let assessmentAddresses = pastNotifications.reduce((accumulator, notification) => {
@@ -212,10 +211,10 @@ export function fetchAssessmentData (address) {
       let data = dataBytes ? getState().ethereum.web3.utils.hexToUtf8(dataBytes) : ''
 
       const fathomTokenInstance = getInstance.fathomToken(getState())
-      const deployedBlock = await getBlockDeployedAt.fathomToken(getState())
+      const deployedFathomTokenAt = getState().ethereum.deployedFathomTokenAt
       let pastEvents = await fathomTokenInstance.getPastEvents('Notification', {
         filter: {sender: address, topic: 2},
-        fromBlock: deployedBlock,
+        fromBlock: deployedFathomTokenAt,
         toBlock: 'latest'
       })
       let assessors = pastEvents.map(x => x.returnValues.user)
@@ -229,7 +228,7 @@ export function fetchAssessmentData (address) {
         if (assessors.includes(userAddress)) {
           let filter = {
             filter: { _from: address, _to: userAddress },
-            fromBlock: deployedBlock,
+            fromBlock: deployedFathomTokenAt,
             toBlock: 'latest'
           }
           let pastEvents = await fathomTokenInstance.getPastEvents('Transfer', filter)
@@ -267,10 +266,9 @@ export function fetchAssessmentData (address) {
 export function fetchPayout (address, user) {
   return async (dispatch, getState) => {
     const fathomTokenInstance = getInstance.fathomToken(getState())
-    const deployedBlock = await getBlockDeployedAt.fathomToken(getState())
     let filter = {
       filter: { _from: address, _to: user },
-      fromBlock: deployedBlock,
+      fromBlock: getState().ethereum.deployedFathomTokenAt,
       toBlock: 'latest'
     }
     let pastEvents = await fathomTokenInstance.getPastEvents('Transfer', filter)

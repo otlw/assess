@@ -1,4 +1,4 @@
-import { getInstance, getBlockDeployedAt } from '../utils.js'
+import { getInstance } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
 export const RECEIVE_CONCEPTS = 'RECEIVE_CONCEPTS'
 export const BEGIN_LOADING_CONCEPTS = 'BEGIN_LOADING_CONCEPTS'
@@ -8,12 +8,11 @@ export function loadConceptsFromConceptRegistery () {
   return async (dispatch, getState) => {
     dispatch(beginLoadingConcepts())
     const conceptRegistryInstance = getInstance.conceptRegistry(getState())
-    let deployedBlock = await getBlockDeployedAt.conceptRegistry(getState())
-    console.log(deployedBlock)
-
     // get concepts from registry
-    let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {fromBlock: deployedBlock, toBlock: 'latest'})
-    console.log(pastevents)
+    let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {
+      fromBlock: getState().ethereum.deployedConceptRegistryAt,
+      toBlock: 'latest'
+    })
 
     let concepts = {}
     await Promise.all(pastevents.map(async (event) => {
@@ -62,7 +61,6 @@ export function receiveConcepts (concepts) {
 
 // combination of two functions above for directly creating assessments from conceptList
 export function loadConceptContractAndCreateAssessment (address, cost, callback) {
-  // TODO handle the case where cost===0 (that throws an exception)
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let conceptInstance = getInstance.concept(getState(), address)
