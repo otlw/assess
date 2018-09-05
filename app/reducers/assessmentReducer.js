@@ -5,11 +5,12 @@ import {
   SET_ASSESSMENT_AS_INVALID,
   UPDATE_ASSESSMENT_VARIABLE
 } from '../actions/assessmentActions'
-
+import {RECEIVE_PERSISTED_STATE} from '../actions/web3Actions.js'
 import extend from 'xtend'
 
 let initialState = {
 }
+
 /*
   further assessments are stored like this:
 
@@ -27,7 +28,6 @@ assessmentAddress : {
   payout: 20,
 }
  */
-
 function assessments (state = initialState, action) {
   switch (action.type) {
     case RECEIVE_ASSESSMENT: {
@@ -60,6 +60,9 @@ function assessments (state = initialState, action) {
         ...state,
         [action.address]: {'invalid': true}
       }
+    }
+    case RECEIVE_PERSISTED_STATE: {
+      return action.persistedState.assessments
     }
     default:
       return state

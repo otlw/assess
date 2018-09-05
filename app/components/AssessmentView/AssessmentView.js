@@ -15,17 +15,18 @@ export class AssessmentData extends Component {
       return h('div', 'invalid assessment address!! (maybe you are on the wrong network)')
     } else {
       let assessment = this.props.assessment
+      let isAssessee = assessment.assessee === this.props.userAddress
       let actionRequired = assessment.stage === assessment.userStage
       let nOtherAssessorsToBeActive = assessment.size - (assessment.stage === Stage.Called ? assessment.assessors.length : assessment.done) - (actionRequired ? 1 : 0)
       let statusString = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive +
-          (nOtherAssessorsToBeActive !== 1 ? ' assessors' : 'assessor') +
+          (nOtherAssessorsToBeActive !== 1 ? ' assessors' : ' assessor') +
           ' to ' + StageDisplayNames[assessment.stage]
       return (
         h(SuperFrame, [
           // holds role and concept title
           h(assessmentHeader, [
-            h(assessmentLabelRole, assessment.assessee !== this.props.userAddress ? 'Assessing' : 'Getting assessed in'),
-            h(assessmentTextTitle, assessment.conceptData)
+            h(assessmentLabelRole, isAssessee ? 'Getting assessed in' : 'Assessing'),
+            h(assessmentTextTitle, assessment.conceptData.name)
           ]),
           // indicates status of assesssment
           h(assessmentRowSubHeader, [
@@ -44,7 +45,7 @@ export class AssessmentData extends Component {
             h(assessmentColumnLeft, [
               h(assessmentObjectText, [
                 h(assessmentLabelBody, 'Assessee'),
-                h(assessmentTextBody, assessment.assessee)
+                h(assessmentTextBody, isAssessee ? 'You' : assessment.assessee)
               ]),
               h(assessmentObjectText, [
                 h(assessmentLabelBody, 'Fee'),
@@ -52,11 +53,11 @@ export class AssessmentData extends Component {
               ]),
               h(assessmentObjectText, [
                 h(assessmentLabelBody, 'Meeting Point'),
-                h(assessmentTextBody, assessment.data || 'You haven\'t set a meeting point'),
+                h(assessmentTextBody, assessment.data || isAssessee ? 'You haven\'t set a meeting point' : 'No meeting point has been set yet'),
                 h(assessmentRow, [
                   h(fathomButtonPrimary, {href: assessment.data, disabled: assessment.data === ''}, 'View'),
                   assessment.assessee === this.props.userAddress
-                    ? h(MeetingPointEditBox, { // same here ALEX
+                    ? h(MeetingPointEditBox, {
                       assessee: assessment.assessee,
                       address: assessment.address
                     })
@@ -68,7 +69,10 @@ export class AssessmentData extends Component {
               h(assessmentObjectTextRight, [
                 h(assessmentLabelBody, 'Assessors'),
                 h(assessmentObjectText, [
-                  h(AssessorList, {assessors: assessment.assessors}) // ALEX, i meddled here
+                  h(AssessorList, {
+                    assessors: assessment.assessors,
+                    userAddress: this.props.userAddress
+                  })
                 ])
               ])
             ])
@@ -95,7 +99,7 @@ export class AssessmentData extends Component {
 
 export default AssessmentData
 
-const SuperFrame = styled('div').attrs({className: 'flex flex-column w-100 mw8 bg-white shadow-4'})`
+const SuperFrame = styled('div').attrs({className: 'flex flex-column w-100 mw8 self-center mt3 bg-white shadow-4'})`
 font-family:'system-ui',sans-serif;
 `
 
@@ -129,10 +133,10 @@ const assessmentContainerBody = styled('div').attrs({className: 'flex flex-row w
 const assessmentColumnLeft = styled('div').attrs({className: 'flex flex-column w-50 items-around justify-around pa3'})`
 `
 
-const assessmentObjectText = styled('div').attrs({className: 'flex flex-column w-100  items-start justify-center self-start mv3'})`
+const assessmentObjectText = styled('div').attrs({className: 'flex flex-column w-100  items-start justify-center self-start mv2'})`
 `
 
-const assessmentObjectTextRight = styled('div').attrs({className: 'flex flex-column w-100  items-end justify-center self-start mv3'})`
+const assessmentObjectTextRight = styled('div').attrs({className: 'flex flex-column w-100  items-start justify-center self-start mt3 mb0'})`
 `
 
 // Commented out as we may need to re-implement this very soon
@@ -148,5 +152,5 @@ const assessmentRow = styled('div').attrs({className: 'flex flex-row w-100 mw5 j
 const fathomButtonPrimary = styled('button').attrs({className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'})`
 `
 
-const assessmentFooter = styled('div').attrs({className: 'flex flex-row w-100'})`
+const assessmentFooter = styled('div').attrs({className: 'relative flex flex-row w-100'})`
 `

@@ -13,44 +13,45 @@ class FinalResultBar extends Component {
   }
 
   render () {
-    let scoreString = this.props.finalScore + ' out of 100 ' + (this.props.finalScore > 50 ? '(Pass)' : '(Fail)')
+    let scoreString = this.props.finalScore + ' out of 100 ' + (this.props.finalScore > 50 ? 'and passed! Congratulations' : 'and failed. We can help you pass next time.')
     if (this.props.userAddress === this.props.assessee) {
       console.log()
-      return h(FinalScoreField, 'Your final score is ' + scoreString)
+      return h(scoreTextResult, 'You scored ' + scoreString)
     } else if (this.props.userStage === Stage.Done) {
       // user is assessor
       let gain = Math.round(this.props.payout - this.props.cost)
       return (
-        h(FinalResultBox, [
+        h(containerScore, [
           (this.cacheCommitData
-            ? h(AssessorScore, 'Your score was: ' + Number(this.cacheCommitData))
+            ? h(scoreTextAssessor, 'You scored: ' + Number(this.cacheCommitData))
             : null), // user used a different way or machine to enter the score than our app
-          h(FinalScoreField, 'Final score is:' + scoreString),
-          h(EarnedReward, 'You earned ' + (gain >= 0 ? '+' : '-') + gain.toString() + ' AHA')
+          h(objectScoreText, [
+            h(scoreTextResult, 'The final score is ' + this.props.finalScore)
+          ]),
+          h(objectScoreText, [
+            h(scoreTextReward, 'You earned ' + (gain >= 0 ? '+' : '-') + gain.toString() + ' AHA')
+          ])
         ])
       )
     } else {
       // user is visitor
-      return h(FinalScoreField, 'The final score is ' + scoreString)
+      return h(scoreTextResult, 'The final score is ' + scoreString)
     }
   }
 }
 
 export default FinalResultBar
 
-export const FinalScoreField = styled('span')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+const containerScore = styled('div').attrs({className: 'flex flex-row w-100 h3 items-center justify-center bt b--light-gray'})`
 `
-export const FinalResultBox = styled('div')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+
+const objectScoreText = styled('div').attrs({className: 'flex flex-row w-100 h-100 items-center justify-center bl b--light-gray'})`
 `
-export const AssessorScore = styled('span')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+
+const scoreTextResult = styled('h5').attrs({className: 'f5 fw4 dark-gray'})`
 `
-export const EarnedReward = styled('span')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
+
+const scoreTextAssessor = styled('div').attrs({className: 'flex f-100'})`
+`
+const scoreTextReward = styled('h5').attrs({className: 'f5 fw4 dark-gray'})`
 `
