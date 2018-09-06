@@ -16,6 +16,14 @@ export const CompletedStages = Object.freeze({
   5: 'Burned'
 })
 
+export const PassiveStageDisplayNames = Object.freeze({
+  1: 'Staked',
+  2: 'Committed',
+  3: 'Revealed',
+  4: 'Done',
+  5: 'Burned'
+})
+
 export const Stage = Object.freeze({
   None: 0,
   Called: 1,
@@ -43,7 +51,7 @@ export function networkName (id) {
     case 42:
       return 'Kovan'
     default:
-      return 'Local'
+      return id.toString()
   }
 }
 

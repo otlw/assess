@@ -1,6 +1,6 @@
 import { getInstance, convertFromOnChainScoreToUIScore, hmmmToAha } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
-import { fetchUserBalance } from './web3Actions.js'
+import { fetchUserBalance, receiveVariable } from './web3Actions.js'
 import { Stage, LoadingStage, NotificationTopic, TimeOutReasons } from '../constants.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
@@ -147,9 +147,10 @@ export function fetchLatestAssessments () {
       dispatch(beginLoadingAssessments())
 
       // get notification events from fathomToken contract
+      let lastUpdatedAt = getState().ethereum.lastUpdatedAt
       const fathomTokenInstance = getInstance.fathomToken(getState())
       let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {
-        fromBlock: 0, // TODO avoid this
+        fromBlock: lastUpdatedAt,
         toBlock: 'latest'
       })
 
@@ -159,6 +160,10 @@ export function fetchLatestAssessments () {
         // save all addressess where the user is involved
         if (notification.returnValues.user === userAddress && accumulator.indexOf(assessment) === -1) {
           accumulator.push(assessment)
+        }
+        // and save the greatest blockNumber
+        if (notification.blockNumber > lastUpdatedAt) {
+          lastUpdatedAt = notification.blockNumber
         }
         return accumulator
       }, [])
@@ -189,6 +194,7 @@ export function fetchLatestAssessments () {
       assessmentAddresses.forEach((address) => {
         dispatch(fetchAssessmentData(address))
       })
+      dispatch(receiveVariable('lastUpdatedAt', lastUpdatedAt))
       dispatch(endLoadingAssessments())
     }
   }
@@ -467,10 +473,11 @@ export function fetchStoredData (selectedAssessment) {
 /*
   Updates the store by calling the respective function for each type of event.
 */
-export function processEvent (user, sender, topic) {
+export function processEvent (user, sender, topic, blockNumber) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let isUser = user === userAddress
+    dispatch(receiveVariable('lastUpdatedAt', blockNumber))
     switch (topic) {
       case NotificationTopic.AssessmentCreated:
         dispatch(fetchUserBalance())

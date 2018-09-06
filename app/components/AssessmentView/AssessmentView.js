@@ -6,7 +6,6 @@ import FinalResultBar from './FinalResultBar.js'
 import FailedBar from './FailedBar'
 import { StageDisplayNames, Stage } from '../../constants.js'
 import { convertDate } from '../../utils.js'
-// Do we still need this? -> import { ViewMeetingPoint } from './MeetingPoint/MeetingPointEditBox.js'
 import styled from 'styled-components'
 var h = require('react-hyperscript')
 
@@ -31,12 +30,13 @@ export class AssessmentData extends Component {
     } else {
       statusString = 'Failed'
     }
+    let isAssessee = assessment.assessee !== this.props.userAddress
     return (
       h(SuperFrame, [
         // holds role and concept title
         h(assessmentHeader, [
-          h(assessmentLabelRole, assessment.assessee !== this.props.userAddress ? 'Assessing' : 'Getting assessed in'),
-          h(assessmentTextTitle, assessment.conceptData)
+          h(assessmentLabelRole, isAssessee ? 'Assessing' : 'Getting assessed in'),
+          h(assessmentTextTitle, assessment.conceptData.name)
         ]),
         // indicates status of assesssment
         h(assessmentRowSubHeader, [
@@ -55,18 +55,18 @@ export class AssessmentData extends Component {
           h(assessmentColumnLeft, [
             h(assessmentObjectText, [
               h(assessmentLabelBody, 'Assessee'),
-              h(assessmentTextBody, assessment.assessee)
+              h(assessmentTextBody, isAssessee ? 'You' : assessment.assessee)
             ]),
             h(assessmentObjectText, [
               h(assessmentLabelBody, 'Fee'),
-              h(assessmentTextBody, Math.round(assessment.cost / 1e9) + 'AHA')
+              h(assessmentTextBody, Math.round(assessment.cost / 1e9) + ' AHA')
             ]),
             h(assessmentObjectText, [
               h(assessmentLabelBody, 'Meeting Point'),
-              h(assessmentTextBody, assessment.data || 'You haven\'t set a meeting point'),
+              h(assessmentTextBody, assessment.data || isAssessee ? 'You haven\'t set a meeting point' : 'No meeting point has been set yet'),
               h(assessmentRow, [
                 h(fathomButtonPrimary, {href: assessment.data, disabled: assessment.data === ''}, 'View'),
-                assessment.assessee === this.props.userAddress
+                isAssessee
                   ? h(MeetingPointEditBox, { // same here ALEX
                     assessee: assessment.assessee,
                     address: assessment.address
@@ -79,7 +79,10 @@ export class AssessmentData extends Component {
             h(assessmentObjectTextRight, [
               h(assessmentLabelBody, 'Assessors'),
               h(assessmentObjectText, [
-                h(AssessorList, {assessors: assessment.assessors}) // ALEX, i meddled here
+                h(AssessorList, {
+                  assessors: assessment.assessors,
+                  userAddress: this.props.userAddress
+                })
               ])
             ])
           ])
@@ -113,7 +116,7 @@ export class AssessmentData extends Component {
 
 export default AssessmentData
 
-const SuperFrame = styled('div').attrs({className: 'flex flex-column w-100 mw8 bg-white shadow-4'})`
+const SuperFrame = styled('div').attrs({className: 'flex flex-column w-100 mw8 self-center mt3 bg-white shadow-4'})`
 font-family:'system-ui',sans-serif;
 `
 
@@ -147,10 +150,10 @@ const assessmentContainerBody = styled('div').attrs({className: 'flex flex-row w
 const assessmentColumnLeft = styled('div').attrs({className: 'flex flex-column w-50 items-around justify-around pa3'})`
 `
 
-const assessmentObjectText = styled('div').attrs({className: 'flex flex-column w-100  items-start justify-center self-start mv3'})`
+const assessmentObjectText = styled('div').attrs({className: 'flex flex-column w-100  items-start justify-center self-start mv2'})`
 `
 
-const assessmentObjectTextRight = styled('div').attrs({className: 'flex flex-column w-100  items-end justify-center self-start mv3'})`
+const assessmentObjectTextRight = styled('div').attrs({className: 'flex flex-column w-100  items-start justify-center self-start mt3 mb0'})`
 `
 
 // Commented out as we may need to re-implement this very soon
@@ -166,5 +169,5 @@ const assessmentRow = styled('div').attrs({className: 'flex flex-row w-100 mw5 j
 const fathomButtonPrimary = styled('button').attrs({className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'})`
 `
 
-const assessmentFooter = styled('div').attrs({className: 'flex flex-row w-100'})`
+const assessmentFooter = styled('div').attrs({className: 'relative flex flex-row w-100'})`
 `
