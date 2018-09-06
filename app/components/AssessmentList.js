@@ -13,7 +13,7 @@ const AssessmentList = (props) => {
     h(listContainer, [
       // show toggle button if it's the available list
       (props.name === 'Available'
-        ? h(availableHeader, [
+        ? h(dashboardHeader, [
           h(listTextTitle, props.name),
           h(styledToggleWrapper, [
             h(styledToggleLabel, {active: props.showHidden}, 'Show Hidden'),
@@ -38,25 +38,19 @@ const AssessmentList = (props) => {
 
 export default AssessmentList
 
-const listContainer = styled('div').attrs({className: 'flex flex-column w-100 pa2'})``
+const listContainer = styled('div').attrs({className: 'flex flex-column w-100 pa2 tc'})``
 
 const listContainerCards = styled('div').attrs({className: 'flex flex-row flex-wrap w-100 justify-center'})``
 
-const listTextTitle = styled('h3').attrs({className: 'f3 fw4 gray tc ttu uppercase'})``
+const listTextTitle = styled('h3').attrs({className: 'w-100 f3 fw4 gray tc ttu uppercase'})``
 
-const styledToggleWrapper = styled('div')`
-  display: flex;
-  justify-content: space-evenly;
-  align-items: baseline;
-  width: 200px;
+const styledToggleWrapper = styled('div').attrs({className: 'flex fw4 w-100 justify-center items-center flex-wrap mv3'})`
 `
-const styledToggleLabel = styled('h4')`
+const styledToggleLabel = styled('h4').attrs({className: 'fw4 mv0 mr2'})`
   color: ${props => props.active ? 'green' : '#8c8c8c'}
 `
 
-const availableHeader = styled('div')`
-  display: flex;
-  justify-content: space-between;
+const dashboardHeader = styled('div').attrs({className: 'flex items-center w-100 flex-wrap'})`
 `
 
 const listTextDescription = styled('h4').attrs({className: 'f4 fw4 gray tc'})``
