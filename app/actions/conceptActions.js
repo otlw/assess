@@ -8,9 +8,11 @@ export function loadConceptsFromConceptRegistery () {
   return async (dispatch, getState) => {
     dispatch(beginLoadingConcepts())
     const conceptRegistryInstance = getInstance.conceptRegistry(getState())
-
     // get concepts from registry
-    let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {fromBlock: 0, toBlock: 'latest'})
+    let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {
+      fromBlock: getState().ethereum.deployedConceptRegistryAt,
+      toBlock: 'latest'
+    })
 
     let concepts = {}
     await Promise.all(pastevents.map(async (event) => {
@@ -59,7 +61,6 @@ export function receiveConcepts (concepts) {
 
 // combination of two functions above for directly creating assessments from conceptList
 export function loadConceptContractAndCreateAssessment (address, cost, callback) {
-  // TODO handle the case where cost===0 (that throws an exception)
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let conceptInstance = getInstance.concept(getState(), address)
