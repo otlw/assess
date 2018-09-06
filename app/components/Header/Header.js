@@ -12,7 +12,7 @@ const Logo = styled('img').attrs({className: 'flex w2 mh2 self-center'})`
 
 export const Header = (props) => {
   let address = props.userAddress.substring(0, 8) + '...' + props.userAddress.substring(35, 42)
-  let balance = (Math.round(props.AhaBalance / 1e9)).toString() + ' AHA'
+  let balance = (props.AhaBalance).toString() + ' AHA'
   let network = networkName(props.networkID)
 
   return (

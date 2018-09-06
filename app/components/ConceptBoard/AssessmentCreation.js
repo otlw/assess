@@ -5,20 +5,20 @@ import h from 'react-hyperscript'
 import icoArrowForward from '../../assets/ico-arrow-forward.svg'
 import icoClose from '../../assets/ico-close.svg'
 import icoConfirm from '../../assets/ico-confirm.svg'
-// import iconArrowBack from '../../assets/icon-arrow-back.svg'
 
 export class AssessmentCreation extends Component {
   constructor (props) {
     super(props)
     this.state = {
       step: 1,
-      amountPerAssessor: 1, // TODO set defualt value to 0 once bug is resolved (#277)
+      amountPerAssessor: 0,
       gasEstimate: 0
     }
   }
 
   setAmountPerAssessor (e) {
-    this.setState({amountPerAssessor: Math.round(e.target.value)})
+    // this.setState({amountPerAssessor: Math.round(e.target.value)})
+    this.setState({amountPerAssessor: e.target.value})
   }
 
   cancelButton () {

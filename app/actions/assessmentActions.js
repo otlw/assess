@@ -1,4 +1,4 @@
-import { getInstance, convertFromOnChainScoreToUIScore } from '../utils.js'
+import { getInstance, convertFromOnChainScoreToUIScore, hmmmToAha } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
 import { receiveVariable, fetchUserBalance } from './web3Actions.js'
 import { Stage, LoadingStage, NotificationTopic } from '../constants.js'
@@ -36,7 +36,10 @@ export function confirmAssessor (address) {
       Stage.Called,
       userAddress,
       address,
-      () => { dispatch(fetchUserStage(address)) }
+      () => {
+        dispatch(fetchUserStage(address))
+        dispatch(fetchUserBalance())
+      }
     )
   }
 }
@@ -170,7 +173,7 @@ export function fetchAssessmentData (address) {
     try {
       // get static assessment info
       let assessmentInstance = getInstance.assessment(getState(), address)
-      let cost = await assessmentInstance.methods.cost().call()
+      let cost = hmmmToAha(await assessmentInstance.methods.cost().call())
       let endTime = await assessmentInstance.methods.endTime().call()
 
       // checkpoint -> keeps track of timelimits for 1) latest possible time to confirm and 2) earliest time to reveal
@@ -232,7 +235,7 @@ export function fetchAssessmentData (address) {
             toBlock: 'latest'
           }
           let pastEvents = await fathomTokenInstance.getPastEvents('Transfer', filter)
-          payout = pastEvents[0].returnValues['_value']
+          payout = hmmmToAha(pastEvents[0].returnValues['_value'])
         }
       }
 
