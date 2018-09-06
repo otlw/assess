@@ -142,7 +142,6 @@ const initializeEventWatcher = () => {
           dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic)))
           dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic), log.blockNumber))
         } else {
-          let isUser = decodedLog.user === userAddress
           console.log('not updating!')
         }
       })
