@@ -16,7 +16,9 @@ let initialState = {
   userAddress: '',
   networkID: 4,
   AhaBalance: 0,
-  lastUpdatedAt: 0
+  lastUpdatedAt: 0,
+  deployedFathomTokenAt: '',
+  deployedConceptRegistryAt: ''
 }
 
 function ethereum (state = initialState, action) {
@@ -46,7 +48,9 @@ function ethereum (state = initialState, action) {
     case RECEIVE_PERSISTED_STATE:
       return {
         ...state,
-        lastUpdatedAt: action.persistedState.lastUpdatedAt
+        lastUpdatedAt: action.persistedState.lastUpdatedAt,
+        deployedConceptRegistryAt: action.persistedState.deployedConceptRegistryAt,
+        deployedFathomTokenAt: action.persistedState.deployedFathomTokenAt
       }
     default:
       return state

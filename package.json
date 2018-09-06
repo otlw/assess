@@ -12,7 +12,8 @@
     "lint": "standard --verbose './app/index.js' './app/**/*.js'| snazzy ",
     "fix": "standard --fix './app/index.js' './app/**/*.js' ",
     "build": "webpack",
-    "dev": "webpack-dev-server --open"
+    "dev": "webpack-dev-server --open",
+    "deploy-testnet": "cd node_modules/fathom-contracts && truffle migrate --reset"
   },
   "author": "Jared Pereira",
   "license": "MIT",
