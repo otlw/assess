@@ -14,13 +14,13 @@ const AssessmentList = (props) => {
       // show toggle button if it's the available list
       (props.name === 'Available'
         ? h(availableHeader, [
-          h('h1', props.name),
+          h(listTextTitle, props.name),
           h(styledToggleWrapper, [
             h(styledToggleLabel, {active: props.showHidden}, 'Show Hidden'),
             h(ToggleButton, {value: props.showHidden, onToggle: props.toggleHidden})
           ])
         ])
-        : h('h1', props.name)),
+        : h(listTextTitle, props.name)),
       // show assessments or string 'None'
       (props.assessments.length === 0
         ? (listTextDescription, listDescriptions[props.name])
@@ -38,9 +38,11 @@ const AssessmentList = (props) => {
 
 export default AssessmentList
 
-const listContainer = styled('div').attrs({className: 'flex flex-column w-100'})``
+const listContainer = styled('div').attrs({className: 'flex flex-column w-100 pa2'})``
 
 const listContainerCards = styled('div').attrs({className: 'flex flex-row flex-wrap w-100 justify-center'})``
+
+const listTextTitle = styled('h3').attrs({className: 'f3 fw4 gray tc ttu uppercase'})``
 
 const styledToggleWrapper = styled('div')`
   display: flex;
