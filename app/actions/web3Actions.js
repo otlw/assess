@@ -118,9 +118,13 @@ const initializeEventWatcher = () => {
         // a) the user is looking at it
         // b) the user has already been on the dashboard page once
         if ((getState().assessments[decodedLog.sender] || decodedLog.user === userAddress)) {
+          console.log('called')
           dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic)))
         } else {
-          console.log('not updating!')
+          let isUser = decodedLog.user === userAddress
+          // console.log(decodedLog.user === userAddress, decodedLo)
+          // console.log(getState().assessments, decodedLog.sender)
+          console.log('not updating! reason: ' + isUser ? 'is not on dashBoard' : 'user is not involved')
         }
       })
     }

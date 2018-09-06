@@ -364,7 +364,7 @@ export function processEvent (user, sender, topic) {
   }
 }
 
-export function toggleCardVisibility (address, hiddenStatus) {
+export function setCardVisibility (address, hiddenStatus) {
   return async (dispatch, getState) => {
     dispatch(updateAssessmentVariable(address, 'hidden', hiddenStatus))
   }

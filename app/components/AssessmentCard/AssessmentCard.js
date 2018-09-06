@@ -4,7 +4,6 @@ import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 import { StageDisplayNames, Stage } from '../../constants.js'
 
-// this.props.toggleCardVisibility (address, hiddenStatus)
 export class AssessmentCard extends Component {
   render () {
     const assessment = this.props.assessment
@@ -41,9 +40,7 @@ export class AssessmentCard extends Component {
     } else if (stage === Stage.Burned) {
       status = 'Canceled'
     }
-    // console.log('assessment: ', assessment)
 
-    /* start styling below */
     return (
       h(cardContainer, [
         h(cardContainerInfo, [
@@ -70,7 +67,7 @@ export class AssessmentCard extends Component {
 
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
             h(cardButtonSecondary, {
-              onClick: () => this.props.toggleCardVisibility(assessment.address, !assessment.hidden)
+              onClick: () => this.props.setCardVisibility(assessment.address, !assessment.hidden)
             }, assessment.hidden ? 'Unhide' : 'Hide'),
 
             h(cardButtonPrimary, { to: '/assessment/' + assessment.address }, userStage === Stage.None ? 'View' : StageDisplayNames[stage])
