@@ -28,12 +28,7 @@ export class AssessmentCard extends Component {
           ])
         ]),
         h(cardContainerStatus, [
-          h(cardContainerProgressBar, [
-            progressButton(stage, Stage.Called, actionRequired, assessment.violation || false),
-            progressButton(stage, Stage.Confirmed, actionRequired, assessment.violation || false),
-            progressButton(stage, Stage.Committed, actionRequired, assessment.violation || false),
-            progressButton(stage, Stage.Done, actionRequired, assessment.violation || false)
-          ]),
+          h(cardContainerProgressBar, progressButtons(stage, actionRequired, assessment.violation || false)),
           h(cardTextStatus, [
             h(cardLabel, 'Status'),
             h(cardTextStatusMsg, status)
@@ -48,17 +43,14 @@ export class AssessmentCard extends Component {
 function linkButtons (assessment, location) {
   let userFault = (assessment.violation && assessment.userStage === assessment.stage) || assessment.userStage === Stage.Burned
   if (assessment.violation) {
-    if (userFault) {
-      return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/'}, 'Closed')] // TODO why should be a link
+    if (userFault) return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/'}, 'Closed')] // TODO why should be a link
+    // not  userFault
+    if (assessment.refunded) {
+      // no assessment contract exits -> no link to detail-view
+      return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/'}, 'Refunded')]
     } else {
-      // not  userFault
-      if (assessment.refunded) {
-        // no assessment contract exits -> no link to detail-view
-        return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/'}, 'Refunded')]
-      } else {
-        // not refunded yet -> provide link
-        return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/assessment/' + assessment.address}, 'Get refunded')]
-      }
+      // not refunded yet -> provide link
+      return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/assessment/' + assessment.address}, 'Get refunded')]
     }
   } else {
     // NOTE this section could be refactored to be smaller, as the only thing that varies is the text of the button. But i am keeping this
@@ -74,33 +66,36 @@ function linkButtons (assessment, location) {
   }
 }
 
+function progressButtons (stage, actionRequired, violation) {
+  return [
+    progressButton(stage, Stage.Called, actionRequired, violation),
+    progressButton(stage, Stage.Confirmed, actionRequired, violation),
+    progressButton(stage, Stage.Committed, actionRequired, violation),
+    progressButton(stage, Stage.Done, actionRequired, violation)
+  ]
+}
+
 function progressButton (assessmentStage, phase, actionRequired, violation) {
   // check whether the assessment was aborted
-  if (violation === TimeOutReasons.NotEnoughAssessors && phase === Stage.Called) {
-    // console.log('fired1')
-    return h(cardProgressBarObjectFailed)
-  } else if (violation === TimeOutReasons.NotEnoughCommits && phase === Stage.Confirmed) {
-    // console.log('fired2')
-    return h(cardProgressBarObjectFailed)
-  } else if (violation === TimeOutReasons.NotEnoughReveals && phase === Stage.Committed) {
-    // console.log('fired3')
+  if ((violation === TimeOutReasons.NotEnoughAssessors && phase === Stage.Called) ||
+      (violation === TimeOutReasons.NotEnoughCommits && phase === Stage.Confirmed) ||
+      (violation === TimeOutReasons.NotEnoughReveals && phase === Stage.Committed)) {
     return h(cardProgressBarObjectFailed)
   }
-  // it was not! see whether the phase has been completed
+  // it was not a violation! see whether the phase has been completed:
   if (assessmentStage > phase || assessmentStage === Stage.Done) {
     return h(cardProgressBarObjectComplete)
   }
-  // whether the stage is still ongoing
+  // see whether the stage is still ongoing and requires user input:
   if (assessmentStage === phase && actionRequired) {
-    // and requires user input
     return h(cardProgressBarObjectActive)
-    // or whether the stage is the last one -> no user action required
-  } else if (assessmentStage === Stage.Done) {
-    return h(cardProgressBarObjectComplete)
-  } else {
-    // the phase is on, but the user must no longer do anything
-    return h(cardProgressBarObjectInactive)
   }
+  // or whether the stage is the last one -> no user action required
+  if (assessmentStage === Stage.Done) {
+    return h(cardProgressBarObjectComplete)
+  }
+  // DEFAULT: the phase is on, but the user must no longer do anything
+  return h(cardProgressBarObjectInactive)
 }
 
 export default AssessmentCard

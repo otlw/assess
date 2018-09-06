@@ -26,84 +26,61 @@ export function hashScoreAndSalt (_score, _salt) {
 
 // ============== async actions ===================
 
-export function confirmAssessor (address, triggeringRefund = false) {
+export function confirmAssessor (address, customReact = false) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
     // TODO figure out how high this needs to be so fucking high for refund to work
     let params = {from: userAddress}
-    if (triggeringRefund) {
-      params.gas = 320000
+    if (customReact && customReact.gas) {
+      params.gas = customReact.gas
     }
-    console.log('params', params)
     sendAndReactToTransaction(
       dispatch,
       () => { return assessmentInstance.methods.confirmAssessor().send(params) },
-      triggeringRefund ? 'Refund' : Stage.Called,
+      customReact ? customReact.saveKeyword : Stage.Called,
       userAddress,
       address,
-      triggeringRefund
-        ? (err) => {
-          if (!err) {
-            dispatch(updateAssessmentVariable(address, 'refunded', true))
-            dispatch(fetchUserBalance(address))
-          }
-        }
-        : () => { dispatch(fetchUserStage(address)) }
+      customReact ? customReact.callbck : () => { dispatch(fetchUserStage(address)) }
     )
   }
 }
 
-export function commit (address, score, salt, triggeringRefund = false) {
+export function commit (address, score, salt, customReact = false) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
     // TODO figure out how high this needs to be so fucking high for refund to work
     let params = {from: userAddress}
-    if (triggeringRefund) {
-      params.gas = 320000
+    if (customReact && customReact.gas) {
+      params.gas = customReact.gas
     }
     sendAndReactToTransaction(
       dispatch,
       () => { return assessmentInstance.methods.commit(hashScoreAndSalt(score, salt)).send(params) },
-      triggeringRefund ? 'Refund' : Stage.Confirmed,
+      customReact ? customReact.saveKeyword : Stage.Confirmed,
       userAddress,
       address,
-      triggeringRefund
-        ? (err) => {
-          if (!err) {
-            dispatch(updateAssessmentVariable(address, 'refunded', true))
-            dispatch(fetchUserBalance(address))
-          }
-        }
-        : () => { dispatch(fetchUserStage(address)) }
+      customReact ? customReact.callbck : () => { dispatch(fetchUserStage(address)) }
     )
   }
 }
 
-export function reveal (address, score, salt, triggeringRefund = false) {
+export function reveal (address, score, salt, customReact = false) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
     let params = {from: userAddress}
-    if (triggeringRefund) {
-      // TODO figure out how high this needs to be so fucking high for refund to work
-      params.gas = 320000
+    if (customReact && customReact.gas) {
+      params.gas = customReact.gas
     }
     sendAndReactToTransaction(
       dispatch,
       () => { return assessmentInstance.methods.reveal(score, salt).send(params) },
-      triggeringRefund ? 'Refund' : Stage.Committed,
+      customReact ? customReact.saveKeyword : Stage.Committed,
       userAddress,
       address,
-      triggeringRefund
-        ? (err) => {
-          if (!err) {
-            dispatch(updateAssessmentVariable(address, 'refunded', true))
-            dispatch(fetchUserBalance(address))
-          }
-        }
-        : () => { dispatch(fetchUserStage(address)) }
+      customReact ? customReact.callbck : () => { dispatch(fetchUserStage(address)) }
     )
   }
 }
@@ -129,9 +106,22 @@ export function storeDataOnAssessment (address, data) {
 // then updates the userStage & marks the assessment as refunded
 export function refund (address, stage) {
   return async (dispatch, getState) => {
+    const reactToRefund = (err) => {
+      if (!err) {
+        dispatch(updateAssessmentVariable(address, 'refunded', true))
+        dispatch(fetchUserBalance(address))
+      } else {
+        console.log('error while refunding', err)
+      }
+    }
+    const react = {
+      gas: 320000,
+      saveKeyword: 'refund',
+      callbck: reactToRefund
+    }
     switch (stage) {
       case Stage.Called:
-        dispatch(confirmAssessor(address, true))
+        dispatch(confirmAssessor(address, react))
         break
       case Stage.Confirmed:
         dispatch(commit(address, 10, 'hihi', true))

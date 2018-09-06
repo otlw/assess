@@ -4,7 +4,6 @@ import TxList from '../../TxList.js'
 import { statusMessage } from '../../../utils.js'
 var h = require('react-hyperscript')
 
-// component to display all assessors
 class FailedBar extends Component {
   refund () {
     this.props.refund(this.props.assessment.address, this.props.assessment.stage)
@@ -17,7 +16,6 @@ class FailedBar extends Component {
   render () {
     console.log('props', this.props)
     let assessment = this.props.assessment
-    // let failedAssessors = (assessment.size - assessment.done).toString(),
     let userFault = assessment.userStage === assessment.stage
     let statusText = statusMessage(this.props.userAddress === assessment.assessee, assessment)
     return (
