@@ -21,7 +21,7 @@ export const Header = (props) => {
         h(headerRowLeft, [
           h(Link, {to: '/'}, h(Logo, {alt: 'logo', src: fathomLogo})),
           h(headerItem, {name: 'Address', value: address}),
-          h(headerItem, {name: 'Network', value: network})
+          h(headerItem, {name: 'Network', value: network > 10000000 ? 'Local' : network})
         ]),
         h(headerRowRight, [
           h(headerItem, {name: 'Balance', value: balance})

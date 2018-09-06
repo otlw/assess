@@ -1,5 +1,5 @@
 import Web3 from 'web3'
-import { getInstance } from '../utils.js'
+import { getInstance, getLocalStorageKey } from '../utils.js'
 import { networkName, LoadingStage } from '../constants.js'
 import { processEvent } from './assessmentActions.js'
 import { setMainDisplay } from './navigationActions.js'
@@ -10,6 +10,7 @@ export const WEB3_CONNECTED = 'WEB3_CONNECTED'
 export const WEB3EVENTS_CONNECTED = 'WEB3EVENTS_CONNECTED'
 export const WEB3_DISCONNECTED = 'WEB3_DISCONNECTED'
 export const RECEIVE_VARIABLE = 'RECEIVE_VARIABLE'
+export const RECEIVE_PERSISTED_STATE = 'RECEIVE_PERSISTED_STATE'
 
 // actions to instantiate web3 related info
 export const connect = () => {
@@ -20,11 +21,10 @@ export const connect = () => {
       let w3 = new Web3(window.web3.currentProvider)
       // after web3 is instanciated, fetch networkID and user address
       if (w3) {
-        dispatch(web3Connected(w3))
-
-        // get networkID
+        // get networkID and THEN set isConnected
         let networkID = await w3.eth.net.getId()
         dispatch(receiveVariable('networkID', networkID))
+        dispatch(web3Connected(w3))
 
         // get userAddress
         let accounts = await w3.eth.getAccounts()
@@ -35,6 +35,9 @@ export const connect = () => {
           dispatch(receiveVariable('userAddress', accounts[0]))
           dispatch(fetchUserBalance())
         }
+
+        // load persistedState for the respective network and the user
+        dispatch(loadPersistedState(networkID, accounts[0], w3))
 
         // set a second web3 instance to subscribe to events via websocket
         if (networkName(networkID) === 'Kovan') {
@@ -66,6 +69,24 @@ export const connect = () => {
   }
 }
 
+const loadPersistedState = (networkID, userAddress, web3) => {
+  return async (dispatch, getState) => {
+    try {
+      let key = getLocalStorageKey(networkID, userAddress, web3)
+      // let key = networkName(networkID) + 'State' + userAddress
+      const serializedState = localStorage.getItem(key) // eslint-disable-line no-undef
+      if (serializedState === null) {
+        return undefined
+      }
+      let persistedState = JSON.parse(serializedState)
+      console.log('loaded persistedState ', persistedState)
+      dispatch(receivePersistedState(persistedState))
+    } catch (e) {
+      console.log('ERROR reading from localStorage')
+    }
+  }
+}
+
 const initializeEventWatcher = () => {
   return async (dispatch, getState) => {
     let networkID = getState().ethereum.networkID
@@ -90,7 +111,8 @@ const initializeEventWatcher = () => {
           dispatch(processEvent(
             data.returnValues.user,
             data.returnValues.sender,
-            Number(data.returnValues.topic)
+            Number(data.returnValues.topic),
+            data.blockNumber
           ))
         }
       })
@@ -106,7 +128,6 @@ const initializeEventWatcher = () => {
         if (error) {
           console.log('event subscirption error!:')
         }
-
         let decodedLog = web3WS.eth.abi.decodeLog(
           notificationJSON.inputs,
           log.data,
@@ -118,13 +139,11 @@ const initializeEventWatcher = () => {
         // a) the user is looking at it
         // b) the user has already been on the dashboard page once
         if ((getState().assessments[decodedLog.sender] || decodedLog.user === userAddress)) {
-          console.log('called')
           dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic)))
+          dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic), log.blockNumber))
         } else {
           let isUser = decodedLog.user === userAddress
-          // console.log(decodedLog.user === userAddress, decodedLo)
-          // console.log(getState().assessments, decodedLog.sender)
-          console.log('not updating! reason: ' + isUser ? 'is not on dashBoard' : 'user is not involved')
+          console.log('not updating!')
         }
       })
     }
@@ -207,5 +226,13 @@ export function receiveVariable (name, value) {
     type: RECEIVE_VARIABLE,
     name,
     value
+  }
+}
+
+// to save something from the chain in state
+export function receivePersistedState (persistedState) {
+  return {
+    type: RECEIVE_PERSISTED_STATE,
+    persistedState
   }
 }
