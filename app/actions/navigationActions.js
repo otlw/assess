@@ -1,6 +1,6 @@
 import { Stage } from '../constants.js'
 export const SET_DASHBOARD_TAB = 'SET_DASHBOARD_TAB'
-export const SET_MAIN_DISPLAY = 'SET_MAIN_DISPLAY'
+export const SET_HELPER_TAKEOVER = 'SET_HELPER_TAKEOVER'
 export const SET_NOTIFICATION_BAR = 'SET_NOTIFICATION_BAR'
 export const SET_INPUT_BAR = 'SET_INPUT_BAR'
 export const ADD_VISIT = 'ADD_VISIT'
@@ -27,10 +27,10 @@ export function dispatchSetInputBar (inputType) {
   }
 }
 
-export function setMainDisplay (mainDisplay) {
+export function setHelperTakeOver (helperTakeOver) {
   return {
-    type: SET_MAIN_DISPLAY,
-    mainDisplay
+    type: SET_HELPER_TAKEOVER,
+    helperTakeOver
   }
 }
 
@@ -78,7 +78,7 @@ export function setHelperBar (key) {
 /*
   function to update the helperScreens by saving the approprioate keyword to the store
   either setHelperBar() for the notificationBar OR
-  setMainDisplay() for the HelperTakeOver
+  setHelperTakeOver() for the HelperTakeOver
   */
 export function updateHelperScreen (keyWord, params) {
   return async (dispatch, getState) => {
@@ -86,12 +86,12 @@ export function updateHelperScreen (keyWord, params) {
     if (keyWord === 'NoMetaMask') {
       // here we could use the visit-history to be conditional, e.g.:
       if (getState().vists.site === 0) {
-        dispatch(setMainDisplay('educateAboutMetaMask'))
+        dispatch(setHelperTakeOver('educateAboutMetaMask'))
       } else {
-        dispatch(setMainDisplay('NoMetaMask'))
+        dispatch(setHelperTakeOver('NoMetaMask'))
       }
     } else if (keyWord === 'UnlockMetaMask') {
-      dispatch(setMainDisplay('UnlockMetaMask'))
+      dispatch(setHelperTakeOver('UnlockMetaMask'))
     } else {
       // cases where we just want to show a HelperBar
       let helperBar = getHelperBar(getState().navigation.helperBarTopic, getState().navigation.visits, keyWord, params)

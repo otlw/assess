@@ -1,7 +1,7 @@
 import h from 'react-hyperscript'
 
 export const HelperTakeOver = (props) => {
-  switch (props.mainDisplay) {
+  switch (props.topic) {
     case 'UnlockMetaMask':
       return h('p', 'You need to unlock Metamask by entering your password.\n')
 

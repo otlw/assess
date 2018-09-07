@@ -2,7 +2,7 @@ import Web3 from 'web3'
 import { getInstance, getLocalStorageKey } from '../utils.js'
 import { networkName, LoadingStage } from '../constants.js'
 import { processEvent } from './assessmentActions.js'
-import { setMainDisplay, updateHelperScreen, addVisit } from './navigationActions.js'
+import { setHelperTakeOver, updateHelperScreen, addVisit } from './navigationActions.js'
 var Dagger = require('eth-dagger')
 const { FathomToken } = require('fathom-contracts')
 
@@ -183,7 +183,7 @@ export const fetchUserBalance = () => {
     let userAddress = getState().ethereum.userAddress
     let fathomTokenInstance = getInstance.fathomToken(getState())
     if (fathomTokenInstance.error) {
-      dispatch(setMainDisplay('UndeployedNetwork'))
+      dispatch(setHelperTakeOver('UndeployedNetwork'))
     } else {
       let userBalance = await fathomTokenInstance.methods.balanceOf(userAddress).call()
       dispatch(receiveVariable('AhaBalance', userBalance))

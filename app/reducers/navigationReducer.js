@@ -1,6 +1,6 @@
 import {
   SET_DASHBOARD_TAB,
-  SET_MAIN_DISPLAY,
+  SET_HELPER_TAKEOVER,
   SET_INPUT_BAR,
   SET_NOTIFICATION_BAR,
   ADD_VISIT,
@@ -13,7 +13,7 @@ import { Stage } from '../constants.js'
 
 const initialState = {
   dashboardTab: 'Current',
-  mainDisplay: '',
+  helperTakeOver: '',
   notificationBar: {
     display: false
   },
@@ -33,10 +33,10 @@ export default function navigation (state = initialState, action) {
         ...state,
         dashboardTab: action.tab
       }
-    case SET_MAIN_DISPLAY:
+    case SET_HELPER_TAKEOVER:
       return {
         ...state,
-        mainDisplay: action.mainDisplay
+        helperTakeOver: action.helperTakeOver
       }
     case SET_NOTIFICATION_BAR:
       return {

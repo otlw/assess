@@ -36,11 +36,11 @@ const theme = {
 
 export class App extends Component {
   render () {
-    let mainDisplay = this.props.mainDisplay
-    if (mainDisplay === 'NoMetaMask' ||
-        mainDisplay === 'educateAboutMetaMask' ||
-        mainDisplay === 'UnlockMetaMask') {
-      return h(HelperTakeOver, {mainDisplay: mainDisplay})
+    let helperTakeOver = this.props.helperTakeOver
+    if (helperTakeOver === 'NoMetaMask' ||
+        helperTakeOver === 'educateAboutMetaMask' ||
+        helperTakeOver === 'UnlockMetaMask') {
+      return h(HelperTakeOver, {topic: helperTakeOver})
     }
     // else, there is an account, just display the normal App
     return (
@@ -51,8 +51,8 @@ export class App extends Component {
             h(HelperBar),
             this.props.loadedWeb3
               ? (h(appContainer,
-                this.props.mainDisplay
-                  ? [h(NavTabs), h(HelperTakeOver, {mainDisplay: mainDisplay})]
+                helperTakeOver
+                  ? [h(NavTabs), h(HelperTakeOver, {topic: helperTakeOver})]
                   : [h(NavTabs),
                     h(Route, {exact: true, path: '/', component: AssessmentFilterView}),
                     h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
@@ -73,7 +73,7 @@ const appContainer = styled('div').attrs({className: 'flex flex-column w-100'})`
 const mapStateToProps = state => {
   return {
     loadedWeb3: state.ethereum.isConnected && state.ethereum.userAddress && state.ethereum.networkID && state.ethereum.webSocketIsConnected,
-    mainDisplay: state.navigation.mainDisplay
+    helperTakeOver: state.navigation.helperTakeOver
   }
 }
 
