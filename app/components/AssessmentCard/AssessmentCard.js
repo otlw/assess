@@ -33,14 +33,14 @@ export class AssessmentCard extends Component {
             h(cardLabel, 'Status'),
             h(cardTextStatusMsg, status)
           ]),
-          h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, linkButtons(assessment, isAssessee))
+          h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, linkButtons(assessment, isAssessee, this.props.setCardVisibility))
         ])
       ])
     )
   }
 }
 
-function linkButtons (assessment, isAssessee) {
+function linkButtons (assessment, isAssessee, setCardVisibility) {
   let userFault = (assessment.violation && assessment.userStage === assessment.stage) || assessment.userStage === Stage.Burned
   if (assessment.violation) {
     if (userFault) return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/'}, 'Closed')] // TODO why should be a link
@@ -59,7 +59,7 @@ function linkButtons (assessment, isAssessee) {
     // is the user done (for the respective stage?)
     let buttonList = [
       h(cardButtonSecondary, {
-        onClick: () => this.props.setCardVisibility(assessment.address, !assessment.hidden)
+        onClick: () => setCardVisibility(assessment.address, !assessment.hidden)
       }, assessment.hidden ? 'Unhide' : 'Hide')
     ]
     if (assessment.stage < Stage.Done && assessment.userStage === assessment.stage) {
