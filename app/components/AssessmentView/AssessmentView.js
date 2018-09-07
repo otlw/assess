@@ -93,19 +93,19 @@ export class AssessmentData extends Component {
               assessment: assessment,
               userAddress: this.props.userAddress
             })
-          // if completed
-          : assessment.stage === Stage.Done
-            ? h(FinalResultBar, {
-              address: assessment.address,
-              userAddress: this.props.userAddress,
-              userStage: assessment.userStage,
-              assessee: assessment.assessee,
-              payout: assessment.payout,
-              finalScore: assessment.finalScore,
-              cost: assessment.cost
-            })
-            // regular ProgressBar
-            : h(ProgressAndInputBar, {address: assessment.address})
+            // if completed
+            : assessment.stage === Stage.Done
+              ? h(FinalResultBar, {
+                address: assessment.address,
+                userAddress: this.props.userAddress,
+                userStage: assessment.userStage,
+                assessee: assessment.assessee,
+                payout: assessment.payout,
+                finalScore: assessment.finalScore,
+                cost: assessment.cost
+              })
+              // regular ProgressBar
+              : h(ProgressAndInputBar, {address: assessment.address})
         ])
       ])
     )

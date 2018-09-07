@@ -293,7 +293,7 @@ export function validateAndFetchAssessmentData (address) {
       // maybe the assessment was cancelled?
       const fathomTokenInstance = getInstance.fathomToken(getState())
       let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {
-        fromBlock: 0, //TODO put in deployedFathomTokenAt once it exists
+        fromBlock: 0, // TODO put in deployedFathomTokenAt once it exists
         toBlock: 'latest',
         filter: {sender: address}
       })
@@ -596,13 +596,6 @@ export function endLoadingAssessments () {
 export function setAssessmentAsInvalid (address) {
   return {
     type: SET_ASSESSMENT_AS_INVALID,
-    address
-  }
-}
-
-export function setAssessmentAsCancelled (address) {
-  return {
-    type: SET_ASSESSMENT_AS_CANCELLED,
     address
   }
 }
