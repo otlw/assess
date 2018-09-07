@@ -20,25 +20,21 @@ export class AssessmentData extends Component {
     }
     let assessment = this.props.assessment
     let statusString
-    if (!assessment.violation) {
-      if (assessment.stage === Stage.Done) {
-        statusString = 'Assessment Complete'
-      } else {
-        let actionRequired = assessment.stage === assessment.userStage
-        let nOtherAssessorsToBeActive = assessment.size - (assessment.stage === Stage.Called ? assessment.assessors.length : assessment.done) - (actionRequired ? 1 : 0)
-        statusString = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive +
-          (nOtherAssessorsToBeActive !== 1 ? ' assessors' : 'assessor') +
-          ' to ' + StageDisplayNames[assessment.stage]
-      }
-    } else {
-      statusString = 'Failed'
+    if (assessment.violation) statusString = 'Failed'
+    else if (assessment.stage === Stage.Done) statusString = 'Assessment Complete'
+    else {
+      let actionRequired = assessment.stage === assessment.userStage
+      let nOtherAssessorsToBeActive = assessment.size - (assessment.stage === Stage.Called ? assessment.assessors.length : assessment.done) - (actionRequired ? 1 : 0)
+      statusString = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive +
+        (nOtherAssessorsToBeActive !== 1 ? ' assessors' : 'assessor') +
+        ' to ' + StageDisplayNames[assessment.stage]
     }
-    let isAssessee = assessment.assessee !== this.props.userAddress
+    let isAssessee = assessment.assessee === this.props.userAddress
     return (
       h(SuperFrame, [
         // holds role and concept title
         h(assessmentHeader, [
-          h(assessmentLabelRole, isAssessee ? 'Assessing' : 'Getting assessed in'),
+          h(assessmentLabelRole, isAssessee ? 'Getting assessed in' : 'Assessing'),
           h(assessmentTextTitle, assessment.conceptData.name)
         ]),
         // indicates status of assesssment
@@ -52,7 +48,6 @@ export class AssessmentData extends Component {
             h(assessmentTextBody, convertDate(assessment.checkpoint))
           ])
         ]),
-
         // basic info
         h(assessmentContainerBody, [
           h(assessmentColumnLeft, [
@@ -62,15 +57,15 @@ export class AssessmentData extends Component {
             ]),
             h(assessmentObjectText, [
               h(assessmentLabelBody, 'Fee'),
-              h(assessmentTextBody, Math.round(assessment.cost / 1e9) + ' AHA')
+              h(assessmentTextBody, assessment.cost + ' AHA')
             ]),
             h(assessmentObjectText, [
               h(assessmentLabelBody, 'Meeting Point'),
               h(assessmentTextBody, assessment.data || isAssessee ? 'You haven\'t set a meeting point' : 'No meeting point has been set yet'),
               h(assessmentRow, [
                 h(fathomButtonPrimary, {href: assessment.data, disabled: assessment.data === ''}, 'View'),
-                isAssessee
-                  ? h(MeetingPointEditBox, { // same here ALEX
+                assessment.assessee === this.props.userAddress
+                  ? h(MeetingPointEditBox, {
                     assessee: assessment.assessee,
                     address: assessment.address
                   })
@@ -98,19 +93,19 @@ export class AssessmentData extends Component {
               assessment: assessment,
               userAddress: this.props.userAddress
             })
-            // if completed
-            : assessment.stage === Stage.Done
-              ? h(FinalResultBar, {
-                address: assessment.address,
-                userAddress: this.props.userAddress,
-                userStage: assessment.userStage,
-                assessee: assessment.assessee,
-                payout: assessment.payout,
-                finalScore: assessment.finalScore,
-                cost: assessment.cost
-              })
-              // regular ProgressBar
-              : h(ProgressAndInputBar, {address: assessment.address})
+          // if completed
+          : assessment.stage === Stage.Done
+            ? h(FinalResultBar, {
+              address: assessment.address,
+              userAddress: this.props.userAddress,
+              userStage: assessment.userStage,
+              assessee: assessment.assessee,
+              payout: assessment.payout,
+              finalScore: assessment.finalScore,
+              cost: assessment.cost
+            })
+            // regular ProgressBar
+            : h(ProgressAndInputBar, {address: assessment.address})
         ])
       ])
     )

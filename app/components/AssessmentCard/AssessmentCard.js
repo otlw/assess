@@ -2,8 +2,8 @@ import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
-import { StageDisplayNames, Stage, TimeOutReasons, CompletedStages } from '../constants.js'
-import { statusMessage } from '../utils.js'
+import { StageDisplayNames, Stage, TimeOutReasons, CompletedStages } from '../../constants.js'
+import { statusMessage } from '../../utils.js'
 
 export class AssessmentCard extends Component {
   render () {
@@ -57,18 +57,23 @@ function linkButtons (assessment, isAssessee) {
     // longer structure becasue once we want to provide different links on the why-button, it will come in handy to have the cases be more explicit.
     // no violation!
     // is the user done (for the respective stage?)
+    let buttonList = [
+      h(cardButtonSecondary, {
+        onClick: () => this.props.setCardVisibility(assessment.address, !assessment.hidden)
+      }, assessment.hidden ? 'Unhide' : 'Hide')
+    ]
     if (assessment.stage < Stage.Done && assessment.userStage === assessment.stage) {
-      return ([
-        h(cardButtonSecondary, 'Hide'),
-        h(cardButtonPrimary, {to: '/assessment/' + assessment.address}, isAssessee ? 'View' : StageDisplayNames[assessment.stage])
-      ])
+      buttonList.push(
+        h(cardButtonPrimary,
+          {to: '/assessment/' + assessment.address},
+          assessment.userStage === Stage.None ? 'View' : StageDisplayNames[assessment.stage]))
     } else {
-      // no. he needs to do something
-      return ([
-        h(cardButtonSecondary, 'Hide'),
-        h(cardButtonPrimary, {to: '/assessment/' + assessment.address}, isAssessee ? 'View' : CompletedStages[assessment.stage])
-      ])
+      buttonList.push(
+        h(cardButtonPrimary,
+          {to: '/assessment/' + assessment.address},
+          assessment.userStage === Stage.None ? 'View' : CompletedStages[assessment.stage]))
     }
+    return buttonList
   }
 }
 

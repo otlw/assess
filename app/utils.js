@@ -11,6 +11,21 @@ export const convertDate = (unixTimestamp) => {
   return date.toLocaleString()
 }
 
+export const getBlockDeployedAt = {
+  fathomToken: async (state) => {
+    let networkID = await state.ethereum.web3.eth.net.getId()
+    let deployTx = FathomToken.networks[networkID].transactionHash
+    let tx = await state.ethereum.web3.eth.getTransaction(deployTx)
+    return tx.blockNumber
+  },
+  conceptRegistry: async (state) => {
+    let networkID = await state.ethereum.web3.eth.net.getId()
+    let deployTx = ConceptRegistry.networks[networkID].transactionHash
+    let tx = await state.ethereum.web3.eth.getTransaction(deployTx)
+    return tx.blockNumber
+  }
+}
+
 export const getInstance = {
   assessment: (state, address) => getContractInstance(state.ethereum.web3, Assessment.abi, address),
   concept: (state, address) => getContractInstance(state.ethereum.web3, Concept.abi, address),
@@ -34,6 +49,10 @@ export const getInstance = {
   }
 }
 
+export function hmmmToAha (aha) {
+  return Math.round(Number(aha) / 1e9)
+}
+
 // convert score UI/SmartContracts
 
 export function convertFromOnChainScoreToUIScore (x) {
@@ -42,10 +61,6 @@ export function convertFromOnChainScoreToUIScore (x) {
 
 export function convertFromUIScoreToOnChainScore (x) {
   return (x * 2) - 100
-}
-
-export function hmmmToAha (aha) {
-  return Math.round(Number(aha) / 1e9)
 }
 
 /*
@@ -111,7 +126,9 @@ export const saveState = (state) => {
       let stateToSave = {
         assessments: state.assessments,
         concepts: state.concepts,
-        lastUpdatedAt: state.ethereum.lastUpdatedAt
+        lastUpdatedAt: state.ethereum.lastUpdatedAt,
+        deployedConceptRegistryAt: state.ethereum.deployedConceptRegistryAt,
+        deployedFathomTokenAt: state.ethereum.deployedFathomTokenAt
       }
       let key = getLocalStorageKey(state.ethereum.networkID, state.ethereum.userAddress, state.ethereum.web3)
       const serializedState = JSON.stringify(stateToSave)

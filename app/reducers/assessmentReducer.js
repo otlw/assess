@@ -28,6 +28,7 @@ assessmentAddress : {
   payout: 20,
   violation: false,
   refunded: false
+  hidden: false
 }
  */
 function assessments (state = initialState, action) {
