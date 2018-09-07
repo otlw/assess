@@ -2,7 +2,7 @@ import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
-import { StageDisplayNames, Stage } from '../constants.js'
+import { StageDisplayNames, Stage } from '../../constants.js'
 
 export class AssessmentCard extends Component {
   render () {
@@ -41,7 +41,6 @@ export class AssessmentCard extends Component {
       status = 'Canceled'
     }
 
-    /* start styling below */
     return (
       h(cardContainer, [
         h(cardContainerInfo, [
@@ -65,8 +64,12 @@ export class AssessmentCard extends Component {
             h(cardLabel, 'Status'),
             h(cardTextStatusMsg, status)
           ]),
+
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, [
-            h(cardButtonSecondary, 'Hide'),
+            h(cardButtonSecondary, {
+              onClick: () => this.props.setCardVisibility(assessment.address, !assessment.hidden)
+            }, assessment.hidden ? 'Unhide' : 'Hide'),
+
             h(cardButtonPrimary, { to: '/assessment/' + assessment.address }, userStage === Stage.None ? 'View' : StageDisplayNames[stage])
           ])
         ])

@@ -150,6 +150,7 @@ const initializeEventWatcher = () => {
         // a) the user is looking at it
         // b) the user has already been on the dashboard page once
         if ((getState().assessments[decodedLog.sender] || decodedLog.user === userAddress)) {
+          dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic)))
           dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic), log.blockNumber))
         } else {
           console.log('not updating!')

@@ -238,6 +238,7 @@ export function fetchAssessmentData (address) {
           payout = hmmmToAha(pastEvents[0].returnValues['_value'])
         }
       }
+      let hidden = false
 
       dispatch(receiveAssessment({
         address,
@@ -254,7 +255,8 @@ export function fetchAssessmentData (address) {
         finalScore,
         data,
         assessors,
-        payout
+        payout,
+        hidden
       }))
     } catch (e) {
       console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
@@ -368,6 +370,12 @@ export function processEvent (user, sender, topic, blockNumber) {
       default:
         console.log('no condition applied!', user, sender, topic)
     }
+  }
+}
+
+export function setCardVisibility (address, hiddenStatus) {
+  return async (dispatch, getState) => {
+    dispatch(updateAssessmentVariable(address, 'hidden', hiddenStatus))
   }
 }
 
