@@ -5,15 +5,18 @@ import ProgressAndInputBar from './ProgressAndInputBar'
 import FinalResultBar from './FinalResultBar.js'
 import FailedBar from './FailedBar'
 import { StageDisplayNames, Stage } from '../../constants.js'
-import { convertDate } from '../../utils.js'
+import { convertDate, statusMessage } from '../../utils.js'
 import styled from 'styled-components'
 var h = require('react-hyperscript')
 
 export class AssessmentData extends Component {
   render () {
     if (!this.props.assessment) return h('div', 'Loading Data...')
-    if (this.props.assessment.invalid) {
-      return h('div', 'invalid assessment address!! (you may be on the wrong network OR the assessment has been cancelled and refunded)')
+    if (this.props.assessment.invalid) return h('div', 'invalid assessment address!! you may be on the wrong network')
+    if (this.props.assessment.refunded && !this.props.assessment.cost) {
+      // this means the assessment was reconstructed
+      let status = statusMessage(this.props.assessment.assessee === this.props.userAddress, this.props.assessment)
+      return h('div', status)
     }
     let assessment = this.props.assessment
     let statusString

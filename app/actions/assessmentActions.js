@@ -179,7 +179,7 @@ export function fetchLatestAssessments () {
         return accumulator
       }, [])
 
-      // remove destruced assessments from list
+      // remove destructed assessments from list (NOTE: in a future refactor this could potentially be done with less code)
       for (let add of destructedAssessments) {
         let idx = assessmentAddresses.indexOf(add)
         if (idx > -1) { assessmentAddresses.splice(idx, 1) }
@@ -216,7 +216,7 @@ export function reconstructAssessment (address, pastNotifications) {
     let violation = TimeOutReasons.NotEnoughAssessors
     let assessee = null
     let userAddress = getState().ethereum.userAddress
-    // let concept = pastNotifications[0].returnvalues.sender // TODO figure out where to get this from
+    // let concept = ?? // TODO figure out where to get this from
     for (let notification of pastNotifications) {
       switch (Number(notification.returnValues.topic)) {
         case NotificationTopic.AssessmentCreated:
@@ -250,23 +250,22 @@ export function reconstructAssessment (address, pastNotifications) {
           }
       }
     }
-    if (userStage > Stage.Called || assessee === userAddress) {
-      let reconstructedAssessment = {
-        address,
-        stage,
-        userStage,
-        violation,
-        conceptData: {name: 'Unknown', description: 'Unknown'}, // TODO get this from local storage
-        refunded: true,
-        assessee: assessee || null
-      }
-      dispatch(receiveAssessment(reconstructedAssessment))
+    let reconstructedAssessment = {
+      address,
+      stage,
+      userStage,
+      violation,
+      conceptData: {name: 'Unknown', description: 'Unknown'}, // TODO get this from local storage
+      refunded: true,
+      assessee: assessee || null
     }
+    dispatch(receiveAssessment(reconstructedAssessment))
   }
 }
 
 /*
-  Called via the loading-hoc of AssessmentData.js, every time the assessmentView is mounted.
+  Called via the loading-hoc of AssessmentData.js, when the assessmentView is mounted and
+  the assessment is not in the state already.
   Validates whether or not an assessment in the assessmentView is from a legal
   concept which also knows about the assessment, and if so
   calls fetchAssessmentData()
@@ -274,6 +273,7 @@ export function reconstructAssessment (address, pastNotifications) {
 export function validateAndFetchAssessmentData (address) {
   return async (dispatch, getState) => {
     try {
+      console.log('in')
       let assessmentInstance = getInstance.assessment(getState(), address)
       // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
       let conceptAddress = await assessmentInstance.methods.concept().call()
@@ -290,8 +290,22 @@ export function validateAndFetchAssessmentData (address) {
         dispatch(setAssessmentAsInvalid(address))
       }
     } catch (e) {
-      console.log('Error trying to validate assessment: ', e)
-      dispatch(setAssessmentAsInvalid(address))
+      // maybe the assessment was cancelled?
+      const fathomTokenInstance = getInstance.fathomToken(getState())
+      let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {
+        fromBlock: 0, //TODO put in deployedFathomTokenAt once it exists
+        toBlock: 'latest',
+        filter: {sender: address}
+      })
+      console.log('pastNotifications', pastNotifications)
+      if (pastNotifications.length !== 0) {
+        console.log('existsed')
+        // dispatch(setAssessmentAsCancelled(address))
+        dispatch(reconstructAssessment(address, pastNotifications))
+      } else {
+        console.log('Error trying to validate assessment: ', e)
+        dispatch(setAssessmentAsInvalid(address))
+      }
     }
   }
 }
@@ -573,6 +587,13 @@ export function endLoadingAssessments () {
 export function setAssessmentAsInvalid (address) {
   return {
     type: SET_ASSESSMENT_AS_INVALID,
+    address
+  }
+}
+
+export function setAssessmentAsCancelled (address) {
+  return {
+    type: SET_ASSESSMENT_AS_CANCELLED,
     address
   }
 }

@@ -71,7 +71,7 @@ export function statusMessage (isAssessee, assessment) {
       } else {
         status += nFailedAssessors + ' assessors didn\'t reveal their scores.'
       }
-      if (assessment.refunded) {
+      if (assessment.refunded && (assessment.userStage > Stage.Called || isAssessee)) {
         status += ' Your fee has been refunded.'
       }
     }

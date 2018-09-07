@@ -14,7 +14,6 @@ class FailedBar extends Component {
   }
 
   render () {
-    console.log('props', this.props)
     let assessment = this.props.assessment
     let userFault = assessment.userStage === assessment.stage
     let statusText = statusMessage(this.props.userAddress === assessment.assessee, assessment)

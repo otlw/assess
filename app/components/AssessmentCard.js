@@ -33,14 +33,14 @@ export class AssessmentCard extends Component {
             h(cardLabel, 'Status'),
             h(cardTextStatusMsg, status)
           ]),
-          h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, linkButtons(assessment))
+          h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, linkButtons(assessment, isAssessee))
         ])
       ])
     )
   }
 }
 
-function linkButtons (assessment, location) {
+function linkButtons (assessment, isAssessee) {
   let userFault = (assessment.violation && assessment.userStage === assessment.stage) || assessment.userStage === Stage.Burned
   if (assessment.violation) {
     if (userFault) return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/'}, 'Closed')] // TODO why should be a link
@@ -58,10 +58,16 @@ function linkButtons (assessment, location) {
     // no violation!
     // is the user done (for the respective stage?)
     if (assessment.stage < Stage.Done && assessment.userStage === assessment.stage) {
-      return [h(cardButtonSecondary, 'Hide'), h(cardButtonPrimary, {to: '/assessment/' + assessment.address}, StageDisplayNames[assessment.stage])]
+      return ([
+        h(cardButtonSecondary, 'Hide'),
+        h(cardButtonPrimary, {to: '/assessment/' + assessment.address}, isAssessee ? 'View' : StageDisplayNames[assessment.stage])
+      ])
     } else {
       // no. he needs to do something
-      return [h(cardButtonSecondary, 'Hide'), h(cardButtonPrimary, {to: '/assessment/' + assessment.address}, CompletedStages[assessment.stage])]
+      return ([
+        h(cardButtonSecondary, 'Hide'),
+        h(cardButtonPrimary, {to: '/assessment/' + assessment.address}, isAssessee ? 'View' : CompletedStages[assessment.stage])
+      ])
     }
   }
 }
