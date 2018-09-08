@@ -92,6 +92,16 @@ export function helperScreens (topic) {
           target: false
         }
       }
+    case 'Staked':
+      // not sure that this is what we want to do, just wanted to test the feedback on immediate action
+      return {
+        title: 'Awesome!',
+        text: 'Now you just need to wait until there are enough other assessors and the assessment starts. If you\'re curious you can learn already learn what you need to do in the next stage: The commit-stage.',
+        followUp: {
+          linkText: 'Learn about committing',
+          target: 'Committing'
+        }
+      }
     default:
       return false
   }

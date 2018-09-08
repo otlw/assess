@@ -121,6 +121,7 @@ function getHelperBar (currentScreen, visits, keyWord, params) {
       break
     }
     case 'Staked':
+      return 'Staked'
     case 'Committed':
     case 'Revealed':
       return 'none'
