@@ -1,5 +1,5 @@
 import Web3 from 'web3'
-import { getInstance, getLocalStorageKey } from '../utils.js'
+import { getInstance, hmmmToAha, getLocalStorageKey, getBlockDeployedAt } from '../utils.js'
 import { networkName, LoadingStage } from '../constants.js'
 import { processEvent } from './assessmentActions.js'
 import { setHelperTakeOver, updateHelperScreen, addVisit } from './navigationActions.js'
@@ -39,6 +39,7 @@ export const connect = () => {
         // load persistedState for the respective network and the user
         dispatch(loadPersistedState(networkID, accounts[0], w3))
         dispatch(addVisit())
+        if (getState().ethereum.deployedFathomTokenAt === '') dispatch(loadFathomNetworkParams())
 
         // set a second web3 instance to subscribe to events via websocket
         if (networkName(networkID) === 'Kovan') {
@@ -67,6 +68,17 @@ export const connect = () => {
       dispatch(updateHelperScreen('NoMetaMask'))
       window.alert("You don't have the MetaMask browser extension.")
     }
+  }
+}
+
+const loadFathomNetworkParams = () => {
+  console.log('loadFathomNetworkParams ')
+  return async (dispatch, getState) => {
+    console.log('ONLY ONCE!: looking up when stuff was deployed kk')
+    let deployedFathomTokenAt = await getBlockDeployedAt.fathomToken(getState())
+    let deployedConceptRegistryAt = await getBlockDeployedAt.conceptRegistry(getState())
+    dispatch(receiveVariable('deployedFathomTokenAt', deployedFathomTokenAt))
+    dispatch(receiveVariable('deployedConceptRegistryAt', deployedConceptRegistryAt))
   }
 }
 
@@ -185,7 +197,7 @@ export const fetchUserBalance = () => {
     if (fathomTokenInstance.error) {
       dispatch(setHelperTakeOver('UndeployedNetwork'))
     } else {
-      let userBalance = await fathomTokenInstance.methods.balanceOf(userAddress).call()
+      let userBalance = hmmmToAha(await fathomTokenInstance.methods.balanceOf(userAddress).call())
       dispatch(receiveVariable('AhaBalance', userBalance))
     }
   }

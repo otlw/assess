@@ -1,5 +1,5 @@
 import AssessmentList from '../AssessmentList'
-import AssessmentCard from '../AssessmentCard.js'
+import AssessmentCard from '../AssessmentCard'
 import { Stage } from '../../constants.js'
 import h from 'react-hyperscript'
 
@@ -15,18 +15,19 @@ export const AssessmentFilterView = (props) => {
       return assessment.stage > Stage.Called && assessment.stage < Stage.Done
     }),
     Available: assessmentsAsList.filter(assessment => {
-      return (props.userAddress !== assessment.assessee &&
-              assessment.stage === Stage.Called)
+      return (props.userAddress !== assessment.assessee && assessment.stage === Stage.Called &&
+              (!assessment.hidden || (assessment.hidden && props.showHidden)))
     }),
     Past: assessmentsAsList.filter(assessment => assessment.stage === Stage.Done)
   }
 
-  // return view
   return h('div', Object.keys(assessmentLists).map((key, index) => {
     return h(AssessmentList, {
       assessmentCard: AssessmentCard,
       assessments: assessmentLists[key],
       name: key,
+      showHidden: props.showHidden,
+      toggleHidden: props.toggleHidden,
       userAddress: userAddress,
       networkID: props.networkID
     })

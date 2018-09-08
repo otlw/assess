@@ -10,39 +10,32 @@ Build
 
 Install all dependencies:
 
-> npm i
+` npm i`
 
 Make sure your Metamask is set to the kovan or rinkeby testnet, then serve the
 frontend by running
 
-> npm run dev
+` npm run dev`
 
 Developing
 ========
 
 ### Deploy the contracts to your local development testnet
 
-1) Make sure you have ganache-cli installed
+1. If you don't have ganache install it with: `npm i -g ganache-cli`
 
-> npm i -g ganache-cli
+2. Fire up ganache with the seedwords of your Metamask instance
+```
+ganache-cli -m 'your twelve seed words should be here in bla bla blub'
+```
 
-2) Fire up ganache with the seedwords of your Metamask instance
-
-> ganache-cli -m 'your twelve seed words should be here in bla bla blub'
-
-3) Change into the fathom-contracts module folder
-
-> cd ./node_modules/fathom-contracts
-
-4) From there, deploy the contracts 
-
-> truffle migrate --reset
+3. Deploy the contracts by running `npm run deploy-testnet`
 
 ### Create new concepts and assessments
 
 Use the script to create assessments in new concepts
 
-> node scripts/create2concepts2assessments.js
+`node scripts/create2concepts2assessments.js`
 
 You can also pass 'kovan' or 'rinkeby' as an argument to create the concepts and
 assessments on the respective testnet.
@@ -54,7 +47,7 @@ On you local testnet (only!), you can also run assessments (new ones or existing
 ones) until a given stage, e.g. to have 5 assessors commit the scores four 90's
 and a 70:
 
-> node scripts/completeAssessment -s commit 90,90,90,90,70
+` node scripts/completeAssessment -s commit 90,90,90,90,70`
 
 See the comments in the first lines of completeAssessment.js for more options.
 

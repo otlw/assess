@@ -7,6 +7,7 @@ export const ADD_VISIT = 'ADD_VISIT'
 export const RESET_VISITS = 'RESET_VISITS'
 export const SAVE_PROGRESSION = 'SAVE_PROGRESSION'
 export const SET_HELPER_SCREEN = 'SET_HELPER_SCREEN'
+export const TOGGLE_HIDDEN_CARDS = 'TOGGLE_HIDDEN_CARDS'
 
 export function setDashboardTab (tab) {
   if (tab === 'Past' ||
@@ -132,5 +133,11 @@ function getHelperBar (currentScreen, visits, keyWord, params) {
     }
     default:
       return 'none'
+  }
+}
+
+export function dispatchToggleHidden () {
+  return async (dispatch) => {
+    dispatch({type: TOGGLE_HIDDEN_CARDS})
   }
 }

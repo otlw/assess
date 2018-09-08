@@ -6,7 +6,8 @@ import {
   ADD_VISIT,
   SET_HELPER_SCREEN,
   RESET_VISITS,
-  SAVE_PROGRESSION
+  SAVE_PROGRESSION,
+  TOGGLE_HIDDEN_CARDS
 } from '../actions/navigationActions.js'
 import { RECEIVE_PERSISTED_STATE } from '../actions/web3Actions.js'
 import { Stage } from '../constants.js'
@@ -23,7 +24,8 @@ const initialState = {
     assessor: Stage.None,
     assessee: Stage.None
   },
-  helperBarTopic: ''
+  helperBarTopic: '',
+  showHiddenCards: false
 }
 
 export default function navigation (state = initialState, action) {
@@ -82,6 +84,11 @@ export default function navigation (state = initialState, action) {
       return {
         ...state,
         visits: action.persistedState.visits
+      }
+    case TOGGLE_HIDDEN_CARDS:
+      return {
+        ...state,
+        showHiddenCards: !state.showHiddenCards
       }
     default: return state
   }

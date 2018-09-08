@@ -12,7 +12,8 @@
     "lint": "standard --verbose './app/index.js' './app/**/*.js'| snazzy ",
     "fix": "standard --fix './app/index.js' './app/**/*.js' ",
     "build": "webpack",
-    "dev": "webpack-dev-server --open"
+    "dev": "webpack-dev-server --open",
+    "deploy-testnet": "cd node_modules/fathom-contracts && truffle migrate --reset"
   },
   "author": "Jared Pereira",
   "license": "MIT",
@@ -38,7 +39,8 @@
     "truffle": "4.1.7",
     "webpack": "^4.2.0",
     "webpack-cli": "^2.0.12",
-    "webpack-dev-server": "^3.1.1"
+    "webpack-dev-server": "^3.1.1",
+    "websocket": "^1.0.26"
   },
   "dependencies": {
     "bignumber.js": "^6.0.0",
@@ -52,6 +54,7 @@
     "react-hyperscript": "^3.2.0",
     "react-redux": "^5.0.5",
     "react-router-dom": "^4.2.2",
+    "react-toggle-button": "^2.2.0",
     "redux": "^3.5.2",
     "redux-form": "^7.3.0",
     "redux-thunk": "^2.2.0",
