@@ -1,8 +1,8 @@
 import { getInstance, convertFromOnChainScoreToUIScore, hmmmToAha } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
-import { receiveVariable, fetchUserBalance } from './web3Actions.js'
-import { Stage, LoadingStage, NotificationTopic } from '../constants.js'
 import { updateHelperScreen, saveProgression } from './navigationActions.js'
+import { fetchUserBalance, receiveVariable } from './web3Actions.js'
+import { Stage, LoadingStage, NotificationTopic, TimeOutReasons } from '../constants.js'
 
 export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
 export const REMOVE_ASSESSMENT = 'REMOVE_ASSESSMENT'
@@ -27,60 +27,82 @@ export function hashScoreAndSalt (_score, _salt) {
 
 // ============== async actions ===================
 
-export function confirmAssessor (address) {
+export function confirmAssessor (address, customReact = false) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
+    // TODO figure out how high this needs to be so fucking high for refund to work
+    let params = {from: userAddress}
+    if (customReact && customReact.gas) {
+      params.gas = customReact.gas
+    }
     sendAndReactToTransaction(
       dispatch,
-      () => { return assessmentInstance.methods.confirmAssessor().send({from: userAddress}) },
-      Stage.Called,
+      () => { return assessmentInstance.methods.confirmAssessor().send(params) },
+      customReact ? customReact.saveKeyword : Stage.Called,
       userAddress,
       address,
-      () => {
-        dispatch(fetchUserStage(address))
-        dispatch(updateHelperScreen('Staked'))
-        dispatch(saveProgression('assessor', Stage.Confirmed))
-        dispatch(fetchUserBalance())
-      }
+      customReact
+        ? customReact.callbck
+        : () => {
+          dispatch(fetchUserStage(address))
+          dispatch(updateHelperScreen('Staked'))
+          dispatch(saveProgression('assessor', Stage.Confirmed))
+          dispatch(fetchUserBalance())
+        }
     )
   }
 }
 
-export function commit (address, score, salt) {
+export function commit (address, score, salt, customReact = false) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
+    // TODO figure out how high this needs to be so fucking high for refund to work
+    let params = {from: userAddress}
+    if (customReact && customReact.gas) {
+      params.gas = customReact.gas
+    }
     sendAndReactToTransaction(
       dispatch,
-      () => { return assessmentInstance.methods.commit(hashScoreAndSalt(score, salt)).send({from: userAddress}) },
-      Stage.Confirmed,
+      () => { return assessmentInstance.methods.commit(hashScoreAndSalt(score, salt)).send(params) },
+      customReact ? customReact.saveKeyword : Stage.Confirmed,
       userAddress,
       address,
-      () => {
-        dispatch(fetchUserStage(address))
-        dispatch(updateHelperScreen('Committed'))
-        dispatch(saveProgression('assessor', Stage.Committed))
-      }
+      customReact
+        ? customReact.callbck
+        : () => {
+          dispatch(fetchUserStage(address))
+          dispatch(updateHelperScreen('Committed'))
+          dispatch(saveProgression('assessor', Stage.Committed))
+          dispatch(fetchUserBalance())
+        }
     )
   }
 }
 
-export function reveal (address, score, salt) {
+export function reveal (address, score, salt, customReact = false) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), address)
+    let params = {from: userAddress}
+    if (customReact && customReact.gas) {
+      params.gas = customReact.gas
+    }
     sendAndReactToTransaction(
       dispatch,
-      () => { return assessmentInstance.methods.reveal(score, salt).send({from: userAddress}) },
-      Stage.Committed,
+      () => { return assessmentInstance.methods.reveal(score, salt).send(params) },
+      customReact ? customReact.saveKeyword : Stage.Committed,
       userAddress,
       address,
-      () => {
-        dispatch(fetchUserStage(address))
-        dispatch(updateHelperScreen('Revealed'))
-        dispatch(saveProgression('assessor', Stage.Done))
-      }
+      customReact
+        ? customReact.callbck
+        : () => {
+          dispatch(fetchUserStage(address))
+          dispatch(updateHelperScreen('Revealed'))
+          dispatch(saveProgression('assessor', Stage.Done))
+          dispatch(fetchUserBalance())
+        }
     )
   }
 }
@@ -108,10 +130,43 @@ export function storeDataOnAssessment (address, data) {
   }
 }
 
+// refunds the user & cancels the assessment by calling the stage-specific action
+// then updates the userStage & marks the assessment as refunded
+export function refund (address, stage) {
+  return async (dispatch, getState) => {
+    const reactToRefund = (err) => {
+      if (!err) {
+        dispatch(updateAssessmentVariable(address, 'refunded', true))
+        dispatch(fetchUserBalance(address))
+      } else {
+        console.log('error while refunding', err)
+      }
+    }
+    const react = {
+      gas: 320000,
+      saveKeyword: 'refund',
+      callbck: reactToRefund
+    }
+    switch (stage) {
+      case Stage.Called:
+        dispatch(confirmAssessor(address, react))
+        break
+      case Stage.Confirmed:
+        dispatch(commit(address, 10, 'hihi', true))
+        break
+      case Stage.Committed:
+        dispatch(reveal(address, 10, 'hihi', true))
+        break
+      default:
+        console.log('something went wrong with the refunding!!!')
+    }
+  }
+}
+
 /*
   Called ONLY ONCE via the loading-hoc of FilterView-component.
   Fetches all data for all assessments (static, dynamic info & assessor-related info)
-  and sorts staked assessors to assessments.
+  using different methods for existing and cancelled (self-destructed) assessments
 */
 export function fetchLatestAssessments () {
   return async (dispatch, getState) => {
@@ -126,6 +181,8 @@ export function fetchLatestAssessments () {
         fromBlock: getState().ethereum.lastUpdatedAt,
         toBlock: 'latest'
       })
+
+      // filter out all assessments where the user is involved
       let assessmentAddresses = pastNotifications.reduce((accumulator, notification) => {
         let assessment = notification.returnValues.sender
         // save all addressess where the user is involved
@@ -139,6 +196,28 @@ export function fetchLatestAssessments () {
         return accumulator
       }, [])
 
+      // filter out destructed-assessments
+      let destructedAssessments = pastNotifications.reduce((accumulator, notification) => {
+        let assessment = notification.returnValues.sender
+        // save all addressess where the user is involved but which were destructed
+        if (assessmentAddresses.indexOf(assessment) !== -1 &&
+          Number(notification.returnValues.topic) === NotificationTopic.AssessmentCancelled) {
+          accumulator.push(assessment)
+        }
+        return accumulator
+      }, [])
+
+      // remove destructed assessments from list (NOTE: in a future refactor this could potentially be done with less code)
+      for (let add of destructedAssessments) {
+        let idx = assessmentAddresses.indexOf(add)
+        if (idx > -1) { assessmentAddresses.splice(idx, 1) }
+      }
+
+      // and fetch the data for them by reconstruction from events
+      destructedAssessments.forEach((address) => {
+        dispatch(reconstructAssessment(address, pastNotifications.filter(x => x.returnValues.sender === address)))
+      })
+
       // fetch data for assessments
       assessmentAddresses.forEach((address) => {
         dispatch(fetchAssessmentData(address))
@@ -151,7 +230,71 @@ export function fetchLatestAssessments () {
 }
 
 /*
-  Called via the loading-hoc of AssessmentData.js, every time the assessmentView is mounted.
+  reads the information needed to display an assessmentCard from events:
+  - last assessment stage
+  - userStage
+  - assessee
+  - concept (TODO)
+  */
+export function reconstructAssessment (address, pastNotifications) {
+  return async (dispatch, getState) => {
+    // let's not rely on events to be chronologically ordered
+    const updateStage = (newStage, value) => { return newStage >= value ? newStage : value }
+    let stage = Stage.None
+    let userStage = Stage.None
+    let violation = TimeOutReasons.NotEnoughAssessors
+    let assessee = null
+    let userAddress = getState().ethereum.userAddress
+    // let concept = ?? // TODO figure out where to get this from
+    for (let notification of pastNotifications) {
+      switch (Number(notification.returnValues.topic)) {
+        case NotificationTopic.AssessmentCreated:
+          assessee = notification.returnValues.user
+          break
+        case NotificationTopic.CalledAsAssessor:
+          if (notification.returnValues.user === userAddress) {
+            userStage = updateStage(userStage, Stage.Called)
+          }
+          break
+        case NotificationTopic.ConfirmedAsAssessor:
+          if (notification.returnValues.user === userAddress) {
+            userStage = updateStage(userStage, Stage.Confirmed)
+          }
+          break
+        case NotificationTopic.AssessmentStarted:
+          stage = updateStage(stage, Stage.Confirmed)
+          violation = TimeOutReasons.NotEnoughCommits
+          break
+        case NotificationTopic.RevealScore:
+          stage = updateStage(stage, Stage.Committed)
+          violation = TimeOutReasons.NotEnoughReveals
+          if (notification.returnValues.user === userAddress) {
+            userStage = updateStage(userStage, Stage.Committed)
+          }
+          break
+        default:
+          if (Number(notification.returnValues.topic) !== NotificationTopic.CalledAsAssessor ||
+              Number(notification.returnValues.topic) !== NotificationTopic.AssessmentCancelled) {
+            console.log('whooopsi. this should not be reached! topic:', Number(notification.returnValues.topic)) // TODO no idea why this is reached sometimes, but it does not seem to hurt anything
+          }
+      }
+    }
+    let reconstructedAssessment = {
+      address,
+      stage,
+      userStage,
+      violation,
+      conceptData: {name: 'Unknown', description: 'Unknown'}, // TODO get this from local storage
+      refunded: true,
+      assessee: assessee || null
+    }
+    dispatch(receiveAssessment(reconstructedAssessment))
+  }
+}
+
+/*
+  Called via the loading-hoc of AssessmentData.js, when the assessmentView is mounted and
+  the assessment is not in the state already.
   Validates whether or not an assessment in the assessmentView is from a legal
   concept which also knows about the assessment, and if so
   calls fetchAssessmentData()
@@ -159,6 +302,7 @@ export function fetchLatestAssessments () {
 export function validateAndFetchAssessmentData (address, callback) {
   return async (dispatch, getState) => {
     try {
+      console.log('in')
       let assessmentInstance = getInstance.assessment(getState(), address)
       // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
       let conceptAddress = await assessmentInstance.methods.concept().call()
@@ -175,8 +319,22 @@ export function validateAndFetchAssessmentData (address, callback) {
         dispatch(setAssessmentAsInvalid(address))
       }
     } catch (e) {
-      console.log('error trying tovalidate assessment: ', e)
-      dispatch(setAssessmentAsInvalid(address))
+      // maybe the assessment was cancelled?
+      const fathomTokenInstance = getInstance.fathomToken(getState())
+      let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {
+        fromBlock: 0, // TODO put in deployedFathomTokenAt once it exists
+        toBlock: 'latest',
+        filter: {sender: address}
+      })
+      console.log('pastNotifications', pastNotifications)
+      if (pastNotifications.length !== 0) {
+        console.log('existsed')
+        // dispatch(setAssessmentAsCancelled(address))
+        dispatch(reconstructAssessment(address, pastNotifications))
+      } else {
+        console.log('Error trying to validate assessment: ', e)
+        dispatch(setAssessmentAsInvalid(address))
+      }
     }
   }
 }
@@ -256,11 +414,29 @@ export function fetchAssessmentData (address, callback) {
           payout = hmmmToAha(pastEvents[0].returnValues['_value'])
         }
       }
+      // see if assessment on track (not over timelimit)
+      let realNow = Date.now() / 1000
+      let violation = 0
+      switch (stage) {
+        case Stage.Called:
+          if (realNow > Number(checkpoint)) { violation = TimeOutReasons.NotEnoughAssessors }
+          break
+        case Stage.Confirmed:
+          if (realNow > Number(endTime)) { violation = TimeOutReasons.NotEnoughCommits }
+          break
+        case Stage.Committed:
+          if (realNow > Number(endTime) + 24 * 60 * 60) { violation = TimeOutReasons.NotEnoughReveals }
+          break
+        default:
+          console.log('no violation')
+      }
       let assessment = {
         address,
         cost,
         checkpoint,
         stage,
+        violation,
+        refunded: false,
         userStage,
         endTime,
         done,
@@ -382,6 +558,12 @@ export function processEvent (user, sender, topic, blockNumber) {
           dispatch(fetchUserStage(sender))
           dispatch(fetchPayout(sender, user))
           dispatch(fetchFinalScore(sender, user))
+          dispatch(fetchUserBalance())
+        }
+        break
+      case NotificationTopic.AssessmentCancelled:
+        if (isUser) {
+          dispatch(updateAssessmentVariable(sender, 'refunded', true))
           dispatch(fetchUserBalance())
         }
         break

@@ -10,15 +10,17 @@ export const AssessmentFilterView = (props) => {
   let assessmentLists = {
     Current: assessmentsAsList.filter(assessment => {
       if (props.userAddress === assessment.assessee) {
-        return assessment.stage < Stage.Done
+        return (assessment.stage < Stage.Done && !assessment.violation)
       }
-      return assessment.stage > Stage.Called && assessment.stage < Stage.Done
+      return assessment.stage > Stage.Called && assessment.stage < Stage.Done && !assessment.violation
     }),
     Available: assessmentsAsList.filter(assessment => {
-      return (props.userAddress !== assessment.assessee && assessment.stage === Stage.Called &&
+      return (props.userAddress !== assessment.assessee &&
+              assessment.stage === Stage.Called &&
+              !assessment.violation &&
               (!assessment.hidden || (assessment.hidden && props.showHidden)))
     }),
-    Past: assessmentsAsList.filter(assessment => assessment.stage === Stage.Done)
+    Past: assessmentsAsList.filter(assessment => assessment.stage === Stage.Done || assessment.violation)
   }
 
   return h('div', Object.keys(assessmentLists).map((key, index) => {

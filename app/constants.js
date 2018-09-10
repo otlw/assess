@@ -7,6 +7,15 @@ export const StageDisplayNames = Object.freeze({
   5: 'Burned'
 })
 
+export const CompletedStages = Object.freeze({
+  0: 'Open',
+  1: 'Staked',
+  2: 'Committed',
+  3: 'Revealed',
+  4: 'Completed',
+  5: 'Burned'
+})
+
 export const PassiveStageDisplayNames = Object.freeze({
   1: 'Staked',
   2: 'Committed',
@@ -55,6 +64,12 @@ export const NotificationTopic = Object.freeze({
   RevealScore: 5,
   TokensPaidOut: 6,
   AssessmentFinished: 7
+})
+
+export const TimeOutReasons = Object.freeze({
+  NotEnoughAssessors: 1,
+  NotEnoughCommits: 2,
+  NotEnoughReveals: 3
 })
 
 export function helperScreens (topic) {
@@ -106,3 +121,4 @@ export function helperScreens (topic) {
       return false
   }
 }
+

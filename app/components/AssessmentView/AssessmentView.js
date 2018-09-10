@@ -3,83 +3,98 @@ import MeetingPointEditBox from './MeetingPoint/'
 import AssessorList from './AssessorList.js'
 import ProgressAndInputBar from './ProgressAndInputBar'
 import FinalResultBar from './FinalResultBar.js'
+import FailedBar from './FailedBar'
 import { StageDisplayNames, Stage } from '../../constants.js'
-import { convertDate } from '../../utils.js'
+import { convertDate, statusMessage } from '../../utils.js'
 import styled from 'styled-components'
 var h = require('react-hyperscript')
 
 export class AssessmentData extends Component {
   render () {
     if (!this.props.assessment) return h('div', 'Loading Data...')
-    if (this.props.assessment.invalid) {
-      return h('div', 'invalid assessment address!! (maybe you are on the wrong network)')
-    } else {
-      let assessment = this.props.assessment
-      let isAssessee = assessment.assessee === this.props.userAddress
+    if (this.props.assessment.invalid) return h('div', 'invalid assessment address!! you may be on the wrong network')
+    if (this.props.assessment.refunded && !this.props.assessment.cost) {
+      // this means the assessment was reconstructed
+      let status = statusMessage(this.props.assessment.assessee === this.props.userAddress, this.props.assessment)
+      return h('div', status)
+    }
+    let assessment = this.props.assessment
+    let statusString
+    if (assessment.violation) statusString = 'Failed'
+    else if (assessment.stage === Stage.Done) statusString = 'Assessment Complete'
+    else {
       let actionRequired = assessment.stage === assessment.userStage
       let nOtherAssessorsToBeActive = assessment.size - (assessment.stage === Stage.Called ? assessment.assessors.length : assessment.done) - (actionRequired ? 1 : 0)
-      let statusString = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive +
-          (nOtherAssessorsToBeActive !== 1 ? ' assessors' : ' assessor') +
-          ' to ' + StageDisplayNames[assessment.stage]
-      return (
-        h(SuperFrame, [
-          // holds role and concept title
-          h(assessmentHeader, [
-            h(assessmentLabelRole, isAssessee ? 'Getting assessed in' : 'Assessing'),
-            h(assessmentTextTitle, assessment.conceptData.name)
+      statusString = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive +
+        (nOtherAssessorsToBeActive !== 1 ? ' assessors' : 'assessor') +
+        ' to ' + StageDisplayNames[assessment.stage]
+    }
+    let isAssessee = assessment.assessee === this.props.userAddress
+    return (
+      h(SuperFrame, [
+        // holds role and concept title
+        h(assessmentHeader, [
+          h(assessmentLabelRole, isAssessee ? 'Getting assessed in' : 'Assessing'),
+          h(assessmentTextTitle, assessment.conceptData.name)
+        ]),
+        // indicates status of assesssment
+        h(assessmentRowSubHeader, [
+          h(assessmentContainerStatus, [
+            h(assessmentLabelBody, 'STATUS'),
+            h(assessmentTextBody, statusString)
           ]),
-          // indicates status of assesssment
-          h(assessmentRowSubHeader, [
-            h(assessmentContainerStatus, [
-              h(assessmentLabelBody, 'STATUS'),
-              h(assessmentTextBody, assessment.stage === Stage.Done ? 'Assessment Complete' : statusString)
+          h(assessmentContainerDate, [
+            h(assessmentLabelBody, assessment.stage === Stage.Done ? 'Completed on: ' : 'Due Date:'),
+            h(assessmentTextBody, convertDate(assessment.checkpoint))
+          ])
+        ]),
+        // basic info
+        h(assessmentContainerBody, [
+          h(assessmentColumnLeft, [
+            h(assessmentObjectText, [
+              h(assessmentLabelBody, 'Assessee'),
+              h(assessmentTextBody, isAssessee ? 'You' : assessment.assessee)
             ]),
-            h(assessmentContainerDate, [
-              h(assessmentLabelBody, assessment.stage === Stage.Done ? 'Completed on: ' : 'Due Date:'),
-              h(assessmentTextBody, convertDate(assessment.checkpoint))
-            ])
-          ]),
-
-          // basic info
-          h(assessmentContainerBody, [
-            h(assessmentColumnLeft, [
-              h(assessmentObjectText, [
-                h(assessmentLabelBody, 'Assessee'),
-                h(assessmentTextBody, isAssessee ? 'You' : assessment.assessee)
-              ]),
-              h(assessmentObjectText, [
-                h(assessmentLabelBody, 'Fee'),
-                h(assessmentTextBody, assessment.cost + ' AHA')
-              ]),
-              h(assessmentObjectText, [
-                h(assessmentLabelBody, 'Meeting Point'),
-                h(assessmentTextBody, assessment.data || isAssessee ? 'You haven\'t set a meeting point' : 'No meeting point has been set yet'),
-                h(assessmentRow, [
-                  h(fathomButtonPrimary, {href: assessment.data, disabled: assessment.data === ''}, 'View'),
-                  assessment.assessee === this.props.userAddress
-                    ? h(MeetingPointEditBox, {
-                      assessee: assessment.assessee,
-                      address: assessment.address
-                    })
-                    : null
-                ])
-              ])
+            h(assessmentObjectText, [
+              h(assessmentLabelBody, 'Fee'),
+              h(assessmentTextBody, assessment.cost + ' AHA')
             ]),
-            h(assessmentColumnRight, [
-              h(assessmentObjectTextRight, [
-                h(assessmentLabelBody, 'Assessors'),
-                h(assessmentObjectText, [
-                  h(AssessorList, {
-                    assessors: assessment.assessors,
-                    userAddress: this.props.userAddress
+            h(assessmentObjectText, [
+              h(assessmentLabelBody, 'Meeting Point'),
+              h(assessmentTextBody, assessment.data || isAssessee ? 'You haven\'t set a meeting point' : 'No meeting point has been set yet'),
+              h(assessmentRow, [
+                h(fathomButtonPrimary, {href: assessment.data, disabled: assessment.data === ''}, 'View'),
+                assessment.assessee === this.props.userAddress
+                  ? h(MeetingPointEditBox, {
+                    assessee: assessment.assessee,
+                    address: assessment.address
                   })
-                ])
+                  : null
               ])
             ])
           ]),
-          // progress-button or FinalResultBor
-          h(assessmentFooter, [
-            assessment.stage === Stage.Done
+          h(assessmentColumnRight, [
+            h(assessmentObjectTextRight, [
+              h(assessmentLabelBody, 'Assessors'),
+              h(assessmentObjectText, [
+                h(AssessorList, {
+                  assessors: assessment.assessors,
+                  userAddress: this.props.userAddress
+                })
+              ])
+            ])
+          ])
+        ]),
+        // progress-button, FinalResultBor or FailureIndicator
+        h(assessmentFooter, [
+          // if failed
+          assessment.violation
+            ? h(FailedBar, {
+              assessment: assessment,
+              userAddress: this.props.userAddress
+            })
+            // if completed
+            : assessment.stage === Stage.Done
               ? h(FinalResultBar, {
                 address: assessment.address,
                 userAddress: this.props.userAddress,
@@ -89,11 +104,11 @@ export class AssessmentData extends Component {
                 finalScore: assessment.finalScore,
                 cost: assessment.cost
               })
+              // regular ProgressBar
               : h(ProgressAndInputBar, {address: assessment.address})
-          ])
         ])
-      )
-    }
+      ])
+    )
   }
 }
 
