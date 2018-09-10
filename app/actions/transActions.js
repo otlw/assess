@@ -42,7 +42,7 @@ export function sendAndReactToTransaction (dispatch, act, saveData, userAddress,
   act()
     .on('transactionHash', (hash) => {
       // right after the transaction is published
-      react(false, hash)
+      // react(false, hash)
       dispatch(saveTransaction(assessmentAddress, userAddress, saveData, hash))
     })
     .on('confirmation', (confirmationNumber, receipt) => {
