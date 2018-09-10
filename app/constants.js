@@ -121,4 +121,3 @@ export function helperScreens (topic) {
       return false
   }
 }
-
