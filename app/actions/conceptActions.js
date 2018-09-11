@@ -77,8 +77,7 @@ export function loadConceptContractAndCreateAssessment (address, cost, callback)
       'makeAssessment',
       userAddress,
       address,
-      callback,
-      3000000 // weirdly, this transaction will only go through with a high gas price (testnet)
+      callback
     )
   }
 }
