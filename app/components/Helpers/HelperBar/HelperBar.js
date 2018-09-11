@@ -86,6 +86,9 @@ transition: 0.2s ease-in-out;
 :hover {background-color:hsla(158, 70%, 65%, 1); cursor:pointer;}
 `
 
-export const barButtonPrimary = styled('button').attrs({className: 'flex f5 bg-transparent bn dark-green ttu underline uppercase bw1 b--dark-green cursor'})`
+export const barButtonPrimary = styled('button').attrs({className: 'flex f5 bg-transparent ph1 pv1 ml1 bn dark-green ttu uppercase bw1 b--dark-green cursor'})`
 outline: 0px;
+transition: 0.2s ease-in-out;
+:hover {cursor:pointer; background-color: hsla(158, 70%, 65%, 1);}
+
 `
