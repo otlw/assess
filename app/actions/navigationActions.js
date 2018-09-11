@@ -1,4 +1,5 @@
 import { Stage } from '../constants.js'
+import { barTopic, takeOverTopic } from '../components/Helpers/helperContent.js'
 export const SET_DASHBOARD_TAB = 'SET_DASHBOARD_TAB'
 export const SET_HELPER_TAKEOVER = 'SET_HELPER_TAKEOVER'
 export const SET_NOTIFICATION_BAR = 'SET_NOTIFICATION_BAR'
@@ -29,6 +30,7 @@ export function dispatchSetInputBar (inputType) {
 }
 
 export function setHelperTakeOver (helperTakeOver) {
+  console.log('setting takeover to', helperTakeOver)
   return {
     type: SET_HELPER_TAKEOVER,
     helperTakeOver
@@ -63,6 +65,12 @@ export function saveProgression (role, stage) {
   }
 }
 
+export function dispatchToggleHidden () {
+  return async (dispatch) => {
+    dispatch({type: TOGGLE_HIDDEN_CARDS})
+  }
+}
+
 export function resetVisits () {
   return {
     type: RESET_VISITS
@@ -77,68 +85,75 @@ export function setHelperBar (key) {
 }
 
 /*
-  function to update the helperScreens by saving the approprioate keyword to the store
+  main function to update the helperScreens by saving the approprioate keyword to the store
   either setHelperBar() for the notificationBar OR
   setHelperTakeOver() for the HelperTakeOver
+  What screen to display can be determined conditional on the keyWord, addtionaal params passed along with it,
+  the visit-history of the user and the currently active screens
   */
 export function updateHelperScreen (keyWord, params) {
   return async (dispatch, getState) => {
-    // cases when we want to show a full screen takeOver
-    if (keyWord === 'NoMetaMask') {
-      // here we could use the visit-history to be conditional, e.g.:
-      if (getState().vists.site === 0) {
-        dispatch(setHelperTakeOver('educateAboutMetaMask'))
-      } else {
-        dispatch(setHelperTakeOver('NoMetaMask'))
+    let visits = getState().navigation.visits
+    console.log('setting helperScrenn to ', keyWord)
+    switch (keyWord) {
+      case 'NoMetaMask': {
+        // here we could use the visit-history to be conditional, e.g.:
+        if (getState().vists.site === 0) {
+          dispatch(setHelperTakeOver(takeOverTopic.educateAboutMetaMask))
+        } else {
+          dispatch(setHelperTakeOver(takeOverTopic.NoMetaMask))
+        }
+        break
       }
-    } else if (keyWord === 'UnlockMetaMask') {
-      dispatch(setHelperTakeOver('UnlockMetaMask'))
-    } else {
-      // cases where we just want to show a HelperBar
-      let helperBar = getHelperBar(getState().navigation.helperBarTopic, getState().navigation.visits, keyWord, params)
-      if (helperBar && helperBar !== getState().navigation.helperBarTopic) {
-        console.log('changing helperBar to: ', helperBar)
-        dispatch(setHelperBar(helperBar))
+      case 'UnlockMetaMask':
+        dispatch(setHelperTakeOver(takeOverTopic.UnlockMetaMask))
+        break
+      case 'assessmentView': {
+        // the user visits the assessmentView-page
+        let userActionRequired = params.assessment.userStage === params.assessment.stage
+        if (visits.site < 100 && userActionRequired) {
+          // needs to do something AND
+          // is not super-duper-experienced
+          if (params.assessment.userStage === Stage.Called) dispatch(setHelperBar(barTopic.Staking))
+          if (params.assessment.userStage === Stage.Confirmed) dispatch(setHelperBar(barTopic.Committing))
+          if (params.assessment.userStage === Stage.Confirmed) dispatch(setHelperBar(barTopic.Revealing))
+        }
+        break
       }
-    }
-  }
-}
-
-// define whether a situation should set a helper Bar or not, and if so, which one.
-// TODO define more cases that return a key and their correspondant texts in constans.js
-function getHelperBar (currentScreen, visits, keyWord, params) {
-  // when visiting the assessmentView from another place / the first time on the page
-  switch (keyWord) {
-    case 'assessmentView': {
-      if (visits.site < 100) {
-        if (params.assessment.userStage === Stage.Called) return 'Staking'
-        if (params.assessment.userStage === Stage.Confirmed) return 'Committing'
-        if (params.assessment.userStage === Stage.Confirmed) return 'Revealing'
-        // TODO add more stages here
-      } else {
-        return 'none'
+      case 'AssessmentProcess':
+        dispatch(setHelperTakeOver(takeOverTopic.AssessmentProcess))
+        break
+      case 'ConfirmedStake':
+        // not sure we acutally want to have a differentBar there, this should just be an example of how
+        // we can react to the user having completed a specific action
+        dispatch(setHelperBar(barTopic.ConfirmedStake))
+        break
+      // NOTE: stacked cases mean that the same action will happen for all of them.
+      case 'ConfirmedCommit':
+      case 'ConfirmedReveal':
+      case 'StoredMeetingPoint': {
+        // for the first time
+        if (params.previousMeetingPointExisted) {
+          // dispatch(setHelperBar(barTopic.FirstTimeMeetingPointSet))
+        } else {
+          // dispatch(setHelperBar(barTopic.MeetingPointChanged))
+        }
+        break
       }
-      break
+      case 'MoreAboutStaking':
+      case 'MoreAboutCommitting':
+      case 'MoreAboutRevealing':
+        dispatch(setHelperTakeOver(takeOverTopic.assessmentProcess))
+        break
+      case 'closeTakeOver':
+        dispatch(setHelperTakeOver(''))
+        break
+      case 'closeBar':
+        dispatch(setHelperBar(''))
+        break
+      default:
+        console.log('helperKeyWord ', keyWord, ' is not processed yet.')
+        break
     }
-    case 'Staked':
-      return 'Staked'
-    case 'Committed':
-    case 'Revealed':
-      return 'none'
-      // when setting a meeting point
-    case 'StoredMeetingPoint': {
-      // for the first time
-      if (params.previousMeetingPointExisted) return 'none'
-      // or updating it
-      else return 'none'
-    }
-    default:
-      return 'none'
-  }
-}
-
-export function dispatchToggleHidden () {
-  return async (dispatch) => {
-    dispatch({type: TOGGLE_HIDDEN_CARDS})
   }
 }

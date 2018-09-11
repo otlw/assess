@@ -46,7 +46,7 @@ export function confirmAssessor (address, customReact = false) {
         ? customReact.callbck
         : () => {
           dispatch(fetchUserStage(address))
-          dispatch(updateHelperScreen('Staked'))
+          dispatch(updateHelperScreen('ConfirmedStake'))
           dispatch(saveProgression('assessor', Stage.Confirmed))
           dispatch(fetchUserBalance())
         }
