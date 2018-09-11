@@ -62,9 +62,9 @@ export function helperScreens (topic) {
     case 'Staking':
       return {
         title: 'What\'s staking?',
-        text: 'Staking is where each Assessor needs to pay a small fee to assess you. It’s done so that they have “skin in the game” and are more likely to assess you fairly.',
+        text: 'Staking is where each Assessor needs to pay a small fee to assess you, to ensure they assess you fairly.',
         followUp: {
-          linkText: 'And after that?',
+          linkText: 'Learn More',
           target: 'AfterStaking'
         }
       }
@@ -79,7 +79,7 @@ export function helperScreens (topic) {
         title: 'What\'s committing?',
         text: 'This is were you rate the assessee. Give him 100 points if you think he is smüs.',
         followUp: {
-          linkText: 'What the hell is "smüs"?',
+          linkText: 'Learn More',
           target: 'smues'
         }
       }
@@ -88,7 +88,7 @@ export function helperScreens (topic) {
         title: 'You\'re a curious person. Cool!',
         text: 'That\'s best explained by an example. Take this totally smüs sentence: "Is it smüs how saying sentences backwards creates backwards sentences saying how smüs it is? \n',
         followUp: {
-          linkText: 'Oh, I see. totally smüs indeed...',
+          linkText: 'Learn More',
           target: false
         }
       }
