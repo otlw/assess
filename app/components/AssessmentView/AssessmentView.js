@@ -61,9 +61,13 @@ export class AssessmentData extends Component {
             ]),
             h(assessmentObjectText, [
               h(assessmentLabelBody, 'Meeting Point'),
-              h(assessmentTextBody, assessment.data || isAssessee ? 'You haven\'t set a meeting point' : 'No meeting point has been set yet'),
+              h(assessmentTextBody, [
+                assessment.data
+                  ? h('a', {href: assessment.data}, assessment.data)
+                  : isAssessee
+                    ? 'You haven\'t set a meeting point'
+                    : 'No meeting point has been set yet']),
               h(assessmentRow, [
-                h(fathomButtonPrimary, {href: assessment.data, disabled: assessment.data === ''}, 'View'),
                 assessment.assessee === this.props.userAddress
                   ? h(MeetingPointEditBox, {
                     assessee: assessment.assessee,
@@ -162,9 +166,6 @@ const assessmentColumnRight = styled('div').attrs({className: 'flex flex-column 
 `
 
 const assessmentRow = styled('div').attrs({className: 'flex flex-row w-100 mw5 justify-between mt3 '})`
-`
-
-const fathomButtonPrimary = styled('button').attrs({className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'})`
 `
 
 const assessmentFooter = styled('div').attrs({className: 'relative flex flex-row w-100'})`
