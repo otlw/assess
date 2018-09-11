@@ -54,13 +54,14 @@ export class AssessmentCreation extends Component {
       (err, receipt) => {
         if (err) {
           console.log(err)
-          this.props.updateHelperScreen('assessmentCreation', {assessmentId: assessmentAddress, success: false, error: err})
+          // this.props.updateHelperScreen('assessmentCreation', {assessmentId: assessmentAddress, success: false, error: err})
+          this.props.setNotificationBar({display: true, type: 'error'})
           this.props.cancelCreation()
         } else if (receipt.status) {
-
           let receiptAddress = receipt.events[0].raw.topics[2]
           let assessmentAddress = '0x' + receiptAddress.substring(26, receiptAddress.length)
-          this.props.updateHelperScreen('assessmentCreation', {assessmentId: assessmentAddress, success: true})
+          this.props.setNotificationBar({display: true, type: 'success', assessmentId: assessmentAddress})
+          // this.props.updateHelperScreen('assessmentCreation', {assessmentId: assessmentAddress, success: true})
           this.props.cancelCreation()
         } else {
           this.setState({step: 4})

@@ -3,6 +3,8 @@ import { Component } from 'react'
 import { takeOverTopic } from '../helperContent.js'
 import {Link} from 'react-router-dom'
 
+// TODO HOW can we make this component dissappear? when the user clicks on somthing from the navbar?
+// idea: if this is styled to be transparent, the user see's that stuff changes and that he has to click to close it.
 export class HelperTakeOver extends Component {
   closeScreen () {
     this.props.updateHelperScreen('closeTakeOver')
