@@ -45,13 +45,13 @@ export const HelperTakeOver = (props) => {
 
 export default HelperTakeOver
 
-export const appContainerObscurer = styled('div').attrs({className: 'absolute flex items-center justify-center pa4'})`
-background-color: hsla(0%, 0%, 0%, 0.9);`
+export const appContainerObscurer = styled('div').attrs({className: 'absolute flex w-100 h-100 items-center justify-center pa4 z-999'})`
+background-color: hsla(0, 0%, 10%, 0.8);`
 
 export const modalContainer = styled('div').attrs({className: 'relative flex flex-column w-100 mw6 pa  br1 shadow-4 bg-near-white'})`
 `
 
-export const modalHeader = styled('div').attrs({className: 'flex flex-column items-center justify-center pa3 bb b--light-gray bg-light-yellow'})`
+export const modalHeader = styled('div').attrs({className: 'flex flex-column items-center justify-center pa3 bb b--light-gray'})`
 `
 
 export const modalTextTitle = styled('h4').attrs({className: 'f4 dark-gray tc'})``
