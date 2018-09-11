@@ -37,7 +37,7 @@ export class ConceptBoard extends Component {
           loadConceptContractAndCreateAssessment: this.props.loadConceptContractAndCreateAssessment,
           estimateGasCost: this.props.estimateAssessmentCreationGasCost,
           cancelCreation: this.cancelCreation.bind(this),
-          setNotificationBar: this.props.setNotificationBar
+          updateHelperScreen: this.props.updateHelperScreen
         })
       }
 

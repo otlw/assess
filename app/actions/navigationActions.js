@@ -111,17 +111,23 @@ export function updateHelperScreen (keyWord, params) {
       case 'assessmentView': {
         // the user visits the assessmentView-page
         let userActionRequired = params.assessment.userStage === params.assessment.stage
-        if (visits.site < 100 && userActionRequired) {
-          // needs to do something AND
-          // is not super-duper-experienced
-          if (params.assessment.userStage === Stage.Called) dispatch(setHelperBar(barTopic.Staking))
-          if (params.assessment.userStage === Stage.Confirmed) dispatch(setHelperBar(barTopic.Committing))
-          if (params.assessment.userStage === Stage.Confirmed) dispatch(setHelperBar(barTopic.Revealing))
+        if (visits.site < 400) {
+          if (userActionRequired) {
+            // needs to do something AND
+            // is not super-duper-experienced
+            if (params.assessment.userStage === Stage.Called) dispatch(setHelperBar(barTopic.Staking))
+            if (params.assessment.userStage === Stage.Confirmed) dispatch(setHelperBar(barTopic.Committing))
+            if (params.assessment.userStage === Stage.Confirmed) dispatch(setHelperBar(barTopic.Revealing))
+          } else if (params.assessment.assessee === getState().ethereum.userAddress) {
+            // display something to inform the user
+            console.log('some helperScreen could be shown to inform the user (=assessee)')
+          }
         }
         break
       }
       case 'AssessmentProcess':
-        dispatch(setHelperTakeOver(takeOverTopic.AssessmentProcess))
+        dispatch(setHelperTakeOver({aha: takeOverTopic.AssessmentProcess}))
+        // dispatch(setHelperTakeOver(takeOverTopic.AssessmentProcess))
         break
       case 'ConfirmedStake':
         // not sure we acutally want to have a differentBar there, this should just be an example of how
@@ -143,13 +149,19 @@ export function updateHelperScreen (keyWord, params) {
       case 'MoreAboutStaking':
       case 'MoreAboutCommitting':
       case 'MoreAboutRevealing':
-        dispatch(setHelperTakeOver(takeOverTopic.assessmentProcess))
+      // dispatch(setHelperTakeOver({topic: takeOverTopic.AssessmentProcess))
+        console.log('seetin og')
+        dispatch(setHelperTakeOver({aha: takeOverTopic.AssessmentProcess}))
         break
       case 'closeTakeOver':
         dispatch(setHelperTakeOver(''))
         break
       case 'closeBar':
         dispatch(setHelperBar(''))
+        break
+      case 'assessmentCreation':
+        console.log('assessmentCreated')
+        dispatch(setHelperTakeOver({topic: takeOverTopic.AssessmentCreation, params: params}))
         break
       default:
         console.log('helperKeyWord ', keyWord, ' is not processed yet.')
