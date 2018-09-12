@@ -5,7 +5,7 @@ var h = require('react-hyperscript')
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    assessment: state.assessments[ownProps.address]
+    assessment: state.assessments[ownProps.assessmentAddress]
   }
 }
 
@@ -14,9 +14,9 @@ const mapDispatchToProps = {
 }
 
 export const AssessmentLoader = (props) => {
-  let address = props.address
-  if (!props.assessment) props.validateAndFetchAssessmentData(address)
-  return h(props.child, extend(props, {address}))
+  let assessmentAddress = props.assessmentAddress
+  if (!props.assessment) props.validateAndFetchAssessmentData(assessmentAddress)
+  return h(props.child, extend(props, {assessmentAddress}))
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AssessmentLoader)
