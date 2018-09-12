@@ -22,7 +22,7 @@ assessmentAddress : {
   finalScore: [-127, 127],
   userStage: 0,
   data: {
-     address: dataString,
+     assessmentAddress: dataString,
      ...
   },
   payout: 20,
@@ -34,34 +34,34 @@ assessmentAddress : {
 function assessments (state = initialState, action) {
   switch (action.type) {
     case RECEIVE_ASSESSMENT: {
-      let address = action.assessment.address
-      return extend(state, {[address]: extend(state[address], action.assessment)})
+      let assessmentAddress = action.assessment.assessmentAddress
+      return extend(state, {[assessmentAddress]: extend(state[assessmentAddress], action.assessment)})
     }
     case REMOVE_ASSESSMENT: {
       let newStage = {...state}
-      delete newStage[action.address]
+      delete newStage[action.assessmentAddress]
       return newStage
     }
     case RECEIVE_ASSESSOR: {
-      let address = action.address
-      let assessment = state[address] || {assessors: []}
+      let assessmentAddress = action.assessmentAddress
+      let assessment = state[assessmentAddress] || {assessors: []}
       let newAssessors = assessment.assessors.slice(0)
       newAssessors.push(action.assessor)
       return {
         ...state,
-        [address]: extend(assessment, {assessors: newAssessors})
+        [assessmentAddress]: extend(assessment, {assessors: newAssessors})
       }
     }
     case UPDATE_ASSESSMENT_VARIABLE: {
       return {
         ...state,
-        [action.address]: extend(state[action.address], {[action.name]: action.value})
+        [action.assessmentAddress]: extend(state[action.assessmentAddress], {[action.name]: action.value})
       }
     }
     case SET_ASSESSMENT_AS_INVALID: {
       return {
         ...state,
-        [action.address]: {'invalid': true}
+        [action.assessmentAddress]: {'invalid': true}
       }
     }
     case RECEIVE_PERSISTED_STATE: {
