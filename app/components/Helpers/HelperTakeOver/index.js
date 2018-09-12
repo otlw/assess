@@ -1,9 +1,12 @@
 import { connect } from 'react-redux'
 import HelperTakeOver from './HelperTakeOver.js'
 import { updateHelperScreen } from '../../../actions/navigationActions.js'
+import { helperText } from '../helperContent.js'
 
 const mapStateToProps = state => {
-  return {}
+  return {
+    topic: helperText(state.navigation.helperTakeOver)
+  }
 }
 
 const mapDispatchToProps = {

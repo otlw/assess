@@ -126,8 +126,7 @@ export function updateHelperScreen (keyWord, params) {
         break
       }
       case 'AssessmentProcess':
-        dispatch(setHelperTakeOver({aha: takeOverTopic.AssessmentProcess}))
-        // dispatch(setHelperTakeOver(takeOverTopic.AssessmentProcess))
+        dispatch(setHelperTakeOver(takeOverTopic.AssessmentProcess))
         break
       case 'ConfirmedStake':
         // not sure we acutally want to have a differentBar there, this should just be an example of how
@@ -149,9 +148,7 @@ export function updateHelperScreen (keyWord, params) {
       case 'MoreAboutStaking':
       case 'MoreAboutCommitting':
       case 'MoreAboutRevealing':
-      // dispatch(setHelperTakeOver({topic: takeOverTopic.AssessmentProcess))
-        console.log('seetin og')
-        dispatch(setHelperTakeOver({aha: takeOverTopic.AssessmentProcess}))
+        dispatch(setHelperTakeOver({topic: takeOverTopic.AssessmentProcess}))
         break
       case 'closeTakeOver':
         dispatch(setHelperTakeOver(''))

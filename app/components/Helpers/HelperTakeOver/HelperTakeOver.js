@@ -1,4 +1,5 @@
 import h from 'react-hyperscript'
+import styled from 'styled-components'
 import { Component } from 'react'
 import { takeOverTopic } from '../helperContent.js'
 import {Link} from 'react-router-dom'
@@ -10,46 +11,147 @@ export class HelperTakeOver extends Component {
     this.props.updateHelperScreen('closeTakeOver')
   }
 
+  nextScreen () {
+    this.props.updateHelperScreen('closeTakeOver')
+    if (this.props.topic.followUp.target) {
+      this.props.updateHelperScreen(this.props.topic.followUp.target)
+    }
+  }
+
   render () {
-    let topic = typeof this.props.topic === 'object' ? this.props.topic.topic : this.props.topic
-    switch (topic) {
-      case takeOverTopic.UnlockMetaMask:
-        return h('p', 'You need to unlock Metamask by entering your password.\n')
-
-      case takeOverTopic.NoMetaMask:
-        return h('p', "You don't have the MetaMask browser extension that allows to use this app.\n Please Download it to use the features of this interface")
-
-      case takeOverTopic.educateAboutMetaMask:
-        return h('p', 'There is this cool thing called Metamask, we need so you can be safe and foxxy.')
-
-      case takeOverTopic.UndeployedNetwork:
-        return h('p', "You are connected to a network on which you haven't deployed contracts. Please use an appropriate script")
-
-      case takeOverTopic.AssessmentProcess:
-        return h('div', 'Here are some cool graphs and texts that show you how an assessment works')
-
+    console.log('rendering', this.props.topic)
+    // let topic = typeof this.props.topic === 'object' ? this.props.topic.topic : this.props.topic
+    // let link = null
+    /*
       case takeOverTopic.AssessmentCreation:
         if (this.props.topic.params.success) {
-          console.log('topic', this.props)
-          return (
-            h('div', [
-              h('span', 'Success! Your assessment has been created. Click '),
-              h(Link, {
-                to: '/assessment/' + this.props.topic.params.assessmentId,
-                onClick: this.closeScreen.bind(this)
-              }, 'here'),
-              h('span', ' to view the assessment details.')
-            ])
-          )
+          text = 'Success! Your assessment has been created. Click this link to view the details: '
+          link = h(Link, {
+            to: '/assessment/' + this.props.topic.params.assessmentId,
+            onClick: this.closeScreen.bind(this)
+          }, 'here')
         } else {
           console.log('failed due to ', this.props.topic.error)
-          return h('div', 'assesmsnet creation failed!')
+          text = 'assessment Creation failed! See F12 for details.' // TODO deal with this!
         }
-
+        break
       default:
-        return h('div', 'OOOpsi, this topic has not been defined yet...')
+        text = 'OOOpsi, this topic has not been defined yet...'
     }
+    */
+    let link = linkButton(this.props.topic, this.closeScreen.bind(this))
+    return (
+      h(appContainerObscurer, [
+        h(modalContainer, [
+          h(modalHeader, [
+            h(modalTextTitle, this.props.topic.title),
+            h(modalHeaderObjectCircle),
+            h(modalHeaderObjectTri),
+            h(modalHeaderObjectTriLarger),
+            h(modalHeaderObjectSquare)
+          ]),
+          h(modalBody, [
+            h(modalTextBody, this.props.topic.text),
+            link
+          ]),
+          h(modalFooter, [
+            h(modalButtonSecondary, {onClick: this.closeScreen.bind(this)}, 'Close'),
+            this.props.topic.followUp.target
+              ? h(modalButtonPrimary, {onClick: this.nextScreen.bind(this)}, 'Learn More')
+              : null
+          ])
+        ])
+      ])
+    )
   }
 }
 
+function linkButton (topic, closeFunction) {
+  if (topic.title === 'AssessmentCreation') {
+    if (topic.params.success) {
+      return h(Link, {
+        to: '/assessment/' + topic.params.assessmentId,
+        onClick: closeFunction
+      }, 'Go')
+    } else {
+      console.log('creation failed due to ', topic.params.error)
+    }
+  }
+  return null
+}
+
 export default HelperTakeOver
+
+export const appContainerObscurer = styled('div').attrs({className: 'absolute flex w-100 h-100 items-center justify-center pa4 z-999'})`
+top:0px;
+background-color: hsla(0, 0%, 10%, 0.8);
+`
+
+export const modalContainer = styled('div').attrs({className: 'relative flex flex-column w-100 mw6 pa br1 shadow-5 bg-near-white'})`
+`
+
+export const modalHeader = styled('div').attrs({className: 'relative flex flex-column items-center justify-center pa3 br1 bb b--light-gray'})`
+min-height: 240px;
+background: linear-gradient(144.78deg,hsla(246,58%,52%,0.7) 0%,hsla(246, 30%, 87%, 1) 100%);
+`
+
+export const modalHeaderObjectCircle = styled('div').attrs({className: 'absolute flex w1 h1 br-100 z-9'})`
+top: 24px;
+left: 20px;
+background: hsla(245, 61%, 57%,0.25);
+transform: skew(32deg, -12deg);
+`
+
+export const modalHeaderObjectSquare = styled('div').attrs({className: 'absolute flex w2 h2 z-9 o-30'})`
+top: 40px;
+right: 80px;
+background: hsla(245, 61%, 57%,0.25);
+transform: skew(59deg,-28deg);
+`
+
+export const modalHeaderObjectTri = styled('div').attrs({className: 'absolute o-50'})`
+width: 0;
+height: 0;
+border-left: 16px solid transparent;
+border-right: 16px solid transparent;
+border-bottom: 16px solid hsla(245, 61%, 57%,0.25);
+right: 96px;
+bottom:24px;
+transform:rotate(24deg);
+filter:blur(1px);
+`
+
+export const modalHeaderObjectTriLarger = styled('div').attrs({className: 'absolute o-50'})`
+width: 0;
+height: 0;
+border-left: 24px solid transparent;
+border-right: 24px solid transparent;
+border-bottom: 24px solid hsla(245, 61%, 57%,0.25);
+left: 80px;
+bottom:24px;
+transform:rotate(147deg);
+filter:blur(1px);
+`
+
+export const modalTextTitle = styled('h4').attrs({className: 'f3 dark-gray tc'})`
+`
+
+export const modalBody = styled('div').attrs({className: 'flex flex-column items-center justify-center pa3 b--gray ph5'})`
+min-height:120px;
+`
+
+export const modalTextBody = styled('p').attrs({className: 'f4 gray tl lh-copy'})``
+
+export const modalFooter = styled('div').attrs({className: 'flex flex-row items-center justify-around pa4-ns pa2'})``
+
+export const modalButtonPrimary = styled('button').attrs({className: 'flex ph4 pv2 fw4 f5 mh2 shadow-4 items-center align-center br-pill bg-green near-white ttu uppercase'})`
+background-color: #116187;
+:hover {cursor:pointer;}
+`
+
+const modalButtonSecondary = styled('div').attrs({
+  className: 'flex ph4 pv2 fw4 f5 mh2 items-center align-center br-pill dark-gray'
+})`box-shadow: 0px 0px 0px 1px hsla(214, 100%, 31%, 0.1);
+transition: 0.2s ease-in-out;
+:hover {cursor:pointer; background: #ccc; color: #444;}
+`
