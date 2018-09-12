@@ -50,7 +50,7 @@ function linkButtons (assessment, isAssessee, setCardVisibility) {
       return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/'}, 'Refunded')]
     } else {
       // not refunded yet -> provide link
-      return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/assessment/' + assessment.address}, 'Get refunded')]
+      return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/assessment/' + assessment.assessmentAddress}, 'Get refunded')]
     }
   } else {
     // NOTE this section could be refactored to be smaller, as the only thing that varies is the text of the button. But i am keeping this
@@ -59,18 +59,18 @@ function linkButtons (assessment, isAssessee, setCardVisibility) {
     // is the user done (for the respective stage?)
     let buttonList = [
       h(cardButtonSecondary, {
-        onClick: () => setCardVisibility(assessment.address, !assessment.hidden)
+        onClick: () => setCardVisibility(assessment.assessmentAddress, !assessment.hidden)
       }, assessment.hidden ? 'Unhide' : 'Hide')
     ]
     if (assessment.stage < Stage.Done && assessment.userStage === assessment.stage) {
       buttonList.push(
         h(cardButtonPrimary,
-          {to: '/assessment/' + assessment.address},
+          {to: '/assessment/' + assessment.assessmentAddress},
           assessment.userStage === Stage.None ? 'View' : StageDisplayNames[assessment.stage]))
     } else {
       buttonList.push(
         h(cardButtonPrimary,
-          {to: '/assessment/' + assessment.address},
+          {to: '/assessment/' + assessment.assessmentAddress},
           assessment.userStage === Stage.None ? 'View' : CompletedStages[assessment.stage]))
     }
     return buttonList
