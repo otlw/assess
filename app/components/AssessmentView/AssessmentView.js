@@ -67,7 +67,7 @@ export class AssessmentData extends Component {
                 assessment.assessee === this.props.userAddress
                   ? h(MeetingPointEditBox, {
                     assessee: assessment.assessee,
-                    address: assessment.address
+                    assessmentAddress: assessment.assessmentAddress
                   })
                   : null
               ])
@@ -96,7 +96,7 @@ export class AssessmentData extends Component {
             // if completed
             : assessment.stage === Stage.Done
               ? h(FinalResultBar, {
-                address: assessment.address,
+                assessmentAddress: assessment.assessmentAddress,
                 userAddress: this.props.userAddress,
                 userStage: assessment.userStage,
                 assessee: assessment.assessee,
@@ -105,7 +105,7 @@ export class AssessmentData extends Component {
                 cost: assessment.cost
               })
               // regular ProgressBar
-              : h(ProgressAndInputBar, {address: assessment.address})
+              : h(ProgressAndInputBar, {assessmentAddress: assessment.assessmentAddress})
         ])
       ])
     )
