@@ -13,7 +13,7 @@ export class HelperTakeOver extends Component {
 
   nextScreen () {
     this.props.updateHelperScreen('closeTakeOver')
-    if (this.props.topic.followUp.target) {
+    if (this.props.topic.followUp) {
       this.props.updateHelperScreen(this.props.topic.followUp.target)
     }
   }
@@ -56,7 +56,7 @@ export class HelperTakeOver extends Component {
           ]),
           h(modalFooter, [
             h(modalButtonSecondary, {onClick: this.closeScreen.bind(this)}, 'Close'),
-            this.props.topic.followUp.target
+            this.props.topic.followUp
               ? h(modalButtonPrimary, {onClick: this.nextScreen.bind(this)}, 'Learn More')
               : null
           ])

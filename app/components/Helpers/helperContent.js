@@ -55,10 +55,7 @@ export function helperText (_topic) {
     case barTopic.Smues:
       return {
         title: 'You\'re a curious person. Cool!',
-        text: 'That\'s best explained by an example. Take this totally smüs sentence: "Is it smüs how saying sentences backwards creates backwards sentences saying how smüs it is? \n',
-        followUp: {
-          target: false
-        }
+        text: 'That\'s best explained by an example. Take this totally smüs sentence: "Is it smüs how saying sentences backwards creates backwards sentences saying how smüs it is? \n'
       }
     case takeOverTopic.UnlockMetaMask:
       return {
@@ -71,43 +68,28 @@ export function helperText (_topic) {
     case takeOverTopic.NoMetaMask:
       return {
         title: topic,
-        text: "You don't have the MetaMask browser extension that allows to use this app.\n Please Download it to use the features of this interface",
-        followUp: {
-          target: false
-        }
+        text: "You don't have the MetaMask browser extension that allows to use this app.\n Please Download it to use the features of this interface"
       }
     case takeOverTopic.educateAboutMetaMask:
       return {
         title: topic,
         text: 'There is this cool thing called Metamask, we need so you can be safe and foxxy.',
-        followUp: {
-          target: false
-        }
       }
     case takeOverTopic.UndeployedNetwork:
       return {
         title: topic,
         text: "You're connected to a network on which you haven't deployed contracts. Please use an appropriate script.",
-        followUp: {
-          target: false
-        }
       }
     case takeOverTopic.AssessmentProcess:
       return {
         title: topic,
         text: 'Here are some cool graphs and texts that show you how an assessment works',
-        followUp: {
-          target: false
-        }
       }
     case takeOverTopic.AssessmentCreation:
       return {
         title: topic,
         text: _topic.params.success ? 'Success! Your assessment has been created. Click this link to view the details: ' : 'Ohooo!',
-        params: _topic.params,
-        followUp: {
-          target: false
-        }
+        params: _topic.params
       }
 
     default:

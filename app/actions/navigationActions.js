@@ -95,6 +95,7 @@ export function updateHelperScreen (keyWord, params) {
   return async (dispatch, getState) => {
     let visits = getState().navigation.visits
     console.log('setting helperScrenn to ', keyWord)
+    // TODO these keywords should be constants or imported from somewhere
     switch (keyWord) {
       case 'NoMetaMask': {
         // here we could use the visit-history to be conditional, e.g.:
@@ -125,6 +126,10 @@ export function updateHelperScreen (keyWord, params) {
         }
         break
       }
+      // when the user
+      case barTopic.Staking:
+      case barTopic.Committing:
+      case barTopic.Revealing:
       case 'AssessmentProcess':
         dispatch(setHelperTakeOver(takeOverTopic.AssessmentProcess))
         break
@@ -156,7 +161,7 @@ export function updateHelperScreen (keyWord, params) {
       case 'closeBar':
         dispatch(setHelperBar(''))
         break
-      case 'assessmentCreation':
+      case 'AssessmentCreation':
         console.log('assessmentCreated')
         dispatch(setHelperTakeOver({topic: takeOverTopic.AssessmentCreation, params: params}))
         break
