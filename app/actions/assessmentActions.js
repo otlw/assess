@@ -26,10 +26,10 @@ export function hashScoreAndSalt (_score, _salt) {
 
 // ============== async actions ===================
 
-export function confirmAssessor (address, customReact = false) {
+export function confirmAssessor (assessmentAddress, customReact = false) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
-    let assessmentInstance = getInstance.assessment(getState(), address)
+    let assessmentInstance = getInstance.assessment(getState(), assessmentAddress)
     // TODO figure out how high this needs to be so fucking high for refund to work
     let params = {from: userAddress}
     if (customReact && customReact.gas) {
@@ -40,16 +40,16 @@ export function confirmAssessor (address, customReact = false) {
       () => { return assessmentInstance.methods.confirmAssessor().send(params) },
       customReact ? customReact.saveKeyword : Stage.Called,
       userAddress,
-      address,
-      customReact ? customReact.callbck : () => { dispatch(fetchUserStage(address)) }
+      assessmentAddress,
+      customReact ? customReact.callbck : () => { dispatch(fetchUserStage(assessmentAddress)) }
     )
   }
 }
 
-export function commit (address, score, salt, customReact = false) {
+export function commit (assessmentAddress, score, salt, customReact = false) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
-    let assessmentInstance = getInstance.assessment(getState(), address)
+    let assessmentInstance = getInstance.assessment(getState(), assessmentAddress)
     // TODO figure out how high this needs to be so fucking high for refund to work
     let params = {from: userAddress}
     if (customReact && customReact.gas) {
@@ -60,16 +60,16 @@ export function commit (address, score, salt, customReact = false) {
       () => { return assessmentInstance.methods.commit(hashScoreAndSalt(score, salt)).send(params) },
       customReact ? customReact.saveKeyword : Stage.Confirmed,
       userAddress,
-      address,
-      customReact ? customReact.callbck : () => { dispatch(fetchUserStage(address)) }
+      assessmentAddress,
+      customReact ? customReact.callbck : () => { dispatch(fetchUserStage(assessmentAddress)) }
     )
   }
 }
 
-export function reveal (address, score, salt, customReact = false) {
+export function reveal (assessmentAddress, score, salt, customReact = false) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
-    let assessmentInstance = getInstance.assessment(getState(), address)
+    let assessmentInstance = getInstance.assessment(getState(), assessmentAddress)
     let params = {from: userAddress}
     if (customReact && customReact.gas) {
       params.gas = customReact.gas
@@ -79,16 +79,16 @@ export function reveal (address, score, salt, customReact = false) {
       () => { return assessmentInstance.methods.reveal(score, salt).send(params) },
       customReact ? customReact.saveKeyword : Stage.Committed,
       userAddress,
-      address,
-      customReact ? customReact.callbck : () => { dispatch(fetchUserStage(address)) }
+      assessmentAddress,
+      customReact ? customReact.callbck : () => { dispatch(fetchUserStage(assessmentAddress)) }
     )
   }
 }
 
-export function storeDataOnAssessment (address, data) {
+export function storeDataOnAssessment (assessmentAddress, data) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
-    let assessmentInstance = getInstance.assessment(getState(), address)
+    let assessmentInstance = getInstance.assessment(getState(), assessmentAddress)
     // also salt should be saved in state
     let dataAsBytes = getState().ethereum.web3.utils.utf8ToHex(data)
     sendAndReactToTransaction(
@@ -96,20 +96,20 @@ export function storeDataOnAssessment (address, data) {
       () => { return assessmentInstance.methods.addData(dataAsBytes).send({from: userAddress}) },
       'meetingPointChange',
       userAddress,
-      address,
-      () => { dispatch(fetchStoredData(address)) }
+      assessmentAddress,
+      () => { dispatch(fetchStoredData(assessmentAddress)) }
     )
   }
 }
 
 // refunds the user & cancels the assessment by calling the stage-specific action
 // then updates the userStage & marks the assessment as refunded
-export function refund (address, stage) {
+export function refund (assessmentAddress, stage) {
   return async (dispatch, getState) => {
     const reactToRefund = (err) => {
       if (!err) {
-        dispatch(updateAssessmentVariable(address, 'refunded', true))
-        dispatch(fetchUserBalance(address))
+        dispatch(updateAssessmentVariable(assessmentAddress, 'refunded', true))
+        dispatch(fetchUserBalance(assessmentAddress))
       } else {
         console.log('error while refunding', err)
       }
@@ -121,13 +121,13 @@ export function refund (address, stage) {
     }
     switch (stage) {
       case Stage.Called:
-        dispatch(confirmAssessor(address, react))
+        dispatch(confirmAssessor(assessmentAddress, react))
         break
       case Stage.Confirmed:
-        dispatch(commit(address, 10, 'hihi', true))
+        dispatch(commit(assessmentAddress, 10, 'hihi', true))
         break
       case Stage.Committed:
-        dispatch(reveal(address, 10, 'hihi', true))
+        dispatch(reveal(assessmentAddress, 10, 'hihi', true))
         break
       default:
         console.log('something went wrong with the refunding!!!')
@@ -186,13 +186,13 @@ export function fetchLatestAssessments () {
       }
 
       // and fetch the data for them by reconstruction from events
-      destructedAssessments.forEach((address) => {
-        dispatch(reconstructAssessment(address, pastNotifications.filter(x => x.returnValues.sender === address)))
+      destructedAssessments.forEach((assessmentAddress) => {
+        dispatch(reconstructAssessment(assessmentAddress, pastNotifications.filter(x => x.returnValues.sender === assessmentAddress)))
       })
 
       // fetch data for assessments
-      assessmentAddresses.forEach((address) => {
-        dispatch(fetchAssessmentData(address))
+      assessmentAddresses.forEach((assessmentAddress) => {
+        dispatch(fetchAssessmentData(assessmentAddress))
       })
       dispatch(receiveVariable('lastUpdatedAt', lastUpdatedAt))
       dispatch(endLoadingAssessments())
@@ -207,7 +207,7 @@ export function fetchLatestAssessments () {
   - assessee
   - concept (TODO)
   */
-export function reconstructAssessment (address, pastNotifications) {
+export function reconstructAssessment (assessmentAddress, pastNotifications) {
   return async (dispatch, getState) => {
     // let's not rely on events to be chronologically ordered
     const updateStage = (newStage, value) => { return newStage >= value ? newStage : value }
@@ -251,7 +251,7 @@ export function reconstructAssessment (address, pastNotifications) {
       }
     }
     let reconstructedAssessment = {
-      address,
+      assessmentAddress,
       stage,
       userStage,
       violation,
@@ -270,24 +270,24 @@ export function reconstructAssessment (address, pastNotifications) {
   concept which also knows about the assessment, and if so
   calls fetchAssessmentData()
 */
-export function validateAndFetchAssessmentData (address) {
+export function validateAndFetchAssessmentData (assessmentAddress) {
   return async (dispatch, getState) => {
     try {
       console.log('in')
-      let assessmentInstance = getInstance.assessment(getState(), address)
+      let assessmentInstance = getInstance.assessment(getState(), assessmentAddress)
       // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
       let conceptAddress = await assessmentInstance.methods.concept().call()
       let conceptRegistryInstance = getInstance.conceptRegistry(getState())
       let isValidConcept = await conceptRegistryInstance.methods.conceptExists(conceptAddress).call()
       // check if assessment is from concept
       let conceptInstance = getInstance.concept(getState(), conceptAddress)
-      let isValidAssessment = await conceptInstance.methods.assessmentExists(address).call()
+      let isValidAssessment = await conceptInstance.methods.assessmentExists(assessmentAddress).call()
       // if concept is from Registry and assessment is from concept,
       // go ahead and fetch data, otherwise, add an invalid assessment object
       if (isValidConcept && isValidAssessment) {
-        dispatch(fetchAssessmentData(address))
+        dispatch(fetchAssessmentData(assessmentAddress))
       } else {
-        dispatch(setAssessmentAsInvalid(address))
+        dispatch(setAssessmentAsInvalid(assessmentAddress))
       }
     } catch (e) {
       // maybe the assessment was cancelled?
@@ -295,16 +295,16 @@ export function validateAndFetchAssessmentData (address) {
       let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {
         fromBlock: 0, // TODO put in deployedFathomTokenAt once it exists
         toBlock: 'latest',
-        filter: {sender: address}
+        filter: {sender: assessmentAddress}
       })
       console.log('pastNotifications', pastNotifications)
       if (pastNotifications.length !== 0) {
         console.log('existsed')
-        // dispatch(setAssessmentAsCancelled(address))
-        dispatch(reconstructAssessment(address, pastNotifications))
+        // dispatch(setAssessmentAsCancelled(assessmentAddress))
+        dispatch(reconstructAssessment(assessmentAddress, pastNotifications))
       } else {
         console.log('Error trying to validate assessment: ', e)
-        dispatch(setAssessmentAsInvalid(address))
+        dispatch(setAssessmentAsInvalid(assessmentAddress))
       }
     }
   }
@@ -315,11 +315,11 @@ export function validateAndFetchAssessmentData (address) {
  is already in state (), it only fetches what could have changed via
  updateAssessment()
  */
-export function fetchAssessmentData (address) {
+export function fetchAssessmentData (assessmentAddress) {
   return async (dispatch, getState) => {
     try {
       // get static assessment info
-      let assessmentInstance = getInstance.assessment(getState(), address)
+      let assessmentInstance = getInstance.assessment(getState(), assessmentAddress)
       let cost = hmmmToAha(await assessmentInstance.methods.cost().call())
       let endTime = await assessmentInstance.methods.endTime().call()
 
@@ -363,7 +363,7 @@ export function fetchAssessmentData (address) {
       const fathomTokenInstance = getInstance.fathomToken(getState())
       const deployedFathomTokenAt = getState().ethereum.deployedFathomTokenAt
       let pastEvents = await fathomTokenInstance.getPastEvents('Notification', {
-        filter: {sender: address, topic: 2},
+        filter: {sender: assessmentAddress, topic: 2},
         fromBlock: deployedFathomTokenAt,
         toBlock: 'latest'
       })
@@ -377,7 +377,7 @@ export function fetchAssessmentData (address) {
         // only fetch Payout if user is not assesse and payout is not already there
         if (assessors.includes(userAddress)) {
           let filter = {
-            filter: { _from: address, _to: userAddress },
+            filter: { _from: assessmentAddress, _to: userAddress },
             fromBlock: deployedFathomTokenAt,
             toBlock: 'latest'
           }
@@ -404,7 +404,7 @@ export function fetchAssessmentData (address) {
           console.log('no violation')
       }
       dispatch(receiveAssessment({
-        address,
+        assessmentAddress,
         cost,
         checkpoint,
         stage,
@@ -424,7 +424,7 @@ export function fetchAssessmentData (address) {
         hidden
       }))
     } catch (e) {
-      console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
+      console.log('reading assessment-data from the chain did not work for assessment: ', assessmentAddress, e)
     }
   }
 }
@@ -433,40 +433,40 @@ export function fetchAssessmentData (address) {
   fetches the payouts of one or all assessors of a given assessment
   @param: if given only fetch payout of that one single user
 */
-export function fetchPayout (address, user) {
+export function fetchPayout (assessmentAddress, user) {
   return async (dispatch, getState) => {
     const fathomTokenInstance = getInstance.fathomToken(getState())
     let filter = {
-      filter: { _from: address, _to: user },
+      filter: { _from: assessmentAddress, _to: user },
       fromBlock: getState().ethereum.deployedFathomTokenAt,
       toBlock: 'latest'
     }
     let pastEvents = await fathomTokenInstance.getPastEvents('Transfer', filter)
     let payout = pastEvents[0] ? pastEvents[0].returnValues['_value'] : undefined
-    if (payout) dispatch(updateAssessmentVariable(address, 'payout', payout))
+    if (payout) dispatch(updateAssessmentVariable(assessmentAddress, 'payout', payout))
   }
 }
 
-export function fetchUserStage (address) {
+export function fetchUserStage (assessmentAddress) {
   return async (dispatch, getState) => {
-    let assessmentInstance = getInstance.assessment(getState(), address)
+    let assessmentInstance = getInstance.assessment(getState(), assessmentAddress)
     let userAddress = getState().ethereum.userAddress
     let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
     let done = Number(await assessmentInstance.methods.done().call())
-    if (getState().assessments[address].done !== done) {
-      dispatch(updateAssessmentVariable(address, 'done', done))
+    if (getState().assessments[assessmentAddress].done !== done) {
+      dispatch(updateAssessmentVariable(assessmentAddress, 'done', done))
     }
-    dispatch(updateAssessmentVariable(address, 'userStage', userStage))
+    dispatch(updateAssessmentVariable(assessmentAddress, 'userStage', userStage))
   }
 }
 
-export function fetchFinalScore (address) {
+export function fetchFinalScore (assessmentAddress) {
   return async (dispatch, getState) => {
-    let assessmentInstance = getInstance.assessment(getState(), address)
+    let assessmentInstance = getInstance.assessment(getState(), assessmentAddress)
     let onChainScore = Number(await assessmentInstance.methods.finalScore().call())
     // convert score to Front End range (FE:0,100%; BE:-100,100)
     let finalScore = convertFromOnChainScoreToUIScore(onChainScore)
-    dispatch(updateAssessmentVariable(address, 'finalScore', finalScore))
+    dispatch(updateAssessmentVariable(assessmentAddress, 'finalScore', finalScore))
   }
 }
 
@@ -476,13 +476,13 @@ export function fetchFinalScore (address) {
 // for now, only the data stored by the assessee
 export function fetchStoredData (selectedAssessment) {
   return async (dispatch, getState) => {
-    let address = selectedAssessment || getState().assessments.selectedAssessment
-    let assessmentInstance = getInstance.assessment(getState(), address)
+    let assessmentAddress = selectedAssessment || getState().assessments.selectedAssessment
+    let assessmentInstance = getInstance.assessment(getState(), assessmentAddress)
     let assessee = await assessmentInstance.methods.assessee().call()
     let data = await assessmentInstance.methods.data(assessee).call()
     if (data) {
       data = getState().ethereum.web3.utils.hexToUtf8(data)
-      dispatch(updateAssessmentVariable(address, 'data', data))
+      dispatch(updateAssessmentVariable(assessmentAddress, 'data', data))
     }
   }
 }
@@ -544,16 +544,16 @@ export function processEvent (user, sender, topic, blockNumber) {
   }
 }
 
-export function setCardVisibility (address, hiddenStatus) {
+export function setCardVisibility (assessmentAddress, hiddenStatus) {
   return async (dispatch, getState) => {
-    dispatch(updateAssessmentVariable(address, 'hidden', hiddenStatus))
+    dispatch(updateAssessmentVariable(assessmentAddress, 'hidden', hiddenStatus))
   }
 }
 
-export function receiveAssessor (address, assessor) {
+export function receiveAssessor (assessmentAddress, assessor) {
   return {
     type: RECEIVE_ASSESSOR,
-    address,
+    assessmentAddress,
     assessor
   }
 }
@@ -565,19 +565,19 @@ export function receiveAssessment (assessment) {
   }
 }
 
-export function updateAssessmentVariable (address, name, value) {
+export function updateAssessmentVariable (assessmentAddress, name, value) {
   return {
     type: UPDATE_ASSESSMENT_VARIABLE,
-    address,
+    assessmentAddress,
     name,
     value
   }
 }
 
-export function removeAssessment (address) {
+export function removeAssessment (assessmentAddress) {
   return {
     type: REMOVE_ASSESSMENT,
-    address
+    assessmentAddress
   }
 }
 
@@ -593,9 +593,9 @@ export function endLoadingAssessments () {
   }
 }
 
-export function setAssessmentAsInvalid (address) {
+export function setAssessmentAsInvalid (assessmentAddress) {
   return {
     type: SET_ASSESSMENT_AS_INVALID,
-    address
+    assessmentAddress
   }
 }
