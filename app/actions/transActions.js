@@ -35,14 +35,14 @@ export function removeTransaction (txHash) {
    @dispatch is needed to send the updates to state
    @act: an object describing the transaction to be sent: {method: functionToBeCalled, args: parameters to be passed}
    @userAddress, @assessmentAddress and @saveData are used to mark the place where the transaction was triggered
-   @txConfirmationCallback: a function clojure to be called once the transaction was confirmed
+   @confirmationCallback: a function to be called once the transaction has been confirmed
 */
-export function sendAndReactToTransaction (dispatch, act, saveData, userAddress, assessmentAddress, txConfirmationCallback) {
+export function sendAndReactToTransaction (dispatch, act, saveData, userAddress, assessmentAddress, confirmationCallback) {
   // act.method(...act.args).send({from: userAddress, gas: gas || 320000})
   act()
     .on('transactionHash', (hash) => {
       // right after the transaction is published
-      // txConfirmationCallback(false, hash)
+      // confirmationCallback(false, hash)
       dispatch(saveTransaction(assessmentAddress, userAddress, saveData, hash))
     })
     .on('confirmation', (confirmationNumber, receipt) => {
@@ -54,17 +54,17 @@ export function sendAndReactToTransaction (dispatch, act, saveData, userAddress,
           receipt.status ? 'Tx confirmed' : 'Tx failed'
         ))
       }
-      if (txConfirmationCallback && confirmationNumber === 9) {
+      if (confirmationCallback && confirmationNumber === 9) {
         if (receipt.status) {
-          txConfirmationCallback(false, receipt)
+          confirmationCallback(false, receipt)
         } else {
-          txConfirmationCallback(true, receipt)
+          confirmationCallback(true, receipt)
         }
       }
     })
     .on('error', (err) => {
       // when there is an error
       console.log('err', err)
-      txConfirmationCallback(true, err)
+      confirmationCallback(true, err)
     })
 }
