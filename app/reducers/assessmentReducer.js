@@ -14,7 +14,7 @@ let initialState = {
 /*
   further assessments are stored like this:
 
-assessmentAddress : {
+address : {
   cost: 0
   size: 5,
   assessee: 0x...,
@@ -22,7 +22,7 @@ assessmentAddress : {
   finalScore: [-127, 127],
   userStage: 0,
   data: {
-     assessmentAddress: dataString,
+     address: dataString,
      ...
   },
   payout: 20,
@@ -34,16 +34,16 @@ assessmentAddress : {
 function assessments (state = initialState, action) {
   switch (action.type) {
     case RECEIVE_ASSESSMENT: {
-      let assessmentAddress = action.assessment.assessmentAddress
+      let assessmentAddress = action.assessment.address
       return extend(state, {[assessmentAddress]: extend(state[assessmentAddress], action.assessment)})
     }
     case REMOVE_ASSESSMENT: {
       let newStage = {...state}
-      delete newStage[action.assessmentAddress]
+      delete newStage[action.address]
       return newStage
     }
     case RECEIVE_ASSESSOR: {
-      let assessmentAddress = action.assessmentAddress
+      let assessmentAddress = action.address
       let assessment = state[assessmentAddress] || {assessors: []}
       let newAssessors = assessment.assessors.slice(0)
       newAssessors.push(action.assessor)
