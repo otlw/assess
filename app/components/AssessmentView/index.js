@@ -22,12 +22,7 @@ class AssessmentViewUnconnected extends Component {
   componentWillMount () {
     let address = this.props.match.params.id
     if (!this.props.assessment) {
-      this.props.validateAndFetchAssessmentData(address, (assessment) => {
-        this.props.updateHelperScreen('assessmentView', {
-          assessment: assessment,
-          userAddress: this.props.userAddress
-        })
-      })
+      this.props.validateAndFetchAssessmentData(address)
     } else {
       this.props.updateHelperScreen('assessmentView', {
         assessment: this.props.assessment,
@@ -37,6 +32,7 @@ class AssessmentViewUnconnected extends Component {
   }
 
   render () {
+    if (!this.props.assessment) return h('div', 'Loading Data...')
     return h(AssessmentView, {assessment: this.props.assessment, userAddress: this.props.userAddress})
   }
 }

@@ -299,7 +299,7 @@ export function reconstructAssessment (address, pastNotifications) {
   concept which also knows about the assessment, and if so
   calls fetchAssessmentData()
 */
-export function validateAndFetchAssessmentData (address, callback) {
+export function validateAndFetchAssessmentData (address) {
   return async (dispatch, getState) => {
     try {
       console.log('in')
@@ -314,7 +314,7 @@ export function validateAndFetchAssessmentData (address, callback) {
       // if concept is from Registry and assessment is from concept,
       // go ahead and fetch data, otherwise, add an invalid assessment object
       if (isValidConcept && isValidAssessment) {
-        dispatch(fetchAssessmentData(address, callback))
+        dispatch(fetchAssessmentData(address))
       } else {
         dispatch(setAssessmentAsInvalid(address))
       }
@@ -344,7 +344,7 @@ export function validateAndFetchAssessmentData (address, callback) {
  is already in state (), it only fetches what could have changed via
  updateAssessment()
  */
-export function fetchAssessmentData (address, callback) {
+export function fetchAssessmentData (address) {
   return async (dispatch, getState) => {
     try {
       // get static assessment info
@@ -451,7 +451,6 @@ export function fetchAssessmentData (address, callback) {
         hidden: false
       }
       dispatch(receiveAssessment(assessment))
-      if (callback) callback(assessment)
     } catch (e) {
       console.log('reading assessment-data from the chain did not work for assessment: ', address, e)
     }
