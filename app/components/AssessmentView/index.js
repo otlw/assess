@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { Component } from 'react'
-import AssessmentView from './AssessmentView.js'
+import {AssessmentView} from './AssessmentView.js'
 import {validateAndFetchAssessmentData} from '../../actions/assessmentActions'
 import { updateHelperScreen, setHelperBar } from '../../actions/navigationActions.js'
 var h = require('react-hyperscript')
@@ -19,7 +19,7 @@ const mapDispatchToProps = {
   setHelperBar
 }
 
-class AssessmentViewUnconnected extends Component {
+class AssessmentViewContainer extends Component {
   componentWillMount () {
     let address = this.props.match.params.id
     if (!this.props.assessment) {
@@ -43,4 +43,4 @@ class AssessmentViewUnconnected extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AssessmentViewUnconnected)
+export default connect(mapStateToProps, mapDispatchToProps)(AssessmentViewContainer)

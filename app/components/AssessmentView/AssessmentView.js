@@ -10,7 +10,7 @@ import { convertDate, statusMessage } from '../../utils.js'
 import styled from 'styled-components'
 var h = require('react-hyperscript')
 
-export class AssessmentData extends Component {
+export class AssessmentView extends Component {
   componentDidMount () {
     let props = this.props
     let visits = props.visits
@@ -131,8 +131,6 @@ export class AssessmentData extends Component {
     )
   }
 }
-
-export default AssessmentData
 
 const SuperFrame = styled('div').attrs({className: 'flex flex-column w-100 mw8 self-center mt3 bg-white shadow-4'})`
 font-family:'system-ui',sans-serif;
