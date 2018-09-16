@@ -96,18 +96,6 @@ export function updateHelperScreen (keyWord, params) {
     console.log('setting helperScrenn to ', keyWord)
     // TODO these keywords should be constants or imported from somewhere
     switch (keyWord) {
-      case 'NoMetaMask': {
-        // here we could use the visit-history to be conditional, e.g.:
-        if (getState().vists.site === 0) {
-          dispatch(setHelperTakeOver(takeOverTopic.educateAboutMetaMask))
-        } else {
-          dispatch(setHelperTakeOver(takeOverTopic.NoMetaMask))
-        }
-        break
-      }
-      case 'UnlockMetaMask':
-        dispatch(setHelperTakeOver(takeOverTopic.UnlockMetaMask))
-        break
       // when the user
       case barTopic.Staking:
       case barTopic.Committing:

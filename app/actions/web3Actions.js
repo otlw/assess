@@ -3,6 +3,7 @@ import { getInstance, hmmmToAha, getLocalStorageKey, getBlockDeployedAt } from '
 import { networkName, LoadingStage } from '../constants.js'
 import { processEvent } from './assessmentActions.js'
 import { setHelperTakeOver, updateHelperScreen, addVisit } from './navigationActions.js'
+import {  takeOverTopic } from '../components/Helpers/helperContent.js'
 var Dagger = require('eth-dagger')
 const { FathomToken } = require('fathom-contracts')
 
@@ -15,58 +16,59 @@ export const RECEIVE_PERSISTED_STATE = 'RECEIVE_PERSISTED_STATE'
 // actions to instantiate web3 related info
 export const connect = () => {
   return async (dispatch, getState) => {
-    // get web3 object with right provider
-    if (typeof window.web3 !== 'undefined') {
-      // set first web3 instance to do read and write calls via Metamask
-      let w3 = new Web3(window.web3.currentProvider)
-      // after web3 is instanciated, fetch networkID and user address
-      if (w3) {
-        // get networkID and THEN set isConnected
-        let networkID = await w3.eth.net.getId()
-        dispatch(receiveVariable('networkID', networkID))
-        dispatch(web3Connected(w3))
-
-        // get userAddress
-        let accounts = await w3.eth.getAccounts()
-        if (accounts.length === 0) {
-          // this is when MM is locked
-          dispatch(updateHelperScreen('UnlockMetaMask'))
-        } else {
-          dispatch(receiveVariable('userAddress', accounts[0]))
-          dispatch(fetchUserBalance())
-        }
-
-        // load persistedState for the respective network and the user
-        dispatch(loadPersistedState(networkID, accounts[0], w3))
-        dispatch(addVisit())
-        if (getState().ethereum.deployedFathomTokenAt === '') dispatch(loadFathomNetworkParams())
-
-        // set a second web3 instance to subscribe to events via websocket
-        if (networkName(networkID) === 'Kovan') {
-          dispatch(web3EventsConnected({})) // to set isConnectedVariable to true
-        } else {
-          // rinkeby or local testnet
-          let web3events = new Web3()
-          let providerAddress = networkName(networkID) === 'Rinkeby' ? 'wss://rinkeby.infura.io/ws' : 'ws://localhost:8545'
-          console.log('providerAddress ', providerAddress)
-          const eventProvider = new Web3.providers.WebsocketProvider(providerAddress)
-          eventProvider.on('error', e => console.error('WS Error', e))
-          eventProvider.on('end', e => console.error('WS End', e))
-          web3events.setProvider(eventProvider)
-          dispatch(web3EventsConnected(web3events))
-        }
-        // set up event watcher
-        dispatch(initializeEventWatcher())
-
-        // set a loop function to check userAddress or network change
-        dispatch(loopCheckAddressAndNetwork())
-      } else {
-        dispatch(web3Disconnected())
-      }
-    } else {
+    if (typeof window.web3 === 'undefined') {
       // If the user has no MetaMask extension, a different screen will be displayed instead of the App
-      dispatch(updateHelperScreen('NoMetaMask'))
-      window.alert("You don't have the MetaMask browser extension.")
+      if (getState().vists.site === 0) {
+        dispatch(setHelperTakeOver(takeOverTopic.educateAboutMetaMask))
+      } else {
+        dispatch(setHelperTakeOver(takeOverTopic.NoMetaMask))
+      }
+    }
+
+    // set first web3 instance to do read and write calls via Metamask
+    let w3 = new Web3(window.web3.currentProvider)
+    if (w3) {
+      // get networkID and THEN set isConnected
+      let networkID = await w3.eth.net.getId()
+      dispatch(receiveVariable('networkID', networkID))
+      dispatch(web3Connected(w3))
+
+      // get userAddress
+      let accounts = await w3.eth.getAccounts()
+      if (accounts.length === 0) {
+        // this is when MM is locked
+        dispatch(setHelperTakeOver(takeOverTopic.UnlockMetaMask))
+      } else {
+        dispatch(receiveVariable('userAddress', accounts[0]))
+        dispatch(fetchUserBalance())
+      }
+
+      // load persistedState for the respective network and the user
+      dispatch(loadPersistedState(networkID, accounts[0], w3))
+      dispatch(addVisit())
+      if (getState().ethereum.deployedFathomTokenAt === '') dispatch(loadFathomNetworkParams())
+
+      // set a second web3 instance to subscribe to events via websocket
+      if (networkName(networkID) === 'Kovan') {
+        dispatch(web3EventsConnected({})) // to set isConnectedVariable to true
+      } else {
+        // rinkeby or local testnet
+        let web3events = new Web3()
+        let providerAddress = networkName(networkID) === 'Rinkeby' ? 'wss://rinkeby.infura.io/ws' : 'ws://localhost:8545'
+        console.log('providerAddress ', providerAddress)
+        const eventProvider = new Web3.providers.WebsocketProvider(providerAddress)
+        eventProvider.on('error', e => console.error('WS Error', e))
+        eventProvider.on('end', e => console.error('WS End', e))
+        web3events.setProvider(eventProvider)
+        dispatch(web3EventsConnected(web3events))
+      }
+      // set up event watcher
+      dispatch(initializeEventWatcher())
+
+      // set a loop function to check userAddress or network change
+      dispatch(loopCheckAddressAndNetwork())
+    } else {
+      dispatch(web3Disconnected())
     }
   }
 }
