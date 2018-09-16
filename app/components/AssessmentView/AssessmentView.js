@@ -5,11 +5,32 @@ import ProgressAndInputBar from './ProgressAndInputBar'
 import FinalResultBar from './FinalResultBar.js'
 import FailedBar from './FailedBar'
 import { StageDisplayNames, Stage } from '../../constants.js'
+import {barTopic} from '../Helpers/helperContent.js'
 import { convertDate, statusMessage } from '../../utils.js'
 import styled from 'styled-components'
 var h = require('react-hyperscript')
 
 export class AssessmentData extends Component {
+  componentDidMount () {
+    let props = this.props
+    let visits = props.visits
+    let userActionRequired = props.assessment.userStage === props.assessment.stage
+    if (visits.site < 400 && userActionRequired) { // TODO fix this terrible heuristic
+      switch (props.assessment.userStage) {
+        case Stage.Called:
+          props.setHelperBar(barTopic.Staking)
+          break
+        case Stage.Confirmed:
+          props.setHelperBar(barTopic.Committing)
+          break
+        case Stage.Commited:
+          props.setHelperBar(barTopic.Revealing)
+          break
+        default: break
+      }
+    }
+  }
+
   render () {
     if (this.props.assessment.invalid) return h('div', 'invalid assessment address!! you may be on the wrong network')
     if (this.props.assessment.refunded && !this.props.assessment.cost) {

@@ -93,7 +93,6 @@ export function setHelperBar (key) {
   */
 export function updateHelperScreen (keyWord, params) {
   return async (dispatch, getState) => {
-    let visits = getState().navigation.visits
     console.log('setting helperScrenn to ', keyWord)
     // TODO these keywords should be constants or imported from somewhere
     switch (keyWord) {
@@ -109,23 +108,6 @@ export function updateHelperScreen (keyWord, params) {
       case 'UnlockMetaMask':
         dispatch(setHelperTakeOver(takeOverTopic.UnlockMetaMask))
         break
-      case 'assessmentView': {
-        // the user visits the assessmentView-page
-        let userActionRequired = params.assessment.userStage === params.assessment.stage
-        if (visits.site < 400) {
-          if (userActionRequired) {
-            // needs to do something AND
-            // is not super-duper-experienced
-            if (params.assessment.userStage === Stage.Called) dispatch(setHelperBar(barTopic.Staking))
-            if (params.assessment.userStage === Stage.Confirmed) dispatch(setHelperBar(barTopic.Committing))
-            if (params.assessment.userStage === Stage.Confirmed) dispatch(setHelperBar(barTopic.Revealing))
-          } else if (params.assessment.assessee === getState().ethereum.userAddress) {
-            // display something to inform the user
-            console.log('some helperScreen could be shown to inform the user (=assessee)')
-          }
-        }
-        break
-      }
       // when the user
       case barTopic.Staking:
       case barTopic.Committing:
