@@ -1,44 +1,24 @@
 import h from 'react-hyperscript'
 import styled from 'styled-components'
 import { Component } from 'react'
-import { takeOverTopic } from '../helperContent.js'
 import {Link} from 'react-router-dom'
 
 // TODO HOW can we make this component dissappear? when the user clicks on somthing from the navbar?
 // idea: if this is styled to be transparent, the user see's that stuff changes and that he has to click to close it.
 export class HelperTakeOver extends Component {
   closeScreen () {
-    this.props.updateHelperScreen('closeTakeOver')
+    this.props.setHelperScreen('')
   }
 
   nextScreen () {
-    this.props.updateHelperScreen('closeTakeOver')
+    this.closeScreen()
     if (this.props.topic.followUp) {
-      this.props.updateHelperScreen(this.props.topic.followUp.target)
+      this.props.setHelperScreen(this.props.topic.followUp.target)
     }
   }
 
   render () {
     console.log('rendering', this.props.topic)
-    // let topic = typeof this.props.topic === 'object' ? this.props.topic.topic : this.props.topic
-    // let link = null
-    /*
-      case takeOverTopic.AssessmentCreation:
-        if (this.props.topic.params.success) {
-          text = 'Success! Your assessment has been created. Click this link to view the details: '
-          link = h(Link, {
-            to: '/assessment/' + this.props.topic.params.assessmentId,
-            onClick: this.closeScreen.bind(this)
-          }, 'here')
-        } else {
-          console.log('failed due to ', this.props.topic.error)
-          text = 'assessment Creation failed! See F12 for details.' // TODO deal with this!
-        }
-        break
-      default:
-        text = 'OOOpsi, this topic has not been defined yet...'
-    }
-    */
     let link = linkButton(this.props.topic, this.closeScreen.bind(this))
     return (
       h(appContainerObscurer, [

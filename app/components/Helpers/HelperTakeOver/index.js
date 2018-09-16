@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import HelperTakeOver from './HelperTakeOver.js'
-import { updateHelperScreen } from '../../../actions/navigationActions.js'
+import { setHelperTakeover } from '../../../actions/navigationActions.js'
 import { helperText } from '../helperContent.js'
 
 const mapStateToProps = state => {
@@ -10,7 +10,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-  updateHelperScreen
+  setHelperTakeover
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HelperTakeOver)

@@ -3,7 +3,7 @@ import { compose } from 'redux'
 import { LoadComponent } from '../hocs/loadComponent.js'
 import { LoadingStage } from '../../constants.js'
 import ConceptBoard from './ConceptBoard.js'
-import { setNotificationBar, updateHelperScreen } from '../../actions/navigationActions.js'
+import { setNotificationBar, setHelperTakeOver } from '../../actions/navigationActions.js'
 import {
   loadConceptContractAndCreateAssessment,
   loadConceptsFromConceptRegistery,
@@ -24,7 +24,7 @@ const mapDispatchToProps = {
   load: loadConceptsFromConceptRegistery,
   loadConceptContractAndCreateAssessment,
   estimateAssessmentCreationGasCost,
-  updateHelperScreen,
+  setHelperTakeOver,
   setNotificationBar
 }
 

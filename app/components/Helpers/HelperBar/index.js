@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import HelperBar from './HelperBar.js'
-import { resetVisits, updateHelperScreen } from '../../../actions/navigationActions.js'
+import { resetVisits, setHelperBar } from '../../../actions/navigationActions.js'
 import { helperText } from '../helperContent.js'
 
 const mapStateToProps = state => {
@@ -13,7 +13,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   resetVisits,
-  updateHelperScreen
+  setHelperBar
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HelperBar)

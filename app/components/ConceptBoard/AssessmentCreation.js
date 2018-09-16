@@ -2,6 +2,8 @@ import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 
+import {takeOverTopic} from '../Helpers/helperContent.js'
+
 import icoArrowForward from '../../assets/ico-arrow-forward.svg'
 import icoClose from '../../assets/ico-close.svg'
 import icoConfirm from '../../assets/ico-confirm.svg'
@@ -54,14 +56,11 @@ export class AssessmentCreation extends Component {
       (err, receipt) => {
         if (err) {
           console.log(err)
-          this.props.updateHelperScreen('assessmentCreation', {success: false, error: err})
           // this.props.setNotificationBar({display: true, type: 'error'})
           this.props.cancelCreation()
         } else if (receipt.status) {
-          let receiptAddress = receipt.events[0].raw.topics[2]
-          let assessmentAddress = '0x' + receiptAddress.substring(26, receiptAddress.length)
           // this.props.setNotificationBar({display: true, type: 'success', assessmentId: assessmentAddress})
-          this.props.updateHelperScreen('assessmentCreation', {assessmentId: assessmentAddress, success: true})
+          this.props.setHelperTakeOver(takeOverTopic.AssessmentCreation)
           this.props.cancelCreation()
         } else {
           this.setState({step: 4})

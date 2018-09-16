@@ -83,7 +83,7 @@ export default function navigation (state = initialState, action) {
     case RECEIVE_PERSISTED_STATE:
       return {
         ...state,
-        visits: action.persistedState.visits
+        visits: action.persistedState.visits ? action.persistedState.visits : 0
       }
     case TOGGLE_HIDDEN_CARDS:
       return {

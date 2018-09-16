@@ -6,7 +6,7 @@ var h = require('react-hyperscript')
 
 export class HelperBar extends Component {
   gotIt () {
-    this.props.updateHelperScreen('closeBar')
+    this.props.setHelperBar('')
   }
 
   resetVisits () {
@@ -15,7 +15,7 @@ export class HelperBar extends Component {
 
   nextScreen () {
     this.gotIt()
-    this.props.updateHelperScreen(this.props.topic.followUp.target)
+    this.props.setHelperBar(this.props.topic.followUp.target)
   }
 
   render () {

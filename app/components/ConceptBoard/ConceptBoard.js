@@ -13,9 +13,6 @@ export class ConceptBoard extends Component {
     }
   }
 
-  // TODO if this should component should trigger a notification-bar, enter a
-  // componentWillMount function calling updateHelperScreen()
-
   selectConceptAddress (e) {
     window.scrollTo(0, 0)
     this.setState({selectedConceptAddress: e.target.id})
@@ -37,7 +34,6 @@ export class ConceptBoard extends Component {
           loadConceptContractAndCreateAssessment: this.props.loadConceptContractAndCreateAssessment,
           estimateGasCost: this.props.estimateAssessmentCreationGasCost,
           cancelCreation: this.cancelCreation.bind(this),
-          updateHelperScreen: this.props.updateHelperScreen,
           setNotificationBar: this.props.setNotificationBar
         })
       }

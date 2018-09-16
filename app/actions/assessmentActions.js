@@ -1,6 +1,6 @@
 import { getInstance, convertFromOnChainScoreToUIScore, hmmmToAha } from '../utils.js'
 import { sendAndReactToTransaction } from './transActions.js'
-import { updateHelperScreen, saveProgression } from './navigationActions.js'
+import { saveProgression } from './navigationActions.js'
 import { fetchUserBalance, receiveVariable } from './web3Actions.js'
 import { Stage, LoadingStage, NotificationTopic, TimeOutReasons } from '../constants.js'
 
@@ -46,7 +46,6 @@ export function confirmAssessor (address, customReact = false) {
         ? customReact.callbck
         : () => {
           dispatch(fetchUserStage(address))
-          dispatch(updateHelperScreen('ConfirmedStake'))
           dispatch(saveProgression('assessor', Stage.Confirmed))
           dispatch(fetchUserBalance())
         }
@@ -73,7 +72,6 @@ export function commit (address, score, salt, customReact = false) {
         ? customReact.callbck
         : () => {
           dispatch(fetchUserStage(address))
-          dispatch(updateHelperScreen('Committed'))
           dispatch(saveProgression('assessor', Stage.Committed))
           dispatch(fetchUserBalance())
         }
@@ -99,7 +97,6 @@ export function reveal (address, score, salt, customReact = false) {
         ? customReact.callbck
         : () => {
           dispatch(fetchUserStage(address))
-          dispatch(updateHelperScreen('Revealed'))
           dispatch(saveProgression('assessor', Stage.Done))
           dispatch(fetchUserBalance())
         }
@@ -122,9 +119,6 @@ export function storeDataOnAssessment (address, data) {
       address,
       () => {
         dispatch(fetchStoredData(address))
-        dispatch(updateHelperScreen('StoredMeetingPoint', {
-          previousMeetingPointExisted: !firstEdit
-        }))
       }
     )
   }
@@ -225,7 +219,6 @@ export function fetchLatestAssessments () {
       dispatch(receiveVariable('lastUpdatedAt', lastUpdatedAt))
       dispatch(endLoadingAssessments())
     }
-    dispatch(updateHelperScreen('dashboard'))
   }
 }
 
