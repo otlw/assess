@@ -131,9 +131,9 @@ const initializeEventWatcher = () => {
       // local testnet
       let web3WS = getState().ethereum.web3events
       let notificationJSON = FathomToken.abi.filter(x => x.name === 'Notification')[0]
-      let ahadress = FathomToken.networks[getState().ethereum.networkID].address
+      let fathomTokenAddress = FathomToken.networks[getState().ethereum.networkID].address
       web3WS.eth.subscribe('logs', {
-        address: ahadress,
+        address: fathomTokenAddress,
         topics: ['0xe41f8f86e0c2a4bb86f57d2698c1704cd23b5f42a84336cdb49377cdca96d876'] // notification topic
       }, (error, log) => {
         if (error) {
