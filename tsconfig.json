@@ -2,6 +2,7 @@
 	"compilerOptions": {
 		"sourceMap": true,
 		"allowJs": true,
+		"allowSyntheticDefaultImports": true,
 
 		"module": "es6",
 		"moduleResolution": "node",
@@ -16,7 +17,7 @@
     "noFallthroughCasesInSwitch": true,
 
     "pretty": true,
-    "lib": ["es2017"],
+    "lib": ["es2017", "DOM"],
     "types": ["node"]
 	},
 	"compileOnSave": false,
