@@ -6,7 +6,7 @@ import MeetingPointEditBox from './MeetingPointEditBox.js'
 const mapStateToProps = (state, ownProps) => {
   return {
     transactions: Object.values(state.transactions).filter(
-      tx => (tx.address === ownProps.address &&
+      tx => (tx.address === ownProps.assessmentAddress &&
              tx.data === 'meetingPointChange')
     )
   }
