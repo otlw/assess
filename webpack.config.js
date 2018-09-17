@@ -2,7 +2,7 @@ const path = require('path')
 
 module.exports = {
   mode: 'development',
-  entry: './app/index.js',
+  entry: './app/index.ts',
   devServer: {
     contentBase: path.resolve(__dirname, 'dist')
   },
@@ -10,16 +10,18 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
-    publicPath: "",
+    publicPath: ''
   },
-  module : {
-    rules : [
+  resolve: {extensions: ['.ts', '.js']},
+  module: {
+    rules: [
       {
-         test: /\.(png|svg|jpg|gif)$/,
-         use: [
-           {loader: 'file-loader'}
-         ]
-      }
+        test: /\.(png|svg|jpg|gif)$/,
+        use: [
+          {loader: 'file-loader'}
+        ]
+      },
+      {test: /\.ts$/, loader: 'ts-loader'}
     ]
   }
 }

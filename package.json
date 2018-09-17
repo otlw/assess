@@ -28,6 +28,11 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash.throttle": "^4.1.4",
+    "@types/node": "^10.10.1",
+    "@types/react": "^16.4.14",
+    "@types/react-dom": "^16.0.7",
+    "@types/react-hyperscript": "^3.0.3",
     "enzyme": "^2.8.2",
     "ethjs-abi": "^0.2.0",
     "fathom-contracts": "^1.2.2",
@@ -37,6 +42,8 @@
     "standard": "^11.0.1",
     "styled-components": "^3.2.5",
     "truffle": "4.1.7",
+    "ts-loader": "^5.1.0",
+    "typescript": "^3.0.3",
     "webpack": "^4.2.0",
     "webpack-cli": "^2.0.12",
     "webpack-dev-server": "^3.1.1",
