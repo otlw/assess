@@ -9,7 +9,7 @@ class FinalResultBar extends Component {
     super(props)
 
     // get cache/localStorage data in case a score has been commited via this device
-    this.cacheCommitData = JSON.parse(window.localStorage.getItem(this.props.address + this.props.userAddress))
+    this.cacheCommitData = JSON.parse(window.localStorage.getItem(this.props.assessmentAddress + this.props.userAddress))
   }
 
   render () {

@@ -1,8 +1,8 @@
 import { Stage, TimeOutReasons, StageDisplayNames, networkName } from './constants.js'
 let { Assessment, Concept, FathomToken, ConceptRegistry } = require('fathom-contracts')
 
-function getContractInstance (web3, abi, address) {
-  return new web3.eth.Contract(abi, address)
+function getContractInstance (web3, abi, contractAddress) {
+  return new web3.eth.Contract(abi, contractAddress)
 }
 
 export const convertDate = (unixTimestamp) => {
@@ -27,14 +27,14 @@ export const getBlockDeployedAt = {
 }
 
 export const getInstance = {
-  assessment: (state, address) => getContractInstance(state.ethereum.web3, Assessment.abi, address),
-  concept: (state, address) => getContractInstance(state.ethereum.web3, Concept.abi, address),
+  assessment: (state, contractAddress) => getContractInstance(state.ethereum.web3, Assessment.abi, contractAddress),
+  concept: (state, contractAddress) => getContractInstance(state.ethereum.web3, Concept.abi, contractAddress),
   fathomToken: (state) => {
-    if (FathomToken.networks[state.ethereum.networkID] && FathomToken.networks[state.ethereum.networkID].address) {
+    if (FathomToken.networks[state.ethereum.networkID] && FathomToken.networks[state.ethereum.networkID].contractAddress) {
       return getContractInstance(
         state.ethereum.web3,
         FathomToken.abi,
-        FathomToken.networks[state.ethereum.networkID].address
+        FathomToken.networks[state.ethereum.networkID].contractAddress
       )
     } else {
       return {error: true}
@@ -44,7 +44,7 @@ export const getInstance = {
     return getContractInstance(
       state.ethereum.web3,
       ConceptRegistry.abi,
-      ConceptRegistry.networks[state.ethereum.networkID].address
+      ConceptRegistry.networks[state.ethereum.networkID].contractAddress
     )
   }
 }

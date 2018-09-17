@@ -16,9 +16,9 @@ export function loadConceptsFromConceptRegistery () {
 
     let concepts = {}
     await Promise.all(pastevents.map(async (event) => {
-      let address = event.returnValues._concept
+      let conceptAddress = event.returnValues._concept
       // instanciate Concept Contract to get 'data' (ie the name of the concept)
-      let conceptInstance = getInstance.concept(getState(), address)
+      let conceptInstance = getInstance.concept(getState(), conceptAddress)
 
       // get and decode data
       let hash = await conceptInstance.methods.data().call()
@@ -45,7 +45,7 @@ export function loadConceptsFromConceptRegistery () {
         }
       }
 
-      return (concepts[address] = decodedConceptData)
+      return (concepts[conceptAddress] = decodedConceptData)
     }))
     dispatch(receiveConcepts(concepts))
     dispatch(endLoadingConcepts())
@@ -60,10 +60,10 @@ export function receiveConcepts (concepts) {
 }
 
 // combination of two functions above for directly creating assessments from conceptList
-export function loadConceptContractAndCreateAssessment (address, cost, callback) {
+export function loadConceptContractAndCreateAssessment (conceptAddress, cost, callback) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
-    let conceptInstance = getInstance.concept(getState(), address)
+    let conceptInstance = getInstance.concept(getState(), conceptAddress)
     const size = 5
     const endTime = 7 * 24 * 3600
     const startTime = 3 * 24 * 3600
@@ -76,18 +76,18 @@ export function loadConceptContractAndCreateAssessment (address, cost, callback)
       },
       'makeAssessment',
       userAddress,
-      address,
+      conceptAddress,
       callback
     )
   }
 }
 
 // estimate the gas of the transaction above
-export function estimateAssessmentCreationGasCost (address, cost, cllbck) {
+export function estimateAssessmentCreationGasCost (conceptAddress, cost, cllbck) {
   return async (dispatch, getState) => {
     // instanciate Concept Contract
     let userAddress = getState().ethereum.userAddress
-    let conceptInstance = getInstance.concept(getState(), address)
+    let conceptInstance = getInstance.concept(getState(), conceptAddress)
     const size = 5
     const endTime = 7 * 24 * 3600
     const startTime = 3 * 24 * 3600

@@ -6,15 +6,15 @@ import { confirmAssessor, commit, reveal, storeDataOnAssessment } from '../../..
 const mapStateToProps = (state, ownProps) => {
   return {
     transactions: Object.values(state.transactions).filter(
-      tx => (tx.address === ownProps.address &&
+      tx => (tx.address === ownProps.assessmentAddress &&
              tx.sender === state.ethereum.userAddress &&
-             tx.data === state.assessments[ownProps.address].stage)
+             tx.data === state.assessments[ownProps.assessmentAddress].stage)
     ),
-    assessmentAddress: ownProps.address,
+    assessmentAddress: ownProps.assessmentAddress,
     userAddress: state.ethereum.userAddress,
-    stage: state.assessments[ownProps.address].stage,
-    userStage: state.assessments[ownProps.address].userStage,
-    cost: state.assessments[ownProps.address].cost,
+    stage: state.assessments[ownProps.assessmentAddress].stage,
+    userStage: state.assessments[ownProps.assessmentAddress].userStage,
+    cost: state.assessments[ownProps.assessmentAddress].cost,
     inputType: state.navigation.inputBar
   }
 }

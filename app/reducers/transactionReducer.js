@@ -29,7 +29,7 @@ function transactions (state = initialState, action) {
         [action.txHash]: {
           sender: action.sender,
           txHash: action.txHash,
-          address: action.address,
+          address: action.recipientAddress,
           data: action.data,
           status: 'Tx published',
           time: Date.now()
