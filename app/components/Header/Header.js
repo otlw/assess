@@ -11,7 +11,7 @@ const Logo = styled('img').attrs({className: 'flex w2 mh2 self-center'})`
 `
 
 export const Header = (props) => {
-  let address = props.userAddress.substring(0, 8) + '...' + props.userAddress.substring(35, 42)
+  let userAddress = props.userAddress.substring(0, 8) + '...' + props.userAddress.substring(35, 42)
   let balance = (props.AhaBalance).toString() + ' AHA'
   let network = networkName(props.networkID)
 
@@ -20,7 +20,7 @@ export const Header = (props) => {
       [
         h(headerRowLeft, [
           h(Link, {to: '/'}, h(Logo, {alt: 'logo', src: fathomLogo})),
-          h(headerItem, {name: 'Address', value: address}),
+          h(headerItem, {name: 'Address', value: userAddress}),
           h(headerItem, {name: 'Network', value: network > 10000000 ? 'Local' : network})
         ]),
         h(headerRowRight, [

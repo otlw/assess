@@ -17,8 +17,8 @@ const mapDispatchToProps = {
 
 class AssessmentViewUnconnected extends Component {
   render () {
-    let address = this.props.match.params.id
-    if (!this.props.assessment) this.props.validateAndFetchAssessmentData(address)
+    let assessmentAddress = this.props.match.params.id
+    if (!this.props.assessment) this.props.validateAndFetchAssessmentData(assessmentAddress)
     return h(AssessmentView, {assessment: this.props.assessment, userAddress: this.props.userAddress})
   }
 }
