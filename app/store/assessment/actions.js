@@ -6,7 +6,6 @@ export const END_LOADING_ASSESSMENTS = 'END_LOADING_ASSESSMENTS'
 export const SET_ASSESSMENT_AS_INVALID = 'SET_ASSESSMENT_AS_INVALID'
 export const UPDATE_ASSESSMENT_VARIABLE = 'UPDATE_ASSESSMENT_VARIABLE'
 
-
 export function setCardVisibility (assessmentAddress, hiddenStatus) {
   return async (dispatch, getState) => {
     dispatch(updateAssessmentVariable(assessmentAddress, 'hidden', hiddenStatus))

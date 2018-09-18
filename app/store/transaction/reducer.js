@@ -5,7 +5,6 @@ import {
   REMOVE_TRANSACTION
 } from './actions'
 
-
 let initialState = {}
 
 // state will look like this:

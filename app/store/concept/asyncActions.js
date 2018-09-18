@@ -74,7 +74,7 @@ export function loadConceptContractAndCreateAssessment (conceptAddress, cost, ca
 }
 
 // estimate the gas of the transaction above
-export function estimateAssessmentCreationGasCost (conceptAddress, cost, callback) {
+export function estimateAssessmentCreationGasCost (conceptAddress, cost, callBack) {
   return async (dispatch, getState) => {
     // instanciate Concept Contract
     let userAddress = getState().ethereum.userAddress
@@ -87,6 +87,6 @@ export function estimateAssessmentCreationGasCost (conceptAddress, cost, callbac
     // then get current gasPrice
     let gasPrice = await getState().ethereum.web3.eth.getGasPrice()
     // then convert it to eth from wei and multiply it by the estimate
-    callback(estimate * getState().ethereum.web3.utils.fromWei(gasPrice.toString(), 'ether'))
+    callBack(estimate * getState().ethereum.web3.utils.fromWei(gasPrice.toString(), 'ether'))
   }
 }
