@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { LoadComponent } from '../hocs/loadComponent.js'
-import AssessmentFilterView from './AssessmentFilterView.js'
+import AssessmentBoard from './AssessmentBoard.js'
 import { setDashboardTab, dispatchToggleHidden } from '../../actions/navigationActions.js'
 import { fetchLatestAssessments } from '../../actions/assessmentActions.js'
 
@@ -23,4 +23,4 @@ const mapDispatchToProps = {
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   LoadComponent
-)(AssessmentFilterView)
+)(AssessmentBoard)
