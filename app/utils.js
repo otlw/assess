@@ -1,4 +1,4 @@
-import { Stage, TimeOutReasons, StageDisplayNames, networkName } from './constants.js'
+import { Stage, TimeOutReasons, StageDisplayNames, networkName } from './constants'
 let { Assessment, Concept, FathomToken, ConceptRegistry } = require('fathom-contracts')
 
 function getContractInstance (web3, abi, contractAddress) {
@@ -12,12 +12,14 @@ export const convertDate = (unixTimestamp) => {
 }
 
 export const getBlockDeployedAt = {
+
   fathomToken: async (state) => {
     let networkID = await state.ethereum.web3.eth.net.getId()
     let deployTx = FathomToken.networks[networkID].transactionHash
     let tx = await state.ethereum.web3.eth.getTransaction(deployTx)
     return tx.blockNumber
   },
+
   conceptRegistry: async (state) => {
     let networkID = await state.ethereum.web3.eth.net.getId()
     let deployTx = ConceptRegistry.networks[networkID].transactionHash
@@ -27,8 +29,11 @@ export const getBlockDeployedAt = {
 }
 
 export const getInstance = {
+
   assessment: (state, contractAddress) => getContractInstance(state.ethereum.web3, Assessment.abi, contractAddress),
+
   concept: (state, contractAddress) => getContractInstance(state.ethereum.web3, Concept.abi, contractAddress),
+
   fathomToken: (state) => {
     if (FathomToken.networks[state.ethereum.networkID] && FathomToken.networks[state.ethereum.networkID].address) {
       return getContractInstance(
@@ -40,6 +45,7 @@ export const getInstance = {
       return {error: true}
     }
   },
+
   conceptRegistry: (state) => {
     return getContractInstance(
       state.ethereum.web3,

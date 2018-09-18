@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import { connect } from 'react-redux'
 import Header from './components/Header'
-import {NavTabs} from './components/NavTabs'
+import { NavTabs } from './components/NavTabs'
 import AssessmentBoard from './components/AssessmentBoard'
 import CertificateBoard from './components/CertificateBoard'
 import ConceptBoard from './components/ConceptBoard'
