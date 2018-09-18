@@ -1,9 +1,9 @@
-import AssessmentList from '../AssessmentList'
-import AssessmentCard from '../AssessmentCard'
+import AssessmentList from './AssessmentList.js'
+import AssessmentCard from './AssessmentCard'
 import { Stage } from '../../constants.js'
 import h from 'react-hyperscript'
 
-export const AssessmentFilterView = (props) => {
+export const AssessmentBoard = (props) => {
   let userAddress = props.userAddress
   let assessmentsAsList = Object.values(props.assessments)
 
@@ -36,4 +36,4 @@ export const AssessmentFilterView = (props) => {
   }))
 }
 
-export default AssessmentFilterView
+export default AssessmentBoard

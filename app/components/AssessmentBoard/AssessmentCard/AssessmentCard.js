@@ -2,8 +2,8 @@ import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
-import { StageDisplayNames, Stage, TimeOutReasons, CompletedStages } from '../../constants.js'
-import { statusMessage } from '../../utils.js'
+import { StageDisplayNames, Stage, TimeOutReasons, CompletedStages } from '../../../constants.js'
+import { statusMessage } from '../../../utils.js'
 
 export class AssessmentCard extends Component {
   render () {

@@ -2,8 +2,8 @@ import { Component } from 'react'
 import { connect } from 'react-redux'
 import Header from './components/Header'
 import {NavTabs} from './components/NavTabs'
-import AssessmentFilterView from './components/AssessmentFilterView'
-import CertificateList from './components/CertificateList'
+import AssessmentBoard from './components/AssessmentBoard'
+import CertificateBoard from './components/CertificateBoard'
 import ConceptBoard from './components/ConceptBoard'
 import AssessmentView from './components/AssessmentView'
 import h from 'react-hyperscript'
@@ -58,10 +58,10 @@ export class App extends Component {
               this.props.loadedWeb3
                 ? (h(appContainer, [
                   h(NavTabs),
-                  h(Route, {exact: true, path: '/', component: AssessmentFilterView}),
+                  h(Route, {exact: true, path: '/', component: AssessmentBoard}),
                   h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
                   h(Route, {path: '/assessment/:id', component: AssessmentView}),
-                  h(Route, {path: '/certificates/', component: CertificateList})
+                  h(Route, {path: '/certificates/', component: CertificateBoard})
                 ]))
                 : h('div', 'Loading web3')
             ]) : warningScreen

@@ -1,5 +1,5 @@
-import CardCertificate from '../CardCertificate.js'
-import AssessmentList from '../AssessmentList.js'
+import CertificateCard from './CertificateCard.js'
+import AssessmentList from '../AssessmentBoard/AssessmentList.js'
 import h from 'react-hyperscript'
 import { Stage } from '../../constants.js'
 
@@ -12,7 +12,7 @@ export const CertificateList = (props) => {
   )
   // return view
   return h(AssessmentList, {
-    assessmentCard: CardCertificate,
+    assessmentCard: CertificateCard,
     assessments: completedAsAssessee,
     name: 'Your Certificates',
     userAddress: props.userAddress
