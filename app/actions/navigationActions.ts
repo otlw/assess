@@ -1,56 +1,45 @@
-export const SET_DASHBOARD_TAB = 'SET_DASHBOARD_TAB'
-export const SET_MAIN_DISPLAY = 'SET_MAIN_DISPLAY'
-export const SET_NOTIFICATION_BAR = 'SET_NOTIFICATION_BAR'
-export const SET_INPUT_BAR = 'SET_INPUT_BAR'
-export const TOGGLE_HIDDEN_CARDS = 'TOGGLE_HIDDEN_CARDS'
+import {TState} from '../reducers/navigationReducer'
 
-export function setDashboardTab (tab: string) {
-  if (tab === 'Past' ||
-    tab === 'Current' ||
-    tab === 'Potential') {
-    return {
-      type: SET_DASHBOARD_TAB,
-      tab
-    }
-  } else {
-    throw Error('Invalid dashboard tab selected: ', tab)
-  }
-}
+export type Action =
+  ReturnType<typeof setDashboardTab> |
+  ReturnType<typeof setMainDisplay> |
+  ReturnType<typeof setNotificationBar> |
+  ReturnType<typeof setInputBar> |
+  ReturnType<typeof toggleHidden>
 
-export function dispatchSetInputBar (inputType: string) {
-  return async (dispatch, getState) => {
-    dispatch(setInputBar(inputType))
-  }
-}
-
-export function setMainDisplay (mainDisplay: string) {
+export function setDashboardTab (tab: TState['dashboardTab']) {
+  let type: 'SET_DASHBOARD_TAB' = 'SET_DASHBOARD_TAB'
   return {
-    type: SET_MAIN_DISPLAY,
+    type,
+    tab
+  }
+}
+
+export function setMainDisplay (mainDisplay: TState["mainDisplay"]) {
+  let type:'SET_MAIN_DISPLAY' = 'SET_MAIN_DISPLAY'
+  return {
+    type,
     mainDisplay
   }
 }
 
-interface INotificationBar {
-  display: boolean,
-  type?: string
-}
-
-export function setNotificationBar (notificationBar: INotificationBar) {
+export function setNotificationBar (notificationBar: TState["notificationBar"]) {
+  let type:'SET_NOTIFICATION_BAR' = 'SET_NOTIFICATION_BAR'
   return {
-    type: SET_NOTIFICATION_BAR,
+    type,
     notificationBar
   }
 }
 
-export function setInputBar (inputType: string) {
+export function setInputBar (inputType: TState['inputBar']) {
+  let type:'SET_INPUT_BAR' = 'SET_INPUT_BAR'
   return {
-    type: SET_INPUT_BAR,
+    type,
     inputType
   }
 }
 
-export function dispatchToggleHidden () {
-  return async (dispatch) => {
-    dispatch({type: TOGGLE_HIDDEN_CARDS})
-  }
+export function toggleHidden() {
+  let type: 'TOGGLE_HIDDEN_CARDS' = 'TOGGLE_HIDDEN_CARDS'
+  return {type}
 }
