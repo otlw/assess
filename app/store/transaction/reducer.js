@@ -2,7 +2,7 @@ import {
   SAVE_TRANSACTION,
   UPDATE_TRANSACTION,
   REMOVE_TRANSACTION
-} from '../actions/transActions'
+} from './actions'
 
 import extend from 'xtend'
 

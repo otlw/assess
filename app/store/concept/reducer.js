@@ -1,7 +1,5 @@
-import {
-  RECEIVE_CONCEPTS
-} from '../actions/conceptActions'
-import {RECEIVE_PERSISTED_STATE} from '../actions/web3Actions.js'
+import { RECEIVE_CONCEPTS } from '../actions'
+import { RECEIVE_PERSISTED_STATE } from '../web3/actions'
 
 let initialState = {}
 

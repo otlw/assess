@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import ProgressAndInputBar from './ProgressAndInputBar.js'
-import { setInputBar } from '../../../actions/navigationActions'
-import { confirmAssessor, commit, reveal, storeDataOnAssessment } from '../../../actions/assessmentActions'
+import { setInputBar } from '../../../store/navigation/actions'
+import { confirmAssessor, commit, reveal, storeDataOnAssessment } from '../../../store/assessment/asyncActions'
 
 const mapStateToProps = (state, ownProps) => {
   return {

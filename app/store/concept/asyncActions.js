@@ -1,8 +1,6 @@
 import { getInstance } from '../utils.js'
-import { sendAndReactToTransaction } from './transActions.js'
-export const RECEIVE_CONCEPTS = 'RECEIVE_CONCEPTS'
-export const BEGIN_LOADING_CONCEPTS = 'BEGIN_LOADING_CONCEPTS'
-export const END_LOADING_CONCEPTS = 'END_LOADING_CONCEPTS'
+import { sendAndReactToTransaction } from '../transaction/asyncActions'
+import { receiveConcepts, beginLoadingConcepts, endLoadingConcepts } from './actions'
 
 export function loadConceptsFromConceptRegistery () {
   return async (dispatch, getState) => {
@@ -52,13 +50,6 @@ export function loadConceptsFromConceptRegistery () {
   }
 }
 
-export function receiveConcepts (concepts) {
-  return {
-    type: RECEIVE_CONCEPTS,
-    concepts
-  }
-}
-
 // combination of two functions above for directly creating assessments from conceptList
 export function loadConceptContractAndCreateAssessment (conceptAddress, cost, callback) {
   return async (dispatch, getState) => {
@@ -83,7 +74,7 @@ export function loadConceptContractAndCreateAssessment (conceptAddress, cost, ca
 }
 
 // estimate the gas of the transaction above
-export function estimateAssessmentCreationGasCost (conceptAddress, cost, cllbck) {
+export function estimateAssessmentCreationGasCost (conceptAddress, cost, callback) {
   return async (dispatch, getState) => {
     // instanciate Concept Contract
     let userAddress = getState().ethereum.userAddress
@@ -96,18 +87,6 @@ export function estimateAssessmentCreationGasCost (conceptAddress, cost, cllbck)
     // then get current gasPrice
     let gasPrice = await getState().ethereum.web3.eth.getGasPrice()
     // then convert it to eth from wei and multiply it by the estimate
-    cllbck(estimate * getState().ethereum.web3.utils.fromWei(gasPrice.toString(), 'ether'))
-  }
-}
-
-export function beginLoadingConcepts () {
-  return {
-    type: BEGIN_LOADING_CONCEPTS
-  }
-}
-
-export function endLoadingConcepts () {
-  return {
-    type: END_LOADING_CONCEPTS
+    callback(estimate * getState().ethereum.web3.utils.fromWei(gasPrice.toString(), 'ether'))
   }
 }

@@ -3,11 +3,11 @@ import { compose } from 'redux'
 import { LoadComponent } from '../hocs/loadComponent.js'
 import { LoadingStage } from '../../constants.js'
 import ConceptBoard from './ConceptBoard.js'
-import { setNotificationBar } from '../../actions/navigationActions'
+import { setNotificationBar } from '../../store/navigation/actions'
 import {
   loadConceptContractAndCreateAssessment,
   loadConceptsFromConceptRegistery,
-  estimateAssessmentCreationGasCost } from '../../actions/conceptActions.js'
+  estimateAssessmentCreationGasCost } from '../../store/concept/asyncActions'
 
 const mapStateToProps = state => {
   return {

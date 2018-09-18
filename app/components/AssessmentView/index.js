@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { Component } from 'react'
 import AssessmentView from './AssessmentView.js'
-import {validateAndFetchAssessmentData} from '../../actions/assessmentActions'
+import {validateAndFetchAssessmentData} from '../../store/assessment/asyncActions'
 var h = require('react-hyperscript')
 
 const mapStateToProps = (state, ownProps) => {
