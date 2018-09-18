@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { storeDataOnAssessment } from '../../../actions/assessmentActions'
-import { dispatchSetInputBar } from '../../../actions/navigationActions.js'
+import { dispatchSetInputBar } from '../../../actions/navigationActions'
 import MeetingPointEditBox from './MeetingPointEditBox.js'
 
 const mapStateToProps = (state, ownProps) => {

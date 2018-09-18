@@ -4,7 +4,7 @@ import {
   SET_INPUT_BAR,
   SET_NOTIFICATION_BAR,
   TOGGLE_HIDDEN_CARDS
-} from '../actions/navigationActions.js'
+} from '../actions/navigationActions'
 
 const initialState = {
   dashboardTab: 'Current',

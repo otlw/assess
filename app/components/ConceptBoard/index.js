@@ -3,7 +3,7 @@ import { compose } from 'redux'
 import { LoadComponent } from '../hocs/loadComponent.js'
 import { LoadingStage } from '../../constants.js'
 import ConceptBoard from './ConceptBoard.js'
-import { setNotificationBar } from '../../actions/navigationActions.js'
+import { setNotificationBar } from '../../actions/navigationActions'
 import {
   loadConceptContractAndCreateAssessment,
   loadConceptsFromConceptRegistery,

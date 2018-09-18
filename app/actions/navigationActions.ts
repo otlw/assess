@@ -4,7 +4,7 @@ export const SET_NOTIFICATION_BAR = 'SET_NOTIFICATION_BAR'
 export const SET_INPUT_BAR = 'SET_INPUT_BAR'
 export const TOGGLE_HIDDEN_CARDS = 'TOGGLE_HIDDEN_CARDS'
 
-export function setDashboardTab (tab) {
+export function setDashboardTab (tab: string) {
   if (tab === 'Past' ||
     tab === 'Current' ||
     tab === 'Potential') {
@@ -17,27 +17,32 @@ export function setDashboardTab (tab) {
   }
 }
 
-export function dispatchSetInputBar (inputType) {
+export function dispatchSetInputBar (inputType: string) {
   return async (dispatch, getState) => {
     dispatch(setInputBar(inputType))
   }
 }
 
-export function setMainDisplay (mainDisplay) {
+export function setMainDisplay (mainDisplay: string) {
   return {
     type: SET_MAIN_DISPLAY,
     mainDisplay
   }
 }
 
-export function setNotificationBar (notificationBar) {
+interface INotificationBar {
+  display: boolean,
+  type?: string
+}
+
+export function setNotificationBar (notificationBar: INotificationBar) {
   return {
     type: SET_NOTIFICATION_BAR,
     notificationBar
   }
 }
 
-export function setInputBar (inputType) {
+export function setInputBar (inputType: string) {
   return {
     type: SET_INPUT_BAR,
     inputType
