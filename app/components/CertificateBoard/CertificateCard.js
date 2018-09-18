@@ -1,7 +1,7 @@
 import h from 'react-hyperscript'
 import styled from 'styled-components'
 
-export const cardCredential = (props) => {
+export const certificateCard = (props) => {
   return (
     h(credentialContainer, [
       h(credentialContainerInfo, [
@@ -26,7 +26,7 @@ export const cardCredential = (props) => {
   )
 }
 
-export default cardCredential
+export default certificateCard
 
 const credentialContainer = styled('div').attrs({className: 'flex flex-column ma3 br2 shadow-4 overflow-hidden'
 })`
