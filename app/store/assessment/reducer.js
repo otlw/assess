@@ -1,5 +1,5 @@
 import extend from 'xtend'
-import {RECEIVE_PERSISTED_STATE} from '../web3/actions'
+import { RECEIVE_PERSISTED_STATE } from '../web3/actions'
 import {
   RECEIVE_ASSESSMENT,
   RECEIVE_ASSESSOR,

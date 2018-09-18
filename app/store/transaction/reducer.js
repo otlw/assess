@@ -1,10 +1,10 @@
+import extend from 'xtend'
 import {
   SAVE_TRANSACTION,
   UPDATE_TRANSACTION,
   REMOVE_TRANSACTION
 } from './actions'
 
-import extend from 'xtend'
 
 let initialState = {}
 

@@ -1,4 +1,4 @@
-import { getInstance } from '../utils.js'
+import { getInstance } from '../../utils'
 import { sendAndReactToTransaction } from '../transaction/asyncActions'
 import { receiveConcepts, beginLoadingConcepts, endLoadingConcepts } from './actions'
 

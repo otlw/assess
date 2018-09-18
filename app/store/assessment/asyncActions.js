@@ -1,9 +1,16 @@
-import { getInstance, convertFromOnChainScoreToUIScore, hmmmToAha } from '../../utils.js'
+import { getInstance, convertFromOnChainScoreToUIScore, hmmmToAha } from '../../utils'
 import { sendAndReactToTransaction } from '../transaction/asyncActions'
 import { receiveVariable } from '../web3/actions'
 import { fetchUserBalance } from '../web3/asyncActions'
-import { Stage, LoadingStage, NotificationTopic, TimeOutReasons } from '../../constants.js'
-import { receiveAssessor, receiveAssessment, updateAssessmentVariable, beginLoadingAssessments, endLoadingAssessments, setAssessmentAsInvalid } from './actions'
+import { Stage, LoadingStage, NotificationTopic, TimeOutReasons } from '../../constants'
+import {
+  receiveAssessor,
+  receiveAssessment,
+  updateAssessmentVariable,
+  beginLoadingAssessments,
+  endLoadingAssessments,
+  setAssessmentAsInvalid
+} from './actions'
 
 // setup ipfs api
 const ethereumjsABI = require('ethereumjs-abi')
