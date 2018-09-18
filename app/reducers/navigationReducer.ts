@@ -7,7 +7,7 @@ export type TState  = {
     { display: false } |
     {
       display: true
-      type: 'success'| 'success'
+      type: 'success' | 'error'
     },
   inputBar: string,
   showHiddenCards: boolean
