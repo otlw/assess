@@ -30,11 +30,11 @@ export const getInstance = {
   assessment: (state, contractAddress) => getContractInstance(state.ethereum.web3, Assessment.abi, contractAddress),
   concept: (state, contractAddress) => getContractInstance(state.ethereum.web3, Concept.abi, contractAddress),
   fathomToken: (state) => {
-    if (FathomToken.networks[state.ethereum.networkID] && FathomToken.networks[state.ethereum.networkID].contractAddress) {
+    if (FathomToken.networks[state.ethereum.networkID] && FathomToken.networks[state.ethereum.networkID].address) {
       return getContractInstance(
         state.ethereum.web3,
         FathomToken.abi,
-        FathomToken.networks[state.ethereum.networkID].contractAddress
+        FathomToken.networks[state.ethereum.networkID].address
       )
     } else {
       return {error: true}
