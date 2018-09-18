@@ -44,7 +44,7 @@ export const getInstance = {
     return getContractInstance(
       state.ethereum.web3,
       ConceptRegistry.abi,
-      ConceptRegistry.networks[state.ethereum.networkID].contractAddress
+      ConceptRegistry.networks[state.ethereum.networkID].address
     )
   }
 }
