@@ -5,7 +5,7 @@ var h = require('react-hyperscript')
 
 class MeetingPointEditBox extends Component {
   setMPEditiability () {
-    this.props.dispatchSetInputBar('editMeetingPoint')
+    this.props.setInputBar('editMeetingPoint')
   }
 
   render () {

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import ProgressAndInputBar from './ProgressAndInputBar.js'
-import { dispatchSetInputBar } from '../../../actions/navigationActions'
+import { setInputBar } from '../../../actions/navigationActions'
 import { confirmAssessor, commit, reveal, storeDataOnAssessment } from '../../../actions/assessmentActions'
 
 const mapStateToProps = (state, ownProps) => {
@@ -24,7 +24,7 @@ const mapDispatchToProps = {
   commit,
   reveal,
   storeDataOnAssessment,
-  dispatchSetInputBar
+  setInputBar
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProgressAndInputBar)

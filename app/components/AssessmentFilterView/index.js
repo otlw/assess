@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { LoadComponent } from '../hocs/loadComponent.js'
 import AssessmentFilterView from './AssessmentFilterView.js'
-import { setDashboardTab, dispatchToggleHidden } from '../../actions/navigationActions'
+import { setDashboardTab, toggleHidden } from '../../actions/navigationActions'
 import { fetchLatestAssessments } from '../../actions/assessmentActions.js'
 
 const mapStateToProps = state => {
@@ -16,7 +16,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   setDashboardTab,
-  toggleHidden: dispatchToggleHidden,
+  toggleHidden: toggleHidden,
   load: fetchLatestAssessments
 }
 
