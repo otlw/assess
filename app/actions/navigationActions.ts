@@ -7,11 +7,11 @@ export type Action =
   ReturnType<typeof setInputBar> |
   ReturnType<typeof toggleHidden>
 
-export function setDashboardTab (tab: TState['dashboardTab']) {
+export function setDashboardTab (dashboardTab: TState['dashboardTab']) {
   let type: 'SET_DASHBOARD_TAB' = 'SET_DASHBOARD_TAB'
   return {
     type,
-    tab
+    dashboardTab
   }
 }
 
@@ -31,11 +31,11 @@ export function setNotificationBar (notificationBar: TState["notificationBar"]) 
   }
 }
 
-export function setInputBar (inputType: TState['inputBar']) {
+export function setInputBar (inputBar: TState['inputBar']) {
   let type:'SET_INPUT_BAR' = 'SET_INPUT_BAR'
   return {
     type,
-    inputType
+    inputBar
   }
 }
 

@@ -27,7 +27,7 @@ export default function navigation (state = initialState, action:Action):TState 
     case 'SET_DASHBOARD_TAB':
       return {
         ...state,
-        dashboardTab: action.tab
+        dashboardTab: action.dashboardTab
       }
     case 'SET_MAIN_DISPLAY':
       return {
@@ -42,7 +42,7 @@ export default function navigation (state = initialState, action:Action):TState 
     case 'SET_INPUT_BAR':
       return {
         ...state,
-        inputBar: action.inputType
+        inputBar: action.inputBar
       }
     case 'TOGGLE_HIDDEN_CARDS':
       return {
