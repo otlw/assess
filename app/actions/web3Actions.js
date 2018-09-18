@@ -2,7 +2,7 @@ import Web3 from 'web3'
 import { getInstance, hmmmToAha, getLocalStorageKey, getBlockDeployedAt } from '../utils.js'
 import { networkName, LoadingStage } from '../constants.js'
 import { processEvent } from './assessmentActions.js'
-import { setMainDisplay } from './navigationActions.js'
+import { setMainDisplay } from './navigationActions'
 var Dagger = require('eth-dagger')
 const { FathomToken } = require('fathom-contracts')
 

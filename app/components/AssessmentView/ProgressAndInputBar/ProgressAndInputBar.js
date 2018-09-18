@@ -100,7 +100,7 @@ export class ProgressAndInputBar extends Component {
 
   storeData () {
     this.props.storeDataOnAssessment(this.props.assessmentAddress, this.state.meetingPoint)
-    this.props.dispatchSetInputBar('')
+    this.props.setInputBar('')
   }
 
   setMeetingPointToBeStored (e) {
@@ -111,7 +111,7 @@ export class ProgressAndInputBar extends Component {
   }
 
   closeInputBar () {
-    if (this.props.inputType) this.props.dispatchSetInputBar('')
+    if (this.props.inputType) this.props.setInputBar('')
     else this.setProgressView()
   }
 
