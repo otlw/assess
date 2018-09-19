@@ -3,7 +3,7 @@ import { compose } from 'redux'
 import { LoadComponent } from '../hocs/loadComponent.js'
 import CertificateList from './CertificateList.js'
 
-import { fetchLatestAssessments } from '../../actions/assessmentActions.js'
+import { fetchLatestAssessments } from '../../store/assessment/asyncActions'
 
 const mapStateToProps = state => {
   return {

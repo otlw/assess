@@ -1,4 +1,4 @@
-import {TState} from '../reducers/navigationReducer'
+import { TState } from './reducer'
 
 export type Action =
   ReturnType<typeof setDashboardTab> |

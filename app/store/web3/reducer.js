@@ -1,11 +1,11 @@
+import extend from 'xtend'
 import {
   RECEIVE_VARIABLE,
   WEB3_CONNECTED,
   WEB3EVENTS_CONNECTED,
   WEB3_DISCONNECTED,
   RECEIVE_PERSISTED_STATE
-} from '../actions/web3Actions.js'
-import extend from 'xtend'
+} from './actions'
 
 let initialState = {
   web3: {},

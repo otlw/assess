@@ -1,12 +1,12 @@
+import extend from 'xtend'
+import { RECEIVE_PERSISTED_STATE } from '../web3/actions'
 import {
   RECEIVE_ASSESSMENT,
   RECEIVE_ASSESSOR,
   REMOVE_ASSESSMENT,
   SET_ASSESSMENT_AS_INVALID,
   UPDATE_ASSESSMENT_VARIABLE
-} from '../actions/assessmentActions'
-import {RECEIVE_PERSISTED_STATE} from '../actions/web3Actions.js'
-import extend from 'xtend'
+} from './actions'
 
 let initialState = {
 }

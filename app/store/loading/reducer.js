@@ -1,14 +1,14 @@
 import {
   BEGIN_LOADING_ASSESSMENTS,
   END_LOADING_ASSESSMENTS
-} from '../actions/assessmentActions.js'
+} from '../assessment/actions'
 
 import {
   BEGIN_LOADING_CONCEPTS,
   END_LOADING_CONCEPTS
-} from '../actions/conceptActions.js'
+} from '../concept/actions'
 
-import {LoadingStage} from '../constants.js'
+import { LoadingStage } from '../../constants'
 
 let initialState = {
   assessments: LoadingStage.None,

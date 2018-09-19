@@ -1,19 +1,19 @@
-import { getInstance, convertFromOnChainScoreToUIScore, hmmmToAha } from '../utils.js'
-import { sendAndReactToTransaction } from './transActions.js'
-import { fetchUserBalance, receiveVariable } from './web3Actions.js'
-import { Stage, LoadingStage, NotificationTopic, TimeOutReasons } from '../constants.js'
-
-export const RECEIVE_ASSESSMENT = 'RECEIVE_ASSESSMENT'
-export const REMOVE_ASSESSMENT = 'REMOVE_ASSESSMENT'
-export const RECEIVE_ASSESSOR = 'RECEIVE_ASSESSOR'
-export const BEGIN_LOADING_ASSESSMENTS = 'BEGIN_LOADING_ASSESSMENTS'
-export const END_LOADING_ASSESSMENTS = 'END_LOADING_ASSESSMENTS'
-export const SET_ASSESSMENT_AS_INVALID = 'SET_ASSESSMENT_AS_INVALID'
-export const UPDATE_ASSESSMENT_VARIABLE = 'UPDATE_ASSESSMENT_VARIABLE'
-
-const ethereumjsABI = require('ethereumjs-abi')
+import { getInstance, convertFromOnChainScoreToUIScore, hmmmToAha } from '../../utils'
+import { sendAndReactToTransaction } from '../transaction/asyncActions'
+import { receiveVariable } from '../web3/actions'
+import { fetchUserBalance } from '../web3/asyncActions'
+import { Stage, LoadingStage, NotificationTopic, TimeOutReasons } from '../../constants'
+import {
+  receiveAssessor,
+  receiveAssessment,
+  updateAssessmentVariable,
+  beginLoadingAssessments,
+  endLoadingAssessments,
+  setAssessmentAsInvalid
+} from './actions'
 
 // setup ipfs api
+const ethereumjsABI = require('ethereumjs-abi')
 const ipfsAPI = require('ipfs-api')
 const ipfs = ipfsAPI('ipfs.infura.io', '5001', {protocol: 'https'})
 
@@ -24,8 +24,7 @@ export function hashScoreAndSalt (_score, _salt) {
   ).toString('hex')
 }
 
-// ============== async actions ===================
-
+// async actions
 export function confirmAssessor (assessmentAddress, customReact = false) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
@@ -251,7 +250,7 @@ export function reconstructAssessment (assessmentAddress, pastNotifications) {
       }
     }
     let reconstructedAssessment = {
-      assessmentAddress,
+      address: assessmentAddress,
       stage,
       userStage,
       violation,
@@ -404,7 +403,7 @@ export function fetchAssessmentData (assessmentAddress) {
           console.log('no violation')
       }
       dispatch(receiveAssessment({
-        assessmentAddress,
+        address: assessmentAddress,
         cost,
         checkpoint,
         stage,
@@ -541,61 +540,5 @@ export function processEvent (user, sender, topic, blockNumber) {
       default:
         console.log('no condition applied!', user, sender, topic)
     }
-  }
-}
-
-export function setCardVisibility (assessmentAddress, hiddenStatus) {
-  return async (dispatch, getState) => {
-    dispatch(updateAssessmentVariable(assessmentAddress, 'hidden', hiddenStatus))
-  }
-}
-
-export function receiveAssessor (assessmentAddress, assessor) {
-  return {
-    type: RECEIVE_ASSESSOR,
-    assessmentAddress,
-    assessor
-  }
-}
-
-export function receiveAssessment (assessment) {
-  return {
-    type: RECEIVE_ASSESSMENT,
-    assessment
-  }
-}
-
-export function updateAssessmentVariable (assessmentAddress, name, value) {
-  return {
-    type: UPDATE_ASSESSMENT_VARIABLE,
-    assessmentAddress,
-    name,
-    value
-  }
-}
-
-export function removeAssessment (assessmentAddress) {
-  return {
-    type: REMOVE_ASSESSMENT,
-    assessmentAddress
-  }
-}
-
-export function beginLoadingAssessments () {
-  return {
-    type: BEGIN_LOADING_ASSESSMENTS
-  }
-}
-
-export function endLoadingAssessments () {
-  return {
-    type: END_LOADING_ASSESSMENTS
-  }
-}
-
-export function setAssessmentAsInvalid (assessmentAddress) {
-  return {
-    type: SET_ASSESSMENT_AS_INVALID,
-    assessmentAddress
   }
 }

@@ -1,4 +1,4 @@
-import {Action} from '../actions/navigationActions'
+import { Action } from './actions'
 
 export type TState  = {
   dashboardTab: 'Current' | 'Available' | 'Past'
@@ -12,6 +12,7 @@ export type TState  = {
   inputBar: string,
   showHiddenCards: boolean
 }
+
 const initialState:TState = {
   dashboardTab: 'Current',
   mainDisplay: 'Main',
