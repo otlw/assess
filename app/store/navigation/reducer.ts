@@ -1,6 +1,6 @@
 import { Action } from './actions'
 
-export type TState  = {
+export type TState = {
   dashboardTab: 'Current' | 'Available' | 'Past'
   mainDisplay: 'Main' | 'UnlockMetamask' | 'NoMetamask' | 'UndeployedNetwork'
   notificationBar:

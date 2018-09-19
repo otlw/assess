@@ -1,11 +1,21 @@
 import extend from 'xtend'
-import {
-  SAVE_TRANSACTION,
-  UPDATE_TRANSACTION,
-  REMOVE_TRANSACTION
-} from './actions'
 
-let initialState = {}
+import { Action } from './actions'
+
+export type Transaction = {
+  sender: string,
+  txHash: string,
+  address: string,
+  data: string,
+  status: 'Tx published' | 'Tx confirmed' | 'Tx failed',
+  time: number  
+}
+
+export type TState = {
+  [prop: string]: Transaction
+}
+
+let initialState:TState = {}
 
 // state will look like this:
 // state = {
@@ -20,26 +30,26 @@ let initialState = {}
 //   }
 // }
 
-function transactions (state = initialState, action) {
+function transactions (state = initialState, action:Action):TState {
   switch (action.type) {
-    case SAVE_TRANSACTION:
+    case 'SAVE_TRANSACTION':
       return {
         ...state,
         [action.txHash]: {
           sender: action.sender,
           txHash: action.txHash,
-          address: action.recipientAddress,
+          address: action.address,
           data: action.data,
           status: 'Tx published',
           time: Date.now()
         }
       }
-    case UPDATE_TRANSACTION:
+    case 'UPDATE_TRANSACTION':
       return {
         ...state,
         [action.txHash]: extend(state[action.txHash], {status: action.status})
       }
-    case REMOVE_TRANSACTION: {
+    case 'REMOVE_TRANSACTION': {
       let newState = {...state}
       delete newState[action.txHash]
       return newState
