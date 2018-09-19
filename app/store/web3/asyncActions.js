@@ -3,6 +3,7 @@ import { getInstance, hmmmToAha, getLocalStorageKey, getBlockDeployedAt } from '
 import { networkName, LoadingStage } from '../../constants'
 import { processEvent } from '../assessment/asyncActions'
 import { setMainDisplay } from '../navigation/actions'
+import {receiveAllAssessments} from '../assessment/actions.ts'
 import { web3Connected, web3EventsConnected, web3Disconnected, receiveVariable, receivePersistedState } from './actions'
 
 var Dagger = require('eth-dagger')
@@ -86,7 +87,9 @@ const loadPersistedState = (networkID, userAddress, web3) => {
         return undefined
       }
       let persistedState = JSON.parse(serializedState)
-      console.log('loaded persistedState ', persistedState)
+      if (persistedState.assessments) {
+        dispatch(receiveAllAssessments(persistedState.assessments))
+      }
       dispatch(receivePersistedState(persistedState))
     } catch (e) {
       console.log('ERROR reading from localStorage')

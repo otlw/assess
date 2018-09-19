@@ -1,13 +1,4 @@
-import {
-  BEGIN_LOADING_ASSESSMENTS,
-  END_LOADING_ASSESSMENTS
-} from '../assessment/actions'
-
-import {
-  BEGIN_LOADING_CONCEPTS,
-  END_LOADING_CONCEPTS
-} from '../concept/actions'
-
+import {Actions} from './actions'
 import { LoadingStage } from '../../constants'
 
 let initialState = {
@@ -21,25 +12,25 @@ let initialState = {
   }
 }
 
-function loading (state = initialState, action) {
+function loading (state = initialState, action:Actions) {
   switch (action.type) {
-    case BEGIN_LOADING_ASSESSMENTS:
+    case "BEGIN_LOADING_ASSESSMENTS":
       return {
         ...state,
         assessments: LoadingStage.Loading
       }
-    case END_LOADING_ASSESSMENTS: {
+    case "END_LOADING_ASSESSMENTS": {
       return {
         ...state,
         assessments: LoadingStage.Done
       }
     }
-    case BEGIN_LOADING_CONCEPTS:
+    case "BEGIN_LOADING_CONCEPTS":
       return {
         ...state,
         concepts: LoadingStage.Loading
       }
-    case END_LOADING_CONCEPTS: {
+    case "END_LOADING_CONCEPTS": {
       return {
         ...state,
         concepts: LoadingStage.Done

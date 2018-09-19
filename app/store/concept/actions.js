@@ -9,14 +9,3 @@ export function receiveConcepts (concepts) {
   }
 }
 
-export function beginLoadingConcepts () {
-  return {
-    type: BEGIN_LOADING_CONCEPTS
-  }
-}
-
-export function endLoadingConcepts () {
-  return {
-    type: END_LOADING_CONCEPTS
-  }
-}

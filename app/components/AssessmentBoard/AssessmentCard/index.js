@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import AssessmentCard from './AssessmentCard.js'
 
-import { setCardVisibility } from '../../../store/assessment/actions.js'
+import { setCardVisibility } from '../../../store/assessment/actions'
 
 const mapDispatchToProps = {
   setCardVisibility
