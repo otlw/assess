@@ -4,6 +4,7 @@ import { networkName, LoadingStage } from '../../constants'
 import { processEvent } from '../assessment/asyncActions'
 import { setMainDisplay } from '../navigation/actions'
 import {receiveAllAssessments} from '../assessment/actions.ts'
+import {receiveConcepts} from '../concept/actions.ts'
 import { web3Connected, web3EventsConnected, web3Disconnected, receiveVariable, receivePersistedState } from './actions'
 
 var Dagger = require('eth-dagger')
@@ -89,6 +90,9 @@ const loadPersistedState = (networkID, userAddress, web3) => {
       let persistedState = JSON.parse(serializedState)
       if (persistedState.assessments) {
         dispatch(receiveAllAssessments(persistedState.assessments))
+      }
+      if (persistedState.concepts) {
+        dispatch(receiveConcepts(persistedState.concepts))
       }
       dispatch(receivePersistedState(persistedState))
     } catch (e) {
