@@ -1,6 +1,7 @@
 import { getInstance } from '../../utils'
 import { sendAndReactToTransaction } from '../transaction/asyncActions'
-import { receiveConcepts, beginLoadingConcepts, endLoadingConcepts } from './actions'
+import { receiveConcepts } from './actions'
+import { beginLoadingConcepts, endLoadingConcepts } from '../loading/actions.ts'
 
 export function loadConceptsFromConceptRegistery () {
   return async (dispatch, getState) => {

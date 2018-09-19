@@ -7,10 +7,9 @@ import {
   receiveAssessor,
   receiveAssessment,
   updateAssessmentVariable,
-  beginLoadingAssessments,
-  endLoadingAssessments,
   setAssessmentAsInvalid
 } from './actions'
+import { beginLoadingAssessments, endLoadingAssessments } from '../loading/actions'
 
 // setup ipfs api
 const ethereumjsABI = require('ethereumjs-abi')
