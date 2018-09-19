@@ -250,7 +250,7 @@ export function reconstructAssessment (assessmentAddress, pastNotifications) {
       }
     }
     let reconstructedAssessment = {
-      assessmentAddress,
+      address: assessmentAddress,
       stage,
       userStage,
       violation,
@@ -403,7 +403,7 @@ export function fetchAssessmentData (assessmentAddress) {
           console.log('no violation')
       }
       dispatch(receiveAssessment({
-        assessmentAddress,
+        address: assessmentAddress,
         cost,
         checkpoint,
         stage,
