@@ -1,6 +1,6 @@
 import { TState } from './reducer'
 
-export type Action =
+export type Actions =
   ReturnType<typeof web3Connected> |
   ReturnType<typeof web3EventsConnected> |
   ReturnType<typeof web3Disconnected> |
@@ -49,10 +49,10 @@ export function receiveVariable (name: string, value: any) {
 }
 
 interface IPersistedState {
-  [prop: string]: number | string | boolean | object
+  [prop: string]: number | string
 }
 // to save something from the chain in state
-export function receivePersistedState (persistedState: IPersistedState) {
+export function receivePersistedState (persistedState:IPersistedState) {
   let type: 'RECEIVE_PERSISTED_STATE' = 'RECEIVE_PERSISTED_STATE'
   return {
     type,

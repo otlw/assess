@@ -1,6 +1,6 @@
 import extend from 'xtend'
 
-import { Action } from './actions'
+import { Actions } from './actions'
 
 export type Transaction = {
   sender: string,
@@ -30,7 +30,7 @@ let initialState:TState = {}
 //   }
 // }
 
-function transactions (state = initialState, action:Action):TState {
+function transactions (state = initialState, action:Actions):TState {
   switch (action.type) {
     case 'SAVE_TRANSACTION':
       return {

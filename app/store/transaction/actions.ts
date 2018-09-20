@@ -1,6 +1,6 @@
 import { Transaction } from './reducer'
 
-export type Action =
+export type Actions =
   ReturnType<typeof saveTransaction> |
   ReturnType<typeof updateTransaction> |
   ReturnType<typeof removeTransaction>

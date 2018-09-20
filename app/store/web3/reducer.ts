@@ -1,11 +1,12 @@
 import extend from 'xtend'
+import { Web3 } from 'web3'
 
-import { Action } from './actions'
+import { Actions } from './actions'
 
 export type TState = {
-  web3: {[prop: string]: any},
+  web3: Web3,
   isConnected: boolean,
-  web3events: {[prop: string]: any},
+  web3events: Web3,
   webSocketIsConnected: boolean,
   web3_version: string,
   userAddress: string,
@@ -30,7 +31,7 @@ let initialState:TState = {
   deployedConceptRegistryAt: ''
 }
 
-function ethereum (state = initialState, action:Action) {
+function ethereum (state = initialState, action:Actions) {
   switch (action.type) {
     case 'WEB3_CONNECTED':
       return {
