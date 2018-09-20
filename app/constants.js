@@ -33,13 +33,6 @@ export const Stage = Object.freeze({
   Burned: 5
 })
 
-export const LoadingStage = Object.freeze({
-  None: 0,
-  Loading: 1,
-  Error: 3,
-  Done: 4
-})
-
 export function networkName (id) {
   switch (id) {
     case 1:

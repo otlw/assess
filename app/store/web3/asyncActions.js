@@ -1,6 +1,6 @@
 import Web3 from 'web3'
 import { getInstance, hmmmToAha, getLocalStorageKey, getBlockDeployedAt } from '../../utils'
-import { networkName, LoadingStage } from '../../constants'
+import { networkName } from '../../constants'
 import { processEvent } from '../assessment/asyncActions'
 import { setMainDisplay } from '../navigation/actions'
 import {receiveAllAssessments} from '../assessment/actions.ts'
@@ -120,8 +120,7 @@ const initializeEventWatcher = () => {
         // they come from an assessment the user is involved in AND one of the following
         // a) the user is looking at it
         // b) the user has already been on the dashboard page once
-        if ((getState().assessments[data.returnValues.sender] || data.returnValues.user === userAddress) &&
-             getState().loading.assessments >= LoadingStage.None) {
+        if ((getState().assessments[data.returnValues.sender] || data.returnValues.user === userAddress)) {
           dispatch(processEvent(
             data.returnValues.user,
             data.returnValues.sender,
@@ -154,7 +153,6 @@ const initializeEventWatcher = () => {
         // b) the user has already been on the dashboard page once
         if ((getState().assessments[decodedLog.sender] || decodedLog.user === userAddress)) {
           dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic)))
-          dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic), log.blockNumber))
         } else {
           console.log('not updating!')
         }

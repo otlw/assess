@@ -5,7 +5,6 @@ import assessments from './assessment/reducer'
 import concepts from './concept/reducer'
 import transactions from './transaction/reducer'
 import navigation from './navigation/reducer'
-import loading from './loading/reducer'
 
 export default combineReducers({
   form: reduxFormReducer,
@@ -13,6 +12,5 @@ export default combineReducers({
   assessments,
   concepts,
   transactions,
-  navigation,
-  loading
+  navigation
 })
