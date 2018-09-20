@@ -13,8 +13,7 @@ export function web3Connected (web3: TState['web3']) {
   return {
     type,
     payload: {
-      web3: web3,
-      version: web3.version
+      web3: web3
     }
   }
 }

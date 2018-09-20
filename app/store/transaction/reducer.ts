@@ -3,11 +3,11 @@ import extend from 'xtend'
 import { Actions } from './actions'
 
 export type Transaction = {
-  sender: string,
-  txHash: string,
-  address: string,
-  data: string,
-  status: 'Tx published' | 'Tx confirmed' | 'Tx failed',
+  sender: string
+  txHash: string
+  address: string
+  data: string
+  status: 'Tx published' | 'Tx confirmed' | 'Tx failed'
   time: number  
 }
 

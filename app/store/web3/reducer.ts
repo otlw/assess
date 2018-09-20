@@ -1,26 +1,27 @@
 import extend from 'xtend'
-import { Web3 } from 'web3'
+import Web3 from 'web3'
+var web3 = new Web3()
 
 import { Actions } from './actions'
 
 export type TState = {
-  web3: Web3,
-  isConnected: boolean,
-  web3events: Web3,
-  webSocketIsConnected: boolean,
-  web3_version: string,
-  userAddress: string,
-  networkID: number,
-  AhaBalance: number,
-  lastUpdatedAt: number,
-  deployedFathomTokenAt: string,
+  web3: Web3
+  isConnected: boolean
+  web3events: Web3
+  webSocketIsConnected: boolean
+  web3_version: string
+  userAddress: string
+  networkID: number
+  AhaBalance: number
+  lastUpdatedAt: number
+  deployedFathomTokenAt: string
   deployedConceptRegistryAt: string  
 }
 
 let initialState:TState = {
-  web3: {},
+  web3: web3,
   isConnected: false,
-  web3events: {},
+  web3events: web3,
   webSocketIsConnected: false,
   web3_version: 'none',
   userAddress: '',
