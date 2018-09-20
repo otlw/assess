@@ -1,4 +1,4 @@
-import {Assessment, TState} from './reducer'
+import {Assessment, AssessmentsState} from './reducer'
 export type Actions =
   ReturnType<typeof receiveAssessor> |
   ReturnType<typeof receiveAssessment> |
@@ -33,7 +33,7 @@ export function receiveAssessment (assessment:Assessment) {
   }
 }
 
-export function receiveAllAssessments (assessments: TState) {
+export function receiveAllAssessments (assessments: AssessmentsState) {
   let type: "RECEIVE_ALL_ASSESSMENTS" = "RECEIVE_ALL_ASSESSMENTS"
   return {
     type,
