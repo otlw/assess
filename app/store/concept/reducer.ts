@@ -1,5 +1,5 @@
 import {Actions} from './actions'
-export type TState = {
+export type ConceptsState = {
   [prop: string]: {
     description: string
     learnMore: string
@@ -8,7 +8,7 @@ export type TState = {
 }
 let initialState = {}
 
-function concepts (state = initialState, action:Actions):TState {
+export function ConceptsReducer (state = initialState, action:Actions):ConceptsState {
   switch (action.type) {
     case "RECEIVE_CONCEPTS":
       return action.concepts
@@ -16,5 +16,3 @@ function concepts (state = initialState, action:Actions):TState {
       return state
   }
 }
-
-export default concepts

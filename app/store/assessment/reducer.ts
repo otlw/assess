@@ -17,34 +17,13 @@ export type Assessment = {
     refunded: boolean
     hidden: boolean,
 }
-export type TState = {
+export type AssessmentsState = {
   [prop:string]: Assessment
 }
 
-let initialState:TState = {
-}
+let initialState:AssessmentsState = {}
 
-/*
-  further assessments are stored like this:
-
-address : {
-  cost: 0
-  size: 5,
-  assessee: 0x...,
-  stage: [0,4]
-  finalScore: [-127, 127],
-  userStage: 0,
-  data: {
-     address: dataString,
-     ...
-  },
-  payout: 20,
-  violation: false,
-  refunded: false
-  hidden: false
-}
- */
-function assessments (state = initialState, action:Actions):TState {
+export function AssessmentsReducer (state = initialState, action:Actions):AssessmentsState {
   switch (action.type) {
     case "RECEIVE_ASSESSMENT": {
       let assessmentAddress = action.assessment.address
@@ -85,5 +64,3 @@ function assessments (state = initialState, action:Actions):TState {
       return state
   }
 }
-
-export default assessments
