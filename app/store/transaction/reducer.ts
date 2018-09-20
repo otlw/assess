@@ -11,11 +11,11 @@ export type Transaction = {
   time: number  
 }
 
-export type TState = {
+export type TransactionsState = {
   [prop: string]: Transaction
 }
 
-let initialState:TState = {}
+let initialState:TransactionsState = {}
 
 // state will look like this:
 // state = {
@@ -30,7 +30,7 @@ let initialState:TState = {}
 //   }
 // }
 
-function transactions (state = initialState, action:Actions):TState {
+export function TransactionsReducer (state = initialState, action:Actions):TransactionsState {
   switch (action.type) {
     case 'SAVE_TRANSACTION':
       return {
@@ -59,4 +59,3 @@ function transactions (state = initialState, action:Actions):TState {
   }
 }
 
-export default transactions

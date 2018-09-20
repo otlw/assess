@@ -4,7 +4,7 @@ var web3 = new Web3()
 
 import { Actions } from './actions'
 
-export type TState = {
+export type EthereumState = {
   web3: Web3
   isConnected: boolean
   web3events: Web3
@@ -18,7 +18,7 @@ export type TState = {
   deployedConceptRegistryAt: string  
 }
 
-let initialState:TState = {
+let initialState:EthereumState = {
   web3: web3,
   isConnected: false,
   web3events: web3,
@@ -32,7 +32,7 @@ let initialState:TState = {
   deployedConceptRegistryAt: ''
 }
 
-function ethereum (state = initialState, action:Actions) {
+export function EthereumReducer (state = initialState, action:Actions):EthereumState {
   switch (action.type) {
     case 'WEB3_CONNECTED':
       return {
@@ -50,7 +50,7 @@ function ethereum (state = initialState, action:Actions) {
     case 'WEB3_DISCONNECTED':
       return {
         ...state,
-        web3: {},
+        web3: web3, // {},
         isConnected: false,
         web3_version: 'none'
       }
@@ -67,5 +67,3 @@ function ethereum (state = initialState, action:Actions) {
       return state
   }
 }
-
-export default ethereum

@@ -1,4 +1,4 @@
-import { TState } from './reducer'
+import { EthereumState } from './reducer'
 
 export type Actions =
   ReturnType<typeof web3Connected> |
@@ -8,7 +8,7 @@ export type Actions =
   ReturnType<typeof receivePersistedState>
 
 // action to save the connedted web3-instance in state
-export function web3Connected (web3: TState['web3']) {
+export function web3Connected (web3: EthereumState['web3']) {
   let type: 'WEB3_CONNECTED' = 'WEB3_CONNECTED'
   return {
     type,
@@ -19,7 +19,7 @@ export function web3Connected (web3: TState['web3']) {
 }
 
 // action to save the websocket web3-instance in state
-export function web3EventsConnected (web3: TState['web3']) {
+export function web3EventsConnected (web3: EthereumState['web3']) {
   let type: 'WEB3EVENTS_CONNECTED' = 'WEB3EVENTS_CONNECTED'
   return {
     type,
@@ -47,10 +47,12 @@ export function receiveVariable (name: string, value: any) {
   }
 }
 
-interface IPersistedState {
-  [prop: string]: number | string
-}
 // to save something from the chain in state
+interface IPersistedState {
+  lastUpdatedAt: number
+  deployedFathomTokenAt: string
+  deployedConceptRegistryAt: string 
+}
 export function receivePersistedState (persistedState:IPersistedState) {
   let type: 'RECEIVE_PERSISTED_STATE' = 'RECEIVE_PERSISTED_STATE'
   return {
