@@ -8,7 +8,7 @@ export type ConceptsState = {
 }
 let initialState = {}
 
-function concepts (state = initialState, action:Actions):ConceptsState {
+export function ConceptsReducer (state = initialState, action:Actions):ConceptsState {
   switch (action.type) {
     case "RECEIVE_CONCEPTS":
       return action.concepts
@@ -16,5 +16,3 @@ function concepts (state = initialState, action:Actions):ConceptsState {
       return state
   }
 }
-
-export default concepts

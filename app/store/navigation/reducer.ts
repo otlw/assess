@@ -1,6 +1,6 @@
 import { Action } from './actions'
 
-export type TState  = {
+export type NavigationState = {
   dashboardTab: 'Current' | 'Available' | 'Past'
   mainDisplay: 'Main' | 'UnlockMetamask' | 'NoMetamask' | 'UndeployedNetwork'
   notificationBar:
@@ -13,7 +13,7 @@ export type TState  = {
   showHiddenCards: boolean
 }
 
-const initialState:TState = {
+const initialState:NavigationState = {
   dashboardTab: 'Current',
   mainDisplay: 'Main',
   notificationBar: {
@@ -23,7 +23,7 @@ const initialState:TState = {
   showHiddenCards: false
 }
 
-export default function navigation (state = initialState, action:Action):TState {
+export function NavigationReducer (state = initialState, action:Action):NavigationState {
   switch (action.type) {
     case 'SET_DASHBOARD_TAB':
       return {
