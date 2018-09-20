@@ -23,7 +23,7 @@ export type AssessmentsState = {
 
 let initialState:AssessmentsState = {}
 
-function assessments (state = initialState, action:Actions):AssessmentsState {
+export function AssessmentsReducer (state = initialState, action:Actions):AssessmentsState {
   switch (action.type) {
     case "RECEIVE_ASSESSMENT": {
       let assessmentAddress = action.assessment.address
@@ -64,5 +64,3 @@ function assessments (state = initialState, action:Actions):AssessmentsState {
       return state
   }
 }
-
-export default assessments

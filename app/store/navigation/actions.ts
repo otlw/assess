@@ -1,4 +1,4 @@
-import { TState } from './reducer'
+import { NavigationState } from './reducer'
 
 export type Action =
   ReturnType<typeof setDashboardTab> |
@@ -7,7 +7,7 @@ export type Action =
   ReturnType<typeof setInputBar> |
   ReturnType<typeof toggleHidden>
 
-export function setDashboardTab (dashboardTab: TState['dashboardTab']) {
+export function setDashboardTab (dashboardTab: NavigationState['dashboardTab']) {
   let type: 'SET_DASHBOARD_TAB' = 'SET_DASHBOARD_TAB'
   return {
     type,
@@ -15,7 +15,7 @@ export function setDashboardTab (dashboardTab: TState['dashboardTab']) {
   }
 }
 
-export function setMainDisplay (mainDisplay: TState["mainDisplay"]) {
+export function setMainDisplay (mainDisplay: NavigationState["mainDisplay"]) {
   let type:'SET_MAIN_DISPLAY' = 'SET_MAIN_DISPLAY'
   return {
     type,
@@ -23,7 +23,7 @@ export function setMainDisplay (mainDisplay: TState["mainDisplay"]) {
   }
 }
 
-export function setNotificationBar (notificationBar: TState["notificationBar"]) {
+export function setNotificationBar (notificationBar: NavigationState["notificationBar"]) {
   let type:'SET_NOTIFICATION_BAR' = 'SET_NOTIFICATION_BAR'
   return {
     type,
@@ -31,7 +31,7 @@ export function setNotificationBar (notificationBar: TState["notificationBar"]) 
   }
 }
 
-export function setInputBar (inputBar: TState['inputBar']) {
+export function setInputBar (inputBar: NavigationState['inputBar']) {
   let type:'SET_INPUT_BAR' = 'SET_INPUT_BAR'
   return {
     type,
