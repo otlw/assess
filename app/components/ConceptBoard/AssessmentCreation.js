@@ -133,7 +133,7 @@ export class AssessmentCreation extends Component {
         break
       case 3:
         BottomPartContent = h(cardBodyContainer, [
-          h(cardBodyColumnLeft, [
+          h(cardBodyColumnFull, [
             h(helpTextContainer, [
               h(cardTextObjectHelp, 'Click on the ‘Send’ button in MetaMask to send your assessment to Ethereum for creation.')
             ])
@@ -251,10 +251,12 @@ background-color: #F5F5FF;
 `
 
 const cardBodyColumnLeft = styled('div').attrs({className: 'flex flex-column w-50 h-100 justify-between'})`
-
 `
 
 const cardBodyColumnRight = styled('div').attrs({className: 'flex flex-column w-50 h-100 justify-between'})`
+`
+
+const cardBodyColumnFull = styled('div').attrs({className: 'flex flex-column w-100 h-100 justify-start'})`
 `
 
 const ButtonCaptionContainer = styled('div').attrs({className: 'flex flex-column w-70 align-center justify-between'})`
@@ -299,13 +301,17 @@ color: ${props => props.theme.secondary};
 
 const createAssessmentFooter = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-between pa3 shadow-4'})`
 margin-top: 1px;
-background-color: ##F5F5FF;
+background-color: #F5F5FF;
 `
-const createAssessmentButtonSecondary = styled('div').attrs({className: 'flex items-center justify-center w4 pv2 br-pill ba bg-transparent'})`
+const createAssessmentButtonSecondary = styled('div').attrs({className: 'flex items-center justify-center ph4 pv2 br-pill shadow-2'})`
 cursor:pointer;
+color: #322EE5;
+background-color: #fff;
 `
-const createAssessmentButtonPrimary = styled('div').attrs({className: 'flex flex-row items-center justify-center w4 pv2 br-pill ba bg-light-green dark-gray'})`
+const createAssessmentButtonPrimary = styled('div').attrs({className: 'flex flex-row items-center justify-center ph4 pv2 br-pill ttu uppercase shadow-2'})`
 cursor:pointer;
+color: #F1F2FB;
+background-color: #322EE5;
 `
 const CloseButton = styled('div').attrs({className: 'flex self-center items-center justify-center w4 h2 br4 ba'})`
 border-color: #C4C4C4;
