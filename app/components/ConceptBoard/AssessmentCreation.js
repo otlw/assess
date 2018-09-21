@@ -2,7 +2,6 @@ import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 
-import icoArrowForward from '../../assets/ico-arrow-forward.svg'
 import icoClose from '../../assets/ico-close.svg'
 
 export class AssessmentCreation extends Component {
@@ -268,7 +267,8 @@ const InputContainer = styled('div').attrs({className: 'flex flex-row justify-be
 const ButtonCaptionBox = styled('div').attrs({className: 'flex justify-between f6'})`
 `
 
-const ButtonGroup = styled('div').attrs({className: 'flex flex-row justify-between br1 ba b--mid-gray pv1 ph3 f4'})`
+const ButtonGroup = styled('div').attrs({className: 'flex flex-row justify-between br1 pv1 ph3 f4'})`
+background-color: #d6dffa;
 `
 const AmountPerAssessor = styled('input').attrs({className: 'flex w-25 tl pa1 bn bg-transparent '})`
 `
