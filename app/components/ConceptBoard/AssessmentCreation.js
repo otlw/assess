@@ -277,7 +277,7 @@ background-color: #d6dffa;
 `
 const AmountPerAssessor = styled('input').attrs({className: 'flex w-25 tl pa1 bn bg-transparent '})`
 `
-const AHAUnit = styled('div').attrs({className: 'mid-gray'})`
+const AHAUnit = styled('div').attrs({className: 'f5 mid-gray'})`
 `
 const helpTextContainer = styled('div').attrs({className: 'flex flex-column h-100 justify-end'})`
 `
