@@ -150,19 +150,17 @@ export class AssessmentCreation extends Component {
     }
 
     // set Navigation buttons according to step
-    let Navigation = (h(createAssessmentContainerNavigate, [
-      h(createAssessmentButtonCancel, {onClick: this.cancelButton.bind(this)}, [
-        h('img', {alt: 'icoClose', src: icoClose, className: 'h1 ma1'}),
-        h('span', 'Cancel')
+    let Navigation = (h(createAssessmentFooter, [
+      h(createAssessmentButtonSecondary, {onClick: this.cancelButton.bind(this)}, [
+        h('span', 'Previous')
       ]),
-      h(createAssessmentButtonNext, {onClick: this.nextButton.bind(this)}, [
-        h('span', 'Next'),
-        h('img', {alt: 'icoArrowForward', src: icoArrowForward})
+      h(createAssessmentButtonPrimary, {onClick: this.nextButton.bind(this)}, [
+        h('span', 'Next')
       ])
     ]))
 
     if ((this.state.step === 4)) {
-      Navigation = (h(createAssessmentContainerNavigate, [
+      Navigation = (h(createAssessmentFooter, [
         h(CloseButton, {onClick: this.cancelButton.bind(this)}, [
           h('img', {alt: 'icoClose', src: icoClose, className: 'h1 ma1'}),
           h('span', 'Close')
@@ -195,9 +193,9 @@ export class AssessmentCreation extends Component {
             h(createAssessmentTextDesc, "Let's create your assessment")
           ]),
           BottomPartContent
-        ])
-      ]),
-      Navigation
+        ]),
+        Navigation
+      ])
     ])
   }
 }
@@ -207,7 +205,6 @@ export default AssessmentCreation
 // styles
 
 const createAssessmentContainer = styled('div').attrs({ className: 'flex flex-column items-center w-100 h-100 bg-white pa2 tc' })`
-
 `
 
 const createAssessmentTextDesc = styled('h4').attrs({className: 'f4 fw4 tl mt4'})`
@@ -231,7 +228,7 @@ border:${props => props.past ? '1px solid ' + props.theme.primary : '1px solid #
 const createAssessmentWrapper = styled('div').attrs({className: 'flex flex-column w-100 h-100'})`
 max-width: 800px;`
 
-const createAssessmentCardContainer = styled('div').attrs({className: 'flex flex-column w-100 self-center ma3 br2 shadow-4'
+const createAssessmentCardContainer = styled('div').attrs({className: 'flex flex-column w-100 self-center mt3 br2 shadow-4'
 })`
 max-width: 800px;
 background: linear-gradient(180.1deg, #FFFFFF 0.05%, #E9F7FD 52.48%, #f5fcff 85.98%);
@@ -300,12 +297,14 @@ color: ${props => props.theme.secondary};
 
 // navigation buttons
 
-const createAssessmentContainerNavigate = styled('div').attrs({className: 'flex w-100 mw7 flex-row items-center self-center justify-around h3'})`
+const createAssessmentFooter = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-between pa3 shadow-4'})`
+margin-top: 1px;
+background-color: ##F5F5FF;
 `
-const createAssessmentButtonCancel = styled('div').attrs({className: 'flex items-center justify-center w4 pv2 br-pill ba bg-transparent'})`
+const createAssessmentButtonSecondary = styled('div').attrs({className: 'flex items-center justify-center w4 pv2 br-pill ba bg-transparent'})`
 cursor:pointer;
 `
-const createAssessmentButtonNext = styled('div').attrs({className: 'flex flex-row items-center justify-center w4 pv2 br-pill ba bg-light-green dark-gray'})`
+const createAssessmentButtonPrimary = styled('div').attrs({className: 'flex flex-row items-center justify-center w4 pv2 br-pill ba bg-light-green dark-gray'})`
 cursor:pointer;
 `
 const CloseButton = styled('div').attrs({className: 'flex self-center items-center justify-center w4 h2 br4 ba'})`
