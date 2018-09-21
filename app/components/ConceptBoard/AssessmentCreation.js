@@ -4,7 +4,6 @@ import h from 'react-hyperscript'
 
 import icoArrowForward from '../../assets/ico-arrow-forward.svg'
 import icoClose from '../../assets/ico-close.svg'
-import icoConfirm from '../../assets/ico-confirm.svg'
 
 export class AssessmentCreation extends Component {
   constructor (props) {
@@ -73,59 +72,77 @@ export class AssessmentCreation extends Component {
 
     switch (this.state.step) {
       case 1:
-        BottomPartContent = h(cardContainerInput, [
-          h(Question1, 'Your Assessment Fee'),
-          h(ButtonCaptionContainer, [
-            h(ButtonCaptionBox
-            ),
-            h(ButtonGroup, [
-              h(InputContainer, [
-                h(AmountPerAssessor, {
-                  onChange: this.setAmountPerAssessor.bind(this),
-                  value: this.state.amountPerAssessor,
-                  type: 'number',
-                  step: 1,
-                  min: 0
-                }),
-                h(AHAUnit, 'AHA')
+        BottomPartContent = h(cardBodyContainer, [
+          h(cardBodyColumnLeft, [
+            h(cardContainerParameters, [
+              h(cardLabel, 'ASSESSOR FEE'),
+              h(ButtonCaptionContainer, [
+                h(ButtonCaptionBox
+                ),
+                h(ButtonGroup, [
+                  h(InputContainer, [
+                    h(AmountPerAssessor, {
+                      onChange: this.setAmountPerAssessor.bind(this),
+                      value: this.state.amountPerAssessor,
+                      type: 'number',
+                      step: 1,
+                      min: 0
+                    }),
+                    h(AHAUnit, 'AHA')
+                  ])
+                ])
               ])
+            ]),
+            h(cardContainerParameters, [
+              h(cardLabel, 'NO. OF ASSESSORS'),
+              h(cardTextObject, '5')
+            ]),
+            h(cardContainerParameters, [
+              h(cardLabel, 'TOTAL COST'),
+              h(cardTextObject, this.state.amountPerAssessor * 5 + ' AHA')
             ])
           ]),
-          h(helpTextContainer, [
-            h(cardTextObjectHelp, 'This fee will be paid to each of your assessors.'),
-            h(cardTextObjectHelp, 'The more you pay, the more likely you will find assessors to assess you.')
+          h(cardBodyColumnRight, [
+            h(helpTextContainer, [
+              h(cardTextObjectHelp, 'This fee will be paid to each of your assessors.'),
+              h(cardTextObjectHelp, 'The more you pay, the more likely you will find assessors to assess you.')
+            ])
           ])
         ])
         break
       case 2:
-        BottomPartContent = h(cardContainerInput, [
-          h(cardContainerParameters, [
-            h(cardLabel, 'ASSESSEE'),
-            h(cardTextObject, 'YOU')
+        BottomPartContent = h(cardBodyContainer, [
+          h(cardBodyColumnLeft, [
+            h(cardContainerParameters, [
+              h(cardLabel, 'TRANSACTION COST'),
+              h(cardTextObject, this.state.gasEstimate.toString().substring(0, 8) + 'ETH')
+            ]),
+            h(cardContainerParameters, [
+              h(cardLabel, 'EQUAL TO'),
+              h(cardTextObject, this.state.gasEstimate.toString().substring(0, 8) + 'USD')
+            ])
           ]),
-          h(cardContainerParameters, [
-            h(cardLabel, 'NO. OF ASSESSORS'),
-            h(cardTextObject, '5')
-          ]),
-          h(cardContainerParameters, [
-            h(cardLabel, 'TOTAL COST'),
-            h(cardTextObject, this.state.amountPerAssessor * 5 + ' AHA')
+          h(cardBodyColumnRight, [
+            h(helpTextContainer, [
+              h(cardTextObjectHelp, 'Ethereum charges a transaction fee to process & create your assessment.'),
+              h(cardTextObjectHelp, 'Click ‘Send Transaction’ to launch MetaMask and send the transaction to Ethereum.'),
+              h(cardTextObjectHelp, 'Once completed, this step is irreversible.')
+            ])
           ])
         ])
         break
       case 3:
-        BottomPartContent = h(cardContainerInput, [
-          h(cardContainerCostEstimate, [
-            h(cardLabel, 'TRANSACTION COST'),
-            h(cardTextObject, this.state.gasEstimate.toString().substring(0, 8) + 'ETH')
-          ]),
-          h(cardTextObjectHelp, 'Ethereum charges a transaction fee to process & create your assessment. Once completed, this step is irreversible.'),
-          h(cardTextObjectHelp, "Clicking 'Next' will launch MetaMask so you can complete the transaction")
+        BottomPartContent = h(cardBodyContainer, [
+          h(cardBodyColumnLeft, [
+            h(helpTextContainer, [
+              h(cardTextObjectHelp, 'Click on the ‘Send’ button in MetaMask to send your assessment to Ethereum for creation.')
+            ])
+          ])
         ])
         break
       case 4:
-        BottomPartContent = h(cardContainerInput, [
-          h(cardTitle, 'Submitted & Pending'),
+        BottomPartContent = h(cardBodyColumnLeft, [
+          h(cardTextTitle, 'Submitted & Pending'),
           h(cardTextObjectHelp, 'Your assessment has been sent to the Ethereum blockchain and is pending confirmation.'),
           h(cardTextObjectHelp, 'We’ll notify you once the transaction has been confirmed & your assessment is created.')
         ])
@@ -165,18 +182,20 @@ export class AssessmentCreation extends Component {
     return h(createAssessmentContainer, [
       CancelCrossButton,
       h(createAssessmentContainerProgressBar, [
-        h(createAssessmentProgressBarObject, {current: this.state.step === 1, past: this.state.step > 1}, '1'),
-        h(createAssessmentProgressBarObject, {current: this.state.step === 2, past: this.state.step > 2}, '2'),
-        h(createAssessmentProgressBarObject, {current: this.state.step === 3, past: this.state.step > 3}, '3'),
-        h(createAssessmentProgressBarObjectFinal, {current: this.state.step === 4, past: this.state.step > 4, alt: 'icoConfirm', src: icoConfirm})
+        h(createAssessmentProgressBarObject, {current: this.state.step === 1, past: this.state.step > 1}),
+        h(createAssessmentProgressBarObject, {current: this.state.step === 2, past: this.state.step > 2}),
+        h(createAssessmentProgressBarObject, {current: this.state.step === 3, past: this.state.step > 3}),
+        h(createAssessmentProgressBarObject, {current: this.state.step === 4, past: this.state.step > 4})
       ]),
-      h(createAssessmentTitle, "Let's create your assessment"),
-      h(createAssessmentCardContainer, [
-        h(createAssessmentCardContainerConcept, [
-          h(cardLabelTitle, 'Concept'),
-          h(cardTitle, this.props.conceptName)
-        ]),
-        BottomPartContent
+      h(createAssessmentWrapper, [
+        h(createAssessmentCardContainer, [
+          h(createAssessmentHeader, [
+            h(cardLabelTitle, 'Concept'),
+            h(cardTextTitle, this.props.conceptName),
+            h(createAssessmentTextDesc, "Let's create your assessment")
+          ]),
+          BottomPartContent
+        ])
       ]),
       Navigation
     ])
@@ -187,49 +206,58 @@ export default AssessmentCreation
 
 // styles
 
-const createAssessmentContainer = styled('div').attrs({ className: 'flex flex-column w-100 h-100 bg-white pa2 tc' })`
+const createAssessmentContainer = styled('div').attrs({ className: 'flex flex-column items-center w-100 h-100 bg-white pa2 tc' })`
 
 `
 
-const createAssessmentTitle = styled('h3').attrs({className: 'f3 fw4 tc ttu uppercase '})`
+const createAssessmentTextDesc = styled('h4').attrs({className: 'f4 fw4 tl mt4'})`
+color: ${props => props.theme.primary};
 `
 
 // steps
 
-const createAssessmentContainerProgressBar = styled('div').attrs({className: 'flex flex-row self-center justify-around w-100 mw5'})`
+const createAssessmentContainerProgressBar = styled('div').attrs({className: 'flex flex-row self-center justify-around w-100 mw4'})`
 `
 
-const createAssessmentProgressBarObject = styled('div').attrs({className: 'flex items-center justify-center w2 h2 br-100 ba'})`
-background-color:${props => props.past ? props.theme.lightgreen : props.current ? '#C4C4C4' : 'transparent'}
-border:${props => props.past ? '1px solid ' + props.theme.lightgreen : '1px solid #C4C4C4'};
-`
-const createAssessmentProgressBarObjectFinal = styled('img').attrs({className: 'flex items-center justify-center pa1 br-100 ba'})`
-height: 22px;
-width: 22px;
-background-color:${props => props.past ? props.theme.lightgreen : props.current ? '#C4C4C4' : 'transparent'}
-border:${props => props.past ? '1px solid ' + props.theme.lightgreen : '1px solid #C4C4C4'};
+const createAssessmentProgressBarObject = styled('div').attrs({className: 'flex items-center justify-center br-100 ba'})`
+width: 10px;
+height: 10px;
+background-color:${props => props.past ? props.theme.primary : props.current ? '#322EE5' : 'transparent'}
+border:${props => props.past ? '1px solid ' + props.theme.primary : '1px solid #322EE5'};
 `
 
 // main card designs
 
-const createAssessmentCardContainer = styled('div').attrs({className: 'flex flex-column self-center ma3 br2 shadow-4'
-})`height: 420px; width: 300px;background: linear-gradient(180.1deg, #FFFFFF 0.05%, #E9F7FD 52.48%, #f5fcff 85.98%);
+const createAssessmentWrapper = styled('div').attrs({className: 'flex flex-column w-100 h-100'})`
+max-width: 800px;`
+
+const createAssessmentCardContainer = styled('div').attrs({className: 'flex flex-column w-100 self-center ma3 br2 shadow-4'
+})`
+max-width: 800px;
+background: linear-gradient(180.1deg, #FFFFFF 0.05%, #E9F7FD 52.48%, #f5fcff 85.98%);
 `
 
-const createAssessmentCardContainerConcept = styled('div').attrs({className: 'flex content-start flex-column w-100 h-50 pa3 bg-none'})`
+const createAssessmentHeader = styled('div').attrs({className: 'flex content-start flex-column w-100 pa4'})`
+background-color: #D7E0FA;
 `
-const cardLabelTitle = styled('div').attrs({className: 'flex flex-column tl ttu uppercase'})`
-color: #0A4A66;
+const cardLabelTitle = styled('h5').attrs({className: 'f5 fw4 tl ttu uppercase mv0'})`
+color: ${props => props.theme.primary};
 `
-const cardTitle = styled('h3').attrs({className: 'f3 fw4 mv1 w-100 tl'})`
-color: #117099;
-`
-
-const cardContainerInput = styled('div').attrs({className: 'flex flex-column h-100 pa3 justify-between bg-lightest-blue'})`
+const cardTextTitle = styled('h3').attrs({className: 'f2 fw4 mt2 mb0 w-100 tl'})`
+color: ${props => props.theme.primary};
 `
 
-// step 1
-const Question1 = styled('div').attrs({className: 'f5 lh-copy dark-gray tl ttu uppercase'})`
+const cardBodyContainer = styled('div').attrs({className: 'flex flex-row w-100 h-100 pa4'})`
+min-height:360px;
+background-color: #F5F5FF;
+
+`
+
+const cardBodyColumnLeft = styled('div').attrs({className: 'flex flex-column w-50 h-100 justify-between'})`
+
+`
+
+const cardBodyColumnRight = styled('div').attrs({className: 'flex flex-column w-50 h-100 justify-between'})`
 `
 
 const ButtonCaptionContainer = styled('div').attrs({className: 'flex flex-column w-70 align-center justify-between'})`
@@ -250,25 +278,20 @@ const AHAUnit = styled('div').attrs({className: 'mid-gray'})`
 const helpTextContainer = styled('div').attrs({className: 'flex flex-column h-100 justify-end'})`
 `
 
-const cardTextObjectHelp = styled('h6').attrs({className: 'flex f6 fw4 lh-copy tl mv2'})`
+const cardTextObjectHelp = styled('h5').attrs({className: 'flex f5 fw4 lh-copy tl mv2'})`
 color:#0A4A66;
 `
 
 // step 2
 
-const cardContainerParameters = styled('div').attrs({className: 'flex w-100 flex-column items-start fw4'})`
+const cardContainerParameters = styled('div').attrs({className: 'flex w-100 flex-column items-start fw4 mv3'})`
 `
 
 const cardLabel = styled('h6').attrs({className: 'f5 fw4 tl mv1'})`
-color: #0A4A66;
+color: ${props => props.theme.primary};
 `
 const cardTextObject = styled('h4').attrs({className: 'f4 fw4 tl mv1'})`
-color: #117099;
-`
-
-// step 3
-
-const cardContainerCostEstimate = styled('div').attrs({className: 'flex w-100 flex-column self-center'})`
+color: ${props => props.theme.secondary};
 `
 
 // step 4
