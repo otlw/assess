@@ -11,7 +11,7 @@ import { HashRouter, Route } from 'react-router-dom'
 import styled, {ThemeProvider} from 'styled-components'
 
 const theme = {
-  primary: '#546e7a',
+  primary: '#322EE5',
   light: '#819ca9',
   veryLight: '#b8cad3',
   dark: '#29434e',
