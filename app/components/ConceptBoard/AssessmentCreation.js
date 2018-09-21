@@ -177,12 +177,14 @@ export class AssessmentCreation extends Component {
     }
 
     return h(createAssessmentContainer, [
-      CancelCrossButton,
-      h(createAssessmentContainerProgressBar, [
-        h(createAssessmentProgressBarObject, {current: this.state.step === 1, past: this.state.step > 1}),
-        h(createAssessmentProgressBarObject, {current: this.state.step === 2, past: this.state.step > 2}),
-        h(createAssessmentProgressBarObject, {current: this.state.step === 3, past: this.state.step > 3}),
-        h(createAssessmentProgressBarObject, {current: this.state.step === 4, past: this.state.step > 4})
+      h(createAssessmentTopWrapper, [
+        h(createAssessmentContainerProgressBar, [
+          h(createAssessmentProgressBarObject, {current: this.state.step === 1, past: this.state.step > 1}),
+          h(createAssessmentProgressBarObject, {current: this.state.step === 2, past: this.state.step > 2}),
+          h(createAssessmentProgressBarObject, {current: this.state.step === 3, past: this.state.step > 3}),
+          h(createAssessmentProgressBarObject, {current: this.state.step === 4, past: this.state.step > 4})
+        ]),
+        CancelCrossButton
       ]),
       h(createAssessmentWrapper, [
         h(createAssessmentCardContainer, [
@@ -212,7 +214,10 @@ color: ${props => props.theme.primary};
 
 // steps
 
-const createAssessmentContainerProgressBar = styled('div').attrs({className: 'flex flex-row self-center justify-around w-100 mw4'})`
+const createAssessmentTopWrapper = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-center'})`
+`
+
+const createAssessmentContainerProgressBar = styled('div').attrs({className: 'flex flex-row self-center content-center justify-around w-100 mw4'})`
 `
 
 const createAssessmentProgressBarObject = styled('div').attrs({className: 'flex items-center justify-center br-100 ba'})`
@@ -258,7 +263,7 @@ const cardBodyColumnRight = styled('div').attrs({className: 'flex flex-column w-
 const cardBodyColumnFull = styled('div').attrs({className: 'flex flex-column w-100 h-100 justify-start'})`
 `
 
-const ButtonCaptionContainer = styled('div').attrs({className: 'flex flex-column w-70 align-center justify-between'})`
+const ButtonCaptionContainer = styled('div').attrs({className: 'flex flex-column w-50 align-center justify-between'})`
 `
 
 const InputContainer = styled('div').attrs({className: 'flex flex-row justify-between items-center pv2'})`
@@ -267,7 +272,7 @@ const InputContainer = styled('div').attrs({className: 'flex flex-row justify-be
 const ButtonCaptionBox = styled('div').attrs({className: 'flex justify-between f6'})`
 `
 
-const ButtonGroup = styled('div').attrs({className: 'flex flex-row justify-between br1 pv1 ph3 f4'})`
+const ButtonGroup = styled('div').attrs({className: 'flex flex-row justify-between br1 ph3 f4'})`
 background-color: #d6dffa;
 `
 const AmountPerAssessor = styled('input').attrs({className: 'flex w-25 tl pa1 bn bg-transparent '})`
@@ -318,7 +323,7 @@ border-color: #C4C4C4;
 background-color:#C4C4C4;
 cursor:pointer;
 `
-const CancelCrossContainer = styled('div').attrs({className: 'flex justify-end w-100 h2'})`
+const CancelCrossContainer = styled('div').attrs({className: 'flex justify-end w-auto h2'})`
 `
 const CancelCross = styled('img').attrs({className: 'ma2 f4'})`
 cursor:pointer;
