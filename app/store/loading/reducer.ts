@@ -23,17 +23,6 @@ function loading (state = initialState, action:Actions):LoadingState {
         assessments: LoadingStage.Done
       }
     }
-    case "BEGIN_LOADING_CONCEPTS":
-      return {
-        ...state,
-        concepts: LoadingStage.Loading
-      }
-    case "END_LOADING_CONCEPTS": {
-      return {
-        ...state,
-        concepts: LoadingStage.Done
-      }
-    }
     default:
       return state
   }

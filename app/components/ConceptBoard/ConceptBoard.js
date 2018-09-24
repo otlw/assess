@@ -23,31 +23,31 @@ export class ConceptBoard extends Component {
   }
 
   render () {
-    if (this.props.loadedConcepts) {
-      let concepts = this.props.concepts
-
-      let ConceptHeader = h(ConceptHeaderDefault, 'Choose a Concept')
-      if (this.state.selectedConceptAddress !== '0') {
-        ConceptHeader = h(AssessmentCreation, {
-          conceptData: this.props.concepts[this.state.selectedConceptAddress],
-          conceptAddress: this.state.selectedConceptAddress,
-          loadConceptContractAndCreateAssessment: this.props.loadConceptContractAndCreateAssessment,
-          estimateGasCost: this.props.estimateAssessmentCreationGasCost,
-          cancelCreation: this.cancelCreation.bind(this),
-          setNotificationBar: this.props.setNotificationBar
-        })
-      }
-
-      return h('div', [
-        h(ConceptHeaderBox, [
-          ConceptHeader
-        ]),
-        // only display list when no concept is selected
-        this.state.selectedConceptAddress === '0' ? h(ConceptList, {concepts, selectConceptAddress: this.selectConceptAddress.bind(this)}) : null
-      ])
-    } else {
+    if (Object.keys(this.props.concepts).length === 0) {
       return h('div', 'Loading Concepts')
     }
+
+    let concepts = this.props.concepts
+
+    let ConceptHeader = h(ConceptHeaderDefault, 'Choose a Concept')
+    if (this.state.selectedConceptAddress !== '0') {
+      ConceptHeader = h(AssessmentCreation, {
+        conceptData: this.props.concepts[this.state.selectedConceptAddress],
+        conceptAddress: this.state.selectedConceptAddress,
+        loadConceptContractAndCreateAssessment: this.props.loadConceptContractAndCreateAssessment,
+        estimateGasCost: this.props.estimateAssessmentCreationGasCost,
+        cancelCreation: this.cancelCreation.bind(this),
+        setNotificationBar: this.props.setNotificationBar
+      })
+    }
+
+    return h('div', [
+      h(ConceptHeaderBox, [
+        ConceptHeader
+      ]),
+      // only display list when no concept is selected
+      this.state.selectedConceptAddress === '0' ? h(ConceptList, {concepts, selectConceptAddress: this.selectConceptAddress.bind(this)}) : null
+    ])
   }
 }
 

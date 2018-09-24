@@ -1,11 +1,9 @@
 import { getInstance } from '../../utils'
 import { sendAndReactToTransaction } from '../transaction/asyncActions'
 import { receiveConcepts } from './actions'
-import { beginLoadingConcepts, endLoadingConcepts } from '../loading/actions.ts'
 
 export function loadConceptsFromConceptRegistery () {
   return async (dispatch, getState) => {
-    dispatch(beginLoadingConcepts())
     const conceptRegistryInstance = getInstance.conceptRegistry(getState())
     // get concepts from registry
     let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {
@@ -47,7 +45,6 @@ export function loadConceptsFromConceptRegistery () {
       return (concepts[conceptAddress] = decodedConceptData)
     }))
     dispatch(receiveConcepts(concepts))
-    dispatch(endLoadingConcepts())
   }
 }
 
