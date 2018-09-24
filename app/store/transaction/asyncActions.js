@@ -3,7 +3,7 @@ import { saveTransaction, updateTransaction } from './actions'
 /* sends a transactions to the chain, and saves it into state
    Params:
    @dispatch is needed to send the updates to state
-   @act: an object describing the transaction to be sent: {method: functionToBeCalled, args: parameters to be passed}
+   @act is a function that sends a tx to the chain (i.e., it calls a contract method, supplies any expected parameters)
    @userAddress, @assessmentAddress and @saveData are used to mark the place where the transaction was triggered
    @confirmationCallback: a function to be called once the transaction has been confirmed
 */
