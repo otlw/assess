@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { saveTransaction, updateTransaction } from './actions'
 
 /* sends a transactions to the chain, and saves it into state
@@ -45,3 +46,4 @@ export function sendAndReactToTransaction (dispatch, act, saveData, userAddress,
       confirmationCallback(true, err)
     })
 }
+/* eslint-enable */
