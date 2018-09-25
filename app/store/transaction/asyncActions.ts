@@ -9,7 +9,7 @@ import { saveTransaction, updateTransaction } from './actions'
    @confirmationCallback: a function to be called once the transaction has been confirmed
 */
 
-export function sendAndReactToTransaction (dispatch: any, act: any, saveData: string, userAddress: string, assessmentAddress: string, confirmationCallback: any) {
+export function sendAndReactToTransaction (dispatch: any, act: any, saveData: 'meetingPointChange' | 'refund', userAddress: string, assessmentAddress: string, confirmationCallback: any) {
 
   // act.method(...act.args).send({from: userAddress, gas: gas || 320000})
   act()
