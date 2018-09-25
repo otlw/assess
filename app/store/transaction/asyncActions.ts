@@ -8,17 +8,18 @@ import { saveTransaction, updateTransaction } from './actions'
    @userAddress, @assessmentAddress and @saveData are used to mark the place where the transaction was triggered
    @confirmationCallback: a function to be called once the transaction has been confirmed
 */
-export function sendAndReactToTransaction (dispatch, act, saveData, userAddress, assessmentAddress, confirmationCallback) {
+
+export function sendAndReactToTransaction (dispatch: any, act: any, saveData: string, userAddress: string, assessmentAddress: string, confirmationCallback: any) {
 
   // act.method(...act.args).send({from: userAddress, gas: gas || 320000})
   act()
-    .on('transactionHash', (hash) => {
+    .on('transactionHash', (hash: string) => {
 
       // right after the transaction is published
       // confirmationCallback(false, hash)
       dispatch(saveTransaction(assessmentAddress, userAddress, saveData, hash))
     })
-    .on('confirmation', (confirmationNumber, receipt) => {
+    .on('confirmation', (confirmationNumber: number, receipt: any) => {
 
       // TODO: choose a good confirmation number (kovan and rinkeby accept 2, but local textnet requires 8)
       // when the transaction is confirmed into a block
@@ -40,7 +41,7 @@ export function sendAndReactToTransaction (dispatch, act, saveData, userAddress,
         }
       }
     })
-    .on('error', (err) => {
+    .on('error', (err: Error) => {
       // when there is an error
       console.log('err', err)
       confirmationCallback(true, err)
