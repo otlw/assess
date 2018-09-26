@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { saveTransaction, updateTransaction } from './actions'
 import { Dispatch } from 'redux'
 import { TransactionReceipt, PromiEvent } from 'web3/types'
@@ -6,21 +5,21 @@ import { TransactionReceipt, PromiEvent } from 'web3/types'
 /* sends a transactions to the chain, and saves it into state
    Params:
    @dispatch is needed to send the updates to state
-   @act is a function that sends a tx to the chain (i.e., it calls a contract method, supplies any expected parameters)
+   @transaction is a function that sends a tx to the chain (i.e., it calls a contract method, supplies any expected parameters)
    @userAddress, @assessmentAddress and @saveData are used to mark the place where the transaction was triggered
    @confirmationCallback: a function to be called once the transaction has been confirmed
 */
 
 export function sendAndReactToTransaction (
   dispatch: Dispatch<any, any>, 
-  act: () => PromiEvent<any>,
+  transaction: () => PromiEvent<any>,
   saveData: 'makeAssessment' | 'meetingPointChange' | 'refund', 
   userAddress: string, 
   assessmentAddress: string, 
-  confirmationCallback: (status: boolean, receipt: TransactionReceipt) => any) {
+  confirmationCallback: (status: boolean, receipt: TransactionReceipt | Error) => void) {
 
-  // act.method(...act.args).send({from: userAddress, gas: gas || 320000})
-  act()
+  // transaction.method(...transaction.args).send({from: userAddress, gas: gas || 320000})
+  transaction()
     .on('transactionHash', (hash: string) => {
 
       // right after the transaction is published
@@ -52,7 +51,6 @@ export function sendAndReactToTransaction (
     .on('error', (err: Error) => {
       // when there is an error
       console.log('err', err)
-      // confirmationCallback(true, err)
+      confirmationCallback(true, err)
     })
 }
-/* eslint-enable */
