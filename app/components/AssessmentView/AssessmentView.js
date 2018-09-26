@@ -71,17 +71,17 @@ export class AssessmentData extends Component {
             h(assessmentLabelBody, 'Meeting Point'),
             h(assessmentTextBody, [
               assessment.data
-                  ? h('a', {href: assessment.data}, assessment.data)
-                  : isAssessee
-                    ? 'You haven\'t set a meeting point'
-                    : 'No meeting point has been set yet']),
+                ? h('a', {href: assessment.data}, assessment.data)
+                : isAssessee
+                  ? 'You haven\'t set a meeting point'
+                  : 'No meeting point has been set yet']),
             h(assessmentRow, [
               assessment.assessee === this.props.userAddress
-                  ? h(MeetingPointEditBox, {
-                    assessee: assessment.assessee,
-                    assessmentAddress: assessment.address
-                  })
-                  : null
+                ? h(MeetingPointEditBox, {
+                  assessee: assessment.assessee,
+                  assessmentAddress: assessment.address
+                })
+                : null
             ])
           ]),
           h(assessmentObjectTextRight, [
