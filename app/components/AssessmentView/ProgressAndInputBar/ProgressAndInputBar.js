@@ -165,7 +165,7 @@ export class ProgressAndInputBar extends Component {
                 ? (
                   h(rowObjectInput, [
                     h(inputProgressBar, {
-                      placeholder: 'Input your score here, from 0 to 100',
+                      placeholder: 'From 0 - 100',
                       step: 0.5,
                       type: 'number',
                       onChange: this.setScore.bind(this)})
@@ -232,7 +232,7 @@ export const rowObjectButton = styled('div').attrs({className: 'flex w-auto item
 export const rowObjectText = styled('div').attrs({className: 'flex w-100 items-center justify-between br b--light-gray f5 gray'})`;
 `
 
-export const rowObjectInput = styled('div').attrs({className: 'flex w-100 h-100 items-center justify-end pv2 b--light-gray  f5 gray ttu uppercase'})`;
+export const rowObjectInput = styled('div').attrs({className: 'flex w-auto items-center justify-end b--light-gray  f5 gray ttu uppercase'})`;
 `
 
 export const buttonSubmit = styled('button').attrs({className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`
@@ -248,6 +248,8 @@ export const Feedback = styled.div`
   color:${props => props.invalidScoreRange ? 'red' : 'lightgrey'};
 `
 
-export const inputProgressBar = styled('input').attrs({className: 'flex w-80 h3 pv0 pl3 bg-light-gray bn '})`
+export const inputProgressBar = styled('input').attrs({className: 'flex w4 bn br2 pa2 mr2'})`
 outline: none;
+color: ${props => props.theme.primary};
+background-color: ${props => props.theme.tertiary};
 `
