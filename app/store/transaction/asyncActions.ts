@@ -1,5 +1,7 @@
 /* eslint-disable */
 import { saveTransaction, updateTransaction } from './actions'
+import { Dispatch } from 'redux'
+import { TransactionReceipt, PromiEvent } from 'web3/types'
 
 /* sends a transactions to the chain, and saves it into state
    Params:
@@ -9,7 +11,13 @@ import { saveTransaction, updateTransaction } from './actions'
    @confirmationCallback: a function to be called once the transaction has been confirmed
 */
 
-export function sendAndReactToTransaction (dispatch: any, act: any, saveData: 'meetingPointChange' | 'refund', userAddress: string, assessmentAddress: string, confirmationCallback: any) {
+export function sendAndReactToTransaction (
+  dispatch: Dispatch<any, any>, 
+  act: () => PromiEvent<any>,
+  saveData: 'makeAssessment' | 'meetingPointChange' | 'refund', 
+  userAddress: string, 
+  assessmentAddress: string, 
+  confirmationCallback: (status: boolean, receipt: TransactionReceipt) => any) {
 
   // act.method(...act.args).send({from: userAddress, gas: gas || 320000})
   act()
@@ -19,7 +27,7 @@ export function sendAndReactToTransaction (dispatch: any, act: any, saveData: 'm
       // confirmationCallback(false, hash)
       dispatch(saveTransaction(assessmentAddress, userAddress, saveData, hash))
     })
-    .on('confirmation', (confirmationNumber: number, receipt: any) => {
+    .on('confirmation', (confirmationNumber: number, receipt: TransactionReceipt) => {
 
       // TODO: choose a good confirmation number (kovan and rinkeby accept 2, but local textnet requires 8)
       // when the transaction is confirmed into a block
@@ -44,7 +52,7 @@ export function sendAndReactToTransaction (dispatch: any, act: any, saveData: 'm
     .on('error', (err: Error) => {
       // when there is an error
       console.log('err', err)
-      confirmationCallback(true, err)
+      // confirmationCallback(true, err)
     })
 }
 /* eslint-enable */
