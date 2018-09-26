@@ -190,7 +190,7 @@ background-color: ${props => props.theme.bgSecondary};
 const assessmentObjectText = styled('div').attrs({className: 'flex flex-column w-50  items-start justify-center self-start mv4'})`
 `
 
-const assessmentObjectTextRight = styled('div').attrs({className: 'flex flex-column w-auto  items-end justify-center self-start mv4'})`
+const assessmentObjectTextRight = styled('div').attrs({className: 'flex flex-column w-40  items-start justify-center self-start mv4'})`
 `
 
 // Commented out as we may need to re-implement this very soon
