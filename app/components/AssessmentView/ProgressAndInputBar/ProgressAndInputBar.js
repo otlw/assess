@@ -1,7 +1,6 @@
 import { Component } from 'react'
-import { TxList } from '../../TxList.js'
 import h from 'react-hyperscript'
-import { Stage, StageDisplayNames, PassiveStageDisplayNames } from '../../../constants.js'
+import { Stage, StageDisplayNames } from '../../../constants.js'
 import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
 import styled from 'styled-components'
 import icoClose from '../../../assets/ico-close.svg'
@@ -18,14 +17,14 @@ export class ProgressAndInputBar extends Component {
     // state is set to default score-salt only if the cache is empty for that assessment address
     if (cacheCommitData) {
       this.state = {
-        view: this.props.inputType || 'progressView',
+        view: this.props.inputType || 'stageView',
         score: Number(cacheCommitData.score),
         salt: cacheCommitData.salt,
         invalidScoreRange: false
       }
     } else {
       this.state = {
-        view: 'progressView',
+        view: 'stageView',
         score: 0,
         salt: 'hihi',
         invalidScoreRange: false
@@ -36,7 +35,7 @@ export class ProgressAndInputBar extends Component {
   setStakeAction () {
     this.setState({
       view: 'Stake',
-      displayText: 'Click to stake ' + this.props.cost + ' AHA and become an assessor.',
+      displayText: 'Please confirm your stake of ' + this.props.cost + ' AHA to join the assessment.',
       action: this.stake
     })
   }
@@ -44,7 +43,7 @@ export class ProgressAndInputBar extends Component {
   setCommitAction () {
     this.setState({
       view: 'Commit',
-      displayText: 'Enter the score you want to commit:',
+      displayText: 'Please input your score and confirm.',
       action: this.commit
     })
   }
@@ -52,14 +51,14 @@ export class ProgressAndInputBar extends Component {
   setRevealAction () {
     this.setState({
       view: 'Reveal',
-      displayText: 'Click the button to reveal your score',
+      displayText: 'Click the button to reveal your score.',
       action: this.reveal
     })
   }
 
   setProgressView () {
     this.setState({
-      view: 'progressView'
+      view: 'stageView'
     })
   }
 
@@ -98,37 +97,56 @@ export class ProgressAndInputBar extends Component {
     }
   }
 
-  storeData () {
-    this.props.storeDataOnAssessment(this.props.assessmentAddress, this.state.meetingPoint)
-    this.props.setInputBar('')
-  }
-
-  setMeetingPointToBeStored (e) {
-    this.setState({
-      meetingPoint: e.target.value.toString(),
-      action: this.storeData
-    })
-  }
-
   closeInputBar () {
     if (this.props.inputType) this.props.setInputBar('')
     else this.setProgressView()
   }
 
+  stageFunctions (stage) {
+    let stageFunctions = {
+      [Stage.Called]: this.setStakeAction.bind(this),
+      [Stage.Confirmed]: this.setCommitAction.bind(this),
+      [Stage.Committed]: this.setRevealAction.bind(this)
+    }
+    return stageFunctions(stage)
+  }
+
+  // helper function to return the right kind of actionBar
+  actionBar (assessmentStage) {
+    let stageTexts = {
+      [Stage.Called]: 'Click "Stake" to join the assessment.',
+      [Stage.Confirmed]: 'Please "Commit" your score within X hours/days', // TODO actually calculate difference between now and assessment.checkpoint
+      [Stage.Committed]: 'Please click "Reveal" to reveal your score and complete the assessment.'
+    }
+    let stageFunctions = {
+      [Stage.Called]: this.setStakeAction.bind(this),
+      [Stage.Confirmed]: this.setCommitAction.bind(this),
+      [Stage.Committed]: this.setRevealAction.bind(this)
+    }
+    return (
+      // ALEX work your magic here!
+      h('div', [
+        h('span', stageTexts[assessmentStage]),
+        h(containerProgressButton, [
+          h(buttonProgressActive, {
+            onClick: stageFunctions[assessmentStage]
+          }, StageDisplayNames[assessmentStage])
+        ])
+      ])
+    )
+  }
+
   render () {
     let view = this.props.inputType || this.state.view
+    let activeUser = this.props.userStage === this.props.stage
     switch (view) {
-      case 'progressView': {
+      case 'stageView': {
         // show overview with differently colored Buttons that indicate the activity of the stage
         // and the general progress of the assessment
         return (
           h(containerProgressBar, [
-            this.progressButton(Stage.Called, this.props.stage, this.props.userStage),
-            this.progressButton(Stage.Confirmed, this.props.stage, this.props.userStage),
-            this.progressButton(Stage.Committed, this.props.stage, this.props.userStage),
-            this.props.transactions && this.props.transactions.length > 0
-              ? h(TxList, {transactions: this.props.transactions})
-              : null
+            activeUser ? this.actionBar(this.props.stage)
+              : [h('div', 'Waiting for other assessors...')] // ALEX: Or maybe we don't display anything, as the text is already up in the statusBox
           ])
         )
       }
@@ -160,61 +178,9 @@ export class ProgressAndInputBar extends Component {
           ])
         )
       }
-      case 'editMeetingPoint': {
-        // add Meeting Point
-        return (
-          h(containerProgressBar, [
-            h(buttonClose, {onClick: this.closeInputBar.bind(this)}, [
-              h('img', {alt: 'icoClose', src: icoClose, className: ''})
-            ]),
-            h(rowObjectText, [
-              h(rowObjectInput, 'Add a meeting Point:'),
-              h(inputMeetingPoint, {
-                placeholder: 'e.g. a GitLab repo',
-                type: 'string',
-                onChange: this.setMeetingPointToBeStored.bind(this) })
-            ]),
-            h(buttonSubmit, {onClick: this.storeData.bind(this)}, 'Submit')
-          ])
-        )
-      }
       default:
         console.log('ERROR: invalid view type', this.state.view)
         return h('div', 'Ooopsi, something went wrong here!')
-    }
-  }
-
-  // helper function to return the right kind of progressButton
-  // past, present (active/passive), future
-  // dependent on stage, userRole, userStage
-  progressButton (phase, assessmentStage, userStage) {
-    let stageFunctions = {
-      [Stage.Called]: this.setStakeAction.bind(this),
-      [Stage.Confirmed]: this.setCommitAction.bind(this),
-      [Stage.Committed]: this.setRevealAction.bind(this)
-    }
-    if (phase < assessmentStage) {
-      // -> phase is completed:
-      return h(containerProgressButton, [
-        h(buttonProgressPast, PassiveStageDisplayNames[phase])
-      ])
-    } else if (phase === assessmentStage) {
-      // -> phase is not completed and...
-      if (userStage > assessmentStage) {
-        //  ...user is done already
-        return h(containerProgressBar, [h(buttonProgressInactive, PassiveStageDisplayNames[phase])])
-      } else {
-        // ...user needs to do something
-        return h(containerProgressButton, [
-          h(buttonProgressActive, {
-            onClick: stageFunctions[assessmentStage],
-            disabled: userStage === Stage.None
-          }, StageDisplayNames[assessmentStage])
-        ])
-      }
-    } else {
-      // -> phase is in the future
-      return h(containerProgressButton, [h(buttonProgressFuture, StageDisplayNames[phase])])
     }
   }
 }
@@ -279,10 +245,6 @@ export const Feedback = styled.div`
   font-size: 0.7em;
   font-style: italic;
   color:${props => props.invalidScoreRange ? 'red' : 'lightgrey'};
-`
-
-export const inputMeetingPoint = styled('input').attrs({className: 'flex w-50 h3 pv0 pl3 bg-light-gray bn '})`
-outline: none;
 `
 
 export const inputProgressBar = styled('input').attrs({className: 'flex w-80 h3 pv0 pl3 bg-light-gray bn '})`
