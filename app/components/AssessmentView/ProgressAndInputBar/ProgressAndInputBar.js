@@ -125,8 +125,8 @@ export class ProgressAndInputBar extends Component {
     }
     return (
       // ALEX work your magic here!
-      h('div', [
-        h('span', stageTexts[assessmentStage]),
+      h(rowObjectText, [
+        h(StageDescriptor, stageTexts[assessmentStage]),
         h(containerProgressButton, [
           h(buttonProgressActive, {
             onClick: stageFunctions[assessmentStage]
@@ -146,7 +146,7 @@ export class ProgressAndInputBar extends Component {
         return (
           h(containerProgressBar, [
             activeUser ? this.actionBar(this.props.stage)
-              : [h('div', 'Waiting for other assessors...')] // ALEX: Or maybe we don't display anything, as the text is already up in the statusBox
+              : [h(stageTexts, 'Waiting for other assessors...')] // ALEX: Or maybe we don't display anything, as the text is already up in the statusBox
           ])
         )
       }
@@ -157,7 +157,7 @@ export class ProgressAndInputBar extends Component {
         return (
           h(containerProgressBar, [
             h(buttonClose, {onClick: this.closeInputBar.bind(this)}, [
-              h('img', {alt: 'icoClose', src: icoClose})
+              h(imgClose, {alt: 'icoClose', src: icoClose})
             ]),
             h(rowObjectText, [
               h(StageDescriptor, this.state.displayText),
@@ -187,58 +187,59 @@ export class ProgressAndInputBar extends Component {
 
 export default ProgressAndInputBar
 
-export const containerProgressBar = styled('div').attrs({className: 'flex flex-row w-100 h3 items-center bt b--light-gray'})`
+export const containerProgressBar = styled('div').attrs({className: 'flex flex-row w-100 pa3 items-center shadow-3'})`
+margin-top: 1px;
+min-height: 64px;
 `
 
-export const buttonClose = styled('button').attrs({className: 'flex h-100 items-center justify-center ph4 br b--light-gray pointer'})`
+export const buttonClose = styled('button').attrs({className: 'flex h-100 items-center justify-center pa0 mr2 bg-transparent pointer br-100'})`
 transition:0.2s ease-in-out;
-border-top: 0px;
-border-left: 0px;
-border-bottom: 0px;
-:hover {background-color:#eee;}
+border: 1px solid transparent;
+width: 40px;
+height: 32px;
+:hover {border: 1px solid ${props => props.theme.primary};}
 `
+
+export const imgClose = styled('img').attrs({className: ''})`
+width: 16px;
+`
+
 export const ProgressButton = styled('button')`
   padding: 0.25em 1em;
   border: 2px solid palevioletred;
 `
 
-export const containerProgressButton = styled('div').attrs({className: 'flex w-100 items-center justify-center pv3  '})`
+export const containerProgressButton = styled('div').attrs({className: 'flex w-auto items-center justify-center'})`
 `
 
-export const buttonProgressPast = styled('button').attrs({className: 'flex pv2 ph3 items-center justify-center br-pill bn ttu uppercase pointer'})`
-color: #EAF7FD;
-background-color: hsla(155, 70%, 40%, 1);
+export const buttonProgressActive = styled('button').attrs({className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`
+color: ${props => props.theme.tertiary};
+background-color: ${props => props.theme.primary};
 `
 
-export const buttonProgressActive = styled('button').attrs({className: 'flex pv2 ph3 items-center justify-center br-pill bn ttu uppercase pointer'})`
-color: #EAF7FD;
-background-color: #0A4A66;
+export const stageTexts = styled('h5').attrs({className: 'f5 fw4 mv0'})`
+color: ${props => props.theme.primary};
 `
 
-export const buttonProgressInactive = styled('button').attrs({className: 'flex pv2 ph3 items-center justify-center br-pill bn ttu uppercase pointer'})`
-color: #EAF7FD;
-background-color: hsla(155, 70%, 40%, 1);
-`
-
-export const buttonProgressFuture = styled('button').attrs({className: 'flex pv2 ph3 items-center justify-center br-pill ba ttu uppercase pointer'})`
-  color: #0A4A66;
-  background: transparent;
-  border-color: #0A4A66;
-  opacity: 0.25;
-`
 // TODO need to rename to progressBarTextDescription
-export const StageDescriptor = styled('div').attrs({className: 'flex w-100 items-center justify-center f5 gray pv3'})`
+export const StageDescriptor = styled('div').attrs({className: 'flex w-auto items-center justify-center f5 gray debug'})`
+color: ${props => props.theme.primary};
 `
 
-export const rowObjectText = styled('div').attrs({className: 'flex w-100 items-center justify-between br b--light-gray f5 gray ttu uppercase'})`;
+export const rowObjectButton = styled('div').attrs({className: 'flex w-auto items-center justify-center'})`
+`
+
+export const rowObjectText = styled('div').attrs({className: 'flex w-100 items-center justify-between br b--light-gray f5 gray'})`;
 `
 
 export const rowObjectInput = styled('div').attrs({className: 'flex w-100 h-100 items-center justify-end pv2 b--light-gray  f5 gray ttu uppercase'})`;
 `
 
-export const buttonSubmit = styled('button').attrs({className: 'flex h3 items-center justify-center pv3 bn ph4 bg-light-green pointer ttu uppercase f5 '})`
+export const buttonSubmit = styled('button').attrs({className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`
+color: #fff;
+background-color: ${props => props.theme.positiveGreen};
 transition:0.2s ease-in-out;
-:hover {background-color:hsla(158, 46%, 57%, 1);}
+:hover {opacity:0.9;}
 `
 
 export const Feedback = styled.div`
