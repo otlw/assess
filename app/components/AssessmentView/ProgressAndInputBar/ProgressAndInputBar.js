@@ -5,6 +5,12 @@ import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
 import styled from 'styled-components'
 import icoClose from '../../../assets/ico-close.svg'
 
+
+let completedStageTexts = {
+  [Stage.Confirmed]: 'You have staked successfully!',
+  [Stage.Committed]: 'You have submitted your score!',
+  [Stage.Revealed]: 'Your score has been revealed!'
+}
 // component to display an individual assessor slot address and options
 export class ProgressAndInputBar extends Component {
   constructor (props) {
@@ -124,7 +130,6 @@ export class ProgressAndInputBar extends Component {
       [Stage.Committed]: this.setRevealAction.bind(this)
     }
     return (
-      // ALEX work your magic here!
       h(rowObjectText, [
         h(StageDescriptor, stageTexts[assessmentStage]),
         h(containerProgressButton, [
@@ -141,19 +146,18 @@ export class ProgressAndInputBar extends Component {
     let activeUser = this.props.userStage === this.props.stage
     switch (view) {
       case 'stageView': {
-        // show overview with differently colored Buttons that indicate the activity of the stage
-        // and the general progress of the assessment
         return (
-          h(containerProgressBar, [
-            activeUser ? this.actionBar(this.props.stage)
-              : [h(stageTexts, 'Waiting for other assessors...')] // ALEX: Or maybe we don't display anything, as the text is already up in the statusBox
-          ])
+          this.props.userStage === Stage.None
+            ? null
+            : h(containerProgressBar, [
+              activeUser ? this.actionBar(this.props.stage)
+                : [h(stageTexts, completedStageTexts[this.props.userStage])]
+            ])
         )
       }
       case 'Stake':
       case 'Commit':
       case 'Reveal': {
-        // show actionView, where the user can input data and interact with the assessment
         return (
           h(containerProgressBar, [
             h(buttonClose, {onClick: this.closeInputBar.bind(this)}, [
