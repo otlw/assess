@@ -2,7 +2,7 @@ import Web3 from 'web3'
 import { getInstance, hmmmToAha, getLocalStorageKey, getBlockDeployedAt } from '../../utils'
 import { networkName, LoadingStage } from '../../constants'
 import { processEvent } from '../assessment/asyncActions'
-import { setMainDisplay } from '../navigation/actions'
+import { setMainDisplay, addVisit } from '../navigation/actions'
 import {receiveAllAssessments} from '../assessment/actions.ts'
 import {receiveConcepts} from '../concept/actions.ts'
 import { web3Connected, web3EventsConnected, web3Disconnected, receiveVariable, receivePersistedState } from './actions'
@@ -36,6 +36,7 @@ export const connect = () => {
 
         // load persistedState for the respective network and the user
         dispatch(loadPersistedState(networkID, accounts[0], w3))
+        dispatch(addVisit())
         if (getState().ethereum.fathomTokenDeployedAt === '') dispatch(loadFathomNetworkParams())
 
         // set a second web3 instance to subscribe to events via websocket
