@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import FailedBar from './FailedBar.js'
-import { refund } from '../../../actions/assessmentActions.js'
+import { refund } from '../../../store/assessment/asyncActions'
 
 const mapStateToProps = (state, ownProps) => {
   return {

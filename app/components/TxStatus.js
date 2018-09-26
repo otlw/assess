@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { removeTransaction } from '../actions/transActions.js'
+import { removeTransaction } from '../store/transaction/actions'
 
 import {networkName} from '../constants.js'
 

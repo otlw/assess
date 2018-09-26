@@ -1,9 +1,9 @@
 import { connect as connectRedux } from 'react-redux'
 import Header from './Header.js'
-import { connect } from '../../actions/web3Actions.js'
+import { connect } from '../../store/web3/asyncActions'
 import { LoadComponent } from '../hocs/loadComponent.js'
 import { compose } from 'redux'
-import { setNotificationBar } from '../../actions/navigationActions'
+import { setNotificationBar } from '../../store/navigation/actions'
 
 const mapStateToProps = state => {
   return {
