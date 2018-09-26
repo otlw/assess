@@ -137,7 +137,7 @@ const assessmentTextTitle = styled('h2').attrs({className: 'f2 tl dark-blue mt2 
 color: ${props => props.theme.primary};
 `
 
-const assessmentRowSubHeader = styled('div').attrs({className: 'flex flex-row w-100 items-center mt5'})`
+const assessmentRowSubHeader = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-between mt5'})`
 `
 
 const assessmentContainerStatus = styled('div').attrs({className: 'flex flex-row flex-wrap w-50 items-start justify-between '})`
@@ -180,7 +180,7 @@ color: ${props => props.theme.textBody};
 const assessmentTextAddress = styled('h5').attrs({className: 'f5 gray mv2 mb0 fw4 gray w-50 truncate ellipsis'})`
 `
 
-const assessmentContainerDate = styled('div').attrs({className: 'flex flex-column w-50 items-start justify-between '})`
+const assessmentContainerDate = styled('div').attrs({className: 'flex flex-column w-40 items-start justify-between '})`
 `
 
 const assessmentContainerBody = styled('div').attrs({className: 'flex flex-row flex-wrap w-100 items-center justify-between ph3'})`
