@@ -13,6 +13,6 @@ export default buttonPrimary
 // styles
 
 const styleButtonPrimary = styled('button').attrs({className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`
-color: ${props => props.theme.main};
-background-color: ${props => props.theme.main};
+color: ${props => props.theme.secondary};
+background-color: ${props => props.theme.primary};
 `
