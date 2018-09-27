@@ -2,17 +2,26 @@ import { render } from 'react-dom'
 import thunk from 'redux-thunk'
 import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
-import App from './App.js'
-import rootReducer from './store/index'// / web3Reducer.js'
 import h from 'react-hyperscript'
-import styled from 'styled-components'
+import {ThemeProvider}from 'styled-components'
 import throttle from 'lodash/throttle'
 import { saveState } from './utils.js'
 
-const topLevelStyles = styled('div')`
-font-family:'system-ui', 'Helvetica Neue', sans-serif;
-font-weight: 400;
-`
+import App from './App'
+import rootReducer from './store/'// / web3Reducer.js'
+
+const theme = {
+  primary: '#546e7a',
+  light: '#819ca9',
+  veryLight: '#b8cad3',
+  dark: '#29434e',
+  lightgrey: '#d3d3d3',
+  blue: '#2F80ED',
+  lightblue: '#70a5f9',
+  yellow: '#fff700',
+  lightgreen: '#A5FBA9'
+}
+
 const store = createStore(
   rootReducer,
   applyMiddleware(thunk)
@@ -25,6 +34,9 @@ store.subscribe(throttle(() => {
 }, 1000))
 
 render(
-  h(Provider, {store}, h(topLevelStyles, [h(App)])),
+  h(Provider, {store},
+    h(ThemeProvider, {theme},
+        h(App)
+      )),
   document.getElementById('root')
 )
