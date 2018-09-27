@@ -2,7 +2,7 @@ import { NavigationState } from './reducer'
 
 export type Action =
   ReturnType<typeof setDashboardTab> |
-  ReturnType<typeof setMainDisplay> |
+  ReturnType<typeof setModal> |
   ReturnType<typeof setNotificationBar> |
   ReturnType<typeof setInputBar> |
   ReturnType<typeof toggleHidden>
@@ -15,11 +15,11 @@ export function setDashboardTab (dashboardTab: NavigationState['dashboardTab']) 
   }
 }
 
-export function setMainDisplay (mainDisplay: NavigationState["mainDisplay"]) {
-  let type:'SET_MAIN_DISPLAY' = 'SET_MAIN_DISPLAY'
+export function setModal (modal: NavigationState["modal"]) {
+  let type:'SET_MODAL' = 'SET_MODAL'
   return {
     type,
-    mainDisplay
+    modal
   }
 }
 

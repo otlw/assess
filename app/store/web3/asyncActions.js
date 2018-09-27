@@ -2,10 +2,11 @@ import Web3 from 'web3'
 import { getInstance, hmmmToAha, getLocalStorageKey, getBlockDeployedAt } from '../../utils'
 import { networkName, LoadingStage } from '../../constants'
 import { processEvent } from '../assessment/asyncActions'
-import { setMainDisplay } from '../navigation/actions'
+import { setModal } from '../navigation/actions'
 import {receiveAllAssessments} from '../assessment/actions.ts'
 import {receiveConcepts} from '../concept/actions.ts'
 import { web3Connected, web3EventsConnected, web3Disconnected, receiveVariable, receivePersistedState } from './actions'
+import { modalTopic } from '../../components/Helpers/helperContent.js'
 
 var Dagger = require('eth-dagger')
 const { FathomToken } = require('fathom-contracts')
@@ -28,7 +29,7 @@ export const connect = () => {
         let accounts = await w3.eth.getAccounts()
         if (accounts.length === 0) {
           // this is when MM is locked
-          dispatch(setMainDisplay('UnlockMetaMask'))
+          dispatch(setModal(modalTopic.UnlockMetaMask))
         } else {
           dispatch(receiveVariable('userAddress', accounts[0]))
           dispatch(fetchUserBalance())
@@ -62,7 +63,7 @@ export const connect = () => {
       }
     } else {
       // If the user has no MetaMask extension, a different screen will be displayed instead of the App
-      dispatch(setMainDisplay('NoMetaMask'))
+      dispatch(setModal(modalTopic.NoMetaMask))
       window.alert("You don't have the MetaMask browser extension.")
     }
   }
@@ -197,7 +198,7 @@ export const fetchUserBalance = () => {
     let userAddress = getState().ethereum.userAddress
     let fathomTokenInstance = getInstance.fathomToken(getState())
     if (fathomTokenInstance.error) {
-      dispatch(setMainDisplay('UndeployedNetwork'))
+      dispatch(setModal(modalTopic.UndeployedNetwork))
     } else {
       let userBalance = hmmmToAha(await fathomTokenInstance.methods.balanceOf(userAddress).call())
       dispatch(receiveVariable('AhaBalance', userBalance))

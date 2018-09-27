@@ -1,6 +1,7 @@
 import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
+import { modalTopic } from '../Helpers/helperContent.js'
 
 import icoArrowForward from '../../assets/ico-arrow-forward.svg'
 import icoClose from '../../assets/ico-close.svg'
@@ -17,7 +18,7 @@ export class AssessmentCreation extends Component {
   }
 
   setAmountPerAssessor (e) {
-    // this.setState({amountPerAssessor: Math.round(e.target.value)})
+    // this.setState({amountPerAssessor: Math.round(e.target.value)}) // NOTE: I not sure whether this round has to be there. It looked superfluous but i haven't testet it thoroughly
     this.setState({amountPerAssessor: e.target.value})
   }
 
@@ -54,12 +55,14 @@ export class AssessmentCreation extends Component {
       (err, receipt) => {
         if (err) {
           console.log(err)
-          this.props.setNotificationBar({display: true, type: 'error'})
+          // this.props.setNotificationBar({display: true, type: 'error'})
+          this.props.setModal(modalTopic.AssessmentCreationFailed) // TODO inform modal about reason
           this.props.cancelCreation()
         } else if (receipt.status) {
-          let receiptAddress = receipt.events[0].raw.topics[2]
-          let assessmentAddress = '0x' + receiptAddress.substring(26, receiptAddress.length)
-          this.props.setNotificationBar({display: true, type: 'success', assessmentId: assessmentAddress})
+          // let receiptAddress = receipt.events[0].raw.topics[2]
+          // let assessmentAddress = '0x' + receiptAddress.substring(26, receiptAddress.length)
+          // this.props.setNotificationBar({display: true, type: 'success', assessmentId: assessmentAddress})
+          this.props.setModal(modalTopic.AssessmentCreation) // TODO inform modal about address
           this.props.cancelCreation()
         } else {
           this.setState({step: 4})
