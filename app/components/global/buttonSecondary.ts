@@ -1,15 +1,14 @@
-import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 
-export class compButtonSecondary extends Component {
-  render () {
-    return h(buttonSecondary, 'buttonText'
-    )
-  }
+type Props = {
+  text: string
+}
+const buttonPrimary = (props:Props) => {
+    return h(styleButtonSecondary, props.text)
 }
 
-export default compButtonSecondary
+export default buttonSecondary
 
 // styles
 
