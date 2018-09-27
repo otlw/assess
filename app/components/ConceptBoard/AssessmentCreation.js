@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
-import { modalTopic } from '../Helpers/helperContent.js'
+import { modalTopic } from '../Helpers/helperContent'
 
 import icoArrowForward from '../../assets/ico-arrow-forward.svg'
 import icoClose from '../../assets/ico-close.svg'
