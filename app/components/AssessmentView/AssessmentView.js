@@ -18,16 +18,16 @@ export class AssessmentData extends Component {
       let userActionRequired = props.assessment.userStage === props.assessment.stage
       if (userActionRequired) {
         switch (props.assessment.userStage) {
-        case Stage.Called:
-          props.setHelperBar(helperBarTopic.Staking)
-          break
-        case Stage.Confirmed:
-          props.setHelperBar('Committing')
-          break
-        case Stage.Commited:
-          props.setHelperBar('Revealing')
-          break
-        default: break
+          case Stage.Called:
+            props.setHelperBar(helperBarTopic.Staking)
+            break
+          case Stage.Confirmed:
+            props.setHelperBar('Committing')
+            break
+          case Stage.Commited:
+            props.setHelperBar('Revealing')
+            break
+          default: break
         }
       }
     }

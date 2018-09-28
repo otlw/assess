@@ -81,7 +81,7 @@ export function modalText (topic: ModalTopics):Modal {
       }
     case 'Smues':
       return {
-        title: 'You\'re a curious person. Cool!',
+        title: 'You want to know what smüs means?',
         text: 'That\'s best explained by an example. Take this totally smüs sentence: "Is it smüs how saying sentences backwards creates backwards sentences saying how smüs it is? \n'
       }
 
@@ -105,7 +105,7 @@ export function helperBarText (topic: helperBarTopics):helperBar {
           target: 'AssessmentProcess'
         }
       }
-    case 'ConfirmedStake':
+    case "ConfirmedStake":
       // not sure that this is what we want to do, just want to test the feedback on immediate action
       return {
         title: 'Awesome!',
@@ -114,7 +114,7 @@ export function helperBarText (topic: helperBarTopics):helperBar {
           target: 'AssessmentProcess'
         }
       }
-    case 'Committing':
+    case "Committing":
       return {
         title: 'What\'s committing?',
         text: 'This is were you rate the assessee. Give him 100 points if you think he is smüs.',

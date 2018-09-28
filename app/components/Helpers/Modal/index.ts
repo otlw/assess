@@ -8,6 +8,7 @@ export type Props = {
   topic: ReturnType<typeof modalText>
   setModal: typeof setModal
 }
+
 const mapStateToProps = (state:State) => {
   return {
     topic: modalText(state.navigation.modal)
