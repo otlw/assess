@@ -12,7 +12,6 @@ const mapStateToProps = (state, ownProps) => {
     ),
     assessmentAddress: ownProps.assessmentAddress,
     userAddress: state.ethereum.userAddress,
-    assessment: state.assessments[ownProps.assessmentAddress],
     stage: state.assessments[ownProps.assessmentAddress].stage,
     userStage: state.assessments[ownProps.assessmentAddress].userStage,
     cost: state.assessments[ownProps.assessmentAddress].cost,

@@ -5,7 +5,6 @@ import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
 import styled from 'styled-components'
 import icoClose from '../../../assets/ico-close.svg'
 
-
 let completedStageTexts = {
   [Stage.Confirmed]: 'You have staked successfully!',
   [Stage.Committed]: 'You have submitted your score!',
@@ -151,7 +150,7 @@ export class ProgressAndInputBar extends Component {
             ? null
             : h(containerProgressBar, [
               activeUser ? this.actionBar(this.props.stage)
-                : [h(stageTexts, completedStageTexts[this.props.userStage])]
+                : h(stageTexts, completedStageTexts[this.props.userStage])
             ])
         )
       }
