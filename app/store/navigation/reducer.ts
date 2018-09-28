@@ -1,8 +1,18 @@
 import { Action } from './actions'
 
+export type ModalTopics =
+  null |
+  'AssessmentCreation' |
+  'UndeployedNetwork' |
+  'EducateAboutMetaMask' |
+  'NoMetaMask' |
+  'AssessmentProcess' |
+  'UnlockMetaMask' |
+  "AssessmentCreationFailed"
+
 export type NavigationState = {
   dashboardTab: 'Current' | 'Available' | 'Past'
-  modal: string // TODO define union type over helpers
+  modal: ModalTopics
   notificationBar:
     { display: false } |
     {
@@ -15,7 +25,7 @@ export type NavigationState = {
 
 const initialState:NavigationState = {
   dashboardTab: 'Current',
-  modal: '',
+  modal: null,
   notificationBar: {
     display: false
   },

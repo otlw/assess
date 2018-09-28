@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
-import { modalTopic } from '../Helpers/helperContent.js'
+import { modalTopic } from '../Helpers/helperContent'
 
 import icoArrowForward from '../../assets/ico-arrow-forward.svg'
 import icoClose from '../../assets/ico-close.svg'
@@ -63,7 +63,6 @@ export class AssessmentCreation extends Component {
           // let assessmentAddress = '0x' + receiptAddress.substring(26, receiptAddress.length)
           // this.props.setNotificationBar({display: true, type: 'success', assessmentId: assessmentAddress})
           this.props.setModal(modalTopic.AssessmentCreation) // TODO inform modal about address
-          this.props.cancelCreation()
         } else {
           this.setState({step: 4})
         }

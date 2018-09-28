@@ -1,13 +1,14 @@
 import h from 'react-hyperscript'
 import styled from 'styled-components'
 import { Component } from 'react'
+import {Props} from './index'
 // import {Link} from 'react-router-dom'
 
 // TODO HOW can we make this component dissappear? when the user clicks on somthing from the navbar?
 // idea: if this is styled to be transparent, the user see's that stuff changes and that he has to click to close it.
-export class Modal extends Component {
+export class Modal extends Component<Props> {
   closeScreen () {
-    this.props.setModal('')
+    this.props.setModal(null)
   }
 
   nextScreen () {
@@ -18,8 +19,6 @@ export class Modal extends Component {
   }
 
   render () {
-    console.log('rendering', this.props)
-    let link = linkButton(this.props.topic, this.closeScreen.bind(this))
     return (
       h(appContainerObscurer, [
         h(modalContainer, [
@@ -31,8 +30,7 @@ export class Modal extends Component {
             h(modalHeaderObjectSquare)
           ]),
           h(modalBody, [
-            h(modalTextBody, this.props.topic.text),
-            link
+            h(modalTextBody, this.props.topic.text)
           ]),
           h(modalFooter, [
             h(modalButtonSecondary, {onClick: this.closeScreen.bind(this)}, 'Close'),
@@ -44,24 +42,6 @@ export class Modal extends Component {
       ])
     )
   }
-}
-
-function linkButton (topic, closeFunction) {
-  /*
-    This would be how we treat extra logic being passed along with the topic
-    example: the link to the created assessment
-    if (topic.title === 'AssessmentCreation') {
-    if (topic.params.success) {
-      return h(Link, {
-        to: '/assessment/' + topic.params.assessmentId,
-        onClick: closeFunction
-      }, 'Go')
-    } else {
-      console.log('creation failed due to ', topic.params.error)
-    }
-  }
-  */
-  return null
 }
 
 export default Modal

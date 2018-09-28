@@ -10,7 +10,7 @@ import h from 'react-hyperscript'
 import { HashRouter, Route } from 'react-router-dom'
 import styled, {ThemeProvider} from 'styled-components'
 import Modal from './components/Helpers/Modal'
-import { modalTopic } from './components/Helpers/helperContent.js'
+import { modalTopic } from './components/Helpers/helperContent'
 
 const theme = {
   primary: '#546e7a',
