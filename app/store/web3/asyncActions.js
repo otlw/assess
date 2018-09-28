@@ -6,7 +6,7 @@ import { setModal } from '../navigation/actions'
 import {receiveAllAssessments} from '../assessment/actions.ts'
 import {receiveConcepts} from '../concept/actions.ts'
 import { web3Connected, web3EventsConnected, web3Disconnected, receiveVariable, receivePersistedState } from './actions'
-import { modalTopic } from '../../components/Helpers/helperContent.js'
+import { modalTopic } from '../../components/Helpers/helperContent'
 
 var Dagger = require('eth-dagger')
 const { FathomToken } = require('fathom-contracts')
