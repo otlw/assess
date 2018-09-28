@@ -9,6 +9,8 @@ import AssessmentView from './components/AssessmentView'
 import h from 'react-hyperscript'
 import { HashRouter, Route } from 'react-router-dom'
 import styled, {ThemeProvider} from 'styled-components'
+import Modal from './components/Helpers/Modal'
+import { modalTopic } from './components/Helpers/helperContent.js'
 
 const theme = {
   primary: '#322EE5',
@@ -40,37 +42,33 @@ const theme = {
 
 export class App extends Component {
   render () {
-    // use the mainDisplay variable to know wether to display the App or a warning screen
-    let mainDisplay = this.props.mainDisplay
-    let warningScreen = null
-
-    if (mainDisplay === 'UnlockMetaMask') {
-      // if user needs to enter password
-      warningScreen = h('p', 'You need to unlock Metamask by entering your password.\n')
-    } else if (mainDisplay === 'NoMetaMask') {
-      // if user doesn't have MetaMask
-      warningScreen = h('p', "You don't have the MetaMask browser extension that allows to use this app.\n Please Download it to use the features of this interface")
-    } else if (mainDisplay === 'UndeployedNetwork') {
-      // if there arent anydeployed contract on this network
-      warningScreen = h('p', "You are connected to a network on which you haven't deployed contracts. Please use an appropriate script")
-    } // else, just display the normal App
-
+    // use the mainDisplay variable to know wether a warning screen related to MM
+    let modal = this.props.modal
+    if (modal === modalTopic.NoMetaMask ||
+        modal === modalTopic.educateAboutMetaMask ||
+        modal === modalTopic.UnlockMetaMask) {
+      return h(Modal, {topic: modal})
+    }
+    // else, there is an account, just display the normal App
     return (
       h(HashRouter, [
         h(ThemeProvider, {theme},
-          warningScreen === null
-            ? h('div', [
-              h(Header),
-              this.props.loadedWeb3
-                ? (h(appContainer, [
-                  h(NavTabs),
-                  h(Route, {exact: true, path: '/', component: AssessmentBoard}),
-                  h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
-                  h(Route, {path: '/assessment/:id', component: AssessmentView}),
-                  h(Route, {path: '/certificates/', component: CertificateBoard})
-                ]))
-                : h('div', 'Loading web3')
-            ]) : warningScreen
+          h('div', [
+            h(Header),
+            // h(HelperBar), // TODO
+            this.props.loadedWeb3
+              ? (h(appContainer,
+                modal
+                  ? [h(NavTabs), h(Modal, {topic: modal})]
+                  : [h(NavTabs),
+                    h(Route, {exact: true, path: '/', component: AssessmentBoard}),
+                    h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
+                    h(Route, {path: '/assessment/:id', component: AssessmentView}),
+                    h(Route, {path: '/certificates/', component: CertificateBoard})
+                  ])
+              )
+              : h('div', 'Loading web3')
+          ])
         )
       ])
     )
@@ -82,7 +80,7 @@ const appContainer = styled('div').attrs({className: 'relative flex flex-column 
 const mapStateToProps = state => {
   return {
     loadedWeb3: state.ethereum.isConnected && state.ethereum.userAddress && state.ethereum.networkID && state.ethereum.webSocketIsConnected,
-    mainDisplay: state.navigation.mainDisplay
+    modal: state.navigation.modal
   }
 }
 

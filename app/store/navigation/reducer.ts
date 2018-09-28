@@ -2,7 +2,7 @@ import { Action } from './actions'
 
 export type NavigationState = {
   dashboardTab: 'Current' | 'Available' | 'Past'
-  mainDisplay: 'Main' | 'UnlockMetamask' | 'NoMetamask' | 'UndeployedNetwork'
+  modal: string // TODO define union type over helpers
   notificationBar:
     { display: false } |
     {
@@ -15,7 +15,7 @@ export type NavigationState = {
 
 const initialState:NavigationState = {
   dashboardTab: 'Current',
-  mainDisplay: 'Main',
+  modal: '',
   notificationBar: {
     display: false
   },
@@ -30,10 +30,10 @@ export function NavigationReducer (state = initialState, action:Action):Navigati
         ...state,
         dashboardTab: action.dashboardTab
       }
-    case 'SET_MAIN_DISPLAY':
+    case 'SET_MODAL':
       return {
         ...state,
-        mainDisplay: action.mainDisplay
+        modal: action.modal
       }
     case 'SET_NOTIFICATION_BAR':
       return {

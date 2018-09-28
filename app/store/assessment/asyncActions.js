@@ -383,7 +383,6 @@ export function fetchAssessmentData (assessmentAddress) {
           payout = hmmmToAha(pastEvents[0].returnValues['_value'])
         }
       }
-      let hidden = false
 
       // see if assessment on track (not over timelimit)
       let realNow = Date.now() / 1000
@@ -419,7 +418,7 @@ export function fetchAssessmentData (assessmentAddress) {
         data,
         assessors,
         payout,
-        hidden
+        hidden: false
       }))
     } catch (e) {
       console.log('reading assessment-data from the chain did not work for assessment: ', assessmentAddress, e)
