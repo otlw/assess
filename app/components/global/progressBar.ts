@@ -20,14 +20,14 @@ const styleProgressBar = styled('div').attrs({className: 'flex flex-row w-auto i
 // 2. What's the best implementation for setting active/inactive states? A single const for the 'dot' that has props passed to it to set it active/inactive? I'm not sure how to implement that.
 
 const assessmentIndicatorInactive = styled('div').attrs({className: 'flex ba br-100 mh2'})`
-height: 10px;
-width: 10px;
+height: 12px;
+width: 12px;
 color: ${props => props.theme.primary};
 `
 
 const assessmentIndicatorActive = styled('div').attrs({className: 'flex ba br-100 mh2'})`
-height: 10px;
-width: 10px;
+height: 12px;
+width: 12px;
 color: ${props => props.theme.primary};
 background: ${props => props.theme.primary};
 `
