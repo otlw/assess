@@ -7,9 +7,32 @@ import FailedBar from './FailedBar'
 import { StageDisplayNames, Stage } from '../../constants.js'
 import { convertDate, statusMessage } from '../../utils.js'
 import styled from 'styled-components'
+import { helperBarTopic } from '../../components/Helpers/helperContent'
 var h = require('react-hyperscript')
 
 export class AssessmentData extends Component {
+  componentDidMount () {
+    if (this.props.assessment && !this.props.assessment.invalid) {
+      let props = this.props
+      // let visits = props.visits
+      let userActionRequired = props.assessment.userStage === props.assessment.stage
+      if (userActionRequired) {
+        switch (props.assessment.userStage) {
+        case Stage.Called:
+          props.setHelperBar(helperBarTopic.Staking)
+          break
+        case Stage.Confirmed:
+          props.setHelperBar('Committing')
+          break
+        case Stage.Commited:
+          props.setHelperBar('Revealing')
+          break
+        default: break
+        }
+      }
+    }
+  }
+
   render () {
     if (!this.props.assessment) return h('div', 'Loading Data...')
     if (this.props.assessment.invalid) return h('div', 'invalid assessment address!! you may be on the wrong network')
