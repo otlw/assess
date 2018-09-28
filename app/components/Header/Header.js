@@ -23,6 +23,12 @@ export const Header = (props) => {
           h(headerItem, {name: 'Address', value: userAddress}),
           h(headerItem, {name: 'Network', value: network > 10000000 ? 'Local' : network})
         ]),
+
+        /*
+        TODO:
+        *** Insert TxItem Component Here ? ***
+        */
+
         h(headerRowRight, [
           h(headerItem, {name: 'Balance', value: balance})
         ]),
