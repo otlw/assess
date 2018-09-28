@@ -212,7 +212,7 @@ export function reconstructAssessment (assessmentAddress, pastNotifications) {
     let stage = Stage.None
     let userStage = Stage.None
     let violation = TimeOutReasons.NotEnoughAssessors
-    let assessee = null
+    let assessee = 'Unknown'
     let userAddress = getState().ethereum.userAddress
     // let concept = ?? // TODO figure out where to get this from
     for (let notification of pastNotifications) {
@@ -255,7 +255,7 @@ export function reconstructAssessment (assessmentAddress, pastNotifications) {
       violation,
       conceptData: {name: 'Unknown', description: 'Unknown'}, // TODO get this from local storage
       refunded: true,
-      assessee: assessee || null
+      assessee: assessee
     }
     dispatch(receiveAssessment(reconstructedAssessment))
   }
