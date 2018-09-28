@@ -12,6 +12,6 @@ export default textHeadline
 
 // styles
 
-const styleHeadline = styled('h2').attrs({className: 'f2 fw4'})`
+const styleHeadline = styled('h2').attrs({className: 'f2 fw4 mv0'})`
 color: ${props => props.theme.primary};
 `
