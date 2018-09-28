@@ -26,7 +26,7 @@ export function sendAndReactToTransaction (
       // confirmationCallback(false, hash)
       dispatch(saveTransaction(assessmentAddress, userAddress, saveData, hash))
     })
-    .on('confirmation', (confirmationNumber: number, receipt: TransactionReceipt) => {
+    .on('confirmation', (confirmationNumber, receipt) => {
 
       // TODO: choose a good confirmation number (kovan and rinkeby accept 2, but local textnet requires 8)
       // when the transaction is confirmed into a block
