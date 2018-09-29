@@ -11,6 +11,7 @@ var h = require('react-hyperscript')
 
 export class AssessmentData extends Component {
   render () {
+    if (this.props.assessment) console.log('This.Props.Assessment: ', this.props.assessment) // DEBUG
     if (!this.props.assessment) return h('div', 'Loading Data...')
     if (this.props.assessment.invalid) return h('div', 'invalid assessment address!! you may be on the wrong network')
     if (this.props.assessment.refunded && !this.props.assessment.cost) {

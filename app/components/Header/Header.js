@@ -29,6 +29,7 @@ export const Header = (props) => {
         *** Insert TxItem Component Here ? ***
         */
 
+
         h(headerRowRight, [
           h(headerItem, {name: 'Balance', value: balance})
         ]),

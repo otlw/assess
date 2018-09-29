@@ -1,27 +1,31 @@
 // import dependencies
-// pkgs
 import { connect } from 'react-redux'
-import { compose } from 'redux'
 // components
-import { LoadComponent } from '../../hocs/loadComponent.js'
+import {TxList} from './TxList'
 // actions
+import { confirmAssessor, commit, reveal, storeDataOnAssessment, refund } from '../../../store/assessment/asyncActions'
 
 // map state to props
-const mapStateToProps = state => {
+const mapStateToProps = (state: any) => {
 	return {
-		// mappings key to value
-		// transactions from state.transactions
-		transactions: Object.values(state.transactions).filter(
-			tx => {}
-			)
+		// get transactions from state.transactions
+		// filter for transactions matching currently selected user account
+    transactions: Object.values(state.transactions).filter(
+    	tx => tx
+      // tx => (tx.sender === state.ethereum.userAddress)
+    ),   
+    userAddress: state.ethereum.userAddress, 
 	}
 }
 
 // map dispatch to props
 const mapDispatchToProps = {
-	// mappings here
-	// key: value
+  confirmAssessor,
+  commit,
+  reveal,
+  storeDataOnAssessment,
+  refund
 }
 
-// export composed component
-  // connect mapState, mapDispatch
+// export connected component
+export default connect(mapStateToProps, mapDispatchToProps)(TxList)
