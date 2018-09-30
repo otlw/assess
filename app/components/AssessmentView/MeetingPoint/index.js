@@ -4,7 +4,7 @@ import { setInputBar } from '../../../store/navigation/actions'
 import MeetingPointEditBox from './MeetingPointEditBox.js'
 
 const mapStateToProps = (state, ownProps) => {
-	return {
+  return {
     assessee: ownProps.assessment,
     assessmentAddress: ownProps.assessmentAddress
   }
@@ -15,4 +15,4 @@ const mapDispatchToProps = {
   setInputBar
 }
 
- export default connect(mapStateToProps, mapDispatchToProps)(MeetingPointEditBox)
+export default connect(mapStateToProps, mapDispatchToProps)(MeetingPointEditBox)
