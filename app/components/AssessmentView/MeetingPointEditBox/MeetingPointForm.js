@@ -13,9 +13,8 @@ const MeetingPointForm = props => {
       }),
       h('button', {
         type: 'submit',
-        disabled: submitting,
-        title: 'Only works for assessee and staked assessors!' },
-        'Submit')
+        disabled: submitting
+      }, 'Submit')
     ])
   )
 }
@@ -23,4 +22,3 @@ const MeetingPointForm = props => {
 export default reduxForm({
   form: 'meeting'
 })(MeetingPointForm)
-

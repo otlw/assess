@@ -69,10 +69,7 @@ export class AssessmentData extends Component {
                     : 'No meeting point has been set yet']),
               h(assessmentRow, [
                 assessment.assessee === this.props.userAddress
-                  ? h(MeetingPointEditBox, {
-                    assessee: assessment.assessee,
-                    assessmentAddress: assessment.address
-                  })
+                  ? h(MeetingPointEditBox, {assessmentAddress: assessment.address})
                   : null
               ])
             ])

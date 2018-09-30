@@ -1,5 +1,4 @@
 import { Component } from 'react'
-import TxList from '../../TxList.js'
 import styled from 'styled-components'
 import MeetingPointForm from './MeetingPointForm.js'
 var h = require('react-hyperscript')
@@ -22,12 +21,12 @@ class MeetingPointEditBox extends Component {
   }
 
   render () {
-    console.log('props', this.props)
     return (
       h('div', [
         h(fathomButtonSecondary, {
           onClick: this.toggleMPeditability.bind(this)
         }, 'edit'),
+        // ALEX work magic here, por favor
         this.state.displayMPEdit ? h(MeetingPointForm, {onSubmit: this.storeData.bind(this)}) : null
       ])
     )
