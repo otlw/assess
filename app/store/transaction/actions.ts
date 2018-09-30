@@ -9,22 +9,34 @@ export type Actions =
 // For example the below the assessor-buttons, the purpose field is expected to be the
 // stage of the assessment during which this transaction should be displayed.
 
-export function saveTransaction (address: Transaction['address'], sender: Transaction['sender'], purpose: Transaction['purpose'], txHash: Transaction['txHash']) {
+export function saveTransaction (
+  address: Transaction['address'],
+  sender: Transaction['sender'],
+  purpose: Transaction['purpose'],
+  txHash: Transaction['txHash']) {
   let type: 'SAVE_TRANSACTION' = 'SAVE_TRANSACTION'
   return {
     type,
+    txHash,
     address,
     sender,
-    purpose,
-    txHash
+    purpose
   }
 }
 
-export function updateTransaction (txHash: Transaction['txHash'], status: Transaction['status']) {
+export function updateTransaction (
+  txHash: Transaction['txHash'],
+  address: Transaction['address'],
+  sender: Transaction['sender'],
+  purpose: Transaction['purpose'],
+  status: Transaction['status']) {
   let type: 'UPDATE_TRANSACTION' = 'UPDATE_TRANSACTION'
   return {
     type,
     txHash,
+    address,
+    sender,
+    purpose,
     status
   }
 }

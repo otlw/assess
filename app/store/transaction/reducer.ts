@@ -36,9 +36,9 @@ export function TransactionsReducer (state = initialState, action:Actions):Trans
       return {
         ...state,
         [action.txHash]: {
-          sender: action.sender,
           txHash: action.txHash,
           address: action.address,
+          sender: action.sender,
           purpose: action.purpose,
           status: 'published',
           time: Date.now()
@@ -47,7 +47,14 @@ export function TransactionsReducer (state = initialState, action:Actions):Trans
     case 'UPDATE_TRANSACTION':
       return {
         ...state,
-        [action.txHash]: extend(state[action.txHash], {status: action.status})
+        [action.txHash]: extend(state[action.txHash], {
+          txHash: action.txHash,
+          address: action.address,
+          sender: action.sender,
+          purpose: action.purpose,
+          status: action.status,
+          time: Date.now()
+        })
       }
     case 'REMOVE_TRANSACTION': {
       let newState = {...state}
