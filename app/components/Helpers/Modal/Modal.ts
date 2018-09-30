@@ -19,23 +19,24 @@ export class Modal extends Component<Props> {
   }
 
   render () {
+    let topic = this.props.topic
     return (
       h(appContainerObscurer, [
         h(modalContainer, [
           h(modalHeader, [
-            h(modalTextTitle, this.props.topic.title),
+            h(modalTextTitle, topic.title),
             h(modalHeaderObjectCircle),
             h(modalHeaderObjectTri),
             h(modalHeaderObjectTriLarger),
             h(modalHeaderObjectSquare)
           ]),
           h(modalBody, [
-            h(modalTextBody, this.props.topic.text)
+            h(modalTextBody, topic.text)
           ]),
           h(modalFooter, [
             h(modalButtonSecondary, {onClick: this.closeScreen.bind(this)}, 'Close'),
             this.props.topic.followUp
-              ? h(modalButtonPrimary, {onClick: this.nextScreen.bind(this)}, 'Learn More')
+              ? h(modalButtonPrimary, {onClick: this.nextScreen.bind(this)}, topic.followUp.linkText ? topic.followUp.linkText : 'Learn More')
               : null
           ])
         ])

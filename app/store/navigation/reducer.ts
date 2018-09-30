@@ -8,7 +8,23 @@ export type ModalTopics =
   'NoMetaMask' |
   'AssessmentProcess' |
   'UnlockMetaMask' |
-  "AssessmentCreationFailed"
+  "AssessmentCreationFailed" |
+  "WelcomeAsAssessor" |
+  "HowToBeAssessor1" |
+  "HowToBeAssessor2" |
+  "HowToBeAssessor1" |
+  "HowToBeAssessor2" |
+  "FailedStake" |
+  "FailedStakeAssessor" |
+  "FailedStakeWhy" |
+  "FailedCommit" |
+  "FailedCommitAssessor" |
+  "FailedCommitWhy" |
+  "FailedReveal" |
+  "FailedRevealAssessor" |
+  "FailedRevealWhy" |
+  "InvalidOutcome" |
+  "InvalidOutcomeWhy"
 
 export type NavigationState = {
   dashboardTab: 'Current' | 'Available' | 'Past'
