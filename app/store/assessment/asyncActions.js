@@ -95,7 +95,10 @@ export function storeDataOnAssessment (assessmentAddress, data) {
       'meetingPointChange',
       userAddress,
       assessmentAddress,
-      () => { dispatch(fetchStoredData(assessmentAddress)) }
+      () => {
+        // TODO dispatch helperBarAction
+        dispatch(fetchStoredData(assessmentAddress))
+      }
     )
   }
 }

@@ -15,6 +15,7 @@ export type State = {
   transactions: TransactionsState,
   navigation: NavigationState,
 }
+
 export default combineReducers({
   form: reduxFormReducer,
   ethereum: EthereumReducer,
