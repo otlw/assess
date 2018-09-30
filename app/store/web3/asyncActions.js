@@ -37,7 +37,7 @@ export const connect = () => {
 
         // load persistedState for the respective network and the user
         dispatch(loadPersistedState(networkID, accounts[0], w3))
-        if (getState().ethereum.fathomTokenDeployedAt === '') dispatch(loadFathomNetworkParams())
+        if (!getState().ethereum.fathomTokenDeployedAt) dispatch(loadFathomNetworkParams())
 
         // set a second web3 instance to subscribe to events via websocket
         if (networkName(networkID) === 'Kovan') {
@@ -71,7 +71,7 @@ export const connect = () => {
 
 const loadFathomNetworkParams = () => {
   return async (dispatch, getState) => {
-    console.log('ONLY ONCE!: looking up when stuff was deployed kk')
+    console.log('ONLY ONCE!: looking up when stuff was deployed...')
     let deployedFathomTokenAt = await getBlockDeployedAt.fathomToken(getState())
     let deployedConceptRegistryAt = await getBlockDeployedAt.conceptRegistry(getState())
     dispatch(receiveVariable('deployedFathomTokenAt', deployedFathomTokenAt))
@@ -83,7 +83,6 @@ const loadPersistedState = (networkID, userAddress, web3) => {
   return async (dispatch, getState) => {
     try {
       let key = getLocalStorageKey(networkID, userAddress, web3)
-      // let key = networkName(networkID) + 'State' + userAddress
       const serializedState = localStorage.getItem(key) // eslint-disable-line no-undef
       if (serializedState === null) {
         return undefined

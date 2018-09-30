@@ -15,7 +15,7 @@ export type EthereumState = {
   AhaBalance: number
   lastUpdatedAt: number
   deployedFathomTokenAt: string
-  deployedConceptRegistryAt: string  
+  deployedConceptRegistryAt: string
 }
 
 let initialState:EthereumState = {
