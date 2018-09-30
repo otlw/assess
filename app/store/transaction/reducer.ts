@@ -6,9 +6,9 @@ export type Transaction = {
   sender: string
   txHash: string
   address: string
-  data: string
-  status: 'Tx published' | 'Tx confirmed' | 'Tx failed'
-  time: number  
+  purpose: 'stake' | 'commit' | 'reveal' | 'refund' | 'setMeetingPoint' | 'meetingPointChange' | 'makeAssessment'
+  status: 'published' | 'confirmed' | 'failed'
+  time: number
 }
 
 export type TransactionsState = {
@@ -39,8 +39,8 @@ export function TransactionsReducer (state = initialState, action:Actions):Trans
           sender: action.sender,
           txHash: action.txHash,
           address: action.address,
-          data: action.data,
-          status: 'Tx published',
+          purpose: action.purpose,
+          status: 'published',
           time: Date.now()
         }
       }
@@ -58,4 +58,3 @@ export function TransactionsReducer (state = initialState, action:Actions):Trans
       return state
   }
 }
-

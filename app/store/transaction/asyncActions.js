@@ -21,7 +21,7 @@ export function sendAndReactToTransaction (dispatch, act, saveData, userAddress,
       if (confirmationNumber === 8) {
         dispatch(updateTransaction(
           receipt.transactionHash,
-          receipt.status ? 'Tx confirmed' : 'Tx failed'
+          receipt.status ? 'confirmed' : 'failed'
         ))
       }
       if (confirmationCallback && confirmationNumber === 9) {

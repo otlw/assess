@@ -11,6 +11,7 @@ import { HashRouter, Route } from 'react-router-dom'
 import styled, {ThemeProvider} from 'styled-components'
 import Modal from './components/Helpers/Modal'
 import { modalTopic } from './components/Helpers/helperContent'
+import { TxList } from './components/TxList'
 
 const theme = {
   primary: '#546e7a',
@@ -50,6 +51,8 @@ export class App extends Component {
           h('div', [
             h(Header),
             // h(HelperBar), // TODO
+            // render TxList under HelperBar, pass in transactions as props from this.props.transactions
+            h(TxList, { transactions: this.props.transactions }),
             this.props.loadedWeb3
               ? (h(appContainer,
                 modal
@@ -74,7 +77,9 @@ const appContainer = styled('div').attrs({className: 'flex flex-column w-100'})`
 const mapStateToProps = state => {
   return {
     loadedWeb3: state.ethereum.isConnected && state.ethereum.userAddress && state.ethereum.networkID && state.ethereum.webSocketIsConnected,
-    modal: state.navigation.modal
+    modal: state.navigation.modal,
+    // map array of transactions to props from state.transactions
+    transactions: Object.values(state.transactions)
   }
 }
 

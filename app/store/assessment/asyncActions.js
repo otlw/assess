@@ -23,6 +23,16 @@ export function hashScoreAndSalt (_score, _salt) {
   ).toString('hex')
 }
 
+// 'stake' | 'commit' | 'reveal' | 'refund' | 'setMeetingPoint' | 'meetingPointChange' | 'makeAssessment'
+const stageNumToWord = {
+  // 0: 'none', //   None: 0,
+  1: 'stake', //   Called: 1,
+  2: 'commit', //   Confirmed: 2,
+  3: 'reveal', //   Committed: 3,
+  // 4: 'done', //   Done: 4,
+  // 5: 'burn' //   Burned: 5
+}
+
 // async actions
 export function confirmAssessor (assessmentAddress, customReact = false) {
   return async (dispatch, getState) => {
@@ -35,8 +45,8 @@ export function confirmAssessor (assessmentAddress, customReact = false) {
     }
     sendAndReactToTransaction(
       dispatch,
-      () => { return assessmentInstance.methods.confirmAssessor().send(params) },
-      customReact ? customReact.saveKeyword : Stage.Called,
+      () => { return assessmentInstance.methods.confirmAssessor().send(params) }, // transaction
+      customReact ? customReact.saveKeyword : stageNumToWord[Stage.Called], // tx purpose
       userAddress,
       assessmentAddress,
       customReact ? customReact.callbck : () => { dispatch(fetchUserStage(assessmentAddress)) }
@@ -55,8 +65,8 @@ export function commit (assessmentAddress, score, salt, customReact = false) {
     }
     sendAndReactToTransaction(
       dispatch,
-      () => { return assessmentInstance.methods.commit(hashScoreAndSalt(score, salt)).send(params) },
-      customReact ? customReact.saveKeyword : Stage.Confirmed,
+      () => { return assessmentInstance.methods.commit(hashScoreAndSalt(score, salt)).send(params) }, // transaction
+      customReact ? customReact.saveKeyword : stageNumToWord[Stage.Confirmed], // tx purpose
       userAddress,
       assessmentAddress,
       customReact ? customReact.callbck : () => { dispatch(fetchUserStage(assessmentAddress)) }
@@ -74,8 +84,8 @@ export function reveal (assessmentAddress, score, salt, customReact = false) {
     }
     sendAndReactToTransaction(
       dispatch,
-      () => { return assessmentInstance.methods.reveal(score, salt).send(params) },
-      customReact ? customReact.saveKeyword : Stage.Committed,
+      () => { return assessmentInstance.methods.reveal(score, salt).send(params) }, // transaction
+      customReact ? customReact.saveKeyword : stageNumToWord[Stage.Committed], // tx purpose
       userAddress,
       assessmentAddress,
       customReact ? customReact.callbck : () => { dispatch(fetchUserStage(assessmentAddress)) }
@@ -89,10 +99,11 @@ export function storeDataOnAssessment (assessmentAddress, data) {
     let assessmentInstance = getInstance.assessment(getState(), assessmentAddress)
     // also salt should be saved in state
     let dataAsBytes = getState().ethereum.web3.utils.utf8ToHex(data)
+    let firstEdit = getState().assessments[assessmentAddress].data === ''
     sendAndReactToTransaction(
       dispatch,
-      () => { return assessmentInstance.methods.addData(dataAsBytes).send({from: userAddress}) },
-      'meetingPointChange',
+      () => { return assessmentInstance.methods.addData(dataAsBytes).send({from: userAddress}) }, // transaction
+      firstEdit ? 'setMeetingPoint' : 'meetingPointChange', // tx purpose
       userAddress,
       assessmentAddress,
       () => { dispatch(fetchStoredData(assessmentAddress)) }
@@ -114,7 +125,7 @@ export function refund (assessmentAddress, stage) {
     }
     const react = {
       gas: 320000,
-      saveKeyword: 'refund',
+      saveKeyword: 'refund', // tx purpose
       callbck: reactToRefund
     }
     switch (stage) {

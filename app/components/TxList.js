@@ -5,17 +5,23 @@ var h = require('react-hyperscript')
 
 export class TxList extends Component {
   render () {
+    console.log('TxList -- props: ', this.props)
     // this should not be necessary but somehow if this next line is not here
     // a big green empty field will be displayed
     if (this.props.transactions.length === 0) { return null }
-    return h(containerTransaction, this.props.transactions.map((tx) => {
+    // return h(containerTransaction, this.props.transactions.map((tx) => {
+    return h(tempContainerTransaction, this.props.transactions.map((tx) => {
       return h(TxStatus, {transaction: tx})
     }))
   }
 }
 
-const containerTransaction = styled('div').attrs({className: 'absolute flex w-100 h-100'})`
+const tempContainerTransaction = styled('div')`
 background-color: #8CDCC9;
 `
+
+// const containerTransaction = styled('div').attrs({className: 'absolute flex w-100 h-100'})`
+// background-color: #8CDCC9;
+// `
 
 export default TxList
