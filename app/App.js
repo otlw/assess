@@ -10,6 +10,7 @@ import h from 'react-hyperscript'
 import { HashRouter, Route } from 'react-router-dom'
 import styled, {ThemeProvider} from 'styled-components'
 import Modal from './components/Helpers/Modal'
+import HelperBar from './components/Helpers/HelperBar'
 import { modalTopic } from './components/Helpers/helperContent'
 
 const theme = {
@@ -55,7 +56,7 @@ export class App extends Component {
         h(ThemeProvider, {theme},
           h('div', [
             h(Header),
-            // h(HelperBar), // TODO
+            h(HelperBar),
             this.props.loadedWeb3
               ? (h(appContainer,
                 modal
