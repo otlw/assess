@@ -4,11 +4,9 @@ import { setInputBar } from '../../../store/navigation/actions'
 import MeetingPointEditBox from './MeetingPointEditBox.js'
 
 const mapStateToProps = (state, ownProps) => {
-  return {
-    transactions: Object.values(state.transactions).filter(
-      tx => (tx.address === ownProps.assessmentAddress &&
-             tx.data === 'meetingPointChange')
-    )
+	return {
+    assessee: ownProps.assessment,
+    assessmentAddress: ownProps.assessmentAddress
   }
 }
 
@@ -17,4 +15,4 @@ const mapDispatchToProps = {
   setInputBar
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MeetingPointEditBox)
+ export default connect(mapStateToProps, mapDispatchToProps)(MeetingPointEditBox)

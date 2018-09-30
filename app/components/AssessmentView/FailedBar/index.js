@@ -4,10 +4,8 @@ import { refund } from '../../../store/assessment/asyncActions'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    transactions: Object.values(state.transactions).filter(
-      tx => (tx.address === ownProps.assessment.address &&
-             tx.data === 'Refund')
-    )
+    assessment: ownProps.assessment,
+    userAddress: ownProps.userAddress
   }
 }
 

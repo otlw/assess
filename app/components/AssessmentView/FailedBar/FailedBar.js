@@ -1,6 +1,5 @@
 import { Component } from 'react'
 import styled from 'styled-components'
-import TxList from '../../TxList.js'
 import { statusMessage } from '../../../utils.js'
 var h = require('react-hyperscript')
 
@@ -28,10 +27,7 @@ class FailedBar extends Component {
             // user has not been refunded yet -> show button
               ? h(RefundButton, {onClick: this.refund.bind(this)}, 'Get refund')
               : h(RefundedButton, 'Refunded')
-            : undefined),
-        this.props.transactions
-          ? h(TxList, {transactions: this.props.transactions})
-          : null
+            : undefined)
       ])
     )
   }

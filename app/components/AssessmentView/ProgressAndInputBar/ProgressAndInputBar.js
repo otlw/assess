@@ -1,5 +1,4 @@
 import { Component } from 'react'
-import { TxList } from '../../TxList.js'
 import h from 'react-hyperscript'
 import { Stage, StageDisplayNames, PassiveStageDisplayNames } from '../../../constants.js'
 import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
@@ -125,10 +124,7 @@ export class ProgressAndInputBar extends Component {
           h(containerProgressBar, [
             this.progressButton(Stage.Called, this.props.stage, this.props.userStage),
             this.progressButton(Stage.Confirmed, this.props.stage, this.props.userStage),
-            this.progressButton(Stage.Committed, this.props.stage, this.props.userStage),
-            this.props.transactions && this.props.transactions.length > 0
-              ? h(TxList, {transactions: this.props.transactions})
-              : null
+            this.progressButton(Stage.Committed, this.props.stage, this.props.userStage)
           ])
         )
       }

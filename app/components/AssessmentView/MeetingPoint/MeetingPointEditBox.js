@@ -1,9 +1,10 @@
 import { Component } from 'react'
-import TxList from '../../TxList.js'
 import styled from 'styled-components'
 var h = require('react-hyperscript')
 
 class MeetingPointEditBox extends Component {
+  // TODO: utilize this.props.assessee, this.props.assessmentAddress, this.props.storeDataOnAssessment
+
   setMPEditiability () {
     this.props.setInputBar('editMeetingPoint')
   }
@@ -13,10 +14,7 @@ class MeetingPointEditBox extends Component {
       h('div', [
         h(fathomButtonSecondary, {
           onClick: this.setMPEditiability.bind(this)
-        }, 'edit'),
-        this.props.transactions
-          ? h(TxList, {transactions: this.props.transactions})
-          : null
+        }, 'edit')
       ])
     )
   }
