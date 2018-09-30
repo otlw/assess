@@ -2,12 +2,9 @@ import { Component } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { removeTransaction } from '../store/transaction/actions'
-
-import {networkName} from '../constants.js'
-
+import { networkName } from '../constants.js'
 var h = require('react-hyperscript')
 
-// 'stake' | 'commit' | 'reveal' | 'refund' | 'setMeetingPoint' | 'meetingPointChange' | 'makeAssessment'
 const phrasing = Object.freeze({
   makeAssessment: 'create an assessment',
   setMeetingPoint: 'set a meeting point',
@@ -29,11 +26,12 @@ export class TxStatus extends Component {
     let textField = `Your transaction to ${phrasing[tx.purpose]} has been ${tx.status} -- see etherscan for details:  ` // Your transaction to <stake> has been <published>
     console.log('tx', tx)
     let targetURL = 'https://' + (networkName(this.props.networkID) === 'Mainnet' ? '' : networkName(this.props.networkID) + '.') + 'etherscan.io/tx/' + tx.txHash
+    console.log('textField: ', textField)
     return h(rowTransaction, [
       // h(textTransaction, ': ' + tx.status + '  '),
       h(textTransaction, textField),
       h(linkTransaction, {href: targetURL, target: '_blank'},
-        ' ' + tx.txHash.substring(0, 5) + '...' + tx.txHash.substring(60)),
+        tx.txHash.substring(0, 5) + '...' + tx.txHash.substring(60)),
       h(buttonTransactionClose, {onClick: this.deleteTX.bind(this)}, 'X')
     ])
   }
