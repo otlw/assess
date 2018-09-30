@@ -112,7 +112,7 @@ export function statusMessage (isAssessee, assessment) {
       status += 'Waiting...'
     } else {
       // assessment not done because user (and others) need to do something
-      let nOtherAssessorsToBeActive = assessment.size - assessment.done - (actionRequired ? 1 : 0)
+      let nOtherAssessorsToBeActive = assessment.size - (assessment.stage === Stage.Called ? assessment.assessors.length : assessment.done) - (actionRequired ? 1 : 0)
       // user must do something
       status += 'Waiting for you and ' + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[assessment.stage]
     }
