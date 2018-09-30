@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import styled from 'styled-components'
-import icoClose from '../../../assets/ico-close.svg'
 import {Props} from './index'
+let icoClose = require('../../../assets/ico-close.svg')
 
 var h = require('react-hyperscript')
 
@@ -34,7 +34,7 @@ export class HelperBar extends Component<Props> {
              ? h(barButtonPrimary, {onClick: this.learnMore.bind(this)}, 'Learn More')
              : null)
           ]),
-          h(barButtonClose, {onClick: this.closeBar.bind(this)}, h('img', {alt: 'icoClose', src: icoClose, className: 'h1 ma1'})) // TODO this could set a mark in state that the info has been seen already
+          h(barButtonClose, {onClick: this.closeBar.bind(this)}, h('img', {alt: 'icoClose', src: icoClose, className: 'h1 ma1'}))
           //
           // h('button', {onClick: this.resetVisits.bind(this)}, 'resetToNoob!') // this is for us, so we can pretend being a first timer
         ])
