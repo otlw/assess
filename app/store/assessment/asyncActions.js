@@ -28,7 +28,7 @@ const stageNumToWord = {
   // 0: 'none', //   None: 0,
   1: 'stake', //   Called: 1,
   2: 'commit', //   Confirmed: 2,
-  3: 'reveal', //   Committed: 3,
+  3: 'reveal' //   Committed: 3,
   // 4: 'done', //   Done: 4,
   // 5: 'burn' //   Burned: 5
 }
