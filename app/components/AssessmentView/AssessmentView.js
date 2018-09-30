@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import MeetingPointEditBox from './MeetingPoint/'
+import MeetingPointEditBox from './MeetingPointEditBox'
 import AssessorList from './AssessorList.js'
 import ProgressAndInputBar from './ProgressAndInputBar'
 import FinalResultBar from './FinalResultBar.js'
