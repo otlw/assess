@@ -33,6 +33,15 @@ export const Stage = Object.freeze({
   Burned: 5
 })
 
+export const StageNumberToWord = Object.freeze({
+  0: 'none', // <-> None: 0,
+  1: 'stake', // <-> Called: 1,
+  2: 'commit', // <-> Confirmed: 2,
+  3: 'reveal', // <-> Committed: 3,
+  4: 'done', // <-> Done: 4,
+  5: 'burn' // <-> Burned: 5
+})
+
 export const LoadingStage = Object.freeze({
   None: 0,
   Loading: 1,
