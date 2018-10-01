@@ -8,11 +8,25 @@ export type ModalTopics =
   'NoMetaMask' |
   'AssessmentProcess' |
   'UnlockMetaMask' |
-  "AssessmentCreationFailed"
+  'AssessmentCreationFailed' |
+  'Smues'
+
+export type helperBarTopics =
+    null |
+    'Staking' |
+    'Committing' |
+    'Revealing' |
+    'ConfirmedStake' |
+    'ConfirmedCommit' |
+    'ConfirmedReveal' |
+    'FirstTimeMeetingPointSet' |
+    'MeetingPointChanged' |
+    'ChallengePeriodActive'
 
 export type NavigationState = {
   dashboardTab: 'Current' | 'Available' | 'Past'
   modal: ModalTopics
+  helperBar: helperBarTopics,
   notificationBar:
     { display: false } |
     {
@@ -26,6 +40,7 @@ export type NavigationState = {
 const initialState:NavigationState = {
   dashboardTab: 'Current',
   modal: null,
+  helperBar: null,
   notificationBar: {
     display: false
   },
@@ -45,6 +60,11 @@ export function NavigationReducer (state = initialState, action:Action):Navigati
         ...state,
         modal: action.modal
       }
+    case 'SET_HELPERBAR':
+        return {
+            ...state,
+            helperBar: action.helperBar
+        }
     case 'SET_NOTIFICATION_BAR':
       return {
         ...state,

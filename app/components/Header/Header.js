@@ -34,7 +34,8 @@ export const Header = (props) => {
 }
 
 const headerContainer = styled('ul').attrs({
-  className: 'list flex w-100 flex-row flex-wrap pl0 pv2 ma0 items-start justify-between bg-dark-blue'})`
+  className: 'list flex w-100 flex-row flex-wrap pl0 pv2 ma0 items-start justify-between'})`
+  background-color: ${props => props.theme.primary};
   `
 
 const headerRowLeft = styled('ul').attrs({
