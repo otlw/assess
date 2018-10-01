@@ -1,4 +1,4 @@
-import {ModalTopics} from '../../store/navigation/reducer'
+import { ModalTopics, helperBarTopics } from '../../store/navigation/reducer'
 
 export const modalTopic = Object.freeze({
   UnlockMetaMask: 'UnlockMetaMask',
@@ -9,6 +9,19 @@ export const modalTopic = Object.freeze({
   AssessmentCreation: 'AssessmentCreation'
 })
 
+export const helperBarTopic = Object.freeze({
+  Staking: 'Staking',
+  Committing: 'Committing',
+  Revealing: 'Revealing',
+  ConfirmedStake: 'ConfirmedStake',
+  ConfirmedCommit: 'ConfirmedCommit',
+  ConfirmedReveal: 'ConfirmedReveal',
+  FirstTimeMeetingPointSet: 'FirstTimeMeetingPointSet',
+  MeetingPointChanged: 'MeetingPointChanged',
+  ChallengePeriodActive: 'ChallengePeriodActive',
+  Smues: 'Smues'
+})
+
 type Modal = {
   title: string
   text: string
@@ -16,10 +29,17 @@ type Modal = {
     target: ModalTopics
   }
 }
-// this functions delivers simple one-liner explanations on given topics + a keyWord under which more can
-// be learned
-// @params: topic can be a string OR an object with keys: topic and params (e.g. when one needs to create an assessment)
-export function helperText (topic: ModalTopics):Modal {
+
+type helperBar = {
+  title: string
+  text: string
+  learnMore?: {
+    target: ModalTopics
+  }
+}
+
+// this functions delivers simple one-liner explanations on given topics + a keyWord under which more can be learned
+export function modalText (topic: ModalTopics):Modal {
   switch (topic) {
     case "UnlockMetaMask":
       return {
@@ -59,8 +79,14 @@ export function helperText (topic: ModalTopics):Modal {
         title: topic,
         text: 'Ooopsi'
       }
+    case 'Smues':
+      return {
+        title: 'You want to know what smüs means?',
+        text: 'That\'s best explained by an example. Take this totally smüs sentence: "Is it smüs how saying sentences backwards creates backwards sentences saying how smüs it is? \n'
+      }
+
     default:
-      if (topic) console.log('no helperText defined for topic', topic)
+      if (topic) console.log('no modalText defined for topic', topic)
       return {
         title: 'Error 404 Kinda',
         text: "You should'nt have got here"
@@ -68,48 +94,49 @@ export function helperText (topic: ModalTopics):Modal {
   }
 }
 
-// export const barTopic = Object.freeze({
-//   Staking: 'Staking',
-//   Committing: 'Committing',
-//   Revealing: 'Revealing',
-//   ConfirmedStake: 'ConfirmedStake',
-//   ConfirmedCommit: 'ConfirmedCommit',
-//   ConfirmedReveal: 'ConfirmedReveal',
-//   FirstTimeMeetingPointSet: 'FirstTimeMeetingPointSet',
-//   MeetingPointChanged: 'MeetingPointChanged',
-//   ChallengePeriodActive: 'ChallengePeriodActive',
-//   Smues: 'Smues'
-// })
 
-// // topics for the helperBar
-//     case barTopic.Staking:
-//       return {
-//         title: 'What\'s staking?',
-//         text: 'Staking is where each Assessor needs to pay a small fee to assess you. It’s done so that they have “skin in the game” and are more likely to assess you fairly.',
-//         followUp: {
-//           target: modalTopic.AssessmentProcess
-//         }
-//       }
-//     case barTopic.ConfirmedStake:
-//       // not sure that this is what we want to do, just wanted to test the feedback on immediate action
-//       return {
-//         title: 'Awesome!',
-//         text: 'Now you just need to wait until there are enough other assessors and the assessment starts. If you\'re curious you can learn already learn what you need to do in the next stage: The commit-stage.',
-//         followUp: {
-//           target: barTopic.Committing
-//         }
-//       }
-//     case barTopic.Committing:
-//       return {
-//         title: 'What\'s committing?',
-//         text: 'This is were you rate the assessee. Give him 100 points if you think he is smüs.',
-//         followUp: {
-//           linkText: 'What the hell is "smüs"?',
-//           target: barTopic.Smues
-//         }
-//       }
-//     case barTopic.Smues:
-//       return {
-//         title: 'You\'re a curious person. Cool!',
-//         text: 'That\'s best explained by an example. Take this totally smüs sentence: "Is it smüs how saying sentences backwards creates backwards sentences saying how smüs it is? \n'
-//       }
+export function helperBarText (topic: helperBarTopics):helperBar {
+  switch (topic) {
+    case "Staking":
+      return {
+        title: 'What\'s staking?',
+        text: 'Staking is where each Assessor needs to pay a small fee to assess you. It’s done so that they have “skin in the game” and are more likely to assess you fairly.',
+        learnMore: {
+          target: 'AssessmentProcess'
+        }
+      }
+    case "ConfirmedStake":
+      // not sure that this is what we want to do, just want to test the feedback on immediate action
+      return {
+        title: 'Awesome!',
+        text: 'Now you just need to wait until there are enough other assessors and the assessment starts. If you\'re curious you can learn already learn what you need to do in the next stage: The commit-stage.',
+        learnMore: {
+          target: 'AssessmentProcess'
+        }
+      }
+    case "Committing":
+      return {
+        title: 'What\'s committing?',
+        text: 'This is were you rate the assessee. Give him 100 points if you think he is smüs.',
+        learnMore: {
+          target: 'Smues'
+        }
+      }
+    case "FirstTimeMeetingPointSet":
+      return {
+        title: 'You set a meeting point!',
+        text: 'Great, now you are all set to get started and meet your assessors.',
+      }
+    case "MeetingPointChanged":
+      return {
+        title: 'You changed the meeting point!',
+        text: 'Remember to leave a note at your previous meeting point about it.'
+      }
+    default:
+      if (topic) console.log('no helperBarText defined for topic', topic)
+      return {
+        title: 'Error 404 Kinda',
+        text: "You should'nt have got here"
+      }
+  }
+}
