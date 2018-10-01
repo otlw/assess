@@ -3,7 +3,7 @@ import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 import { StageDisplayNames, Stage, TimeOutReasons, CompletedStages } from '../../../constants.js'
-import { statusMessage } from '../../../utils.js'
+import { statusMessage, mapAssessmentStageToStatus } from '../../../utils.js'
 
 export class AssessmentCard extends Component {
   render () {
@@ -13,7 +13,6 @@ export class AssessmentCard extends Component {
 
     // set assessee/assessor view
     let isAssessee = this.props.userAddress === assessment.assessee
-    let actionRequired = stage === userStage && stage !== Stage.Done
     let status = statusMessage(isAssessee, assessment)
     return (
       h(cardContainer, [
@@ -77,36 +76,83 @@ function linkButtons (assessment, isAssessee, setCardVisibility) {
   }
 }
 
-function progressButtons (stage, actionRequired, violation) {
+function progressButtons (assessmentStage, userStage, violation) {
   return [
-    progressButton(stage, Stage.Called, actionRequired, violation),
-    progressButton(stage, Stage.Confirmed, actionRequired, violation),
-    progressButton(stage, Stage.Committed, actionRequired, violation),
-    progressButton(stage, Stage.Done, actionRequired, violation)
+    progressButton(assessmentStage, Stage.Called, userStage, violation),
+    progressButton(assessmentStage, Stage.Confirmed, userStage, violation),
+    progressButton(assessmentStage, Stage.Committed, userStage, violation),
+    progressButton(assessmentStage, Stage.Done, userStage, violation)
   ]
 }
 
-function progressButton (assessmentStage, phase, actionRequired, violation) {
+function progressButton (assessmentStage, phase, userStage, violation) {
+  // let actionRequired = assessmentStage === userStage && assessmentStage !== Stage.Done
+
+  // // check whether the assessment was aborted
+  // if ((violation === TimeOutReasons.NotEnoughAssessors && phase === Stage.Called) ||
+  //     (violation === TimeOutReasons.NotEnoughCommits && phase === Stage.Confirmed) ||
+  //     (violation === TimeOutReasons.NotEnoughReveals && phase === Stage.Committed)) {
+  //   return h(cardProgressBarObjectFailed)
+  // }
+  // // it was not a violation! see whether the phase has been completed:
+  // if (assessmentStage > phase || assessmentStage === Stage.Done) {
+  //   return h(cardProgressBarObjectComplete)
+  // }
+  // // see whether the stage is still ongoing and requires user input:
+  // if (assessmentStage === phase && actionRequired) {
+  //   return h(cardProgressBarObjectActive)
+  // }
+  // // or whether the stage is the last one -> no user action required
+  // if (assessmentStage === Stage.Done) {
+  //   return h(cardProgressBarObjectComplete)
+  // }
+  // // DEFAULT: the phase is on, but the user must no longer do anything
+  // return h(cardProgressBarObjectInactive)
+
+  let status=mapAssessmentStageToStatus(assessmentStage, phase, userStage, violation)
+
+  switch (status){
+    case "active":
+      return h(cardProgressBarObjectActive)
+      break;
+    case "complete":
+      return h(cardProgressBarObjectComplete)
+      break;
+    case "inactive":
+      return h(cardProgressBarObjectFailed)
+      break;
+    case "canceled":
+      return h(cardProgressBarObjectFailed)
+      break;
+    default:
+    return h(cardProgressBarObjectInactive)
+  }
+}
+
+//maps (assessmentStage, phase, userStage, violation) => status (active,complete,inactive,canceled)
+function mapAssessmentStageToStatus (assessmentStage, phase, userStage, violation) {
+  let actionRequired = assessmentStage === userStage && assessmentStage !== Stage.Done
+
   // check whether the assessment was aborted
   if ((violation === TimeOutReasons.NotEnoughAssessors && phase === Stage.Called) ||
       (violation === TimeOutReasons.NotEnoughCommits && phase === Stage.Confirmed) ||
       (violation === TimeOutReasons.NotEnoughReveals && phase === Stage.Committed)) {
-    return h(cardProgressBarObjectFailed)
+    return "canceled" //h(cardProgressBarObjectFailed)
   }
   // it was not a violation! see whether the phase has been completed:
   if (assessmentStage > phase || assessmentStage === Stage.Done) {
-    return h(cardProgressBarObjectComplete)
+    return "complete" //h(cardProgressBarObjectComplete)
   }
   // see whether the stage is still ongoing and requires user input:
   if (assessmentStage === phase && actionRequired) {
-    return h(cardProgressBarObjectActive)
+    return "active" //h(cardProgressBarObjectActive)
   }
   // or whether the stage is the last one -> no user action required
   if (assessmentStage === Stage.Done) {
-    return h(cardProgressBarObjectComplete)
+    return "complete" //h(cardProgressBarObjectComplete)
   }
   // DEFAULT: the phase is on, but the user must no longer do anything
-  return h(cardProgressBarObjectInactive)
+  return "inactive" //h(cardProgressBarObjectInactive)
 }
 
 export default AssessmentCard

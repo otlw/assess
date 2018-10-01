@@ -120,6 +120,32 @@ export function statusMessage (isAssessee, assessment) {
   return status
 }
 
+//maps (assessmentStage, phase, userStage, violation) => status (active,complete,inactive,canceled)
+expot function mapAssessmentStageToStatus (assessmentStage, phase, userStage, violation) {
+  let actionRequired = assessmentStage === userStage && assessmentStage !== Stage.Done
+
+  // check whether the assessment was aborted
+  if ((violation === TimeOutReasons.NotEnoughAssessors && phase === Stage.Called) ||
+      (violation === TimeOutReasons.NotEnoughCommits && phase === Stage.Confirmed) ||
+      (violation === TimeOutReasons.NotEnoughReveals && phase === Stage.Committed)) {
+    return "canceled" //h(cardProgressBarObjectFailed)
+  }
+  // it was not a violation! see whether the phase has been completed:
+  if (assessmentStage > phase || assessmentStage === Stage.Done) {
+    return "complete" //h(cardProgressBarObjectComplete)
+  }
+  // see whether the stage is still ongoing and requires user input:
+  if (assessmentStage === phase && actionRequired) {
+    return "active" //h(cardProgressBarObjectActive)
+  }
+  // or whether the stage is the last one -> no user action required
+  if (assessmentStage === Stage.Done) {
+    return "complete" //h(cardProgressBarObjectComplete)
+  }
+  // DEFAULT: the phase is on, but the user must no longer do anything
+  return "inactive" //h(cardProgressBarObjectInactive)
+}
+
 export const getLocalStorageKey = (networkID, userAddress, web3) => {
   // the address of the FathomToken is appended so that redeployments on a local
   // testnet do not show assessment from earlier migrations
