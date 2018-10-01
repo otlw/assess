@@ -15,6 +15,7 @@ const mapStateToProps = (state, ownProps) => {
     stage: state.assessments[ownProps.assessmentAddress].stage,
     userStage: state.assessments[ownProps.assessmentAddress].userStage,
     cost: state.assessments[ownProps.assessmentAddress].cost,
+    checkpoint: state.assessments[ownProps.assessmentAddress].checkpoint,
     inputType: state.navigation.inputBar
   }
 }
