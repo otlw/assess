@@ -5,7 +5,7 @@ import { AssessmentsReducer, AssessmentsState } from './assessment/reducer'
 import {ConceptsReducer, ConceptsState }from './concept/reducer'
 import { TransactionsReducer, TransactionsState } from './transaction/reducer'
 import { NavigationReducer, NavigationState } from './navigation/reducer'
-import loading from './loading/reducer'
+import {LoadingState, LoadingReducer}from './loading/reducer'
 
 export type State = {
   form: any,
@@ -14,6 +14,7 @@ export type State = {
   concepts: ConceptsState,
   transactions: TransactionsState,
   navigation: NavigationState,
+  loading: LoadingState
 }
 export default combineReducers({
   form: reduxFormReducer,
@@ -22,5 +23,5 @@ export default combineReducers({
   concepts: ConceptsReducer,
   transactions: TransactionsReducer,
   navigation: NavigationReducer,
-  loading
+  loading: LoadingReducer
 })

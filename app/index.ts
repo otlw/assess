@@ -7,7 +7,7 @@ import {ThemeProvider}from 'styled-components'
 import throttle from 'lodash/throttle'
 import { saveState } from './utils.js'
 
-import App from './App'
+import WelcomeScreen from './components/WelcomeScreen'
 import rootReducer from './store/'// / web3Reducer.js'
 
 const theme = {
@@ -36,7 +36,7 @@ store.subscribe(throttle(() => {
 render(
   h(Provider, {store},
     h(ThemeProvider, {theme},
-        h(App)
+        h(WelcomeScreen)
       )),
   document.getElementById('root')
 )
