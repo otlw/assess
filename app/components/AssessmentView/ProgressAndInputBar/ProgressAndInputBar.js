@@ -117,14 +117,13 @@ export class ProgressAndInputBar extends Component {
   }
 
   // helper function to return the right kind of actionBar
-  actionBar (assessmentStage,checkpoint) {
-
-    let now=new Date()
-    let timeRemaining=new Date(checkpoint*1000-now)
+  actionBar (assessmentStage, checkpoint) {
+    let now = new Date()
+    let timeRemaining = new Date(checkpoint * 1000 - now)
 
     let stageTexts = {
       [Stage.Called]: 'Click "Stake" to join the assessment.',
-      [Stage.Confirmed]: 'Please "Commit" your score within '+timeRemaining.getDate()+' days, '+timeRemaining.getHours()+' hours, '+timeRemaining.getMinutes()+' mn.',
+      [Stage.Confirmed]: 'Please "Commit" your score within ' + timeRemaining.getDate() + ' days, ' + timeRemaining.getHours() + ' hours, ' + timeRemaining.getMinutes() + ' mn.',
       [Stage.Committed]: 'Please click "Reveal" to reveal your score and complete the assessment.'
     }
     let stageFunctions = {
@@ -153,7 +152,7 @@ export class ProgressAndInputBar extends Component {
           this.props.userStage === Stage.None
             ? null
             : h(containerProgressBar, [
-              activeUser ? this.actionBar(this.props.stage,this.props.checkpoint)
+              activeUser ? this.actionBar(this.props.stage, this.props.checkpoint)
                 : h(stageTexts, completedStageTexts[this.props.userStage])
             ])
         )
