@@ -33,6 +33,10 @@ export class AssessmentData extends Component {
     }
   }
 
+  componentWillUnmount () {
+    this.props.setHelperBar(null)
+  }
+
   render () {
     if (!this.props.assessment) return h('div', 'Loading Data...')
     if (this.props.assessment.invalid) return h('div', 'invalid assessment address!! you may be on the wrong network')
