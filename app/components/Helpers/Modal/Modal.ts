@@ -36,7 +36,7 @@ export class Modal extends Component<Props> {
           h(modalFooter, [
             h(modalButtonSecondary, {onClick: this.closeScreen.bind(this)}, 'Close'),
             this.props.topic.followUp
-              ? h(modalButtonPrimary, {onClick: this.nextScreen.bind(this)}, topic.followUp.linkText ? topic.followUp.linkText : 'Learn More')
+              ? h(modalButtonPrimary, {onClick: this.nextScreen.bind(this)}, topic.followUp && topic.followUp.linkText ? topic.followUp.linkText : 'Learn More')
               : null
           ])
         ])

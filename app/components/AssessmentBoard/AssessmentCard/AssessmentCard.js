@@ -3,9 +3,15 @@ import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 import { StageDisplayNames, Stage, TimeOutReasons, CompletedStages } from '../../../constants.js'
-import { statusMessage } from '../../../utils.js'
+import { statusMessage, failureTopic } from '../../../utils.js'
 
 export class AssessmentCard extends Component {
+
+  explainWhy() {
+    console.log('called')
+    this.props.setModal(failureTopic(this.props.assessment, this.props.userAddress))
+  }
+
   render () {
     const assessment = this.props.assessment
     let userStage = assessment.userStage
@@ -33,49 +39,51 @@ export class AssessmentCard extends Component {
             h(cardLabel, 'Status'),
             h(cardTextStatusMsg, status)
           ]),
-          h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, linkButtons(assessment, isAssessee, this.props.setCardVisibility))
+          h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, this.linkButtons(assessment, isAssessee, this.props.setCardVisibility))
         ])
       ])
     )
   }
-}
 
-function linkButtons (assessment, isAssessee, setCardVisibility) {
-  let userFault = (assessment.violation && assessment.userStage === assessment.stage) || assessment.userStage === Stage.Burned
-  if (assessment.violation) {
-    if (userFault) return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/'}, 'Closed')] // TODO why should be a link
-    // not  userFault
-    if (assessment.refunded) {
-      // no assessment contract exits -> no link to detail-view
-      return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/'}, 'Refunded')]
+  linkButtons (assessment, isAssessee, setCardVisibility) {
+    let userFault = (assessment.violation && assessment.userStage === assessment.stage) || assessment.userStage === Stage.Burned
+    if (assessment.violation) {
+      if (userFault) return [h(cardButtonSecondary, {onClick: this.explainWhy.bind(this)}, 'Why?'), h(cardButtonPrimary, {to: '/'}, 'Closed')] // TODO why should be a link
+      // not  userFault
+      if (assessment.refunded) {
+        // no assessment contract exits -> no link to detail-view
+        return [h(cardButtonSecondary, {onClick: this.explainWhy.bind(this)},'Why?'), h(cardButtonPrimary, {to: '/'}, 'Refunded')]
+      } else {
+        // not refunded yet -> provide link
+        return [h(cardButtonSecondary, {onClick: this.explainWhy.bind(this)},'Why?'), h(cardButtonPrimary, {to: '/assessment/' + assessment.address}, 'Get refunded')]
+      }
     } else {
-      // not refunded yet -> provide link
-      return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/assessment/' + assessment.address}, 'Get refunded')]
+      // NOTE this section could be refactored to be smaller, as the only thing that varies is the text of the button. But i am keeping this
+      // longer structure becasue once we want to provide different links on the why-button, it will come in handy to have the cases be more explicit.
+      // no violation!
+      // is the user done (for the respective stage?)
+      let buttonList = [
+        h(cardButtonSecondary, {
+          onClick: () => setCardVisibility(assessment.address, !assessment.hidden)
+        }, assessment.hidden ? 'Unhide' : 'Hide')
+      ]
+      if (assessment.stage < Stage.Done && assessment.userStage === assessment.stage) {
+        buttonList.push(
+          h(cardButtonPrimary,
+            {to: '/assessment/' + assessment.address},
+            assessment.userStage === Stage.None ? 'View' : StageDisplayNames[assessment.stage]))
+      } else {
+        buttonList.push(
+          h(cardButtonPrimary,
+            {to: '/assessment/' + assessment.address},
+            assessment.userStage === Stage.None ? 'View' : CompletedStages[assessment.stage]))
+      }
+      return buttonList
     }
-  } else {
-    // NOTE this section could be refactored to be smaller, as the only thing that varies is the text of the button. But i am keeping this
-    // longer structure becasue once we want to provide different links on the why-button, it will come in handy to have the cases be more explicit.
-    // no violation!
-    // is the user done (for the respective stage?)
-    let buttonList = [
-      h(cardButtonSecondary, {
-        onClick: () => setCardVisibility(assessment.address, !assessment.hidden)
-      }, assessment.hidden ? 'Unhide' : 'Hide')
-    ]
-    if (assessment.stage < Stage.Done && assessment.userStage === assessment.stage) {
-      buttonList.push(
-        h(cardButtonPrimary,
-          {to: '/assessment/' + assessment.address},
-          assessment.userStage === Stage.None ? 'View' : StageDisplayNames[assessment.stage]))
-    } else {
-      buttonList.push(
-        h(cardButtonPrimary,
-          {to: '/assessment/' + assessment.address},
-          assessment.userStage === Stage.None ? 'View' : CompletedStages[assessment.stage]))
-    }
-    return buttonList
   }
 }
+
+
 
 function progressButtons (stage, actionRequired, violation) {
   return [
@@ -193,7 +201,7 @@ const cardButtonPrimary = styled(Link).attrs({
 })`background-color: #116187;text-decoration:none;
 `
 
-const cardButtonSecondary = styled('div').attrs({
+const cardButtonSecondary = styled('button').attrs({
   className: 'flex self-end ph4 pv2 fw4 f5 items-center align-center br-pill dark-blue'
 })`box-shadow: 0px 0px 0px 1px hsla(214, 100%, 31%, 0.1);
 `

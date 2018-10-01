@@ -6,7 +6,7 @@ import { setModal } from '../navigation/actions'
 import {receiveAllAssessments} from '../assessment/actions.ts'
 import {receiveConcepts} from '../concept/actions.ts'
 import { web3Connected, web3EventsConnected, web3Disconnected, receiveVariable, receivePersistedState } from './actions'
-import { modalTopic } from '../../components/Helpers/helperContent'
+import { ModalTopic } from '../../components/Helpers/helperContent'
 
 var Dagger = require('eth-dagger')
 const { FathomToken } = require('fathom-contracts')
@@ -29,7 +29,7 @@ export const connect = () => {
         let accounts = await w3.eth.getAccounts()
         if (accounts.length === 0) {
           // this is when MM is locked
-          dispatch(setModal(modalTopic.UnlockMetaMask))
+          dispatch(setModal(ModalTopic.UnlockMetaMask))
         } else {
           dispatch(receiveVariable('userAddress', accounts[0]))
           dispatch(fetchUserBalance())
@@ -63,7 +63,7 @@ export const connect = () => {
       }
     } else {
       // If the user has no MetaMask extension, a different screen will be displayed instead of the App
-      dispatch(setModal(modalTopic.NoMetaMask))
+      dispatch(setModal(ModalTopic.NoMetaMask))
       window.alert("You don't have the MetaMask browser extension.")
     }
   }
@@ -198,7 +198,7 @@ export const fetchUserBalance = () => {
     let userAddress = getState().ethereum.userAddress
     let fathomTokenInstance = getInstance.fathomToken(getState())
     if (fathomTokenInstance.error) {
-      dispatch(setModal(modalTopic.UndeployedNetwork))
+      dispatch(setModal(ModalTopic.UndeployedNetwork))
     } else {
       let userBalance = hmmmToAha(await fathomTokenInstance.methods.balanceOf(userAddress).call())
       dispatch(receiveVariable('AhaBalance', userBalance))

@@ -10,7 +10,7 @@ import h from 'react-hyperscript'
 import { HashRouter, Route } from 'react-router-dom'
 import styled, {ThemeProvider} from 'styled-components'
 import Modal from './components/Helpers/Modal'
-import { modalTopic } from './components/Helpers/helperContent'
+import { ModalTopic } from './components/Helpers/helperContent'
 
 const theme = {
   primary: '#546e7a',
@@ -38,9 +38,9 @@ export class App extends Component {
   render () {
     // use the mainDisplay variable to know wether a warning screen related to MM
     let modal = this.props.modal
-    if (modal === modalTopic.NoMetaMask ||
-        modal === modalTopic.educateAboutMetaMask ||
-        modal === modalTopic.UnlockMetaMask) {
+    if (modal === ModalTopic.NoMetaMask ||
+        modal === ModalTopic.educateAboutMetaMask ||
+        modal === ModalTopic.UnlockMetaMask) {
       return h(Modal, {topic: modal})
     }
     // else, there is an account, just display the normal App

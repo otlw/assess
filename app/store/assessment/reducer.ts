@@ -13,7 +13,7 @@ export type Assessment = {
       [prop: string]: string
     },
     payout: number,
-    violation: boolean,
+    violation: null | false | 0 | 1 | 2,
     refunded: boolean
     hidden: boolean,
 }

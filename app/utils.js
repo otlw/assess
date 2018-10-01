@@ -1,4 +1,5 @@
 import { Stage, TimeOutReasons, StageDisplayNames, networkName } from './constants'
+import { ModalTopic } from './components/Helpers/helperContent'
 let { Assessment, Concept, FathomToken, ConceptRegistry } = require('fathom-contracts')
 
 function getContractInstance (web3, abi, contractAddress) {
@@ -144,5 +145,28 @@ export const saveState = (state) => {
     }
   } else {
     console.log('do not store Store yet')
+  }
+}
+
+export function failureTopic (assessment, userAddress) {
+  let isAssessee = userAddress === assessment.assessee
+  let userFault = (assessment.violation && assessment.userStage === assessment.stage) || assessment.userStage === Stage.Burned
+  console.log('failureTopic ', isAssessee, userFault, assessment)
+  switch (assessment.violation) {
+  case TimeOutReasons.NotEnoughAssessors:
+    if (isAssessee) return ModalTopic.FailedStake
+    return ModalTopic.FailedStakeAssessor
+  case TimeOutReasons.NotEnoughCommits:
+    if (isAssessee) return ModalTopic.FailedCommit
+    if (userFault) return ModalTopic.FailedCommitUser
+    return ModalTopic.FailedCommitAssessor
+  case TimeOutReasons.NotEnoughReveals:
+    if (isAssessee) return ModalTopic.FailedReveal
+    if (userFault) return ModalTopic.FailedRevealUser
+    return ModalTopic.FailedRevealAssessor
+    // TODO
+  default:
+    console.log('OOOOOPS this should not be reached!!!!')
+    return false// throw('BOOOOOOOM!')
   }
 }

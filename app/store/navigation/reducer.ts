@@ -19,11 +19,14 @@ export type ModalTopics =
   "FailedStakeWhy" |
   "FailedCommit" |
   "FailedCommitAssessor" |
+  "FailedCommitUser" |
   "FailedCommitWhy" |
   "FailedReveal" |
   "FailedRevealAssessor" |
+  "FailedRevealUser" |
   "FailedRevealWhy" |
   "InvalidOutcome" |
+  "InvalidOutcomeAssessor" |
   "InvalidOutcomeWhy"
 
 export type NavigationState = {

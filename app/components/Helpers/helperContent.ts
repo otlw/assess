@@ -1,6 +1,6 @@
 import {ModalTopics} from '../../store/navigation/reducer'
 
-export const modalTopic = Object.freeze({
+export const ModalTopic = Object.freeze({
   UnlockMetaMask: 'UnlockMetaMask',
   AssessmentProcess: 'AssessmentProcess',
   NoMetaMask: 'NoMetaMask',
@@ -8,18 +8,21 @@ export const modalTopic = Object.freeze({
   UndeployedNetwork: 'UndeployedNetwork',
   AssessmentCreation: 'AssessmentCreation',
   WelcomeAsAssessor: 'WelcomeAsAssessor',
-  HowToBeAssessor1: 'HowToBeAssessor1,'
-  HowToBeAssessor2: 'HowToBeAssessor2,'
+  HowToBeAssessor1: 'HowToBeAssessor1',
+  HowToBeAssessor2: 'HowToBeAssessor2',
   FailedStake: 'FailedStake',
   FailedStakeAssessor: 'FailedStakeAssessor',
   FailedStakeWhy: 'FailedStakeWhy',
   FailedCommit: 'FailedCommit',
   FailedCommitAssessor: 'FailedCommitAssessor',
-  FailedCommitWhy: 'FailedCommitWhy'
+  FailedCommitUser: 'FailedCommitUser',
+  FailedCommitWhy: 'FailedCommitWhy',
   FailedReveal: 'FailedReveal',
   FailedRevealAssessor: 'FailedRevealAssessor',
-  FailedRevealWhy: 'FailedRevealWhy'
+  FailedRevealUser: 'FailedRevealUser',
+  FailedRevealWhy: 'FailedRevealWhy',
   InvalidOutcome: 'InvalidOutcome',
+  InvalidOutcomeAssessor: 'InvalidOutcomeAssessor',
   InvalidOutcomeWhy : 'InvalidOutcomeWhy'
 })
 
@@ -28,7 +31,7 @@ type Modal = {
   text: string
   followUp?: {
     target: ModalTopics,
-    linkText: string
+    linkText?: string
   }
 }
 // this functions delivers simple one-liner explanations on given topics + a keyWord under which more can
@@ -39,7 +42,7 @@ export function helperText (topic: ModalTopics):Modal {
     case "UnlockMetaMask":
       return {
         title: 'Unlock MetaMask to continue',
-        text: 'Fathom requires you to unlock MetaMask before we can continue. Please click on the MetaMask icon and enter your password to proceed.'
+        text: 'Fathom requires you to unlock MetaMask before we can continue. Please click on the MetaMask icon and enter your password to proceed.',
         followUp: {
           target: "EducateAboutMetaMask"
         }
@@ -78,13 +81,17 @@ export function helperText (topic: ModalTopics):Modal {
       return {
         title: topic,
         text: 'Thank you. Assessors help the world of Fathom to continue spinning. We have a few tips to help you fairly assess others. Shall we get started? ',
-        target: "HowToBeAssessor1"
+        followUp: {
+          target: "HowToBeAssessor1"
+        }
       }
     case "HowToBeAssessor1":
       return {
         title: topic,
         text: 'First, don’t be a jerk! Next, just assess them fairly surely you can figure it out you model citizen...you..company man!',
-        target: "HowToBeAssessor2"
+        followUp:{
+          target: "HowToBeAssessor2"
+        }
       }
     case "HowToBeAssessor2":
       return {
@@ -95,7 +102,7 @@ export function helperText (topic: ModalTopics):Modal {
     case "FailedStake":
       return {
         title: 'Your assessment couldn\'t continue',
-        text: 'We couldn’t get 5 assessors to join your assessment. It happens occasionally, and isn’t your fault. Let’s recreate your assessment and try again.'
+        text: 'We couldn’t get 5 assessors to join your assessment. It happens occasionally, and isn’t your fault. Let’s recreate your assessment and try again.',
         followUp: {
           target: "FailedStakeWhy",
           linkText: 'Why?'
@@ -132,14 +139,14 @@ export function helperText (topic: ModalTopics):Modal {
     case "FailedRevealWhy":
       return {
         title: 'Why couldn\'t my assessment continue?',
-        text: 'In order to reduce collusion between assessors, and encourage assessments to be completed swiftly, Fathom sets deadlines for each stage of the assessment.\n\n In this case, one or more assessors didn’t reveal their scores after assessing you.\n\n We know this can be frustrating, so we’re here to help you create a new assessment. Just click below. (TODO)',
+        text: 'In order to reduce collusion between assessors, and encourage assessments to be completed swiftly, Fathom sets deadlines for each stage of the assessment.\n\n In this case, one or more assessors didn’t reveal their scores after assessing you.\n\n We know this can be frustrating, so we’re here to help you create a new assessment. Just click below. (TODO)'
       }
     case "InvalidOutcome":
       return {
         title: 'Why couldn\'t my assessment continue?',
         text: 'All your assessors committed their scores, but they varied too much, rendering the assessment invalid.',
         followUp: {
-          target: "InvalidOutComeWhy",
+          target: "InvalidOutcomeWhy",
           linkText: 'Why?'
         }
       }
@@ -164,6 +171,16 @@ export function helperText (topic: ModalTopics):Modal {
         title: 'Your assessment couldn\'t continue',
         text: 'Thank you for joining this assessment. Unfortunately, not all assessors revealed their scores in time.\n\n Your stake has been refunded.'
       }
+    case "FailedCommitUser":
+      return {
+        title: 'Your assessment couldn\'t continue',
+        text: 'Thank you for joining this assessment. Unfortunately, you did not commit your score in time.\n\n Your stake has been burned.'
+      }
+    case "FailedRevealUser":
+      return {
+        title: 'Your assessment couldn\'t continue',
+        text: 'Thank you for joining this assessment. Unfortunately, you did not reveal your score in time.\n\n Your stake has been burned.'
+      }
     case "InvalidOutcomeAssessor":
       return {
         title: 'Your assessment couldn\'t continue',
@@ -178,6 +195,7 @@ export function helperText (topic: ModalTopics):Modal {
   }
 }
 
+// possible way to refactor this:
 // ModalTexts = Object.freeze({
 //   HowToBeAssessor: {
 //     title: "HowToBeAssessor1",
@@ -189,4 +207,3 @@ export function helperText (topic: ModalTopics):Modal {
 //   }
 
 // }
-                          )
