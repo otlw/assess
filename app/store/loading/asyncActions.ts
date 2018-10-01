@@ -8,7 +8,7 @@ import {loadPersistedState} from '../web3/asyncActions'
 export const ConnectMetamask = () => {
   return async (dispatch:Dispatch<any, any>) => {
     console.log('yo?')
-    if (typeof typeof (window as any)['web3'] === 'undefined') {
+    if (typeof (window as any)['web3'] === 'undefined') {
       dispatch(setModal("NoMetaMask"))
       return dispatch(setMetamaskLoadingStage('Error'))
     }
