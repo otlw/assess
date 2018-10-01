@@ -5,7 +5,7 @@ import { processEvent } from '../assessment/asyncActions'
 import { setModal } from '../navigation/actions'
 import {receiveAllAssessments} from '../assessment/actions.ts'
 import {receiveConcepts} from '../concept/actions.ts'
-import { web3EventsConnected, receiveVariable, receivePersistedState } from './actions'
+import { receiveVariable, receivePersistedState } from './actions'
 import { modalTopic } from '../../components/Helpers/helperContent'
 
 var Dagger = require('eth-dagger')
@@ -15,25 +15,9 @@ const { FathomToken } = require('fathom-contracts')
 export const connect = () => {
   return async (dispatch, getState) => {
     let fathomTokenDeployedAt = getState().ethereum.fathomTokenDeployedAt
-    let network = networkName(getState().ethereum.networkID)
-
     if (!fathomTokenDeployedAt) dispatch(loadFathomNetworkParams())
     dispatch(fetchUserBalance())
 
-    // set a second web3 instance to subscribe to events via websocket
-    if (network === 'Kovan') {
-      dispatch(web3EventsConnected({})) // to set isConnectedVariable to true
-    } else {
-      // rinkeby or local testnet
-      let web3events = new Web3()
-      let providerAddress = networkName(network) === 'Rinkeby' ? 'wss://rinkeby.infura.io/ws' : 'ws://localhost:8545'
-      console.log('providerAddress ', providerAddress)
-      const eventProvider = new Web3.providers.WebsocketProvider(providerAddress)
-      eventProvider.on('error', e => console.error('WS Error', e))
-      eventProvider.on('end', e => console.error('WS End', e))
-      web3events.setProvider(eventProvider)
-      dispatch(web3EventsConnected(web3events))
-    }
     // set up event watcher
     dispatch(initializeEventWatcher())
   }
@@ -103,7 +87,14 @@ const initializeEventWatcher = () => {
       })
     } else {
       // local testnet
-      let web3WS = getState().ethereum.web3events
+
+      let providerAddress = networkName(networkID) === 'Rinkeby' ? 'wss://rinkeby.infura.io/ws' : 'ws://localhost:8545'
+      console.log('providerAddress ', providerAddress)
+      const eventProvider = new Web3.providers.WebsocketProvider(providerAddress)
+      eventProvider.on('error', e => console.error('WS Error', e))
+      eventProvider.on('end', e => console.error('WS End', e))
+      let web3WS = new Web3(eventProvider)
+
       let notificationJSON = FathomToken.abi.filter(x => x.name === 'Notification')[0]
       let fathomTokenAddress = FathomToken.networks[getState().ethereum.networkID].address
       web3WS.eth.subscribe('logs', {
@@ -124,7 +115,6 @@ const initializeEventWatcher = () => {
         // a) the user is looking at it
         // b) the user has already been on the dashboard page once
         if ((getState().assessments[decodedLog.sender] || decodedLog.user === userAddress)) {
-          dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic)))
           dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic), log.blockNumber))
         } else {
           console.log('not updating!')
