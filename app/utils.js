@@ -75,6 +75,7 @@ whether the user needs to be active, the assessment was cancelled and the phase 
 */
 export function statusMessage (isAssessee, assessment) {
   let actionRequired = assessment.stage === assessment.userStage && assessment.stage !== Stage.Done
+  let nOtherAssessorsToBeActive = assessment.size - (assessment.stage === Stage.Called ? assessment.assessors.length : assessment.done) - (actionRequired ? 1 : 0)
   let status = ''
   console.log()
   // assessment Failed?
@@ -109,10 +110,9 @@ export function statusMessage (isAssessee, assessment) {
       }
     } else if (!actionRequired) {
       // assessment not done, but user must not do something
-      status += 'Waiting...'
+      status += `Waiting for ${nOtherAssessorsToBeActive} remaining assessors to ${StageDisplayNames[assessment.stage]}.`
     } else {
       // assessment not done because user (and others) need to do something
-      let nOtherAssessorsToBeActive = assessment.size - (assessment.stage === Stage.Called ? assessment.assessors.length : assessment.done) - (actionRequired ? 1 : 0)
       // user must do something
       status += 'Waiting for you and ' + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[assessment.stage]
     }
