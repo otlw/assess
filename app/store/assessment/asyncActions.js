@@ -512,7 +512,9 @@ export function processEvent (user, sender, topic, blockNumber) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let isUser = user === userAddress
-    dispatch(receiveVariable('lastUpdatedAt', blockNumber))
+    // if the user has already looked at the dashboard, meaning we have fetched all latest assessments
+    // then we want to save the lastUpdatedAt parameter
+    if (getState().loading.assessments > LoadingStage.None) dispatch(receiveVariable('lastUpdatedAt', blockNumber))
     switch (topic) {
       case NotificationTopic.AssessmentCreated:
         dispatch(fetchUserBalance())
