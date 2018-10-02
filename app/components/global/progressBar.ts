@@ -18,7 +18,6 @@ const progressBar = (props:Props) => {
 		}
 	    Dots.push(newDot);
 	}
-	console.log("DOts",Dots)
     return h(styleProgressBar, 
         Dots
     )
