@@ -2,6 +2,8 @@ import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 
+import inputField from '../global/inputField.ts'
+
 import icoArrowForward from '../../assets/ico-arrow-forward.svg'
 import icoClose from '../../assets/ico-close.svg'
 import icoConfirm from '../../assets/ico-confirm.svg'
@@ -80,12 +82,13 @@ export class AssessmentCreation extends Component {
             ),
             h(ButtonGroup, [
               h(InputContainer, [
-                h(AmountPerAssessor, {
+                h(inputField, {
                   onChange: this.setAmountPerAssessor.bind(this),
                   value: this.state.amountPerAssessor,
                   type: 'number',
                   step: 1,
-                  min: 0
+                  min: 0,
+                  width: 4
                 }),
                 h(AHAUnit, 'AHA')
               ])
