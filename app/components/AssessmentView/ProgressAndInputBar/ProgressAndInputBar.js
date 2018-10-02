@@ -123,8 +123,9 @@ export class ProgressAndInputBar extends Component {
     let timeToReveal = new Date((endtime * 1000 + 24 * 60 * 60 * 1000) - now)
     let stageTexts = {
       [Stage.Called]: 'Click "Stake" to join the assessment.',
-      [Stage.Confirmed]: 'Please "Commit" your score within ' + timeToCommit.getDate() + ' days, ' + timeToCommit.getHours() + ' hours, ' + timeToCommit.getMinutes() + ' mn.',
-      [Stage.Committed]: 'Please click "Reveal" to reveal your score and complete the assessment.\n' + timeToReveal.getDate() + ' days, ' + timeToReveal.getHours() + ' hours, ' + timeToReveal.getMinutes() + ' mn remaining.'
+      [Stage.Confirmed]: `Please "Commit" your score within ${timeToCommit.getDate()} days, ${timeToCommit.getHours()} hours, ${timeToCommit.getMinutes()} mn.`,
+      [Stage.Committed]: `Please click "Reveal" to reveal your score and complete the assessment.
+      ${timeToReveal.getDate()} days, ${timeToReveal.getHours()} hours, ${timeToReveal.getMinutes()} mn remaining.`
     }
     let stageFunctions = {
       [Stage.Called]: this.setStakeAction.bind(this),
