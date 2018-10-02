@@ -18,9 +18,10 @@ const progressBar = (props:Props) => {
 		}
 	    Dots.push(newDot);
 	}
-    return h(styleProgressBar, [
+	console.log("DOts",Dots)
+    return h(styleProgressBar, 
         Dots
-    ])
+    )
 }
 
 export default progressBar
