@@ -4,7 +4,8 @@ import h from 'react-hyperscript'
 import { Stage, StageDisplayNames, PassiveStageDisplayNames } from '../../../constants.js'
 import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
 import styled from 'styled-components'
-import icoClose from '../../../assets/ico-close.svg'
+import buttonPrimary from '../../global/buttonPrimary.ts'
+import buttonClose from '../../global/buttonClose.ts'
 
 // component to display an individual assessor slot address and options
 export class ProgressAndInputBar extends Component {
@@ -138,9 +139,7 @@ export class ProgressAndInputBar extends Component {
         // show actionView, where the user can input data and interact with the assessment
         return (
           h(containerProgressBar, [
-            h(buttonClose, {onClick: this.closeInputBar.bind(this)}, [
-              h('img', {alt: 'icoClose', src: icoClose})
-            ]),
+            buttonClose({onClick: this.closeInputBar.bind(this)}),
             h(rowObjectText, [
               h(StageDescriptor, this.state.displayText),
               (this.props.stage === Stage.Confirmed
@@ -164,9 +163,7 @@ export class ProgressAndInputBar extends Component {
         // add Meeting Point
         return (
           h(containerProgressBar, [
-            h(buttonClose, {onClick: this.closeInputBar.bind(this)}, [
-              h('img', {alt: 'icoClose', src: icoClose, className: ''})
-            ]),
+            buttonClose({onClick: this.closeInputBar.bind(this)}),
             h(rowObjectText, [
               h(rowObjectInput, 'Add a meeting Point:'),
               h(inputMeetingPoint, {
@@ -224,13 +221,6 @@ export default ProgressAndInputBar
 export const containerProgressBar = styled('div').attrs({className: 'flex flex-row w-100 h3 items-center bt b--light-gray'})`
 `
 
-export const buttonClose = styled('button').attrs({className: 'flex h-100 items-center justify-center ph4 br b--light-gray pointer'})`
-transition:0.2s ease-in-out;
-border-top: 0px;
-border-left: 0px;
-border-bottom: 0px;
-:hover {background-color:#eee;}
-`
 export const ProgressButton = styled('button')`
   padding: 0.25em 1em;
   border: 2px solid palevioletred;

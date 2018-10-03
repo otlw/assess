@@ -4,8 +4,12 @@ import h from 'react-hyperscript'
 
 const icoClose = require('../../assets/ico-close.svg');
 
-const buttonClose = () => {
-    return h(styleButtonClose, [
+type Props = {
+  onClick:any
+}
+
+const buttonClose = (props:Props) => {
+    return h(styleButtonClose, {onClick: props.onClick}, [
         h(imgClose, {alt: 'icoClose', src: icoClose, className: ''})
     ])
 }
