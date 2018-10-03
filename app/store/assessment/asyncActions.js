@@ -292,7 +292,6 @@ export function reconstructAssessment (assessmentAddress, pastNotifications) {
 export function validateAndFetchAssessmentData (assessmentAddress) {
   return async (dispatch, getState) => {
     try {
-      console.log('in')
       let assessmentInstance = getInstance.assessment(getState(), assessmentAddress)
       // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
       let conceptAddress = await assessmentInstance.methods.concept().call()
