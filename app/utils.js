@@ -73,7 +73,7 @@ export function convertFromUIScoreToOnChainScore (x) {
 returns the message to be displayed on the assessment Card and DetailView, which is different depending on
 whether the user needs to be active, the assessment was cancelled and the phase of the assessment
 */
-export function statusMessage (isAssessee, assessment) {
+export function statusMessage (isAssessee, assessment, transactions = []) {
   let actionRequired = assessment.stage === assessment.userStage && assessment.stage !== Stage.Done
   let nOtherAssessorsToBeActive = assessment.size - (assessment.stage === Stage.Called ? assessment.assessors.length : assessment.done) - (actionRequired ? 1 : 0)
   let status = ''
@@ -114,7 +114,9 @@ export function statusMessage (isAssessee, assessment) {
     } else {
       // assessment not done because user (and others) need to do something
       // user must do something
-      status += 'Waiting for you and ' + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[assessment.stage]
+      let txToChangeState = transactions.filter(x => x.data === assessment.stage)
+      if (txToChangeState.length > 0) {status = 'Awaiting confirmation...'}
+      else status += 'Waiting for you and ' + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[assessment.stage]
     }
   }
   return status

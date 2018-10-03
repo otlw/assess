@@ -37,7 +37,7 @@ export class AssessmentData extends Component {
     if (!this.props.assessment) return h('div', 'Loading Data...')
     if (this.props.assessment.invalid) return h('div', 'invalid assessment address!! you may be on the wrong network')
     let isAssessee = this.props.assessment.assessee === this.props.userAddress
-    let status = statusMessage(isAssessee, this.props.assessment)
+    let status = statusMessage(isAssessee, this.props.assessment, this.props.transactions)
     if (this.props.assessment.refunded && !this.props.assessment.cost) {
       // this means the assessment was reconstructed
       return h('div', status)
