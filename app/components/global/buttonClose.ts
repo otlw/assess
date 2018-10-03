@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 
-
 const icoClose = require('../../assets/ico-close.svg');
 
 type Props = {
@@ -10,7 +9,7 @@ type Props = {
 
 const buttonClose = (props:Props) => {
     return h(styleButtonClose, {onClick: props.onClick}, [
-        h(imgClose, {alt: 'icoClose', src: icoClose, className: ''})
+        h(imgClose)
     ])
 }
 
@@ -25,6 +24,6 @@ width: 32px;
 height: 32px;
 :hover {border: 1px solid ${props => props.theme.primary};}`
 
-export const imgClose = styled('img').attrs({className: ''})`
+export const imgClose = styled('img').attrs({alt:'close', src: icoClose})`
 width: 16px;
 `
