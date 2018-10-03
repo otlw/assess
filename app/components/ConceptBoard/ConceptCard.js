@@ -1,6 +1,9 @@
 import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
+import textHeadline from '../global/textHeadline.ts'
+import textLabel from '../global/textLabel.ts'
+import textBody from '../global/assessmentTextBody.ts'
 
 export class ConceptCard extends Component {
   render () {
@@ -15,13 +18,13 @@ export class ConceptCard extends Component {
     return h(cardContainer, [
       h(cardContainerInfo, [
         h(cardTextObject, [
-          h(cardLabel, 'Concept'),
-          h(cardTextTitle, this.props.conceptData.name)
+          h(textLabel, {text: 'Concept'}),
+          h(textHeadline, {text: this.props.conceptData.name})
         ])
       ]),
       h(cardContainerDescription, [
         h(cardObjectDescription, [
-          h(cardTextDescription, this.props.conceptData.description)
+          h(textBody, {text: this.props.conceptData.description})
         ]),
         h(cardContainerButtons, [
           h(cardButtonPrimary, {onClick: this.props.selectConcept.bind(this), id: this.props.conceptAddress}, 'Get Assessed')
@@ -52,12 +55,6 @@ const cardTextObject = styled('div').attrs({
 
 const cardLabel = styled('div').attrs({
   className: 'f5 fw4 mv1 ttu uppercase'
-})`
-color: #0A4A66;
-`
-
-const cardTextTitle = styled('h2').attrs({
-  className: 'f2 fw4 mv1 ttu uppercase'
 })`
 color: #0A4A66;
 `
