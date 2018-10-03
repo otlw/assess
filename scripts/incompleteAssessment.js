@@ -9,15 +9,11 @@ const AssessorStage = Object.freeze({
 
 let options = {}
 options['-s'] = {
-  'stage until to run the assessment': ['stake', 'commit', 'reveal (default)'],
-  scores: 'a comma-separated string: e.g. 80,80,80,90,100 (default scores are all 100s)'
+  'last stage to be completed by all assessors': ['stake', 'commit', 'reveal (default)']
 }
-options['-a'] = 'assessment address to be used'
-options['-c'] = 'concept on which to create the assessment'
 let examples = {}
-examples['node completeAssessment.js'] = 'creates and runs an assessment of size 5 until the end with all assessors scoring 1000'
-examples['node completeAssessment.js -c 0x34... -s commit 0,0,0,0,60,60,60'] = 'will create a an assessment on the concept 0x34... of size 7 and run until the commit stage with the first four assessors commiting zero and the other three 60s '
-examples['node completeAssessment.js -a 0x34... -s stake'] = 'will use the existing assessment at address 0x34... and make the needed number of assessors stake '
+examples['node incompleteAssessment.js -s stake'] = 'will create a an assessment size 5 and run until the commit stage with the first assessors commiting and others failing to do so.'
+examples['node incompleteAssessment.js -s commit'] = 'will create a an assessment size 5 and run until the reveal stage with the first assessors revealing and others failing to do so.'
 
 // if no scores are passed as args, a defualt score of 100 will be used by every assessor
 // Currently, this only works for the testnet!
