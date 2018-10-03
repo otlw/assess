@@ -14,7 +14,7 @@ export class AssessmentCard extends Component {
     // set assessee/assessor view
     let isAssessee = this.props.userAddress === assessment.assessee
     let actionRequired = stage === userStage && stage !== Stage.Done
-    let status = statusMessage(isAssessee, assessment)
+    let status = statusMessage(isAssessee, assessment, this.props.transactions)
     return (
       h(cardContainer, [
         h(cardContainerInfo, [
