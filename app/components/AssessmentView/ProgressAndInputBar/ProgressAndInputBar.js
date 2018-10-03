@@ -155,7 +155,7 @@ export class ProgressAndInputBar extends Component {
                 : null
               )
             ]),
-            h(buttonSubmit, {onClick: this.state.action.bind(this)}, view)
+            buttonPrimary({onClick: this.state.action.bind(this), text: view})
           ])
         )
       }
@@ -171,7 +171,7 @@ export class ProgressAndInputBar extends Component {
                 type: 'string',
                 onChange: this.setMeetingPointToBeStored.bind(this) })
             ]),
-            h(buttonSubmit, {onClick: this.storeData.bind(this)}, 'Submit')
+            buttonPrimary({onClick: this.storeData.bind(this), text: 'Submit'})
           ])
         )
       }
@@ -260,10 +260,10 @@ export const rowObjectText = styled('div').attrs({className: 'flex w-100 items-c
 export const rowObjectInput = styled('div').attrs({className: 'flex w-100 h-100 items-center justify-end pv2 b--light-gray  f5 gray ttu uppercase'})`;
 `
 
-export const buttonSubmit = styled('button').attrs({className: 'flex h3 items-center justify-center pv3 bn ph4 bg-light-green pointer ttu uppercase f5 '})`
-transition:0.2s ease-in-out;
-:hover {background-color:hsla(158, 46%, 57%, 1);}
-`
+// export const buttonSubmit = styled('button').attrs({className: 'flex h3 items-center justify-center pv3 bn ph4 bg-light-green pointer ttu uppercase f5 '})`
+// transition:0.2s ease-in-out;
+// :hover {background-color:hsla(158, 46%, 57%, 1);}
+// `
 
 export const Feedback = styled.div`
   font-size: 0.7em;
