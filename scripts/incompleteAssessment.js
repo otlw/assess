@@ -1,3 +1,20 @@
+// Script to create timed-out assessments
+
+let options = {}
+options['-s'] = {
+  'last stage to be completed by all assessors': ['stake', 'commit', 'reveal (default)'],
+  scores: 'a comma-separated string: e.g. 80,80,80,90,100 (default scores are all 100s)'
+}
+let examples = {}
+examples['node incompleteAssessment.js -s stake'] = 'will create a an assessment size 5 and run until the commit stage with the first assessors commiting and others failing to do so.'
+examples['node incompleteAssessment.js -s commit'] = 'will create a an assessment size 5 and run until the reveal stage with the first assessors revealing and others failing to do so.'
+
+// ATTENTION: As this script advances the local time of the chain, 3 things have to be done before it can be run again:
+// 1) switch MM to another net
+// 2) ganache has to be restarted
+// 3) and the contracts have to be redeployed
+// (4) switch back MM 
+
 const AssessorStage = Object.freeze({
   None: 0,
   Called: 1,
@@ -7,13 +24,6 @@ const AssessorStage = Object.freeze({
   Burned: 5
 })
 
-let options = {}
-options['-s'] = {
-  'last stage to be completed by all assessors': ['stake', 'commit', 'reveal (default)']
-}
-let examples = {}
-examples['node incompleteAssessment.js -s stake'] = 'will create a an assessment size 5 and run until the commit stage with the first assessors commiting and others failing to do so.'
-examples['node incompleteAssessment.js -s commit'] = 'will create a an assessment size 5 and run until the reveal stage with the first assessors revealing and others failing to do so.'
 
 // if no scores are passed as args, a defualt score of 100 will be used by every assessor
 // Currently, this only works for the testnet!
