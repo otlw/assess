@@ -25,9 +25,10 @@ width: 10px;
 color: ${props => props.theme.primary};
 `
 
-const assessmentIndicatorActive = styled('div').attrs({className: 'flex ba br-100 mh2'})`
-height: 10px;
-width: 10px;
-color: ${props => props.theme.primary};
-background: ${props => props.theme.primary};
-`
+// commented out due to conflict. this will get cleared up on merge and is subordinate. you can replace this.
+// const assessmentIndicatorActive = styled('div').attrs({className: 'flex ba br-100 mh2'})`
+//height: 10px;
+//width: 10px;
+//color: ${props => props.theme.primary};
+//background: ${props => props.theme.primary};
+//`
