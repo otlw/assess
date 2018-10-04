@@ -1,5 +1,4 @@
 import { Field, reduxForm } from 'redux-form'
-import inputField from '../../global/inputField.ts'
 import buttonTertiary from '../../global/buttonTertiary.ts'
 var h = require('react-hyperscript')
 
@@ -7,7 +6,7 @@ const MeetingPointForm = props => {
   const { handleSubmit, submitting } = props
   return (
     h('form', {onSubmit: handleSubmit}, [
-      h(inputField, {
+      h(Field, {
         name: 'data',
         component: 'input',
         type: 'text',
