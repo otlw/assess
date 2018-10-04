@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 import { Component } from 'react'
 import AssessmentView from './AssessmentView.js'
 import {validateAndFetchAssessmentData} from '../../store/assessment/asyncActions'
+import { setHelperBar } from '../../store/navigation/actions'
 var h = require('react-hyperscript')
 
 const mapStateToProps = (state, ownProps) => {
@@ -12,14 +13,19 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = {
-  validateAndFetchAssessmentData
+  validateAndFetchAssessmentData,
+  setHelperBar
 }
 
 class AssessmentViewUnconnected extends Component {
   render () {
     let assessmentAddress = this.props.match.params.id
     if (!this.props.assessment) this.props.validateAndFetchAssessmentData(assessmentAddress)
-    return h(AssessmentView, {assessment: this.props.assessment, userAddress: this.props.userAddress})
+    return h(AssessmentView, {
+      assessment: this.props.assessment,
+      userAddress: this.props.userAddress,
+      setHelperBar: this.props.setHelperBar
+    })
   }
 }
 

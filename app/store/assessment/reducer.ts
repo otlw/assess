@@ -38,11 +38,14 @@ export function AssessmentsReducer (state = initialState, action:Actions):Assess
       let assessmentAddress = action.assessmentAddress
       let assessment = state[assessmentAddress] || {assessors: []}
       let newAssessors = assessment.assessors.slice(0)
-      newAssessors.push(action.assessor)
-      return {
-        ...state,
-        [assessmentAddress]: extend(assessment, {assessors: newAssessors})
+      if (newAssessors.indexOf(action.assessor) === -1) {
+        newAssessors.push(action.assessor)
+        return {
+            ...state,
+            [assessmentAddress]: extend(assessment, {assessors: newAssessors})
+        }
       }
+      return state
     }
     case "UPDATE_ASSESSMENT_VARIABLE": {
       return {

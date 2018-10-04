@@ -1,16 +1,19 @@
 import {Actions} from './actions'
 import { LoadingStage } from '../../constants'
 
-type LoadingState = {
+export type LoadingStage = null | "Loading" | "Loaded" | "Error"
+export type LoadingState = {
   assessments: number,
   concepts: number,
+  metamask: LoadingStage
 }
 let initialState:LoadingState = {
   assessments: LoadingStage.None,
   concepts: LoadingStage.None,
+  metamask: null
 }
 
-function loading (state = initialState, action:Actions):LoadingState {
+export function LoadingReducer (state = initialState, action:Actions):LoadingState {
   switch (action.type) {
     case "BEGIN_LOADING_ASSESSMENTS":
       return {
@@ -34,9 +37,13 @@ function loading (state = initialState, action:Actions):LoadingState {
         concepts: LoadingStage.Done
       }
     }
+    case "SET_METAMASK_LOADING_STAGE" : {
+      return {
+        ...state,
+        metamask: action.stage
+      }
+    }
     default:
       return state
   }
 }
-
-export default loading
