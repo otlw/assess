@@ -8,7 +8,7 @@ type Props = {
 }
 
 const buttonClose = (props:Props) => {
-    return h(styleButtonClose, {onClick: props.onClick}, [
+    return h(styleButtonClose, props, [
         h(imgClose)
     ])
 }

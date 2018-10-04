@@ -164,7 +164,7 @@ export class ProgressAndInputBar extends Component {
       case 'Reveal': {
         return (
           h(containerProgressBar, [
-            buttonClose({onClick: this.closeInputBar.bind(this)}),
+            h(buttonClose, {onClick: this.closeInputBar.bind(this)}),
             h(rowObjectText, [
               h(StageDescriptor, this.state.displayText),
               (this.props.stage === Stage.Confirmed
@@ -180,7 +180,7 @@ export class ProgressAndInputBar extends Component {
                 : null
               )
             ]),
-            buttonPrimary({onClick: this.state.action.bind(this), text: view})
+            h(buttonPrimary, {onClick: this.state.action.bind(this)}, view)
           ])
         )
       }
