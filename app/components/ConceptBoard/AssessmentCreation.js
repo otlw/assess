@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import h from 'react-hyperscript'
 import { modalTopic } from '../Helpers/helperContent'
 
-import inputField from '../global/inputField.ts'
+import inputField from '../Global/inputField.ts'
 
 import icoArrowForward from '../../assets/ico-arrow-forward.svg'
 import icoClose from '../../assets/ico-close.svg'
