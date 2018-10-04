@@ -2,7 +2,7 @@ import { Component } from 'react'
 import styled from 'styled-components'
 import TxList from '../../TxList.js'
 import { statusMessage } from '../../../utils.js'
-import ButtonPrimary from '../../Global/Buttons.ts'
+import { ButtonPrimary } from '../../Global/Buttons.ts'
 var h = require('react-hyperscript')
 
 class FailedBar extends Component {
@@ -27,8 +27,8 @@ class FailedBar extends Component {
           // if not, has he been refunded yet?
             ? !assessment.refunded
             // user has not been refunded yet -> show button
-              ? h(buttonProgressActive, {onClick: this.refund.bind(this)}, 'Refund')
-              : h(buttonProgressActive, 'Refunded')
+              ? h(ButtonPrimary, {onClick: this.refund.bind(this)}, 'Refund')
+              : h(ButtonPrimary, 'Refunded')
             : undefined),
         this.props.transactions
           ? h(TxList, {transactions: this.props.transactions})
