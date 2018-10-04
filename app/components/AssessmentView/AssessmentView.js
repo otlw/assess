@@ -7,6 +7,7 @@ import FailedBar from './FailedBar'
 import { StageDisplayNames, Stage } from '../../constants.js'
 import { convertDate, statusMessage } from '../../utils.js'
 import styled from 'styled-components'
+import progressBar from '../global/progressBar.ts'
 import { helperBarTopic } from '../../components/Helpers/helperContent'
 var h = require('react-hyperscript')
 
@@ -58,23 +59,18 @@ export class AssessmentData extends Component {
         // holds role and concept title
         h(assessmentHeader, [
           h(assessmentLabelActivity, isAssessee ? 'Getting assessed in' : 'Assessing'),
-          h(assessmentTextTitle, assessment.conceptData.name),
-          // indicates status of assesssment
-          h(assessmentRowSubHeader, [
-            h(assessmentContainerStatus, [
-              h(assessmentContainerStatusIndicator, [
-                h(assessmentLabelStatus, 'STATUS'),
-                h(assessmentIndicatorActive),
-                h(assessmentIndicatorInactive),
-                h(assessmentIndicatorInactive),
-                h(assessmentIndicatorInactive)
-              ]),
-              h(assessmentTextBody, statusString)
-            ]),
-            h(assessmentContainerDate, [
-              h(assessmentLabelBody, assessment.stage === Stage.Done ? 'Completed on: ' : 'DEADLINE'),
-              h(assessmentTextBody, convertDate(assessment.checkpoint))
-            ])
+          h(assessmentTextTitle, assessment.conceptData.name)
+        ]),
+        // indicates status of assesssment
+        h(assessmentRowSubHeader, [
+          h(assessmentContainerStatus, [
+            h(assessmentLabelBody, 'STATUS'),
+            progressBar({length: 6, step: 2}), // TODO use a global utils function (assessment)=>(step) to put the right inputs into this
+            h(assessmentTextBody, statusString)
+          ]),
+          h(assessmentContainerDate, [
+            h(assessmentLabelBody, assessment.stage === Stage.Done ? 'Completed on: ' : 'Due Date:'),
+            h(assessmentTextBody, convertDate(assessment.checkpoint))
           ])
         ]),
         // basic info
@@ -163,30 +159,6 @@ const assessmentRowSubHeader = styled('div').attrs({className: 'flex flex-row w-
 const assessmentContainerStatus = styled('div').attrs({className: 'flex flex-row flex-wrap w-50 items-start justify-between '})`
 `
 
-// assessmentView Header
-//  ->  Status Indicator
-
-const assessmentContainerStatusIndicator = styled('div').attrs({className: 'flex flex-row w-100 items-center'})`
-`
-
-const assessmentIndicatorInactive = styled('div').attrs({className: 'flex ba br-100 mh2'})`
-height: 10px;
-width: 10px;
-color: ${props => props.theme.primary};
-`
-
-const assessmentIndicatorActive = styled('div').attrs({className: 'flex ba br-100 mh2'})`
-height: 10px;
-width: 10px;
-color: ${props => props.theme.primary};
-background: ${props => props.theme.primary};
-`
-
-const assessmentLabelStatus = styled('h6').attrs({className: 'f5 w-auto mr2 mv0 fw4 tl ttu uppercase'})`
-color: ${props => props.theme.primary};
-`
-
-// End Status Indicator
 // End assessmentView Header
 
 const assessmentLabelBody = styled('h6').attrs({className: 'f5 w-100 mv0 fw4 tl ttu uppercase'})`
