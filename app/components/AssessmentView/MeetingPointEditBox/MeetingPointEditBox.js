@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import styled from 'styled-components'
 import MeetingPointForm from './MeetingPointForm.js'
-import buttonTertiary from '../../global/buttonTertiary.ts'
+import {ButtonTertiary} from '../../Global/Buttons'
 var h = require('react-hyperscript')
 
 class MeetingPointEditBox extends Component {
@@ -24,7 +24,7 @@ class MeetingPointEditBox extends Component {
   render () {
     return (
       h('div', [
-        h(buttonTertiary, {
+        h(ButtonTertiary, {
           onClick: this.toggleMPeditability.bind(this)
         }, 'Edit'),
         // ALEX work magic here, por favor

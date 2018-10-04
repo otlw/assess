@@ -1,6 +1,6 @@
 import { Field, reduxForm } from 'redux-form'
 import styled from 'styled-components'
-import buttonTertiary from '../../global/buttonTertiary.ts'
+import {ButtonTertiary} from '../../Global/Buttons.ts'
 var h = require('react-hyperscript')
 
 const MeetingPointForm = props => {
@@ -13,7 +13,7 @@ const MeetingPointForm = props => {
         type: 'text',
         placeholder: 'E.g. A Google Hangout'
       }),
-      h(buttonTertiary, {
+      h(ButtonTertiary, {
         type: 'submit',
         disabled: submitting
       }, 'Submit')
