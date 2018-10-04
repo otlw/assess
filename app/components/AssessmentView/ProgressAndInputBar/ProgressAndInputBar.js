@@ -3,7 +3,8 @@ import h from 'react-hyperscript'
 import { Stage, StageDisplayNames } from '../../../constants.js'
 import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
 import styled from 'styled-components'
-import icoClose from '../../../assets/ico-close.svg'
+import buttonPrimary from '../../global/buttonPrimary.ts'
+import buttonClose from '../../global/buttonClose.ts'
 
 let completedStageTexts = {
   [Stage.Confirmed]: 'You have staked successfully!',
@@ -163,9 +164,7 @@ export class ProgressAndInputBar extends Component {
       case 'Reveal': {
         return (
           h(containerProgressBar, [
-            h(buttonClose, {onClick: this.closeInputBar.bind(this)}, [
-              h(imgClose, {alt: 'icoClose', src: icoClose})
-            ]),
+            h(buttonClose, {onClick: this.closeInputBar.bind(this)}),
             h(rowObjectText, [
               h(StageDescriptor, this.state.displayText),
               (this.props.stage === Stage.Confirmed
@@ -181,7 +180,7 @@ export class ProgressAndInputBar extends Component {
                 : null
               )
             ]),
-            h(buttonSubmit, {onClick: this.state.action.bind(this)}, view)
+            h(buttonPrimary, {onClick: this.state.action.bind(this)}, view)
           ])
         )
       }
@@ -197,18 +196,6 @@ export default ProgressAndInputBar
 export const containerProgressBar = styled('div').attrs({className: 'flex flex-row w-100 pa3 items-center shadow-3'})`
 margin-top: 1px;
 min-height: 64px;
-`
-
-export const buttonClose = styled('button').attrs({className: 'flex h-100 items-center justify-center pa0 mr2 bg-transparent pointer br-100'})`
-transition:0.2s ease-in-out;
-border: 1px solid transparent;
-width: 40px;
-height: 32px;
-:hover {border: 1px solid ${props => props.theme.primary};}
-`
-
-export const imgClose = styled('img').attrs({className: ''})`
-width: 16px;
 `
 
 export const ProgressButton = styled('button')`
@@ -240,13 +227,6 @@ export const rowObjectText = styled('div').attrs({className: 'flex w-100 items-c
 `
 
 export const rowObjectInput = styled('div').attrs({className: 'flex w-auto items-center justify-end b--light-gray  f5 gray ttu uppercase'})`;
-`
-
-export const buttonSubmit = styled('button').attrs({className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`
-color: #fff;
-background-color: ${props => props.theme.positiveGreen};
-transition:0.2s ease-in-out;
-:hover {opacity:0.9;}
 `
 
 export const Feedback = styled.div`
