@@ -1,9 +1,9 @@
 import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
-import textHeadline from '../global/textHeadline.ts'
-import textLabel from '../global/textLabel.ts'
-import textBody from '../global/textBody.ts'
+import textHeadline from '../Global/textHeadline.ts'
+import textLabel from '../Global/textLabel.ts'
+import textBody from '../Global/textBody.ts'
 
 export class ConceptCard extends Component {
   render () {

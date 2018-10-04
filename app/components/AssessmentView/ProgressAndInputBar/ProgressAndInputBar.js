@@ -3,8 +3,8 @@ import h from 'react-hyperscript'
 import { Stage, StageDisplayNames } from '../../../constants.js'
 import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
 import styled from 'styled-components'
-import buttonPrimary from '../../global/buttonPrimary.ts'
-import buttonClose from '../../global/buttonClose.ts'
+import buttonPrimary from '../../Global/buttonPrimary.ts'
+import buttonClose from '../../Global/buttonClose.ts'
 
 let completedStageTexts = {
   [Stage.Confirmed]: 'You have staked successfully!',
