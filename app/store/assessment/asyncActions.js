@@ -1,5 +1,6 @@
 import { getInstance, convertFromOnChainScoreToUIScore, hmmmToAha } from '../../utils'
 import { sendAndReactToTransaction } from '../transaction/asyncActions'
+import { setHelperBar } from '../navigation/actions'
 import { receiveVariable } from '../web3/actions'
 import { fetchUserBalance } from '../web3/asyncActions'
 import { Stage, LoadingStage, NotificationTopic, TimeOutReasons } from '../../constants'
@@ -10,6 +11,7 @@ import {
   setAssessmentAsInvalid
 } from './actions'
 import { beginLoadingAssessments, endLoadingAssessments } from '../loading/actions'
+import {helperBarTopic} from '../../components/Helpers/helperContent.ts'
 
 // setup ipfs api
 const ethereumjsABI = require('ethereumjs-abi')
@@ -39,7 +41,12 @@ export function confirmAssessor (assessmentAddress, customReact = false) {
       customReact ? customReact.saveKeyword : Stage.Called,
       userAddress,
       assessmentAddress,
-      customReact ? customReact.callbck : () => { dispatch(fetchUserStage(assessmentAddress)) }
+      customReact
+        ? customReact.callbck
+        : () => {
+          dispatch(fetchUserStage(assessmentAddress))
+          dispatch(setHelperBar(helperBarTopic.ConfirmedStake))
+        }
     )
   }
 }
@@ -59,7 +66,12 @@ export function commit (assessmentAddress, score, salt, customReact = false) {
       customReact ? customReact.saveKeyword : Stage.Confirmed,
       userAddress,
       assessmentAddress,
-      customReact ? customReact.callbck : () => { dispatch(fetchUserStage(assessmentAddress)) }
+      customReact
+        ? customReact.callbck
+        : () => {
+          dispatch(fetchUserStage(assessmentAddress))
+          dispatch(setHelperBar(helperBarTopic.ConfirmedCommit))
+        }
     )
   }
 }
@@ -78,7 +90,12 @@ export function reveal (assessmentAddress, score, salt, customReact = false) {
       customReact ? customReact.saveKeyword : Stage.Committed,
       userAddress,
       assessmentAddress,
-      customReact ? customReact.callbck : () => { dispatch(fetchUserStage(assessmentAddress)) }
+      customReact
+        ? customReact.callbck
+        : () => {
+          dispatch(fetchUserStage(assessmentAddress))
+          dispatch(setHelperBar(helperBarTopic.ConfirmedReveal))
+        }
     )
   }
 }
@@ -89,13 +106,17 @@ export function storeDataOnAssessment (assessmentAddress, data) {
     let assessmentInstance = getInstance.assessment(getState(), assessmentAddress)
     // also salt should be saved in state
     let dataAsBytes = getState().ethereum.web3.utils.utf8ToHex(data)
+    let firstEdit = getState().assessments[assessmentAddress].data === ''
     sendAndReactToTransaction(
       dispatch,
       () => { return assessmentInstance.methods.addData(dataAsBytes).send({from: userAddress}) },
       'meetingPointChange',
       userAddress,
       assessmentAddress,
-      () => { dispatch(fetchStoredData(assessmentAddress)) }
+      () => {
+        dispatch(fetchStoredData(assessmentAddress))
+        if (firstEdit) dispatch(setHelperBar(helperBarTopic.FirstTimeMeetingPointSet))
+      }
     )
   }
 }
@@ -212,7 +233,7 @@ export function reconstructAssessment (assessmentAddress, pastNotifications) {
     let stage = Stage.None
     let userStage = Stage.None
     let violation = TimeOutReasons.NotEnoughAssessors
-    let assessee = null
+    let assessee = 'Unknown'
     let userAddress = getState().ethereum.userAddress
     // let concept = ?? // TODO figure out where to get this from
     for (let notification of pastNotifications) {
@@ -255,7 +276,7 @@ export function reconstructAssessment (assessmentAddress, pastNotifications) {
       violation,
       conceptData: {name: 'Unknown', description: 'Unknown'}, // TODO get this from local storage
       refunded: true,
-      assessee: assessee || null
+      assessee: assessee
     }
     dispatch(receiveAssessment(reconstructedAssessment))
   }
@@ -383,7 +404,6 @@ export function fetchAssessmentData (assessmentAddress) {
           payout = hmmmToAha(pastEvents[0].returnValues['_value'])
         }
       }
-      let hidden = false
 
       // see if assessment on track (not over timelimit)
       let realNow = Date.now() / 1000
@@ -419,7 +439,7 @@ export function fetchAssessmentData (assessmentAddress) {
         data,
         assessors,
         payout,
-        hidden
+        hidden: false
       }))
     } catch (e) {
       console.log('reading assessment-data from the chain did not work for assessment: ', assessmentAddress, e)
@@ -492,7 +512,9 @@ export function processEvent (user, sender, topic, blockNumber) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let isUser = user === userAddress
-    dispatch(receiveVariable('lastUpdatedAt', blockNumber))
+    // if the user has already looked at the dashboard, meaning we have fetched all latest assessments
+    // then we want to save the lastUpdatedAt parameter
+    if (getState().loading.assessments > LoadingStage.None) dispatch(receiveVariable('lastUpdatedAt', blockNumber))
     switch (topic) {
       case NotificationTopic.AssessmentCreated:
         dispatch(fetchUserBalance())

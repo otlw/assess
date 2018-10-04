@@ -2,10 +2,11 @@ import Web3 from 'web3'
 import { getInstance, hmmmToAha, getLocalStorageKey, getBlockDeployedAt } from '../../utils'
 import { networkName, LoadingStage } from '../../constants'
 import { processEvent } from '../assessment/asyncActions'
-import { setMainDisplay } from '../navigation/actions'
+import { setModal } from '../navigation/actions'
 import {receiveAllAssessments} from '../assessment/actions.ts'
 import {receiveConcepts} from '../concept/actions.ts'
-import { web3Connected, web3EventsConnected, web3Disconnected, receiveVariable, receivePersistedState } from './actions'
+import { web3EventsConnected, receiveVariable, receivePersistedState } from './actions'
+import { modalTopic } from '../../components/Helpers/helperContent'
 
 var Dagger = require('eth-dagger')
 const { FathomToken } = require('fathom-contracts')
@@ -13,58 +14,28 @@ const { FathomToken } = require('fathom-contracts')
 // actions to instantiate web3 related info
 export const connect = () => {
   return async (dispatch, getState) => {
-    // get web3 object with right provider
-    if (typeof window.web3 !== 'undefined') {
-      // set first web3 instance to do read and write calls via Metamask
-      let w3 = new Web3(window.web3.currentProvider)
-      // after web3 is instanciated, fetch networkID and user address
-      if (w3) {
-        // get networkID and THEN set isConnected
-        let networkID = await w3.eth.net.getId()
-        dispatch(receiveVariable('networkID', networkID))
-        dispatch(web3Connected(w3))
+    let fathomTokenDeployedAt = getState().ethereum.fathomTokenDeployedAt
+    let network = networkName(getState().ethereum.networkID)
 
-        // get userAddress
-        let accounts = await w3.eth.getAccounts()
-        if (accounts.length === 0) {
-          // this is when MM is locked
-          dispatch(setMainDisplay('UnlockMetaMask'))
-        } else {
-          dispatch(receiveVariable('userAddress', accounts[0]))
-          dispatch(fetchUserBalance())
-        }
+    if (!fathomTokenDeployedAt) dispatch(loadFathomNetworkParams())
+    dispatch(fetchUserBalance())
 
-        // load persistedState for the respective network and the user
-        dispatch(loadPersistedState(networkID, accounts[0], w3))
-        if (getState().ethereum.fathomTokenDeployedAt === '') dispatch(loadFathomNetworkParams())
-
-        // set a second web3 instance to subscribe to events via websocket
-        if (networkName(networkID) === 'Kovan') {
-          dispatch(web3EventsConnected({})) // to set isConnectedVariable to true
-        } else {
-          // rinkeby or local testnet
-          let web3events = new Web3()
-          let providerAddress = networkName(networkID) === 'Rinkeby' ? 'wss://rinkeby.infura.io/ws' : 'ws://localhost:8545'
-          console.log('providerAddress ', providerAddress)
-          const eventProvider = new Web3.providers.WebsocketProvider(providerAddress)
-          eventProvider.on('error', e => console.error('WS Error', e))
-          eventProvider.on('end', e => console.error('WS End', e))
-          web3events.setProvider(eventProvider)
-          dispatch(web3EventsConnected(web3events))
-        }
-        // set up event watcher
-        dispatch(initializeEventWatcher())
-
-        // set a loop function to check userAddress or network change
-        dispatch(loopCheckAddressAndNetwork())
-      } else {
-        dispatch(web3Disconnected())
-      }
+    // set a second web3 instance to subscribe to events via websocket
+    if (network === 'Kovan') {
+      dispatch(web3EventsConnected({})) // to set isConnectedVariable to true
     } else {
-      // If the user has no MetaMask extension, a different screen will be displayed instead of the App
-      dispatch(setMainDisplay('NoMetaMask'))
-      window.alert("You don't have the MetaMask browser extension.")
+      // rinkeby or local testnet
+      let web3events = new Web3()
+      let providerAddress = networkName(network) === 'Rinkeby' ? 'wss://rinkeby.infura.io/ws' : 'ws://localhost:8545'
+      console.log('providerAddress ', providerAddress)
+      const eventProvider = new Web3.providers.WebsocketProvider(providerAddress)
+      eventProvider.on('error', e => console.error('WS Error', e))
+      eventProvider.on('end', e => console.error('WS End', e))
+      web3events.setProvider(eventProvider)
+      dispatch(web3EventsConnected(web3events))
     }
+    // set up event watcher
+    dispatch(initializeEventWatcher())
   }
 }
 
@@ -78,7 +49,7 @@ const loadFathomNetworkParams = () => {
   }
 }
 
-const loadPersistedState = (networkID, userAddress, web3) => {
+export const loadPersistedState = (networkID, userAddress, web3) => {
   return async (dispatch, getState) => {
     try {
       let key = getLocalStorageKey(networkID, userAddress, web3)
@@ -163,41 +134,12 @@ const initializeEventWatcher = () => {
   }
 }
 
-// checks userAddress and networkID every second to detect change and reload app
-export const loopCheckAddressAndNetwork = () => {
-  return async (dispatch, getState) => {
-    setInterval(async function () {
-      let w3 = getState().ethereum.web3
-
-      // get networkID and compare to previous
-      let networkID = await w3.eth.net.getId()
-      if (networkID !== getState().ethereum.networkID) {
-        // if different, just reload the whole app (all the data is changed)
-        // maybe we could call connect() instead but since all components reload its kinda the same...
-        window.location.reload()
-      }
-
-      // get userAddress and compare to previous
-      let accounts = await w3.eth.getAccounts()
-      if (accounts.length === 0) {
-        dispatch(receiveVariable('userAddress', 'pleaseEnterPasswordToUnblockMetamask'))
-      } else {
-        if (accounts[0] !== getState().ethereum.userAddress) {
-          // if different, just reload the whole app (all the data is changed)
-          // maybe we could call connect() instead but since all components reload its kinda the same...
-          window.location.reload()
-        }
-      }
-    }, 1000)
-  }
-}
-
 export const fetchUserBalance = () => {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let fathomTokenInstance = getInstance.fathomToken(getState())
     if (fathomTokenInstance.error) {
-      dispatch(setMainDisplay('UndeployedNetwork'))
+      dispatch(setModal(modalTopic.UndeployedNetwork))
     } else {
       let userBalance = hmmmToAha(await fathomTokenInstance.methods.balanceOf(userAddress).call())
       dispatch(receiveVariable('AhaBalance', userBalance))
