@@ -156,15 +156,16 @@ const assessmentTextTitle = styled('h2').attrs({className: 'f2 tl dark-blue mt2 
 color: ${props => props.theme.primary};
 `
 
-const assessmentRowSubHeader = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-between mt5'})`
+const assessmentRowSubHeader = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-between pt4 pb2 ph3'})`
+background-color: ${props => props.theme.tertiary};
 `
 
-const assessmentContainerStatus = styled('div').attrs({className: 'flex flex-row flex-wrap w-50 items-start justify-between '})`
+const assessmentContainerStatus = styled('div').attrs({className: 'flex flex-row flex-wrap w-50 items-center justify-start '})`
 `
 
 // End assessmentView Header
 
-const assessmentLabelBody = styled('h6').attrs({className: 'f5 w-100 mv0 fw4 tl ttu uppercase'})`
+const assessmentLabelBody = styled('h6').attrs({className: 'f5 w-auto mv0 fw4 tl ttu uppercase'})`
 color: ${props => props.theme.primary};
 `
 
