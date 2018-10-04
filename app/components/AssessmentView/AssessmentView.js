@@ -58,7 +58,7 @@ export class AssessmentData extends Component {
       h(SuperFrame, [
         // holds role and concept title
         h(assessmentHeader, [
-          h(assessmentLabelRole, isAssessee ? 'Getting assessed in' : 'Assessing'),
+          h(assessmentLabelActivity, isAssessee ? 'Getting assessed in' : 'Assessing'),
           h(assessmentTextTitle, assessment.conceptData.name)
         ]),
         // indicates status of assesssment
