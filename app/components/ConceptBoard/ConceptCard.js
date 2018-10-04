@@ -2,6 +2,7 @@ import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 import {Headline, Label, Body} from '../Global/Text.ts'
+import {ButtonPrimary} from '../Global/Buttons.ts'
 
 export class ConceptCard extends Component {
   render () {
@@ -25,7 +26,7 @@ export class ConceptCard extends Component {
           h(Body, this.props.conceptData.description)
         ]),
         h(cardContainerButtons, [
-          h(cardButtonPrimary, {onClick: this.props.selectConcept.bind(this), id: this.props.conceptAddress}, 'Get Assessed')
+          h(ButtonPrimary, {onClick: this.props.selectConcept.bind(this), id: this.props.conceptAddress}, 'Get Assessed')
         ])
       ])
     ])
@@ -64,11 +65,6 @@ const cardObjectDescription = styled('div').attrs({
 `
 
 const cardContainerButtons = styled('div').attrs({className: 'flex flex-row justify-center w-100 pb3 ph3'})`
-`
-
-const cardButtonPrimary = styled('button').attrs({
-  className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'
-})`background-color: #116187;text-decoration:none;
 `
 
 // const cardButtonSecondary = styled('div').attrs({
