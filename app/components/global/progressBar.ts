@@ -1,11 +1,26 @@
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 
+type Props = {
+  length: number,
+  step:number
+}
 
-const progressBar = () => {
-    return h(styleProgressBar, [
-        h(assessmentIndicatorInactive)
-    ])
+const progressBar = (props:Props) => {
+	let Dots=[]
+	let i=0
+	for (i = 0; i < props.length; i++) { 
+		let newDot=h(assessmentIndicatorInactive)
+		if (i<props.step){
+			newDot=h(assessmentIndicatorComplete)
+		} else if (i==props.step){
+			newDot=h(assessmentIndicatorActive)
+		}
+	    Dots.push(newDot);
+	}
+    return h(styleProgressBar, 
+        Dots
+    )
 }
 
 export default progressBar
@@ -15,9 +30,6 @@ export default progressBar
 const styleProgressBar = styled('div').attrs({className: 'flex flex-row w-auto items-center'})`
 `
 
-// TODO
-// 1. Need a dynamic way to set the # of progress dots for different flows
-// 2. What's the best implementation for setting active/inactive states? A single const for the 'dot' that has props passed to it to set it active/inactive? I'm not sure how to implement that.
 
 const assessmentIndicatorInactive = styled('div').attrs({className: 'flex ba br-100 mh2'})`
 height: 10px;
@@ -30,4 +42,10 @@ height: 10px;
 width: 10px;
 color: ${props => props.theme.primary};
 background: ${props => props.theme.primary};
+`
+const assessmentIndicatorComplete = styled('div').attrs({className: 'flex ba br-100 mh2'})`
+height: 10px;
+width: 10px;
+color: green;
+background: green;
 `

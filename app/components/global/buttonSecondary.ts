@@ -2,10 +2,11 @@ import styled from 'styled-components'
 import h from 'react-hyperscript'
 
 type Props = {
-  text: string
+  text: string,
+  onClick:any
 }
 const buttonSecondary = (props:Props) => {
-    return h(styleButtonSecondary, props.text)
+    return h(styleButtonSecondary, {onClick: props.onClick}, props.text)
 }
 
 export default buttonSecondary

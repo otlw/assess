@@ -4,7 +4,8 @@ import h from 'react-hyperscript'
 import { Stage, StageDisplayNames, PassiveStageDisplayNames } from '../../../constants.js'
 import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
 import styled from 'styled-components'
-import icoClose from '../../../assets/ico-close.svg'
+import buttonPrimary from '../../global/buttonPrimary.ts'
+import buttonClose from '../../global/buttonClose.ts'
 
 // component to display an individual assessor slot address and options
 export class ProgressAndInputBar extends Component {
@@ -138,9 +139,7 @@ export class ProgressAndInputBar extends Component {
         // show actionView, where the user can input data and interact with the assessment
         return (
           h(containerProgressBar, [
-            h(buttonClose, {onClick: this.closeInputBar.bind(this)}, [
-              h('img', {alt: 'icoClose', src: icoClose})
-            ]),
+            buttonClose({onClick: this.closeInputBar.bind(this)}),
             h(rowObjectText, [
               h(StageDescriptor, this.state.displayText),
               (this.props.stage === Stage.Confirmed
@@ -156,7 +155,7 @@ export class ProgressAndInputBar extends Component {
                 : null
               )
             ]),
-            h(buttonSubmit, {onClick: this.state.action.bind(this)}, view)
+            buttonPrimary({onClick: this.state.action.bind(this), text: view})
           ])
         )
       }
@@ -164,9 +163,7 @@ export class ProgressAndInputBar extends Component {
         // add Meeting Point
         return (
           h(containerProgressBar, [
-            h(buttonClose, {onClick: this.closeInputBar.bind(this)}, [
-              h('img', {alt: 'icoClose', src: icoClose, className: ''})
-            ]),
+            buttonClose({onClick: this.closeInputBar.bind(this)}),
             h(rowObjectText, [
               h(rowObjectInput, 'Add a meeting Point:'),
               h(inputMeetingPoint, {
@@ -174,7 +171,7 @@ export class ProgressAndInputBar extends Component {
                 type: 'string',
                 onChange: this.setMeetingPointToBeStored.bind(this) })
             ]),
-            h(buttonSubmit, {onClick: this.storeData.bind(this)}, 'Submit')
+            buttonPrimary({onClick: this.storeData.bind(this), text: 'Submit'})
           ])
         )
       }
@@ -224,13 +221,6 @@ export default ProgressAndInputBar
 export const containerProgressBar = styled('div').attrs({className: 'flex flex-row w-100 h3 items-center bt b--light-gray'})`
 `
 
-export const buttonClose = styled('button').attrs({className: 'flex h-100 items-center justify-center ph4 br b--light-gray pointer'})`
-transition:0.2s ease-in-out;
-border-top: 0px;
-border-left: 0px;
-border-bottom: 0px;
-:hover {background-color:#eee;}
-`
 export const ProgressButton = styled('button')`
   padding: 0.25em 1em;
   border: 2px solid palevioletred;
@@ -270,10 +260,10 @@ export const rowObjectText = styled('div').attrs({className: 'flex w-100 items-c
 export const rowObjectInput = styled('div').attrs({className: 'flex w-100 h-100 items-center justify-end pv2 b--light-gray  f5 gray ttu uppercase'})`;
 `
 
-export const buttonSubmit = styled('button').attrs({className: 'flex h3 items-center justify-center pv3 bn ph4 bg-light-green pointer ttu uppercase f5 '})`
-transition:0.2s ease-in-out;
-:hover {background-color:hsla(158, 46%, 57%, 1);}
-`
+// export const buttonSubmit = styled('button').attrs({className: 'flex h3 items-center justify-center pv3 bn ph4 bg-light-green pointer ttu uppercase f5 '})`
+// transition:0.2s ease-in-out;
+// :hover {background-color:hsla(158, 46%, 57%, 1);}
+// `
 
 export const Feedback = styled.div`
   font-size: 0.7em;
