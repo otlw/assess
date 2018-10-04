@@ -2,7 +2,7 @@ import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 
-import { Headline } from '../../Global/Text.ts'
+import { Subheadline } from '../Global/Text.ts'
 import ConceptList from './ConceptList'
 import AssessmentCreation from './AssessmentCreation'
 
@@ -27,7 +27,7 @@ export class ConceptBoard extends Component {
     if (this.props.loadedConcepts) {
       let concepts = this.props.concepts
 
-      let ConceptHeader = h(Headline, 'Choose a Concept')
+      let ConceptHeader = h(Subheadline, 'Choose a Concept')
       if (this.state.selectedConceptAddress !== '0') {
         ConceptHeader = h(AssessmentCreation, {
           setModal: this.props.setModal,
@@ -57,7 +57,5 @@ export default ConceptBoard
 
 // styles
 
-const ConceptHeaderBox = styled('div')`
-width:100%;
-text-align:center;
+const ConceptHeaderBox = styled('div').attrs({className: 'w-100 tc mv4'})`
 `
