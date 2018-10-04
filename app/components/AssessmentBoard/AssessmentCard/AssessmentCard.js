@@ -4,6 +4,8 @@ import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 import { StageDisplayNames, Stage, TimeOutReasons, CompletedStages } from '../../../constants.js'
 import { statusMessage } from '../../../utils.js'
+import { Headline, Label, Body } from '../../Global/Text.ts'
+import { ButtonPrimary, ButtonSecondary } from '../../Global/Buttons.ts'
 
 export class AssessmentCard extends Component {
   render () {
@@ -19,19 +21,19 @@ export class AssessmentCard extends Component {
       h(cardContainer, [
         h(cardContainerInfo, [
           h(cardTextObject, [
-            h(cardTextTitle, 'Assessment'),
-            h(ConceptName, assessment.conceptData.name)
+            h(Label, 'Assessment'),
+            h(Headline, assessment.conceptData.name)
           ]),
           h(cardTextObject, [
-            h(cardLabel, 'Assessee'),
-            h(cardTextAssessee, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
+            h(Label, 'Assessee'),
+            h(Body, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
           ])
         ]),
         h(cardContainerStatus, [
           h(cardContainerProgressBar, progressButtons(stage, actionRequired, assessment.violation || false)),
           h(cardTextStatus, [
-            h(cardLabel, 'Status'),
-            h(cardTextStatusMsg, status)
+            h(Label, 'Status'),
+            h(Body, status)
           ]),
           h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, linkButtons(assessment, isAssessee, this.props.setCardVisibility))
         ])
@@ -43,14 +45,14 @@ export class AssessmentCard extends Component {
 function linkButtons (assessment, isAssessee, setCardVisibility) {
   let userFault = (assessment.violation && assessment.userStage === assessment.stage) || assessment.userStage === Stage.Burned
   if (assessment.violation) {
-    if (userFault) return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/'}, 'Closed')] // TODO why should be a link
+    if (userFault) return [h(ButtonSecondary, 'Why?'), h(ButtonPrimary, {to: '/'}, 'Closed')] // TODO why should be a link
     // not  userFault
     if (assessment.refunded) {
       // no assessment contract exits -> no link to detail-view
-      return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/'}, 'Refunded')]
+      return [h(ButtonSecondary, 'Why?'), h(ButtonPrimary, {to: '/'}, 'Refunded')]
     } else {
       // not refunded yet -> provide link
-      return [h(cardButtonSecondary, 'Why?'), h(cardButtonPrimary, {to: '/assessment/' + assessment.address}, 'Get refunded')]
+      return [h(ButtonSecondary, 'Why?'), h(ButtonPrimary, {to: '/assessment/' + assessment.address}, 'Refund')]
     }
   } else {
     // NOTE this section could be refactored to be smaller, as the only thing that varies is the text of the button. But i am keeping this
@@ -58,18 +60,18 @@ function linkButtons (assessment, isAssessee, setCardVisibility) {
     // no violation!
     // is the user done (for the respective stage?)
     let buttonList = [
-      h(cardButtonSecondary, {
+      h(ButtonSecondary, {
         onClick: () => setCardVisibility(assessment.address, !assessment.hidden)
       }, assessment.hidden ? 'Unhide' : 'Hide')
     ]
     if (assessment.stage < Stage.Done && assessment.userStage === assessment.stage) {
       buttonList.push(
-        h(cardButtonPrimary,
+        h(ButtonPrimary,
           {to: '/assessment/' + assessment.address},
           assessment.userStage === Stage.None ? 'View' : StageDisplayNames[assessment.stage]))
     } else {
       buttonList.push(
-        h(cardButtonPrimary,
+        h(ButtonPrimary,
           {to: '/assessment/' + assessment.address},
           assessment.userStage === Stage.None ? 'View' : CompletedStages[assessment.stage]))
     }
@@ -128,24 +130,6 @@ const cardTextObject = styled('div').attrs({
 })`
 `
 
-const cardTextTitle = styled('div').attrs({
-  className: 'f5 fw4 mv1 ttu uppercase'
-})`
-color: #0A4A66;
-`
-
-const cardLabel = styled('div').attrs({
-  className: 'f5 fw4 mv1 ttu uppercase'
-})`
-color: #0A4A66;
-`
-
-const cardTextAssessee = styled('div').attrs({
-  className: 'f5 fw4 mv1 ttu uppercase truncate w4 ellipsis'
-})`
-color: #117099;
-`
-
 const cardContainerStatus = styled('div').attrs({
   className: 'relative flex content-between flex-column w-100'
 })`
@@ -154,7 +138,7 @@ background-color: #D3ECF7;
 `
 
 const cardTextStatus = styled('div').attrs({
-  className: 'flex flex-column h-100 pl3 pa3'
+  className: 'flex flex-column h-100 pl3 pa3 tl'
 })`
 `
 
@@ -180,26 +164,4 @@ const cardProgressBarObjectComplete = styled('div').attrs({
 const cardProgressBarObjectFailed = styled('div').attrs({
   className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
 })`width: 20px; height: 20px; background-color: #ff0000;
-`
-
-const cardTextStatusMsg = styled('div').attrs({
-  className: 'f5 fw4 mv1'
-})`
-color: #117099;
-`
-
-const cardButtonPrimary = styled(Link).attrs({
-  className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'
-})`background-color: #116187;text-decoration:none;
-`
-
-const cardButtonSecondary = styled('div').attrs({
-  className: 'flex self-end ph4 pv2 fw4 f5 items-center align-center br-pill dark-blue'
-})`box-shadow: 0px 0px 0px 1px hsla(214, 100%, 31%, 0.1);
-`
-
-const ConceptName = styled('h2').attrs({
-  className: 'f2 fw4 mv1'
-})`
-  color:${props => props.theme.dark};
 `
