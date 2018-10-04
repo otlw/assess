@@ -1,5 +1,6 @@
 import { getInstance, convertFromOnChainScoreToUIScore, hmmmToAha } from '../../utils'
 import { sendAndReactToTransaction } from '../transaction/asyncActions'
+import { setHelperBar } from '../navigation/actions'
 import { receiveVariable } from '../web3/actions'
 import { fetchUserBalance } from '../web3/asyncActions'
 import { Stage, StageNumberToWord, LoadingStage, NotificationTopic, TimeOutReasons } from '../../constants'
@@ -10,6 +11,7 @@ import {
   setAssessmentAsInvalid
 } from './actions'
 import { beginLoadingAssessments, endLoadingAssessments } from '../loading/actions'
+import {helperBarTopic} from '../../components/Helpers/helperContent.ts'
 
 // setup ipfs api
 const ethereumjsABI = require('ethereumjs-abi')
@@ -39,7 +41,12 @@ export function confirmAssessor (assessmentAddress, customReact = false) {
       customReact ? customReact.saveKeyword : StageNumberToWord[Stage.Called], // tx purpose
       userAddress,
       assessmentAddress,
-      customReact ? customReact.callbck : () => { dispatch(fetchUserStage(assessmentAddress)) }
+      customReact
+        ? customReact.callbck
+        : () => {
+          dispatch(fetchUserStage(assessmentAddress))
+          dispatch(setHelperBar(helperBarTopic.ConfirmedStake))
+        }
     )
   }
 }
@@ -59,7 +66,12 @@ export function commit (assessmentAddress, score, salt, customReact = false) {
       customReact ? customReact.saveKeyword : StageNumberToWord[Stage.Confirmed], // tx purpose
       userAddress,
       assessmentAddress,
-      customReact ? customReact.callbck : () => { dispatch(fetchUserStage(assessmentAddress)) }
+      customReact
+        ? customReact.callbck
+        : () => {
+          dispatch(fetchUserStage(assessmentAddress))
+          dispatch(setHelperBar(helperBarTopic.ConfirmedCommit))
+        }
     )
   }
 }
@@ -78,7 +90,12 @@ export function reveal (assessmentAddress, score, salt, customReact = false) {
       customReact ? customReact.saveKeyword : StageNumberToWord[Stage.Committed], // tx purpose
       userAddress,
       assessmentAddress,
-      customReact ? customReact.callbck : () => { dispatch(fetchUserStage(assessmentAddress)) }
+      customReact
+        ? customReact.callbck
+        : () => {
+          dispatch(fetchUserStage(assessmentAddress))
+          dispatch(setHelperBar(helperBarTopic.ConfirmedReveal))
+        }
     )
   }
 }
@@ -96,7 +113,10 @@ export function storeDataOnAssessment (assessmentAddress, data) {
       firstEdit ? 'setMeetingPoint' : 'meetingPointChange', // tx purpose
       userAddress,
       assessmentAddress,
-      () => { dispatch(fetchStoredData(assessmentAddress)) }
+      () => {
+        dispatch(fetchStoredData(assessmentAddress))
+        if (firstEdit) dispatch(setHelperBar(helperBarTopic.FirstTimeMeetingPointSet))
+      }
     )
   }
 }
@@ -492,7 +512,9 @@ export function processEvent (user, sender, topic, blockNumber) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let isUser = user === userAddress
-    dispatch(receiveVariable('lastUpdatedAt', blockNumber))
+    // if the user has already looked at the dashboard, meaning we have fetched all latest assessments
+    // then we want to save the lastUpdatedAt parameter
+    if (getState().loading.assessments > LoadingStage.None) dispatch(receiveVariable('lastUpdatedAt', blockNumber))
     switch (topic) {
       case NotificationTopic.AssessmentCreated:
         dispatch(fetchUserBalance())

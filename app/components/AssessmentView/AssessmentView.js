@@ -7,9 +7,37 @@ import FailedBar from './FailedBar'
 import { StageDisplayNames, Stage } from '../../constants.js'
 import { convertDate, statusMessage } from '../../utils.js'
 import styled from 'styled-components'
+import progressBar from '../Global/progressBar.ts'
+import { helperBarTopic } from '../../components/Helpers/helperContent'
 var h = require('react-hyperscript')
 
 export class AssessmentData extends Component {
+  componentDidMount () {
+    if (this.props.assessment && !this.props.assessment.invalid) {
+      let props = this.props
+      // let visits = props.visits
+      let userActionRequired = props.assessment.userStage === props.assessment.stage
+      if (userActionRequired) {
+        switch (props.assessment.userStage) {
+          case Stage.Called:
+            props.setHelperBar(helperBarTopic.Staking)
+            break
+          case Stage.Confirmed:
+            props.setHelperBar('Committing')
+            break
+          case Stage.Commited:
+            props.setHelperBar('Revealing')
+            break
+          default: break
+        }
+      }
+    }
+  }
+
+  componentWillUnmount () {
+    this.props.setHelperBar(null)
+  }
+
   render () {
     if (!this.props.assessment) return h('div', 'Loading Data...')
     if (this.props.assessment.invalid) return h('div', 'invalid assessment address!! you may be on the wrong network')
@@ -34,13 +62,14 @@ export class AssessmentData extends Component {
       h(SuperFrame, [
         // holds role and concept title
         h(assessmentHeader, [
-          h(assessmentLabelRole, isAssessee ? 'Getting assessed in' : 'Assessing'),
+          h(assessmentLabelActivity, isAssessee ? 'Getting assessed in' : 'Assessing'),
           h(assessmentTextTitle, assessment.conceptData.name)
         ]),
         // indicates status of assesssment
         h(assessmentRowSubHeader, [
           h(assessmentContainerStatus, [
             h(assessmentLabelBody, 'STATUS'),
+            progressBar({length: 6, step: 2}), // TODO use a global utils function (assessment)=>(step) to put the right inputs into this
             h(assessmentTextBody, statusString)
           ]),
           h(assessmentContainerDate, [
@@ -50,43 +79,37 @@ export class AssessmentData extends Component {
         ]),
         // basic info
         h(assessmentContainerBody, [
-          h(assessmentColumnLeft, [
-            h(assessmentObjectText, [
-              h(assessmentLabelBody, 'Assessee'),
-              h(assessmentTextBody, isAssessee ? 'You' : assessment.assessee)
-            ]),
-            h(assessmentObjectText, [
-              h(assessmentLabelBody, 'Fee'),
-              h(assessmentTextBody, assessment.cost + ' AHA')
-            ]),
-            h(assessmentObjectText, [
-              h(assessmentLabelBody, 'Meeting Point'),
-              h(assessmentTextBody, [
-                assessment.data
-                  ? h('a', {href: assessment.data}, assessment.data)
-                  : isAssessee
-                    ? 'You haven\'t set a meeting point'
-                    : 'No meeting point has been set yet']),
-              h(assessmentRow, [
-                assessment.assessee === this.props.userAddress
-                  ? h(MeetingPointEditBox, {
-                    assessee: assessment.assessee,
-                    assessmentAddress: assessment.address
-                  })
-                  : null
-              ])
+          h(assessmentObjectText, [
+            h(assessmentLabelBody, 'Assessee'),
+            h(assessmentTextAddress, isAssessee ? 'You' : assessment.assessee)
+          ]),
+          h(assessmentObjectTextRight, [
+            h(assessmentLabelBody, 'Assessors'),
+            h(AssessorList, {
+              assessors: assessment.assessors,
+              userAddress: this.props.userAddress
+            })
+          ]),
+          h(assessmentObjectText, [
+            h(assessmentLabelBody, 'Meeting Point'),
+            h(assessmentTextBody, [
+              assessment.data
+                ? h('a', {href: assessment.data}, assessment.data)
+                : isAssessee
+                  ? 'You haven\'t set a meeting point'
+                  : 'No meeting point has been set yet']),
+            h(assessmentRow, [
+              assessment.assessee === this.props.userAddress
+                ? h(MeetingPointEditBox, {
+                  assessee: assessment.assessee,
+                  assessmentAddress: assessment.address
+                })
+                : null
             ])
           ]),
-          h(assessmentColumnRight, [
-            h(assessmentObjectTextRight, [
-              h(assessmentLabelBody, 'Assessors'),
-              h(assessmentObjectText, [
-                h(AssessorList, {
-                  assessors: assessment.assessors,
-                  userAddress: this.props.userAddress
-                })
-              ])
-            ])
+          h(assessmentObjectTextRight, [
+            h(assessmentLabelBody, 'Fee'),
+            h(assessmentTextBody, assessment.cost + ' AHA')
           ])
         ]),
         // progress-button, FinalResultBor or FailureIndicator
@@ -118,55 +141,66 @@ export class AssessmentData extends Component {
 
 export default AssessmentData
 
-const SuperFrame = styled('div').attrs({className: 'flex flex-column w-100 mw8 self-center mt3 bg-white shadow-4'})`
+const SuperFrame = styled('div').attrs({className: 'flex flex-column w-100 mw8 self-center mt3 br2 shadow-4'})`
 font-family:'system-ui',sans-serif;
+max-width: 800px;
 `
 
-const assessmentHeader = styled('div').attrs({className: 'flex flex-column w-100 pv4 ph3 bg-lightest-blue'})`
+// assessmentView Header
+
+const assessmentHeader = styled('div').attrs({className: 'flex flex-column w-100 pv3 ph3 br2 br--top'})`
+background-color: ${props => props.theme.tertiary};
 `
 
-const assessmentLabelRole = styled('h6').attrs({className: 'f6 tl ttu uppercase dark-blue mv0 fw4'})`
+const assessmentLabelActivity = styled('h6').attrs({className: 'f5 tl ttu uppercase mv0 fw4'})`
+color: ${props => props.theme.primary};
 `
 
-const assessmentTextTitle = styled('h2').attrs({className: 'f2 tl ttu uppercase dark-blue mt2 mb0 fw4'})`
+const assessmentTextTitle = styled('h2').attrs({className: 'f2 tl dark-blue mt2 mb0 fw4'})`
+color: ${props => props.theme.primary};
 `
 
-const assessmentRowSubHeader = styled('div').attrs({className: 'flex flex-row w-100 items-center bt bb b--gray'})`
+const assessmentRowSubHeader = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-between pt4 pb2 ph3'})`
+background-color: ${props => props.theme.tertiary};
 `
 
-const assessmentContainerStatus = styled('div').attrs({className: 'flex flex-row w-50 items-center justify-between pa3'})`
+const assessmentContainerStatus = styled('div').attrs({className: 'flex flex-row flex-wrap w-50 items-center justify-start '})`
 `
 
-const assessmentLabelBody = styled('h6').attrs({className: 'f6 mid-gray mv0 fw4 ttu uppercase'})`
+// End assessmentView Header
+
+const assessmentLabelBody = styled('h6').attrs({className: 'f5 w-auto mv0 fw4 tl ttu uppercase'})`
+color: ${props => props.theme.primary};
 `
 
-const assessmentTextBody = styled('h5').attrs({className: 'f5 gray mv2 mb0 fw4 gray'})`
+const assessmentTextBody = styled('h5').attrs({className: 'f5 gray mv2 mb0 fw4'})`
+color: ${props => props.theme.textBody};
 `
 
-const assessmentContainerDate = styled('div').attrs({className: 'flex flex-row w-50 items-center justify-between pa3 bl b--gray'})`
+const assessmentTextAddress = styled('h5').attrs({className: 'f5 gray mv2 mb0 fw4 gray w-50 truncate ellipsis'})`
 `
 
-const assessmentContainerBody = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-between'})`
+const assessmentContainerDate = styled('div').attrs({className: 'flex flex-column w-40 items-start justify-between '})`
 `
 
-const assessmentColumnLeft = styled('div').attrs({className: 'flex flex-column w-50 items-around justify-around pa3'})`
+const assessmentContainerBody = styled('div').attrs({className: 'flex flex-row flex-wrap w-100 items-center justify-between ph3'})`
+background-color: ${props => props.theme.bgSecondary};
 `
 
-const assessmentObjectText = styled('div').attrs({className: 'flex flex-column w-100  items-start justify-center self-start mv2'})`
+const assessmentObjectText = styled('div').attrs({className: 'flex flex-column w-50  items-start justify-center self-start mv4'})`
 `
 
-const assessmentObjectTextRight = styled('div').attrs({className: 'flex flex-column w-100  items-start justify-center self-start mt3 mb0'})`
+const assessmentObjectTextRight = styled('div').attrs({className: 'flex flex-column w-40  items-start justify-center self-start mv4'})`
 `
 
 // Commented out as we may need to re-implement this very soon
 // const assessmentListAssessors = styled('div').attrs({className: 'flex flex-column w-100 h-100
 // self-start  items-start justify-center self-start mv3'})``
 
-const assessmentColumnRight = styled('div').attrs({className: 'flex flex-column w-50 h-100 self-start items-start justify-around pa3'})`
-`
-
 const assessmentRow = styled('div').attrs({className: 'flex flex-row w-100 mw5 justify-between mt3 '})`
 `
 
 const assessmentFooter = styled('div').attrs({className: 'relative flex flex-row w-100'})`
+margin-top:1px;
+background-color: ${props => props.theme.bgSecondary};
 `

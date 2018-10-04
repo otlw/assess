@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import h from 'react-hyperscript'
 import { modalTopic } from '../Helpers/helperContent'
 
+import inputField from '../Global/inputField.ts'
+
 import icoArrowForward from '../../assets/ico-arrow-forward.svg'
 import icoClose from '../../assets/ico-close.svg'
 import icoConfirm from '../../assets/ico-confirm.svg'
@@ -82,12 +84,13 @@ export class AssessmentCreation extends Component {
             ),
             h(ButtonGroup, [
               h(InputContainer, [
-                h(AmountPerAssessor, {
+                h(inputField, {
                   onChange: this.setAmountPerAssessor.bind(this),
                   value: this.state.amountPerAssessor,
                   type: 'number',
                   step: 1,
-                  min: 0
+                  min: 0,
+                  width: 4
                 }),
                 h(AHAUnit, 'AHA')
               ])
@@ -245,8 +248,9 @@ const ButtonCaptionBox = styled('div').attrs({className: 'flex justify-between f
 
 const ButtonGroup = styled('div').attrs({className: 'flex flex-row justify-between br1 ba b--mid-gray pv1 ph3 f4'})`
 `
-const AmountPerAssessor = styled('input').attrs({className: 'flex w-25 tl pa1 bn bg-transparent '})`
-`
+// replaced by global input component
+// const AmountPerAssessor = styled('input').attrs({className: 'flex w-25 tl pa1 bn bg-transparent '})`
+// `
 const AHAUnit = styled('div').attrs({className: 'mid-gray'})`
 `
 const helpTextContainer = styled('div').attrs({className: 'flex flex-column h-100 justify-end'})`

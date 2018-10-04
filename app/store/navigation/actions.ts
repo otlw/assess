@@ -3,6 +3,7 @@ import { NavigationState } from './reducer'
 export type Action =
   ReturnType<typeof setDashboardTab> |
   ReturnType<typeof setModal> |
+  ReturnType<typeof setHelperBar> |
   ReturnType<typeof setNotificationBar> |
   ReturnType<typeof setInputBar> |
   ReturnType<typeof toggleHidden>
@@ -20,6 +21,14 @@ export function setModal (modal: NavigationState["modal"]) {
   return {
     type,
     modal
+  }
+}
+
+export function setHelperBar (helperBar: NavigationState["helperBar"]) {
+  let type:'SET_HELPERBAR' = 'SET_HELPERBAR'
+  return {
+    type,
+    helperBar
   }
 }
 
