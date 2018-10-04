@@ -7,7 +7,7 @@ import FailedBar from './FailedBar'
 import { StageDisplayNames, Stage } from '../../constants.js'
 import { convertDate, statusMessage } from '../../utils.js'
 import styled from 'styled-components'
-import progressBar from '../global/progressBar.ts'
+import progressBar from '../Global/progressBar.ts'
 import { helperBarTopic } from '../../components/Helpers/helperContent'
 var h = require('react-hyperscript')
 

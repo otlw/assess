@@ -1,9 +1,7 @@
 import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
-import textHeadline from '../global/textHeadline.ts'
-import textLabel from '../global/textLabel.ts'
-import textBody from '../global/textBody.ts'
+import {Headline, Label, Body} from '../Global/Text.ts'
 
 export class ConceptCard extends Component {
   render () {
@@ -18,13 +16,13 @@ export class ConceptCard extends Component {
     return h(cardContainer, [
       h(cardContainerInfo, [
         h(cardTextObject, [
-          h(textLabel, 'Concept'),
-          h(textHeadline, this.props.conceptData.name)
+          h(Label, 'Concept'),
+          h(Headline, this.props.conceptData.name)
         ])
       ]),
       h(cardContainerDescription, [
         h(cardObjectDescription, [
-          h(textBody, this.props.conceptData.description)
+          h(Body, this.props.conceptData.description)
         ]),
         h(cardContainerButtons, [
           h(cardButtonPrimary, {onClick: this.props.selectConcept.bind(this), id: this.props.conceptAddress}, 'Get Assessed')
