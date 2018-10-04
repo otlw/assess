@@ -1,6 +1,9 @@
 import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
+import textHeadline from '../global/textHeadline.ts'
+import textLabel from '../global/textLabel.ts'
+import textBody from '../global/textBody.ts'
 
 export class ConceptCard extends Component {
   render () {
@@ -15,13 +18,13 @@ export class ConceptCard extends Component {
     return h(cardContainer, [
       h(cardContainerInfo, [
         h(cardTextObject, [
-          h(cardLabel, 'Concept'),
-          h(cardTextTitle, this.props.conceptData.name)
+          h(textLabel, 'Concept'),
+          h(textHeadline, this.props.conceptData.name)
         ])
       ]),
       h(cardContainerDescription, [
         h(cardObjectDescription, [
-          h(cardTextDescription, this.props.conceptData.description)
+          h(textBody, this.props.conceptData.description)
         ]),
         h(cardContainerButtons, [
           h(cardButtonPrimary, {onClick: this.props.selectConcept.bind(this), id: this.props.conceptAddress}, 'Get Assessed')
@@ -50,18 +53,6 @@ const cardTextObject = styled('div').attrs({
 })`
 `
 
-const cardLabel = styled('div').attrs({
-  className: 'f5 fw4 mv1 ttu uppercase'
-})`
-color: #0A4A66;
-`
-
-const cardTextTitle = styled('h2').attrs({
-  className: 'f2 fw4 mv1 ttu uppercase'
-})`
-color: #0A4A66;
-`
-
 const cardContainerDescription = styled('div').attrs({
   className: 'relative flex content-between flex-column w-100'
 })`
@@ -72,12 +63,6 @@ background-color: #D3ECF7;
 const cardObjectDescription = styled('div').attrs({
   className: 'flex flex-column h-100 pl3 pa3'
 })`
-`
-
-const cardTextDescription = styled('div').attrs({
-  className: 'f5 fw4 mv1'
-})`
-color: #117099;
 `
 
 const cardContainerButtons = styled('div').attrs({className: 'flex flex-row justify-center w-100 pb3 ph3'})`
