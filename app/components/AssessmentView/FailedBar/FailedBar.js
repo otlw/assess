@@ -64,9 +64,10 @@ export const RefundedButton = styled('div')`
 
 //
 
-export const containerProgressBar = styled('div').attrs({className: 'flex flex-row w-100 pa3 items-center shadow-3'})`
+export const containerProgressBar = styled('div').attrs({className: 'flex flex-row w-100 pa3 items-center shadow-4'})`
 margin-top: 1px;
 min-height: 64px;
+background-color: ${props => props.theme.bgSecondary};
 `
 
 export const ProgressButton = styled('button')`
