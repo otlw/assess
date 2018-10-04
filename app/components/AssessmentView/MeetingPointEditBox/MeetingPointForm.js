@@ -1,17 +1,19 @@
 import { Field, reduxForm } from 'redux-form'
+import inputField from '../../global/inputField.ts'
+import buttonTertiary from '../../global/buttonTertiary.ts'
 var h = require('react-hyperscript')
 
 const MeetingPointForm = props => {
   const { handleSubmit, submitting } = props
   return (
     h('form', {onSubmit: handleSubmit}, [
-      h(Field, {
+      h(inputField, {
         name: 'data',
         component: 'input',
         type: 'text',
-        placeholder: 'e.g. a gitlab repo'
+        placeholder: 'E.g. A Google Hangout'
       }),
-      h('button', {
+      h(buttonTertiary, {
         type: 'submit',
         disabled: submitting
       }, 'Submit')
