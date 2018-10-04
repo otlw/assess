@@ -229,7 +229,6 @@ export const rowObjectText = styled('div').attrs({className: 'flex w-100 items-c
 export const rowObjectInput = styled('div').attrs({className: 'flex w-auto items-center justify-end b--light-gray  f5 gray ttu uppercase'})`;
 `
 
-
 export const Feedback = styled.div`
   font-size: 0.7em;
   font-style: italic;

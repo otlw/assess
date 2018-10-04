@@ -162,30 +162,6 @@ const assessmentRowSubHeader = styled('div').attrs({className: 'flex flex-row w-
 const assessmentContainerStatus = styled('div').attrs({className: 'flex flex-row flex-wrap w-50 items-start justify-between '})`
 `
 
-// assessmentView Header
-//  ->  Status Indicator
-
-const assessmentContainerStatusIndicator = styled('div').attrs({className: 'flex flex-row w-100 items-center'})`
-`
-
-const assessmentIndicatorInactive = styled('div').attrs({className: 'flex ba br-100 mh2'})`
-height: 10px;
-width: 10px;
-color: ${props => props.theme.primary};
-`
-
-const assessmentIndicatorActive = styled('div').attrs({className: 'flex ba br-100 mh2'})`
-height: 10px;
-width: 10px;
-color: ${props => props.theme.primary};
-background: ${props => props.theme.primary};
-`
-
-const assessmentLabelStatus = styled('h6').attrs({className: 'f5 w-auto mr2 mv0 fw4 tl ttu uppercase'})`
-color: ${props => props.theme.primary};
-`
-
-// End Status Indicator
 // End assessmentView Header
 
 const assessmentLabelBody = styled('h6').attrs({className: 'f5 w-100 mv0 fw4 tl ttu uppercase'})`
