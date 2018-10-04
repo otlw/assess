@@ -5,7 +5,7 @@ import ProgressAndInputBar from './ProgressAndInputBar'
 import FinalResultBar from './FinalResultBar.js'
 import FailedBar from './FailedBar'
 import { StageDisplayNames, Stage } from '../../constants.js'
-import { convertDate, statusMessage } from '../../utils.js'
+import { convertDate, statusMessage, mapAssessmentStageToStatus } from '../../utils.js'
 import styled from 'styled-components'
 import progressBar from '../global/progressBar.ts'
 import { helperBarTopic } from '../../components/Helpers/helperContent'
@@ -65,7 +65,11 @@ export class AssessmentData extends Component {
         h(assessmentRowSubHeader, [
           h(assessmentContainerStatus, [
             h(assessmentLabelBody, 'STATUS'),
-            progressBar({length: 6, step: 2}), // TODO use a global utils function (assessment)=>(step) to put the right inputs into this
+            progressBar({
+              length: 5,
+              step: assessment.userStage,
+              status: mapAssessmentStageToStatus(assessment.stage, assessment.userStage, assessment.violation, assessment.userStage)
+            }),
             h(assessmentTextBody, statusString)
           ]),
           h(assessmentContainerDate, [

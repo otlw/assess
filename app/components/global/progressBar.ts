@@ -3,18 +3,21 @@ import h from 'react-hyperscript'
 
 type Props = {
   length: number,
-  step:number
+  step:number,
+  status:string
 }
 
 const progressBar = (props:Props) => {
 	let Dots=[]
 	let i=0
 	for (i = 0; i < props.length; i++) { 
-		let newDot=h(assessmentIndicatorInactive)
-		if (i<props.step){
-			newDot=h(assessmentIndicatorComplete)
-		} else if (i==props.step){
-			newDot=h(assessmentIndicatorActive)
+		let newDot=h(assessmentIndicatorInactive);
+		if ((i<props.step)||(props.status=="inactive"&&props.step==i)){
+			newDot=h(assessmentIndicatorComplete);
+		} else if ((props.status=="active")&&(i==props.step)) {
+			newDot=h(assessmentIndicatorActive);
+		} else if ((props.status=="canceled")&&(i>=props.step)) {
+			newDot=h(assessmentIndicatorCanceled);	
 		}
 	    Dots.push(newDot);
 	}
@@ -47,5 +50,11 @@ const assessmentIndicatorComplete = styled('div').attrs({className: 'flex ba br-
 height: 10px;
 width: 10px;
 color: green;
+background: green;
+`
+const assessmentIndicatorCanceled = styled('div').attrs({className: 'flex ba br-100 mh2'})`
+height: 10px;
+width: 10px;
+color: red;
 background: green;
 `
