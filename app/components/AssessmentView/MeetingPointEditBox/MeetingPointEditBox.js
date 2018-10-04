@@ -2,7 +2,6 @@ import { Component } from 'react'
 import styled from 'styled-components'
 import MeetingPointForm from './MeetingPointForm.js'
 import buttonTertiary from '../../global/buttonTertiary.ts'
-import inputField from '../../global/inputField.ts'
 var h = require('react-hyperscript')
 
 class MeetingPointEditBox extends Component {

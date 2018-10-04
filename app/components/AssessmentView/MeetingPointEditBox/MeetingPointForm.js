@@ -1,11 +1,12 @@
 import { Field, reduxForm } from 'redux-form'
+import styled from 'styled-components'
 import buttonTertiary from '../../global/buttonTertiary.ts'
 var h = require('react-hyperscript')
 
 const MeetingPointForm = props => {
   const { handleSubmit, submitting } = props
   return (
-    h('form', {onSubmit: handleSubmit}, [
+    h(formMp, {onSubmit: handleSubmit}, [
       h(Field, {
         name: 'data',
         component: 'input',
@@ -23,3 +24,5 @@ const MeetingPointForm = props => {
 export default reduxForm({
   form: 'meeting'
 })(MeetingPointForm)
+
+export const formMp = styled('form').attrs({className: 'flex w-100 flex-row'})``

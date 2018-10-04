@@ -117,7 +117,7 @@ export function storeDataOnAssessment (assessmentAddress, data) {
         dispatch(fetchStoredData(assessmentAddress))
         dispatch(fetchStoredData(assessmentAddress))
         if (firstEdit) dispatch(setHelperBar(helperBarTopic.FirstTimeMeetingPointSet))
-        else { dispatch(setHelperBar(helperBarTopic.MeetingPointChanged))}
+        else { dispatch(setHelperBar(helperBarTopic.MeetingPointChanged)) }
       }
     )
   }
