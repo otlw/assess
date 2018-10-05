@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 export const Body = styled('h5').attrs({className: 'f5 fw4 mv0'})`
-color: ${props => props.theme.secondary};
+color: ${props => props.theme.textBody};
 `
 
 export const Headline = styled('h2').attrs({className: 'f2 fw4 mv0'})`
