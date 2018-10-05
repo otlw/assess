@@ -117,8 +117,11 @@ export function statusMessage (isAssessee, assessment, transactions = []) {
       // no idea why the commented out comparison in the next line is failing,
       // but we don't really need it as when the tx is confirmed this else clause will not be reached
       let txToChangeState = transactions.filter(x => x.data === assessment.stage) // && x.status === 'Tx Published' )
-      if (txToChangeState.length > 0) {status = 'Awaiting confirmation...'}
-      else status += 'Waiting for you and ' + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[assessment.stage]
+      if (txToChangeState.length > 0) {
+        status = 'Awaiting confirmation...'
+      } else {
+        status += 'Waiting for you and ' + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[assessment.stage]
+      }
     }
   }
   return status
