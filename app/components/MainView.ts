@@ -17,7 +17,6 @@ import { TxList } from './TxList'
 import {State} from '../store'
 import { Transaction } from '../store/transaction/reducer'
 
-
 // the main frame on which everything is displayed.
 // It will call connect() when mounting the header)
 
@@ -32,11 +31,11 @@ class MainView extends Component<Props> {
       h(HashRouter, [
           h('div', [
             h(Header),
-            h(HelperBar),
             h(TxList, { transactions: this.props.transactions }),
             h(appContainer, [
               h(NavTabs),
               (modal ? h(Modal) : null),
+              h(helperBarContainer, [h(HelperBar)]),
               h(Route, {exact: true, path: '/', component: AssessmentBoard}),
               h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
               h(Route, {path: '/assessment/:id', component: AssessmentView}),
@@ -49,6 +48,9 @@ class MainView extends Component<Props> {
 }
 
 const appContainer = styled('div').attrs({className: 'relative flex flex-column w-100 h-100'})``
+
+const helperBarContainer = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-center'})``
+
 
 const mapStateToProps = (state:State) => {
   return {
