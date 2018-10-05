@@ -69,7 +69,7 @@ export function loadConceptContractAndCreateAssessment (conceptAddress, cost, ca
       'makeAssessment',
       userAddress,
       conceptAddress,
-      callback
+      {confirmation: callback}
     )
   }
 }
