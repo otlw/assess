@@ -3,7 +3,7 @@ import h from 'react-hyperscript'
 import { Stage, StageDisplayNames } from '../../../constants.js'
 import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
 import styled from 'styled-components'
-import icoClose from '../../../assets/ico-close.svg'
+import {ButtonPrimary, ButtonClose} from '../../Global/Buttons.ts'
 
 let completedStageTexts = {
   [Stage.Confirmed]: 'You have staked successfully!',
@@ -117,11 +117,15 @@ export class ProgressAndInputBar extends Component {
   }
 
   // helper function to return the right kind of actionBar
-  actionBar (assessmentStage) {
+  actionBar (assessmentStage, checkpoint, endtime) {
+    let now = new Date()
+    let timeToCommit = new Date(checkpoint * 1000 - now)
+    let timeToReveal = new Date((endtime * 1000 + 24 * 60 * 60 * 1000) - now)
     let stageTexts = {
       [Stage.Called]: 'Click "Stake" to join the assessment.',
-      [Stage.Confirmed]: 'Please "Commit" your score within X hours/days', // TODO actually calculate difference between now and assessment.checkpoint
-      [Stage.Committed]: 'Please click "Reveal" to reveal your score and complete the assessment.'
+      [Stage.Confirmed]: `Please "Commit" your score within ${timeToCommit.getDate()} days, ${timeToCommit.getHours()} hours, ${timeToCommit.getMinutes()} mn.`,
+      [Stage.Committed]: `Please click "Reveal" to reveal your score and complete the assessment.
+      ${timeToReveal.getDate()} days, ${timeToReveal.getHours()} hours, ${timeToReveal.getMinutes()} mn remaining.`
     }
     let stageFunctions = {
       [Stage.Called]: this.setStakeAction.bind(this),
@@ -149,7 +153,7 @@ export class ProgressAndInputBar extends Component {
           this.props.userStage === Stage.None
             ? null
             : h(containerProgressBar, [
-              activeUser ? this.actionBar(this.props.stage)
+              activeUser ? this.actionBar(this.props.stage, this.props.checkpoint, this.props.endtime)
                 : h(stageTexts, completedStageTexts[this.props.userStage])
             ])
         )
@@ -159,9 +163,7 @@ export class ProgressAndInputBar extends Component {
       case 'Reveal': {
         return (
           h(containerProgressBar, [
-            h(buttonClose, {onClick: this.closeInputBar.bind(this)}, [
-              h(imgClose, {alt: 'icoClose', src: icoClose})
-            ]),
+            h(ButtonClose, {onClick: this.closeInputBar.bind(this)}),
             h(rowObjectText, [
               h(StageDescriptor, this.state.displayText),
               (this.props.stage === Stage.Confirmed
@@ -177,7 +179,7 @@ export class ProgressAndInputBar extends Component {
                 : null
               )
             ]),
-            h(buttonSubmit, {onClick: this.state.action.bind(this)}, view)
+            h(ButtonPrimary, {onClick: this.state.action.bind(this)}, view)
           ])
         )
       }
@@ -193,18 +195,6 @@ export default ProgressAndInputBar
 export const containerProgressBar = styled('div').attrs({className: 'flex flex-row w-100 pa3 items-center shadow-3'})`
 margin-top: 1px;
 min-height: 64px;
-`
-
-export const buttonClose = styled('button').attrs({className: 'flex h-100 items-center justify-center pa0 mr2 bg-transparent pointer br-100'})`
-transition:0.2s ease-in-out;
-border: 1px solid transparent;
-width: 40px;
-height: 32px;
-:hover {border: 1px solid ${props => props.theme.primary};}
-`
-
-export const imgClose = styled('img').attrs({className: ''})`
-width: 16px;
 `
 
 export const ProgressButton = styled('button')`
@@ -236,13 +226,6 @@ export const rowObjectText = styled('div').attrs({className: 'flex w-100 items-c
 `
 
 export const rowObjectInput = styled('div').attrs({className: 'flex w-auto items-center justify-end b--light-gray  f5 gray ttu uppercase'})`;
-`
-
-export const buttonSubmit = styled('button').attrs({className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`
-color: #fff;
-background-color: ${props => props.theme.positiveGreen};
-transition:0.2s ease-in-out;
-:hover {opacity:0.9;}
 `
 
 export const Feedback = styled.div`

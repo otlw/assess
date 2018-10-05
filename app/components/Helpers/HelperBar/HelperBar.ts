@@ -49,7 +49,7 @@ export default HelperBar
 
 // style
 
-export const barContainer = styled('div').attrs({className: 'absolute flex flex-row items-center justify-between w-100 pv3 bg-light-green shadow-3'})`
+export const barContainer = styled('div').attrs({className: 'relative flex flex-row items-center justify-between w-100 pv3 bg-light-green shadow-3 z-9999'})`
 `
 
 export const barObject = styled('div').attrs({className: 'flex items-center justify-center mh2'})`
@@ -80,5 +80,4 @@ export const barButtonPrimary = styled('button').attrs({className: 'flex f5 bg-t
 outline: 0px;
 transition: 0.2s ease-in-out;
 :hover {cursor:pointer; background-color: hsla(158, 70%, 65%, 1);}
-
 `
