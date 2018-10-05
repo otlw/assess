@@ -26,7 +26,7 @@ export const Header = (props) => {
         h(headerRowRight, [
           h(headerItem, {name: 'Balance', value: balance})
         ]),
-        props.notificationBar.display
+        true //props.notificationBar.display
           ? h(NotificationBar, {status: props.notificationBar, setNotificationBar: props.setNotificationBar})
           : null
       ])
