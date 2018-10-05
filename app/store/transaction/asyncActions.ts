@@ -35,17 +35,13 @@ export function sendAndReactToTransaction (
           receipt.transactionHash,
           receipt.status ? 'Tx confirmed' : 'Tx failed'
         ))
-      }
-      // invoke callback a tad later, so that the user can see the the tx being confirmed and then see 
-      // the site change as a result
-      if (callbacks.confirmation && confirmationNumber === 9) {
-        if (receipt.status) {
-          callbacks.confirmation(false, receipt)
-
-        } else {
-          callbacks.confirmation(true, receipt)
-
-        }
+          if (callbacks.confirmation) {
+              if (receipt.status) {
+                  callbacks.confirmation(false, receipt)
+              } else {
+                  callbacks.confirmation(true, receipt)
+              }
+          }
       }
     })
     .on('error', (err: Error) => {
