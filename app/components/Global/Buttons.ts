@@ -8,13 +8,13 @@ color: ${props => props.theme.tertiary};
 background-color: ${props => props.theme.primary};
 `
 
-export const ButtonPrimary = styled('button').attrs({
-    className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1',
-    // this is prefixed with 'data-' because this is how added props need to be named not to generate warnings
-    ['data-activated']: null
-})`
+export const ButtonPrimary = styled('button').attrs({className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`
 color: ${props => props.theme.tertiary};
-background-color: ${props => (props['data-activated'] ? props.theme.positiveGreen : props.theme.primary) };
+background-color: ${props => props.theme.primary };
+`
+export const ButtonPrimaryGreen = styled('button').attrs({className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`
+color: ${props => props.theme.tertiary};
+background-color: ${props => props.theme.positiveGreen };
 `
 
 export const ButtonSecondary = styled('button').attrs({className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`

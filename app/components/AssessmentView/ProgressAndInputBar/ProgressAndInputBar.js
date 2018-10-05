@@ -3,7 +3,7 @@ import h from 'react-hyperscript'
 import { Stage, StageDisplayNames } from '../../../constants.js'
 import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
 import styled from 'styled-components'
-import {ButtonPrimary, ButtonClose} from '../../Global/Buttons.ts'
+import {ButtonPrimary, ButtonPrimaryGreen, ButtonClose} from '../../Global/Buttons.ts'
 
 let completedStageTexts = {
   [Stage.Confirmed]: 'You have staked successfully!',
@@ -136,8 +136,7 @@ export class ProgressAndInputBar extends Component {
       h(rowObjectText, [
         h(StageDescriptor, stageTexts[assessmentStage]),
         h(ButtonPrimary, {
-          onClick: stageFunctions[assessmentStage],
-          'data-activated': false
+          onClick: stageFunctions[assessmentStage]
         }, StageDisplayNames[assessmentStage])
       ])
     )
@@ -178,9 +177,8 @@ export class ProgressAndInputBar extends Component {
                 : null
               )
             ]),
-            h(ButtonPrimary, {
-              onClick: this.state.action.bind(this),
-              'data-activated': true
+            h(ButtonPrimaryGreen, {
+              onClick: this.state.action.bind(this)
             }, view)
           ])
         )
