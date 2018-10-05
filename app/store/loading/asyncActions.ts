@@ -1,13 +1,14 @@
 import {Dispatch} from 'redux'
 import Web3 from 'web3'
-import {setMetamaskLoadingStage} from './actions'
-import {setModal} from '../navigation/actions'
-import {web3Connected, receiveVariable} from '../web3/actions'
-import {loadPersistedState} from '../web3/asyncActions'
+import { setMetamaskLoadingStage, setHistoryLoadingStage } from './actions'
+import { setModal, addVisit, receiveVisitHistory} from '../navigation/actions'
+import {web3Connected, receiveVariable, receivePersistedState} from '../web3/actions'
+import {receiveAllAssessments} from '../assessment/actions'
+import {receiveConcepts} from '../concept/actions'
+import {getLocalStorageKey} from '../../utils.js'
 
 export const ConnectMetamask = () => {
   return async (dispatch:Dispatch<any, any>) => {
-    console.log('yo?')
     if (typeof (window as any)['web3'] === 'undefined') {
       dispatch(setModal("NoMetaMask"))
       return dispatch(setMetamaskLoadingStage('Error'))
@@ -34,8 +35,37 @@ export const ConnectMetamask = () => {
     dispatch(web3Connected(web3))
     dispatch(receiveVariable('userAddress', accounts[0]))
     dispatch(receiveVariable('networkID', networkID))
-    dispatch(loadPersistedState(networkID, accounts[0], web3))
     return dispatch(setMetamaskLoadingStage('Loaded'))
 
+  }
+}
+
+export const loadPersistedState = (networkID:number, userAddress:string, web3:Web3) => {
+  return async (dispatch:Dispatch<any, any>) => {
+    try {
+      let key = getLocalStorageKey(networkID, userAddress, web3)
+      // let key = networkName(networkID) + 'State' + userAddress
+      const serializedState = localStorage.getItem(key) // eslint-disable-line no-undef
+      if (serializedState === null) {
+        return undefined
+      }
+      let persistedState = JSON.parse(serializedState)
+      if (persistedState.assessments) {
+        dispatch(receiveAllAssessments(persistedState.assessments))
+      }
+      if (persistedState.concepts) {
+        dispatch(receiveConcepts(persistedState.concepts))
+      }
+      if (persistedState.visits) {
+        dispatch(receiveVisitHistory(persistedState.visits))
+      }
+      dispatch(receivePersistedState(persistedState))
+      dispatch(addVisit())
+      dispatch(setHistoryLoadingStage('Loaded'))
+      return 1
+    } catch (e) {
+      console.log('ERROR reading from localStorage')
+      return dispatch(setHistoryLoadingStage('Error'))
+    }
   }
 }

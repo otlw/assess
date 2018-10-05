@@ -25,6 +25,7 @@ type Props = {
 class MainView extends Component<Props> {
   render () {
     let modal = this.props.modal
+
     return (
       h(HashRouter, [
           h('div', [

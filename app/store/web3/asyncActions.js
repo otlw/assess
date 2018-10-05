@@ -2,11 +2,12 @@ import Web3 from 'web3'
 import { getInstance, hmmmToAha, getLocalStorageKey, getBlockDeployedAt } from '../../utils'
 import { networkName, LoadingStage } from '../../constants'
 import { processEvent } from '../assessment/asyncActions'
-import { setModal, addVisit  } from '../navigation/actions'
+import { setModal } from '../navigation/actions'
 import {receiveAllAssessments} from '../assessment/actions.ts'
 import {receiveConcepts} from '../concept/actions.ts'
 import { web3EventsConnected, receiveVariable, receivePersistedState } from './actions'
 import { modalTopic } from '../../components/Helpers/helperContent'
+import {setHistoryLoadingStage} from '../loading/actions'
 
 var Dagger = require('eth-dagger')
 const { FathomToken } = require('fathom-contracts')
@@ -66,8 +67,11 @@ export const loadPersistedState = (networkID, userAddress, web3) => {
         dispatch(receiveConcepts(persistedState.concepts))
       }
       dispatch(receivePersistedState(persistedState))
+      dispatch(setHistoryLoadingStage('Loaded'))
     } catch (e) {
-      console.log('ERROR reading from localStorage')
+      console.log('ERROR reading from localStorage', e)
+      // dispatch(setModal("Erro"))
+      dispatch(setHistoryLoadingStage('Error'))
     }
   }
 }

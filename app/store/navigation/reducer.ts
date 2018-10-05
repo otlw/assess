@@ -35,11 +35,14 @@ export type NavigationState = {
     },
   inputBar: string,
   showHiddenCards: boolean,
-  visits: {
-    site: number,
-    assessor: 0 | 1 | 2 | 3 | 4,
-    assessee: 0 | 1 | 2 | 3 | 4,
-  }
+  visits: VisitState
+}
+
+export type VisitState = {
+  site: number,
+  assessor: 0 | 1 | 2 | 3 | 4,
+  assessee: 0 | 1 | 2 | 3 | 4,
+  hasSeenConcepts: boolean
 }
 
 const initialState:NavigationState = {
@@ -54,7 +57,8 @@ const initialState:NavigationState = {
   visits: {
     site: 0,
     assessor: 0,
-    assessee: 0
+    assessee: 0,
+    hasSeenConcepts: false
   }
 }
 
@@ -89,6 +93,11 @@ export function NavigationReducer (state = initialState, action:Action):Navigati
       return {
         ...state,
         showHiddenCards: !state.showHiddenCards
+      }
+    case 'RECEIVE_VISIT_HISTORY':
+      return {
+        ...state,
+        visits: action.visits
       }
     case 'ADD_VISIT':
       return {

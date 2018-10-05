@@ -134,7 +134,8 @@ export const saveState = (state) => {
         concepts: state.concepts,
         lastUpdatedAt: state.ethereum.lastUpdatedAt,
         deployedConceptRegistryAt: state.ethereum.deployedConceptRegistryAt,
-        deployedFathomTokenAt: state.ethereum.deployedFathomTokenAt
+        deployedFathomTokenAt: state.ethereum.deployedFathomTokenAt,
+        visits: state.navigation.visits
       }
       let key = getLocalStorageKey(state.ethereum.networkID, state.ethereum.userAddress, state.ethereum.web3)
       const serializedState = JSON.stringify(stateToSave)

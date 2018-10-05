@@ -1,4 +1,4 @@
-import { NavigationState } from './reducer'
+import { NavigationState, VisitState } from './reducer'
 
 export type Action =
   ReturnType<typeof setDashboardTab> |
@@ -7,7 +7,8 @@ export type Action =
   ReturnType<typeof setNotificationBar> |
   ReturnType<typeof setInputBar> |
   ReturnType<typeof toggleHidden> |
-  ReturnType<typeof addVisit>
+  ReturnType<typeof addVisit> |
+  ReturnType<typeof receiveVisitHistory>
   // ReturnType<typeof saveProgression>
 
 
@@ -61,6 +62,14 @@ export function addVisit () {
     return {
         type
     }
+}
+
+export function receiveVisitHistory (visits:VisitState) {
+  let type:'RECEIVE_VISIT_HISTORY' = 'RECEIVE_VISIT_HISTORY'
+  return {
+    type,
+    visits
+  }
 }
 
 // export function saveProgression (role:string, stage:) {
