@@ -7,9 +7,8 @@ import {State} from '../../store'
 import {LoadingStage} from '../../store/loading/reducer'
 
 import {loadPersistedState} from '../../store/loading/asyncActions'
-// import {loadPersistedState} from '../../store/web3/asyncActions'
-// import Modal from '../Helpers/Modal'
 
+// REFACTOR: as this component is really similar to MetamaskLoader, maybe there a way to generalize it!
 type Props = {
   historyLoadingState: LoadingStage
   // loadPersistedState: typeof loadPersistedState
@@ -22,7 +21,6 @@ type Props = {
 export class HistoryLoader extends Component<Props> {
   componentDidMount() {
     if(this.props.historyLoadingState === null) {
-      console.log('called')
       this.props.loadPersistedState(this.props.networkID, this.props.userAddress, this.props.web3)
     }
   }
@@ -36,7 +34,6 @@ export class HistoryLoader extends Component<Props> {
       case 'Error': {
         console.log('uiuiuiiiui')
         return h('div', 'iuiuiuiuuiiui')
-        // return h(Modal)
       }
       case 'Loaded': {
         return this.props.children

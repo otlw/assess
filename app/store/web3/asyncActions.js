@@ -50,32 +50,6 @@ const loadFathomNetworkParams = () => {
   }
 }
 
-export const loadPersistedState = (networkID, userAddress, web3) => {
-  return async (dispatch, getState) => {
-    try {
-      let key = getLocalStorageKey(networkID, userAddress, web3)
-      // let key = networkName(networkID) + 'State' + userAddress
-      const serializedState = localStorage.getItem(key) // eslint-disable-line no-undef
-      if (serializedState === null) {
-        return undefined
-      }
-      let persistedState = JSON.parse(serializedState)
-      if (persistedState.assessments) {
-        dispatch(receiveAllAssessments(persistedState.assessments))
-      }
-      if (persistedState.concepts) {
-        dispatch(receiveConcepts(persistedState.concepts))
-      }
-      dispatch(receivePersistedState(persistedState))
-      dispatch(setHistoryLoadingStage('Loaded'))
-    } catch (e) {
-      console.log('ERROR reading from localStorage', e)
-      // dispatch(setModal("Erro"))
-      dispatch(setHistoryLoadingStage('Error'))
-    }
-  }
-}
-
 const initializeEventWatcher = () => {
   return async (dispatch, getState) => {
     let networkID = getState().ethereum.networkID
