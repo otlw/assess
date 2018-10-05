@@ -179,7 +179,10 @@ export class ProgressAndInputBar extends Component {
                 : null
               )
             ]),
-            h(ButtonPrimary, {onClick: this.state.action.bind(this)}, view)
+            h(ButtonPrimary, {
+              onClick: this.state.action.bind(this),
+              'data-view': this.state.view
+            }, view)
           ])
         )
       }

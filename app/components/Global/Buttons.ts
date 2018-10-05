@@ -8,9 +8,12 @@ color: ${props => props.theme.tertiary};
 background-color: ${props => props.theme.primary};
 `
 
-export const ButtonPrimary = styled('button').attrs({className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`
+export const ButtonPrimary = styled('button').attrs({
+    className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1',
+    ['data-view']: null
+})`
 color: ${props => props.theme.tertiary};
-background-color: ${props => props.theme.primary};
+background-color: ${props => props['data-view'] === 'progressView' ? props.theme.positiveGreen : props.theme.primary };
 `
 
 export const ButtonSecondary = styled('button').attrs({className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`
