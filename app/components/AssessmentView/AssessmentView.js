@@ -8,7 +8,9 @@ import { StageDisplayNames, Stage } from '../../constants.js'
 import { convertDate, statusMessage } from '../../utils.js'
 import styled from 'styled-components'
 import progressBar from '../Global/progressBar.ts'
+import {ButtonClose} from '../Global/Buttons.ts'
 import { helperBarTopic } from '../../components/Helpers/helperContent'
+import { NavLink } from 'react-router-dom'
 var h = require('react-hyperscript')
 
 export class AssessmentData extends Component {
@@ -38,6 +40,10 @@ export class AssessmentData extends Component {
     this.props.setHelperBar(null)
   }
 
+  log(){
+    console.log("tada")
+  }
+
   render () {
     if (!this.props.assessment) return h('div', 'Loading Data...')
     if (this.props.assessment.invalid) return h('div', 'invalid assessment address!! you may be on the wrong network')
@@ -58,8 +64,18 @@ export class AssessmentData extends Component {
         ' to ' + StageDisplayNames[assessment.stage]
     }
     let isAssessee = assessment.assessee === this.props.userAddress
+    console.log("ButtonClose",typeof ButtonClose,ButtonClose,ButtonClose({}))
     return (
       h(SuperFrame, [
+        h(closeButtonFrame,
+          // h(NavLink, {
+          //   to: '/',
+          //   //activeStyle: activeStyle,
+          //   exact: true,
+          //   //className: 'link w4 tc ph3 pv2 blue'
+          // }, h(ButtonClose))
+          h(ButtonClose)
+        ),
         // holds role and concept title
         h(assessmentHeader, [
           h(assessmentLabelActivity, isAssessee ? 'Getting assessed in' : 'Assessing'),
@@ -144,6 +160,11 @@ export default AssessmentData
 const SuperFrame = styled('div').attrs({className: 'flex flex-column w-100 mw8 self-center mt3 br2 shadow-4'})`
 font-family:'system-ui',sans-serif;
 max-width: 800px;
+position:relative;
+`
+const closeButtonFrame = styled('div')`
+position:absolute;
+right:-30px;
 `
 
 // assessmentView Header
