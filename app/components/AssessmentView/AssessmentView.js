@@ -10,7 +10,7 @@ import styled from 'styled-components'
 import progressBar from '../Global/progressBar.ts'
 import {ButtonClose} from '../Global/Buttons.ts'
 import { helperBarTopic } from '../../components/Helpers/helperContent'
-import { NavLink } from 'react-router-dom'
+// import { NavLink } from 'react-router-dom'
 var h = require('react-hyperscript')
 
 export class AssessmentData extends Component {
@@ -40,10 +40,6 @@ export class AssessmentData extends Component {
     this.props.setHelperBar(null)
   }
 
-  log(){
-    console.log("tada")
-  }
-
   render () {
     if (!this.props.assessment) return h('div', 'Loading Data...')
     if (this.props.assessment.invalid) return h('div', 'invalid assessment address!! you may be on the wrong network')
@@ -64,7 +60,7 @@ export class AssessmentData extends Component {
         ' to ' + StageDisplayNames[assessment.stage]
     }
     let isAssessee = assessment.assessee === this.props.userAddress
-    console.log("ButtonClose",typeof ButtonClose,ButtonClose,ButtonClose({}))
+    console.log('ButtonClose', typeof ButtonClose, ButtonClose, ButtonClose({}))
     return (
       h(SuperFrame, [
         h(closeButtonFrame,
