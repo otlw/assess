@@ -1,8 +1,32 @@
 import { Action } from './actions'
 
+export type ModalTopics =
+  null |
+  'AssessmentCreation' |
+  'UndeployedNetwork' |
+  'EducateAboutMetaMask' |
+  'NoMetaMask' |
+  'AssessmentProcess' |
+  'UnlockMetaMask' |
+  'AssessmentCreationFailed' |
+  'Smues'
+
+export type helperBarTopics =
+    null |
+    'Staking' |
+    'Committing' |
+    'Revealing' |
+    'ConfirmedStake' |
+    'ConfirmedCommit' |
+    'ConfirmedReveal' |
+    'FirstTimeMeetingPointSet' |
+    'MeetingPointChanged' |
+    'ChallengePeriodActive'
+
 export type NavigationState = {
   dashboardTab: 'Current' | 'Available' | 'Past'
-  mainDisplay: 'Main' | 'UnlockMetamask' | 'NoMetamask' | 'UndeployedNetwork'
+  modal: ModalTopics
+  helperBar: helperBarTopics,
   notificationBar:
     { display: false } |
     {
@@ -20,7 +44,8 @@ export type NavigationState = {
 
 const initialState:NavigationState = {
   dashboardTab: 'Current',
-  mainDisplay: 'Main',
+  modal: null,
+  helperBar: null,
   notificationBar: {
     display: false
   },
@@ -40,11 +65,16 @@ export function NavigationReducer (state = initialState, action:Action):Navigati
         ...state,
         dashboardTab: action.dashboardTab
       }
-    case 'SET_MAIN_DISPLAY':
+    case 'SET_MODAL':
       return {
         ...state,
-        mainDisplay: action.mainDisplay
+        modal: action.modal
       }
+    case 'SET_HELPERBAR':
+        return {
+            ...state,
+            helperBar: action.helperBar
+        }
     case 'SET_NOTIFICATION_BAR':
       return {
         ...state,
