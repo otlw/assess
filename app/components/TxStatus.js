@@ -24,7 +24,7 @@ export class TxStatus extends Component {
 
   render () {
     let tx = this.props.transaction
-    // TODO: separate `textField` to two lines 
+    // TODO: separate `textField` to two lines
     let textField = `Your transaction to ${phrasing[tx.purpose]} has been ${tx.status} -- see etherscan for details:  ` // Your transaction to <stake> has been <published>
     console.log('tx', tx)
     let targetURL = 'https://' + (networkName(this.props.networkID) === 'Mainnet' ? '' : networkName(this.props.networkID) + '.') + 'etherscan.io/tx/' + tx.txHash
@@ -49,7 +49,6 @@ const mapDispatchToProps = {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TxStatus)
-
 
 // styled components ------------------------ //
 const rowTransaction = styled('div').attrs({className: 'flex w-100 h1 items-center justify-center'})``
