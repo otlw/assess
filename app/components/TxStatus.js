@@ -38,7 +38,21 @@ export class TxStatus extends Component {
   }
 }
 
-const rowTransaction = styled('div').attrs({className: 'flex w-100 items-center justify-center'})``
+const mapStateToProps = state => {
+  return {
+    networkID: state.ethereum.networkID
+  }
+}
+
+const mapDispatchToProps = {
+  removeTX: removeTransaction
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TxStatus)
+
+
+// styled components ------------------------ //
+const rowTransaction = styled('div').attrs({className: 'flex w-100 h1 items-center justify-center'})``
 
 const textTransaction = styled('h5').attrs({className: 'f5 fw4 dark-gray'})``
 
@@ -53,15 +67,3 @@ const barButtonClose = styled('button').attrs({className: 'flex items-center jus
 transition: 0.2s ease-in-out;
 :hover {background-color:hsla(158, 70%, 65%, 1); cursor:pointer;}
 `
-
-const mapStateToProps = state => {
-  return {
-    networkID: state.ethereum.networkID
-  }
-}
-
-const mapDispatchToProps = {
-  removeTX: removeTransaction
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TxStatus)
