@@ -15,6 +15,6 @@ export class TxList extends Component {
   }
 }
 
-const containerTransaction = styled('div').attrs({className: 'relative flex flex-column items-center justify-between w-100 pv1 bg-light-green'})`` 
+const containerTransaction = styled('div').attrs({className: 'relative flex flex-column items-center justify-between w-100 pv1 bg-light-green'})``
 
 export default TxList
