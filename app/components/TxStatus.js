@@ -29,7 +29,7 @@ export class TxStatus extends Component {
     console.log('tx', tx)
     let targetURL = 'https://' + (networkName(this.props.networkID) === 'Mainnet' ? '' : networkName(this.props.networkID) + '.') + 'etherscan.io/tx/' + tx.txHash
     console.log('textField: ', textField)
-    return h(rowTransaction, [
+    return h(rowTxContainer, [
       h(textTransaction, textField),
       h(linkTransaction, {href: targetURL, target: '_blank'},
         tx.txHash.substring(0, 5) + '...' + tx.txHash.substring(60)),
@@ -51,9 +51,11 @@ const mapDispatchToProps = {
 export default connect(mapStateToProps, mapDispatchToProps)(TxStatus)
 
 // styled components ------------------------ //
-const rowTransaction = styled('div').attrs({className: 'flex w-100 h1 items-center justify-center'})``
+const rowTxContainer = styled('div').attrs({className: 'flex flex-row w-100 h3 items-center justify-center br2 pv3 shadow-4'})`
+  border-color: ${props => props.theme.tertiary};
+`
 
-const textTransaction = styled('h5').attrs({className: 'f5 fw4 dark-gray'})``
+const textTransaction = styled('h5').attrs({className: 'f5 fw4 pa2 dark-gray'})``
 
 // TODO: highlight keywords...
 // const boldText = textTransaction.extend`
@@ -62,7 +64,7 @@ const textTransaction = styled('h5').attrs({className: 'f5 fw4 dark-gray'})``
 
 const linkTransaction = styled('a').attrs({className: 'link f5 fw4 blue'})``
 
-const barButtonClose = styled('button').attrs({className: 'flex items-center justify-center w2 h2 mh5 ba br-100 b--near-black bg-transparent'})`
+const barButtonClose = styled('button').attrs({className: 'flex items-center justify-center w2 h2 mh4 br-100 b--near-black bg-transparent'})`
 transition: 0.2s ease-in-out;
 :hover {background-color:hsla(158, 70%, 65%, 1); cursor:pointer;}
 `
