@@ -49,7 +49,7 @@ export default HelperBar
 
 // style
 
-export const barContainer = styled('div').attrs({className: 'relative flex flex-row items-center justify-between w-100 pv3 mt3 br2 shadow-4'})`
+export const barContainer = styled('div').attrs({className: 'relative flex flex-row items-center justify-between w-100 h3 pv3 mt3 br2 shadow-4'})`
 max-width: 800px;
 background-color: ${props => props.theme.tertiary};
 `
@@ -64,6 +64,7 @@ border-color: ${props => props.theme.primary};
 `
 
 export const icoQuestion = styled('div').attrs({className: 'flex items-center justify-center w2 h2 mr2 bg-green light-green br'})`
+color: ${props => props.theme.tertiary};
 background-color: ${props => props.theme.primary};
 `
 
@@ -80,13 +81,13 @@ export const barButtonClose = styled('button').attrs({className: 'flex items-cen
 outline: 0px;
 flex-shrink: 0;
 transition: 0.2s ease-in-out;
-:hover {background-color:hsla(158, 70%, 65%, 1); cursor:pointer;}
+:hover {background-color:hsla(203, 100%, 96%, 1); cursor:pointer;}
 `
 
-export const barButtonPrimary = styled('button').attrs({className: 'flex f5 bg-transparent ph1 pv1 ml1 ttu uppercase ba br1 b--dark-green cursor'})`
+export const barButtonPrimary = styled('button').attrs({className: 'flex f6 bg-transparent ph1 pv1 ml1 ttu uppercase ba br1 b--dark-green cursor'})`
 color: ${props => props.theme.primary};
 border-color: ${props => props.theme.primary};
 outline: 0px;
 transition: 0.2s ease-in-out;
-:hover {cursor:pointer; background-color: hsla(158, 70%, 65%, 1);}
+:hover {cursor:pointer; background-color: ${props => props.theme.primary}; color: ${props => props.theme.tertiary};}
 `
