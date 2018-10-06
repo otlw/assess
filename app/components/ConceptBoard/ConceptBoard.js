@@ -35,7 +35,6 @@ export class ConceptBoard extends Component {
           loadConceptContractAndCreateAssessment: this.props.loadConceptContractAndCreateAssessment,
           estimateGasCost: this.props.estimateAssessmentCreationGasCost,
           cancelCreation: this.cancelCreation.bind(this),
-          setNotificationBar: this.props.setNotificationBar
         })
       }
 
@@ -55,7 +54,6 @@ export class ConceptBoard extends Component {
 export default ConceptBoard
 
 // styles
-
 const ConceptHeaderBox = styled('div')`
 width:100%;
 text-align:center;

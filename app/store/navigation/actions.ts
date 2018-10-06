@@ -4,7 +4,6 @@ export type Action =
   ReturnType<typeof setDashboardTab> |
   ReturnType<typeof setModal> |
   ReturnType<typeof setHelperBar> |
-  ReturnType<typeof setNotificationBar> |
   ReturnType<typeof setInputBar> |
   ReturnType<typeof toggleHidden>
 
@@ -29,14 +28,6 @@ export function setHelperBar (helperBar: NavigationState["helperBar"]) {
   return {
     type,
     helperBar
-  }
-}
-
-export function setNotificationBar (notificationBar: NavigationState["notificationBar"]) {
-  let type:'SET_NOTIFICATION_BAR' = 'SET_NOTIFICATION_BAR'
-  return {
-    type,
-    notificationBar
   }
 }
 

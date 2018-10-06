@@ -1,14 +1,12 @@
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
-import NotificationBar from './NotificationBar.js'
 
 import fathomLogo from '../../assets/fathom_monkey_beret_color_cropped.svg'
 
 import {networkName} from '../../constants.js'
 
-const Logo = styled('img').attrs({className: 'flex w2 mh2 self-center'})`
-`
+const Logo = styled('img').attrs({className: 'flex w2 mh2 self-center'})``
 
 export const Header = (props) => {
   let userAddress = props.userAddress.substring(0, 8) + '...' + props.userAddress.substring(35, 42)
@@ -25,10 +23,7 @@ export const Header = (props) => {
         ]),
         h(headerRowRight, [
           h(headerItem, {name: 'Balance', value: balance})
-        ]),
-        props.notificationBar.display
-          ? h(NotificationBar, {status: props.notificationBar, setNotificationBar: props.setNotificationBar})
-          : null
+        ])
       ])
   )
 }

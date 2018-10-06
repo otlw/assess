@@ -27,12 +27,6 @@ export type NavigationState = {
   dashboardTab: 'Current' | 'Available' | 'Past'
   modal: ModalTopics
   helperBar: helperBarTopics,
-  notificationBar:
-    { display: false } |
-    {
-      display: true
-      type: 'success' | 'error'
-    },
   inputBar: string,
   showHiddenCards: boolean
 }
@@ -41,9 +35,6 @@ const initialState:NavigationState = {
   dashboardTab: 'Current',
   modal: null,
   helperBar: null,
-  notificationBar: {
-    display: false
-  },
   inputBar: '',
   showHiddenCards: false
 }
@@ -65,11 +56,6 @@ export function NavigationReducer (state = initialState, action:Action):Navigati
             ...state,
             helperBar: action.helperBar
         }
-    case 'SET_NOTIFICATION_BAR':
-      return {
-        ...state,
-        notificationBar: action.notificationBar
-      }
     case 'SET_INPUT_BAR':
       return {
         ...state,
