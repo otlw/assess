@@ -51,7 +51,7 @@ const mapDispatchToProps = {
 export default connect(mapStateToProps, mapDispatchToProps)(TxStatus)
 
 // styled components ------------------------ //
-const rowTxContainer = styled('div').attrs({className: 'flex flex-row w-100 h3 items-center justify-center br2 pv3 shadow-4'})`
+const rowTxContainer = styled('div').attrs({className: 'flex flex-row w-100 h3 items-center justify-center br2 pv1 shadow-4'})`
   border-color: ${props => props.theme.tertiary};
 `
 
