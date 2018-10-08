@@ -1,10 +1,8 @@
 import { Component } from 'react'
-import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { removeTransaction } from '../store/transaction/actions'
-import { networkName } from '../constants.js'
+import { networkName } from '../../../constants.js'
 var h = require('react-hyperscript')
-let icoClose = require('../assets/ico-close.svg')
+let icoClose = require('../../../assets/ico-close.svg')
 
 const phrasing = Object.freeze({
   makeAssessment: 'create an assessment',
@@ -24,11 +22,11 @@ export class TxStatus extends Component {
 
   render () {
     let tx = this.props.transaction
-    // TODO: separate `textField` to two lines
-    let textField = `Your transaction to ${phrasing[tx.purpose]} has been ${tx.status} -- see etherscan for details:  ` // Your transaction to <stake> has been <published>
-    console.log('tx', tx)
+    let textField = `Your transaction to ${phrasing[tx.purpose]} has been ${tx.status} -- see etherscan for details:  `
     let targetURL = 'https://' + (networkName(this.props.networkID) === 'Mainnet' ? '' : networkName(this.props.networkID) + '.') + 'etherscan.io/tx/' + tx.txHash
-    console.log('textField: ', textField)
+    console.log('tx', tx) // DEBUG
+    console.log('textField: ', textField) // DEBUG
+
     return h(rowTxContainer, [
       h(textTransaction, textField),
       h(linkTransaction, {href: targetURL, target: '_blank'},
@@ -38,17 +36,7 @@ export class TxStatus extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    networkID: state.ethereum.networkID
-  }
-}
-
-const mapDispatchToProps = {
-  removeTX: removeTransaction
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TxStatus)
+export default TxStatus
 
 // styled components ------------------------ //
 const rowTxContainer = styled('div').attrs({className: 'flex flex-row w-100 h3 items-center justify-center br2 pv1 shadow-4'})`

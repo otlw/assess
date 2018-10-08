@@ -12,7 +12,7 @@ import ConceptBoard from './ConceptBoard'
 import AssessmentView from './AssessmentView'
 import Modal from './Helpers/Modal'
 import HelperBar from './Helpers/HelperBar'
-import { TxList } from './TxList'
+import { TxList } from './Notifications/TxList'
 
 import {State} from '../store'
 import { Transaction } from '../store/transaction/reducer'
