@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import styled from 'styled-components'
 import inputField from '../../Global/inputField.ts'
-import {ButtonTertiary} from '../../Global/Buttons'
+import {ButtonTertiary, ButtonClose} from '../../Global/Buttons'
 import { Label, Body } from '../../Global/Text.ts'
 
 var h = require('react-hyperscript')
@@ -46,9 +46,9 @@ class MeetingPoint extends Component {
             h(Label, 'Meeting Point'),
             !this.props.isAssessee
               ? null
-              : h(ButtonTertiary, {
-                onClick: this.toggleMPeditability.bind(this)
-              }, !this.state.displayMPEdit ? 'Edit' : 'X')
+              : this.state.displayMPEdit
+                ? h(ButtonClose, {onClick: this.toggleMPeditability.bind(this)})
+                : h(ButtonTertiary, {onClick: this.toggleMPeditability.bind(this)})
           ])
         ]),
         h(rowMeetingPoint, [ // second row
