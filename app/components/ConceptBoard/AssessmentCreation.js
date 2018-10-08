@@ -203,7 +203,7 @@ export class AssessmentCreation extends Component {
       2: 'Next, we\'ll send your assessment to ethereum.',
       3: 'Please complete the transaction via metamask',
       4: 'Your transaction was sent to ethereum',
-      [-1]: 'Ooops. Looks like your transaction was not submitted.'
+      5: 'Ooops. Looks like your transaction was not submitted.'
     })
 
     return h(createAssessmentContainer, [
