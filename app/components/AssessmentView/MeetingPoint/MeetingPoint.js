@@ -51,7 +51,7 @@ class MeetingPoint extends Component {
               }, !this.state.displayMPEdit ? 'Edit' : 'X')
           ])
         ]),
-        h('div', [ // second row
+        h(rowMeetingPoint, [ // second row
           !this.state.displayMPEdit
             ? this.meetingPointString(this.props.isAssessee, this.props.assessment)
             : h(containerMeetingPointInput, [
@@ -87,4 +87,8 @@ export const assessmentLabelContainerMP = styled('div').attrs({className: 'flex 
 `
 
 export const containerMeetingPointInput = styled('div').attrs({className: 'flex flex-row w-100'})`
+`
+
+export const rowMeetingPoint = styled('div').attrs({className: 'flex flex-row w-100'})`
+min-height: 34px;
 `
