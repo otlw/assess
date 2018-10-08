@@ -164,13 +164,6 @@ const assessmentObjectText = styled('div').attrs({className: 'flex flex-column w
 const assessmentObjectTextRight = styled('div').attrs({className: 'flex flex-column w-40  items-start justify-center self-start mv4'})`
 `
 
-// Commented out as we may need to re-implement this very soon
-// const assessmentListAssessors = styled('div').attrs({className: 'flex flex-column w-100 h-100
-// self-start  items-start justify-center self-start mv3'})``
-
-const assessmentRow = styled('div').attrs({className: 'flex flex-row w-100 mw5 justify-between mt3 '})`
-`
-
 const assessmentFooter = styled('div').attrs({className: 'relative flex flex-row w-100'})`
 margin-top:1px;
 background-color: ${props => props.theme.bgSecondary};
