@@ -1,4 +1,4 @@
-import { Stage, TimeOutReasons, StageDisplayNames, networkName } from './constants.js'
+import { Stage, TimeOutReasons, StageDisplayNames, networkName } from './constants'
 let { Assessment, Concept, FathomToken, ConceptRegistry } = require('fathom-contracts')
 
 function getContractInstance (web3, abi, contractAddress) {
@@ -12,12 +12,14 @@ export const convertDate = (unixTimestamp) => {
 }
 
 export const getBlockDeployedAt = {
+
   fathomToken: async (state) => {
     let networkID = await state.ethereum.web3.eth.net.getId()
     let deployTx = FathomToken.networks[networkID].transactionHash
     let tx = await state.ethereum.web3.eth.getTransaction(deployTx)
     return tx.blockNumber
   },
+
   conceptRegistry: async (state) => {
     let networkID = await state.ethereum.web3.eth.net.getId()
     let deployTx = ConceptRegistry.networks[networkID].transactionHash
@@ -27,8 +29,11 @@ export const getBlockDeployedAt = {
 }
 
 export const getInstance = {
+
   assessment: (state, contractAddress) => getContractInstance(state.ethereum.web3, Assessment.abi, contractAddress),
+
   concept: (state, contractAddress) => getContractInstance(state.ethereum.web3, Concept.abi, contractAddress),
+
   fathomToken: (state) => {
     if (FathomToken.networks[state.ethereum.networkID] && FathomToken.networks[state.ethereum.networkID].address) {
       return getContractInstance(
@@ -40,6 +45,7 @@ export const getInstance = {
       return {error: true}
     }
   },
+
   conceptRegistry: (state) => {
     return getContractInstance(
       state.ethereum.web3,
@@ -67,8 +73,9 @@ export function convertFromUIScoreToOnChainScore (x) {
 returns the message to be displayed on the assessment Card and DetailView, which is different depending on
 whether the user needs to be active, the assessment was cancelled and the phase of the assessment
 */
-export function statusMessage (isAssessee, assessment) {
+export function statusMessage (isAssessee, assessment, transactions = []) {
   let actionRequired = assessment.stage === assessment.userStage && assessment.stage !== Stage.Done
+  let nOtherAssessorsToBeActive = assessment.size - (assessment.stage === Stage.Called ? assessment.assessors.length : assessment.done) - (actionRequired ? 1 : 0)
   let status = ''
   console.log()
   // assessment Failed?
@@ -103,12 +110,18 @@ export function statusMessage (isAssessee, assessment) {
       }
     } else if (!actionRequired) {
       // assessment not done, but user must not do something
-      status += 'Waiting...'
+      status += `Waiting for ${nOtherAssessorsToBeActive} remaining assessors to ${StageDisplayNames[assessment.stage]}.`
     } else {
       // assessment not done because user (and others) need to do something
-      let nOtherAssessorsToBeActive = assessment.size - assessment.done - (actionRequired ? 1 : 0)
-      // user must do something
-      status += 'Waiting for you and ' + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[assessment.stage]
+      // user must do something (or has done something which is awaiting confirmation)
+      // no idea why the commented out comparison in the next line is failing,
+      // but we don't really need it as when the tx is confirmed this else clause will not be reached
+      let txToChangeState = transactions.filter(x => x.data === assessment.stage) // && x.status === 'Tx Published' )
+      if (txToChangeState.length > 0) {
+        status = 'Awaiting confirmation...'
+      } else {
+        status += 'Waiting for you and ' + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[assessment.stage]
+      }
     }
   }
   return status

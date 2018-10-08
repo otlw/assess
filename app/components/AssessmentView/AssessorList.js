@@ -8,12 +8,17 @@ class AssessorList extends Component {
     return (
       h(containerListAssessors,
         this.props.assessors.map((assessor, k) => {
-          return h('li', assessor === this.props.userAddress ? 'You' : assessor)
+          return h(containerListItem, assessor === this.props.userAddress ? 'You' : assessor)
         }))
     )
   }
 }
 
-const containerListAssessors = styled('ul').attrs({className: 'list pl0 mt0 lh-copy gray'})``
+const containerListAssessors = styled('ul').attrs({className: 'list self-start pl0 mt0 lh-copy'})`
+`
+
+const containerListItem = styled('li').attrs({className: 'w5 ellipsis truncate'})`
+color: ${props => props.theme.textBody}
+`
 
 export default AssessorList
