@@ -3,8 +3,6 @@ import styled from 'styled-components'
 import h from 'react-hyperscript'
 import { modalTopic } from '../Helpers/helperContent'
 
-import createHistory from 'history/createBrowserHistory'
-
 import icoClose from '../../assets/ico-close.svg'
 
 export class AssessmentCreation extends Component {
@@ -24,7 +22,7 @@ export class AssessmentCreation extends Component {
   }
 
   cancelButton () {
-    if (this.state.step > 1 && this.step < 4) {
+    if (this.state.step > 1 && this.state.step < 4) {
       this.setState({step: this.state.step - 1})
     } else {
       this.props.cancelCreation()
@@ -33,7 +31,6 @@ export class AssessmentCreation extends Component {
 
   nextButton () {
     let step = this.state.step
-
     if (step === 1) {
       this.setState({step: 2})
       this.estimateGasCost()
