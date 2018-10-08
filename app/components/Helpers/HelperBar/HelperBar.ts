@@ -23,20 +23,22 @@ export class HelperBar extends Component<Props> {
     if (this.props.showBar) {
       let topic = this.props.topic
       return (
-        h(barContainer, [
-          h(barContainerTitle, [
-            h(icoQuestion, '?'),
-            h(barTextTitle, topic.title)
-          ]),
-          h(barObject, [
-            h(barTextDescription, topic.text),
-            (topic.learnMore
-             ? h(barButtonPrimary, {onClick: this.learnMore.bind(this)}, 'Learn More')
-             : null)
-          ]),
-          h(barButtonClose, {onClick: this.closeBar.bind(this)}, h('img', {alt: 'icoClose', src: icoClose, className: 'h1 ma1'}))
-          //
-          // h('button', {onClick: this.resetVisits.bind(this)}, 'resetToNoob!') // this is for us, so we can pretend being a first timer
+        h(helperBarContainer, [
+          h(barContainer, [
+            h(barContainerTitle, [
+              h(icoQuestion, '?'),
+              h(barTextTitle, topic.title)
+            ]),
+            h(barObject, [
+              h(barTextDescription, topic.text),
+              (topic.learnMore
+               ? h(barButtonPrimary, {onClick: this.learnMore.bind(this)}, 'Learn More')
+               : null)
+            ]),
+            h(barButtonClose, {onClick: this.closeBar.bind(this)}, h('img', {alt: 'icoClose', src: icoClose, className: 'h1 ma1'}))
+            //
+            // h('button', {onClick: this.resetVisits.bind(this)}, 'resetToNoob!') // this is for us, so we can pretend being a first timer
+          ])
         ])
       )
     } else {
@@ -48,6 +50,8 @@ export class HelperBar extends Component<Props> {
 export default HelperBar
 
 // style
+
+const helperBarContainer = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-center'})``
 
 export const barContainer = styled('div').attrs({className: 'relative flex flex-row items-center justify-between w-100 h3 pv3 mt3 br2 shadow-4'})`
 max-width: 800px;

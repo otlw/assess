@@ -3,7 +3,6 @@ import styled from 'styled-components'
 var h = require('react-hyperscript')
 
 class MeetingPointEditBox extends Component {
-  // TODO: utilize this.props.assessee, this.props.assessmentAddress, this.props.storeDataOnAssessment
 
   setMPEditiability () {
     this.props.setInputBar('editMeetingPoint')

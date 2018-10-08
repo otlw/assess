@@ -35,7 +35,7 @@ class MainView extends Component<Props> {
             h(appContainer, [
               h(NavTabs),
               (modal ? h(Modal) : null),
-              h(helperBarContainer, [h(HelperBar)]),
+              h(HelperBar),
               h(Route, {exact: true, path: '/', component: AssessmentBoard}),
               h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
               h(Route, {path: '/assessment/:id', component: AssessmentView}),
@@ -48,9 +48,6 @@ class MainView extends Component<Props> {
 }
 
 const appContainer = styled('div').attrs({className: 'relative flex flex-column w-100 h-100'})``
-
-const helperBarContainer = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-center'})``
-
 
 const mapStateToProps = (state:State) => {
   return {

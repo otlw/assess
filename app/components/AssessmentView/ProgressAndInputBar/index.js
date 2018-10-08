@@ -5,7 +5,6 @@ import { confirmAssessor, commit, reveal, storeDataOnAssessment } from '../../..
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    assessmentAddress: ownProps.assessmentAddress,
     userAddress: state.ethereum.userAddress,
     stage: state.assessments[ownProps.assessmentAddress].stage,
     userStage: state.assessments[ownProps.assessmentAddress].userStage,
