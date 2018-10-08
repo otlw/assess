@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import inputField from '../../Global/inputField.ts'
 import {ButtonTertiary} from '../../Global/Buttons'
 import { Label, Body } from '../../Global/Text.ts'
-import {assessmentLabelContainer} from '../AssessmentView.js'
 
 var h = require('react-hyperscript')
 
@@ -43,7 +42,7 @@ class MeetingPoint extends Component {
     return (
       h('div', [
         h('div', [ // First Row
-          h(assessmentLabelContainer, [
+          h(assessmentLabelContainerMP, [
             h(Label, 'Meeting Point'),
             !this.props.isAssessee
               ? null
@@ -55,14 +54,14 @@ class MeetingPoint extends Component {
         h('div', [ // second row
           !this.state.displayMPEdit
             ? this.meetingPointString(this.props.isAssessee, this.props.assessment)
-            : h('div', [
+            : h(containerMeetingPointInput, [
               h(inputField, {
                 type: 'string',
                 onChange: this.setNewMeetingPoint.bind(this),
                 // value: this.state.newMeetingPoint
                 defaultValue: 'gitlab.com/myProject/...'
               }),
-              h(ButtonTertiary, {onClick: this.storeData.bind(this)}, 'Submit!')
+              h(ButtonTertiary, {onClick: this.storeData.bind(this)}, 'Submit')
             ])
         ])
       ])
@@ -82,4 +81,10 @@ export const EditMeetingPoint = styled('button')`
   display: inline-block;
   padding: 0.25em 1em;
   border: 2px solid palevioletred;
+`
+
+export const assessmentLabelContainerMP = styled('div').attrs({className: 'flex flex-row w-100 mb2 items-center justify-between'})`
+`
+
+export const containerMeetingPointInput = styled('div').attrs({className: 'flex flex-row w-100'})`
 `
