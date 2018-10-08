@@ -1,6 +1,6 @@
 import { Component } from 'react'
 import styled from 'styled-components'
-import MeetingPointForm from './MeetingPointForm.js'
+import inputField from '../../Global/inputField.ts'
 import {ButtonTertiary} from '../../Global/Buttons'
 var h = require('react-hyperscript')
 
@@ -8,17 +8,22 @@ class MeetingPointEditBox extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      displayMPEdit: false
+      displayMPEdit: false,
+      newMeetingPoint: ''
     }
   }
 
   storeData (values) {
-    this.props.storeDataOnAssessment(this.props.assessmentAddress, values.data)
+    this.props.storeDataOnAssessment(this.props.assessmentAddress, this.state.newMeetingPoint)
     this.setState({displayMPEdit: false})
   }
 
   toggleMPeditability () {
     this.setState({displayMPEdit: !this.state.displayMPEdit})
+  }
+
+  setNewMeetingPoint (e) {
+    this.setState({newMeetingPoint: e.target.value})
   }
 
   render () {
@@ -27,8 +32,17 @@ class MeetingPointEditBox extends Component {
         h(ButtonTertiary, {
           onClick: this.toggleMPeditability.bind(this)
         }, 'Edit'),
-        // ALEX work magic here, por favor
-        this.state.displayMPEdit ? h(MeetingPointForm, {onSubmit: this.storeData.bind(this)}) : null
+        this.state.displayMPEdit
+          ? h('div', [
+            h(inputField, {
+              type: 'string',
+              onChange: this.setNewMeetingPoint.bind(this),
+              // value: this.state.newMeetingPoint
+              defaultValue: 'gitlab.com/myProject/...'
+            }),
+            h(ButtonTertiary, {onClick: this.storeData.bind(this)},  'Submit!')
+          ])
+        : null
       ])
     )
   }

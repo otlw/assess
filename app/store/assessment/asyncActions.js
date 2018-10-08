@@ -510,6 +510,7 @@ export function fetchStoredData (selectedAssessment) {
     let assessee = await assessmentInstance.methods.assessee().call()
     let data = await assessmentInstance.methods.data(assessee).call()
     if (data) {
+      console.log('data')
       data = getState().ethereum.web3.utils.hexToUtf8(data)
       dispatch(updateAssessmentVariable(assessmentAddress, 'data', data))
     }
