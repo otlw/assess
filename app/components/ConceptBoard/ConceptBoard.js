@@ -31,12 +31,13 @@ export class ConceptBoard extends Component {
       if (this.state.selectedConceptAddress !== '0') {
         ConceptHeader = h(AssessmentCreation, {
           setModal: this.props.setModal,
-          conceptData: this.props.concepts[this.state.selectedConceptAddress],
+          concept: this.props.concepts[this.state.selectedConceptAddress],
           conceptAddress: this.state.selectedConceptAddress,
           loadConceptContractAndCreateAssessment: this.props.loadConceptContractAndCreateAssessment,
           estimateGasCost: this.props.estimateAssessmentCreationGasCost,
           cancelCreation: this.cancelCreation.bind(this),
-          setNotificationBar: this.props.setNotificationBar
+          setNotificationBar: this.props.setNotificationBar,
+          history: this.props.history
         })
       }
 

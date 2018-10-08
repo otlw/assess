@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import h from 'react-hyperscript'
 import { modalTopic } from '../Helpers/helperContent'
 
-import inputField from '../Global/inputField.ts'
+import createHistory from 'history/createBrowserHistory'
 
 import icoClose from '../../assets/ico-close.svg'
 
@@ -20,10 +20,15 @@ export class AssessmentCreation extends Component {
   setAmountPerAssessor (e) {
     // this.setState({amountPerAssessor: Math.round(e.target.value)}) // NOTE: I not sure whether this round has to be there. It looked superfluous but i haven't testet it thoroughly
     this.setState({amountPerAssessor: e.target.value})
+    // this.estimateGasCost()
   }
 
   cancelButton () {
-    this.props.cancelCreation()
+    if (this.state.step > 1 && this.step < 4) {
+      this.setState({step: this.state.step - 1})
+    } else {
+      this.props.cancelCreation()
+    }
   }
 
   nextButton () {
@@ -31,8 +36,9 @@ export class AssessmentCreation extends Component {
 
     if (step === 1) {
       this.setState({step: 2})
-    } else if (step === 2) {
       this.estimateGasCost()
+    } else if (step === 2) {
+      this.setState({step: 3})
     } else if (step === 3) {
       this.loadConceptContractAndCreateAssessment()
     }
@@ -43,30 +49,33 @@ export class AssessmentCreation extends Component {
       this.props.conceptAddress,
       this.state.amountPerAssessor,
       (cost) => {
-        this.setState({gasEstimate: cost, step: 3})
+        this.setState({gasEstimate: cost, step: 2})
       }
     )
   }
 
   loadConceptContractAndCreateAssessment () {
+    let react = {
+      transactionHash: (hash) => { this.setState({ step: 4, hash: hash }) },
+      confirmation: (error, receipt) => {
+        if (!error) {
+          this.props.setModal(modalTopic.AssessmentCreation)
+          let receiptAddress = receipt.events[0].raw.topics[2]
+          let assessmentAddress = '0x' + receiptAddress.substring(26, receiptAddress.length)
+          this.props.history.push('/assessment/' + assessmentAddress)
+        } else {
+          console.log('uiuiu not sure why this happened..., please try to reproduce anf file a bug-issue')
+          this.props.setModal(modalTopic.AssessmentCreationFailed)
+          this.setState({step: 5})
+        }
+      },
+      error: () => { this.setState({step: 5}) }
+
+    }
     this.props.loadConceptContractAndCreateAssessment(
       this.props.conceptAddress,
       this.state.amountPerAssessor,
-      (err, receipt) => {
-        if (err) {
-          console.log(err)
-          // this.props.setNotificationBar({display: true, type: 'error'})
-          this.props.setModal(modalTopic.AssessmentCreationFailed) // TODO inform modal about reason
-          this.props.cancelCreation()
-        } else if (receipt.status) {
-          // let receiptAddress = receipt.events[0].raw.topics[2]
-          // let assessmentAddress = '0x' + receiptAddress.substring(26, receiptAddress.length)
-          // this.props.setNotificationBar({display: true, type: 'success', assessmentId: assessmentAddress})
-          this.props.setModal(modalTopic.AssessmentCreation) // TODO inform modal about address
-        } else {
-          this.setState({step: 4})
-        }
-      }
+      react
     )
   }
 
@@ -118,11 +127,11 @@ export class AssessmentCreation extends Component {
           h(cardBodyColumnLeft, [
             h(cardContainerParameters, [
               h(cardLabel, 'TRANSACTION COST'),
-              h(cardTextObject, this.state.gasEstimate.toString().substring(0, 8) + 'ETH')
+              h(cardTextObject, this.state.gasEstimate.toString().substring(0, 8) + ' ETH')
             ]),
             h(cardContainerParameters, [
               h(cardLabel, 'EQUAL TO'),
-              h(cardTextObject, this.state.gasEstimate.toString().substring(0, 8) + 'USD')
+              h(cardTextObject, (this.state.gasEstimate * 220).toString().substring(0, 4) + ' USD')
             ])
           ]),
           h(cardBodyColumnRight, [
@@ -150,15 +159,24 @@ export class AssessmentCreation extends Component {
           h(cardTextObjectHelp, 'We’ll notify you once the transaction has been confirmed & your assessment is created.')
         ])
         break
+      case 5:
+        BottomPartContent = h(cardBodyColumnLeft, [
+          h(cardTextTitle, 'There was an error!'),
+          h(cardTextObjectHelp, 'No problem, just scream loud and try again in 15sec.') // TODO this needs to be actual help
+        ])
+        break
     }
 
     // set Navigation buttons according to step
     let Navigation = (h(createAssessmentFooter, [
-      h(createAssessmentButtonSecondary, {onClick: this.cancelButton.bind(this)}, [
+      h(createAssessmentButtonSecondary, {
+        onClick: this.cancelButton.bind(this),
+        disabled: this.state.step !== 1
+      }, [
         h('span', 'Previous')
       ]),
       h(createAssessmentButtonPrimary, {onClick: this.nextButton.bind(this)}, [
-        h('span', 'Next')
+        h('span', this.state.step === 3 ? 'Send Transaction!' : 'Next') // TODO change color to positiveGreen in stage 4
       ])
     ]))
 
@@ -170,15 +188,23 @@ export class AssessmentCreation extends Component {
         ])
       ]))
     }
-    // h(Logo, {alt: 'logo', src: fathomLogo})
 
     // set cancelCross according to step
+    // REFACTOR THIS once we have a global progress-Component
     let CancelCrossButton = (h(CancelCrossContainer, [
       h(CancelCross, {onClick: this.cancelButton.bind(this), alt: 'icoClose', src: icoClose})
     ]))
     if (this.state.step === 4) {
       CancelCrossButton = h(CancelCrossContainer, '')
     }
+
+    let stageActivity = Object.freeze({
+      1: 'Please enter your assessment details',
+      2: 'Next, we\'ll send your assessment to ethereum.',
+      3: 'Please complete the transaction via metamask',
+      4: 'Your transaction was sent to ethereum',
+      [-1]: 'Ooops. Looks like your transaction was not submitted.'
+    })
 
     return h(createAssessmentContainer, [
       h(createAssessmentTopWrapper, [
@@ -194,8 +220,8 @@ export class AssessmentCreation extends Component {
         h(createAssessmentCardContainer, [
           h(createAssessmentHeader, [
             h(cardLabelTitle, 'Concept'),
-            h(cardTextTitle, this.props.conceptName),
-            h(createAssessmentTextDesc, "Let's create your assessment")
+            h(cardTextTitle, this.props.concept.name),
+            h(createAssessmentTextDesc, stageActivity[this.state.step])
           ]),
           BottomPartContent
         ]),

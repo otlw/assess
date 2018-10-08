@@ -28,20 +28,22 @@ export function sendAndReactToTransaction (
       if (callbacks.transactionHash) callbacks.transactionHash(hash)
     })
     .on('confirmation', (confirmationNumber, receipt) => {
+      console.log('confirmationNumber', confirmationNumber, typeof confirmationNumber)
       // TODO: choose a good confirmation number (kovan and rinkeby accept 2, but local textnet requires 8)
       // when the transaction is confirmed into a block
       if (confirmationNumber === 8) {
+        console.log('calling conf', confirmationNumber)
         dispatch(updateTransaction(
           receipt.transactionHash,
           receipt.status ? 'Tx confirmed' : 'Tx failed'
         ))
-          if (callbacks.confirmation) {
-              if (receipt.status) {
-                  callbacks.confirmation(false, receipt)
-              } else {
-                  callbacks.confirmation(true, receipt)
-              }
+        if (callbacks.confirmation) {
+          if (receipt.status) {
+            callbacks.confirmation(false, receipt)
+          } else {
+            callbacks.confirmation(true, receipt)
           }
+        }
       }
     })
     .on('error', (err: Error) => {

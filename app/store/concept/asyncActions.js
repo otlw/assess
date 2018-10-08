@@ -52,7 +52,7 @@ export function loadConceptsFromConceptRegistery () {
 }
 
 // combination of two functions above for directly creating assessments from conceptList
-export function loadConceptContractAndCreateAssessment (conceptAddress, cost, callback) {
+export function loadConceptContractAndCreateAssessment (conceptAddress, cost, customReact) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let conceptInstance = getInstance.concept(getState(), conceptAddress)
@@ -69,7 +69,7 @@ export function loadConceptContractAndCreateAssessment (conceptAddress, cost, ca
       'makeAssessment',
       userAddress,
       conceptAddress,
-      {confirmation: callback}
+      customReact
     )
   }
 }
