@@ -146,7 +146,7 @@ background-color: ${props => props.theme.tertiary};
 const assessmentContainerStatus = styled('div').attrs({className: 'flex flex-row flex-wrap w-50 items-center justify-start '})`
 `
 
-export const assessmentLabelContainer = styled('div').attrs({className: 'flex flex-row w-100 mb2'})`
+export const assessmentLabelContainer = styled('div').attrs({className: 'flex flex-row w-100 mb2 items-center justify-between'})`
 `
 
 // End assessmentView Header
