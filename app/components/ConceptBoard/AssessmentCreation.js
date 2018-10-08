@@ -2,6 +2,7 @@ import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 import { modalTopic } from '../Helpers/helperContent'
+import { Label } from '../Global/Text.ts'
 
 import icoClose from '../../assets/ico-close.svg'
 
@@ -56,10 +57,10 @@ export class AssessmentCreation extends Component {
       transactionHash: (hash) => { this.setState({ step: 4, hash: hash }) },
       confirmation: (error, receipt) => {
         if (!error) {
-          this.props.setModal(modalTopic.AssessmentCreation)
-          let receiptAddress = receipt.events[0].raw.topics[2]
-          let assessmentAddress = '0x' + receiptAddress.substring(26, receiptAddress.length)
-          this.props.history.push('/assessment/' + assessmentAddress)
+          // this.props.setModal(modalTopic.AssessmentCreation)
+          // let receiptAddress = receipt.events[0].raw.topics[2]
+          // let assessmentAddress = '0x' + receiptAddress.substring(26, receiptAddress.length)
+          // this.props.history.push('/assessment/' + assessmentAddress)
         } else {
           console.log('uiuiu not sure why this happened..., please try to reproduce anf file a bug-issue')
           this.props.setModal(modalTopic.AssessmentCreationFailed)
@@ -113,6 +114,7 @@ export class AssessmentCreation extends Component {
           ]),
           h(cardBodyColumnRight, [
             h(helpTextContainer, [
+              h(Label, 'Whats the assessment fee?'),
               h(cardTextObjectHelp, 'This fee will be paid to each of your assessors.'),
               h(cardTextObjectHelp, 'The more you pay, the more likely you will find assessors to assess you.')
             ])
@@ -133,6 +135,7 @@ export class AssessmentCreation extends Component {
           ]),
           h(cardBodyColumnRight, [
             h(helpTextContainer, [
+              h(Label, 'A transaction fee?'),
               h(cardTextObjectHelp, 'Ethereum charges a transaction fee to process & create your assessment.'),
               h(cardTextObjectHelp, 'Click ‘Send Transaction’ to launch MetaMask and send the transaction to Ethereum.'),
               h(cardTextObjectHelp, 'Once completed, this step is irreversible.')
@@ -181,7 +184,7 @@ export class AssessmentCreation extends Component {
       Navigation = (h(createAssessmentFooter, [
         h(CloseButton, {onClick: this.cancelButton.bind(this)}, [
           h('img', {alt: 'icoClose', src: icoClose, className: 'h1 ma1'}),
-          h('span', 'Close')
+          h('span', 'Home')
         ])
       ]))
     }
@@ -196,10 +199,10 @@ export class AssessmentCreation extends Component {
     }
 
     let stageActivity = Object.freeze({
-      1: 'Please enter your assessment details',
-      2: 'Next, we\'ll send your assessment to ethereum.',
-      3: 'Please complete the transaction via metamask',
-      4: 'Your transaction was sent to ethereum',
+      1: 'How much would you like to pay your assessors?',
+      2: 'Next, we\'ll send your assessment to Ethereum.',
+      3: 'Please complete the transaction via Metamask',
+      4: 'Your transaction was sent to Ethereum',
       5: 'Ooops. Looks like your transaction was not submitted.'
     })
 
@@ -235,7 +238,7 @@ export default AssessmentCreation
 const createAssessmentContainer = styled('div').attrs({ className: 'flex flex-column items-center w-100 h-100 bg-white pa2 tc' })`
 `
 
-const createAssessmentTextDesc = styled('h4').attrs({className: 'f4 fw4 tl mt4'})`
+const createAssessmentTextDesc = styled('h4').attrs({className: 'f4 fw4 tl mt4 mb0'})`
 color: ${props => props.theme.primary};
 `
 
@@ -308,7 +311,7 @@ const AHAUnit = styled('div').attrs({className: 'f5 mid-gray'})`
 // replaced by global input component
 // const AmountPerAssessor = styled('input').attrs({className: 'flex w-25 tl pa1 bn bg-transparent '})`
 // `
-const helpTextContainer = styled('div').attrs({className: 'flex flex-column h-100 justify-end'})`
+const helpTextContainer = styled('div').attrs({className: 'flex flex-column h-100 justify-end mv3 tl'})`
 `
 
 const cardTextObjectHelp = styled('h5').attrs({className: 'flex f5 fw4 lh-copy tl mv2'})`
