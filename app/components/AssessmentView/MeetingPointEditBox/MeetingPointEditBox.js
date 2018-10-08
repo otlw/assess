@@ -40,9 +40,9 @@ class MeetingPointEditBox extends Component {
               // value: this.state.newMeetingPoint
               defaultValue: 'gitlab.com/myProject/...'
             }),
-            h(ButtonTertiary, {onClick: this.storeData.bind(this)},  'Submit!')
+            h(ButtonTertiary, {onClick: this.storeData.bind(this)}, 'Submit!')
           ])
-        : null
+          : null
       ])
     )
   }
