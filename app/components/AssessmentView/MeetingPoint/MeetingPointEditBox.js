@@ -3,7 +3,6 @@ import styled from 'styled-components'
 var h = require('react-hyperscript')
 
 class MeetingPointEditBox extends Component {
-
   setMPEditiability () {
     this.props.setInputBar('editMeetingPoint')
   }
