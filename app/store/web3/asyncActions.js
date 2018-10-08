@@ -1,13 +1,10 @@
 import Web3 from 'web3'
-import { getInstance, hmmmToAha, getLocalStorageKey, getBlockDeployedAt } from '../../utils'
+import { getInstance, hmmmToAha, getBlockDeployedAt } from '../../utils'
 import { networkName, LoadingStage } from '../../constants'
 import { processEvent } from '../assessment/asyncActions'
 import { setModal } from '../navigation/actions'
-import {receiveAllAssessments} from '../assessment/actions.ts'
-import {receiveConcepts} from '../concept/actions.ts'
-import { web3EventsConnected, receiveVariable, receivePersistedState } from './actions'
+import { web3EventsConnected, receiveVariable } from './actions'
 import { modalTopic } from '../../components/Helpers/helperContent'
-import {setHistoryLoadingStage} from '../loading/actions'
 
 var Dagger = require('eth-dagger')
 const { FathomToken } = require('fathom-contracts')
