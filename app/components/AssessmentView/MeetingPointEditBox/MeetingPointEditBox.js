@@ -2,6 +2,8 @@ import { Component } from 'react'
 import styled from 'styled-components'
 import inputField from '../../Global/inputField.ts'
 import {ButtonTertiary} from '../../Global/Buttons'
+import { Label, Body } from '../../Global/Text.ts'
+
 var h = require('react-hyperscript')
 
 class MeetingPointEditBox extends Component {
@@ -26,29 +28,51 @@ class MeetingPointEditBox extends Component {
     this.setState({newMeetingPoint: e.target.value})
   }
 
+  meetingPointString (isAssessee, assessment) {
+    return h(Body, [
+      assessment.data
+        ? h('a', {href: assessment.data}, assessment.data)
+        : isAssessee
+          ? 'You haven\'t set a meeting point'
+          : 'No meeting point has been set yet'
+    ])
+  }
+
   render () {
     return (
       h('div', [
-        h(ButtonTertiary, {
-          onClick: this.toggleMPeditability.bind(this)
-        }, 'Edit'),
-        this.state.displayMPEdit
-          ? h('div', [
-            h(inputField, {
-              type: 'string',
-              onChange: this.setNewMeetingPoint.bind(this),
-              // value: this.state.newMeetingPoint
-              defaultValue: 'gitlab.com/myProject/...'
-            }),
-            h(ButtonTertiary, {onClick: this.storeData.bind(this)}, 'Submit!')
+        h('div', [ // First Row
+          h(assessmentLabelContainer, [
+            h(Label, 'Meeting Point'),
+            !this.props.isAssessee
+              ? null
+              : h(ButtonTertiary, {
+                onClick: this.toggleMPeditability.bind(this)
+              }, !this.state.displayMPEdit ? 'Edit' : 'X')
           ])
-          : null
+        ]),
+        h('div', [ // second row
+          !this.state.displayMPEdit
+            ? this.meetingPointString(this.props.isAssessee, this.props.assessment)
+            : h('div', [
+              h(inputField, {
+                type: 'string',
+                onChange: this.setNewMeetingPoint.bind(this),
+                // value: this.state.newMeetingPoint
+                defaultValue: 'gitlab.com/myProject/...'
+              }),
+              h(ButtonTertiary, {onClick: this.storeData.bind(this)}, 'Submit!')
+            ])
+        ])
       ])
     )
   }
 }
 
 export default MeetingPointEditBox
+
+const assessmentLabelContainer = styled('div').attrs({className: 'flex flex-row w-100 mb2'})`
+`
 
 export const ViewMeetingPoint = styled('button')`
   display: inline-block;

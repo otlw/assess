@@ -90,20 +90,10 @@ export class AssessmentData extends Component {
             })
           ]),
           h(assessmentObjectText, [
-            h(assessmentLabelContainer, [
-              h(Label, 'Meeting Point')
-            ]),
-            h(Body, [
-              assessment.data
-                ? h('a', {href: assessment.data}, assessment.data)
-                : isAssessee
-                  ? 'You haven\'t set a meeting point'
-                  : 'No meeting point has been set yet']),
-            h(assessmentRow, [
-              isAssessee
-                ? h(MeetingPointEditBox, {assessmentAddress: assessment.address})
-                : null
-            ])
+            h(MeetingPointEditBox, {
+              assessment: assessment,
+              isAssessee: assessment.assessee === this.props.userAddress
+            })
           ]),
           h(assessmentObjectTextRight, [
             h(assessmentLabelContainer, [
@@ -160,7 +150,6 @@ const assessmentContainerStatus = styled('div').attrs({className: 'flex flex-row
 `
 
 const assessmentLabelContainer = styled('div').attrs({className: 'flex flex-row w-100 mb2'})`
-
 `
 
 // End assessmentView Header
