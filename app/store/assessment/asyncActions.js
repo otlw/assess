@@ -3,7 +3,7 @@ import { sendAndReactToTransaction } from '../transaction/asyncActions'
 import { setHelperBar } from '../navigation/actions'
 import { receiveVariable } from '../web3/actions'
 import { fetchUserBalance } from '../web3/asyncActions'
-import { Stage, StageNumberToWord, LoadingStage, NotificationTopic, TimeOutReasons } from '../../constants'
+import { Stage, UserStageAction, LoadingStage, NotificationTopic, TimeOutReasons } from '../../constants'
 import {
   receiveAssessor,
   receiveAssessment,
@@ -38,7 +38,7 @@ export function confirmAssessor (assessmentAddress, customReact = false) {
     sendAndReactToTransaction(
       dispatch,
       () => { return assessmentInstance.methods.confirmAssessor().send(params) }, // transaction
-      customReact ? customReact.saveKeyword : StageNumberToWord[Stage.Called], // tx purpose
+      customReact ? customReact.purpose : UserStageAction[Stage.Called], // tx purpose
       userAddress,
       assessmentAddress,
       customReact
@@ -63,7 +63,7 @@ export function commit (assessmentAddress, score, salt, customReact = false) {
     sendAndReactToTransaction(
       dispatch,
       () => { return assessmentInstance.methods.commit(hashScoreAndSalt(score, salt)).send(params) }, // transaction
-      customReact ? customReact.saveKeyword : StageNumberToWord[Stage.Confirmed], // tx purpose
+      customReact ? customReact.purpose : UserStageAction[Stage.Confirmed], // tx purpose
       userAddress,
       assessmentAddress,
       customReact
@@ -87,7 +87,7 @@ export function reveal (assessmentAddress, score, salt, customReact = false) {
     sendAndReactToTransaction(
       dispatch,
       () => { return assessmentInstance.methods.reveal(score, salt).send(params) }, // transaction
-      customReact ? customReact.saveKeyword : StageNumberToWord[Stage.Committed], // tx purpose
+      customReact ? customReact.purpose : UserStageAction[Stage.Committed], // tx purpose
       userAddress,
       assessmentAddress,
       customReact
@@ -135,7 +135,7 @@ export function refund (assessmentAddress, stage) {
     }
     const react = {
       gas: 320000,
-      saveKeyword: 'refund', // tx purpose
+      purpose: 'refund', // tx purpose
       callbck: reactToRefund
     }
     switch (stage) {

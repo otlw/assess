@@ -33,14 +33,25 @@ export const Stage = Object.freeze({
   Burned: 5
 })
 
-export const StageNumberToWord = Object.freeze({
-  0: 'none', // <-> None: 0,
-  1: 'stake', // <-> Called: 1,
-  2: 'commit', // <-> Confirmed: 2,
-  3: 'reveal', // <-> Committed: 3,
-  4: 'done', // <-> Done: 4,
-  5: 'burn' // <-> Burned: 5
+// mapping of Stage (by number) to the corresponding Action an assessor/user could take
+// e.g., In Stage 1 (i.e., "Called"), an assessor would 'stake'
+export const UserStageAction = Object.freeze({
+  0: 'none',
+  1: 'stake',
+  2: 'commit',
+  3: 'reveal',
+  4: 'done',
+  5: 'burn'
 })
+
+// export const StageNumberToWord = Object.freeze({
+//   0: 'none', // <-> None: 0,
+//   1: 'stake', // <-> Called: 1,
+//   2: 'commit', // <-> Confirmed: 2,
+//   3: 'reveal', // <-> Committed: 3,
+//   4: 'done', // <-> Done: 4,
+//   5: 'burn' // <-> Burned: 5
+// })
 
 export const LoadingStage = Object.freeze({
   None: 0,
