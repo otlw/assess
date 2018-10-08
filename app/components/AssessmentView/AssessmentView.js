@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import MeetingPointEditBox from './MeetingPointEditBox'
+import MeetingPoint from './MeetingPoint'
 import AssessorList from './AssessorList.js'
 import ProgressAndInputBar from './ProgressAndInputBar'
 import FinalResultBar from './FinalResultBar.js'
@@ -90,10 +90,7 @@ export class AssessmentData extends Component {
             })
           ]),
           h(assessmentObjectText, [
-            h(MeetingPointEditBox, {
-              assessment: assessment,
-              isAssessee: assessment.assessee === this.props.userAddress
-            })
+            h(MeetingPoint, {assessment: assessment, isAssessee: isAssessee})
           ]),
           h(assessmentObjectTextRight, [
             h(assessmentLabelContainer, [
@@ -149,7 +146,7 @@ background-color: ${props => props.theme.tertiary};
 const assessmentContainerStatus = styled('div').attrs({className: 'flex flex-row flex-wrap w-50 items-center justify-start '})`
 `
 
-const assessmentLabelContainer = styled('div').attrs({className: 'flex flex-row w-100 mb2'})`
+export const assessmentLabelContainer = styled('div').attrs({className: 'flex flex-row w-100 mb2'})`
 `
 
 // End assessmentView Header

@@ -3,10 +3,11 @@ import styled from 'styled-components'
 import inputField from '../../Global/inputField.ts'
 import {ButtonTertiary} from '../../Global/Buttons'
 import { Label, Body } from '../../Global/Text.ts'
+import {assessmentLabelContainer} from '../AssessmentView.js'
 
 var h = require('react-hyperscript')
 
-class MeetingPointEditBox extends Component {
+class MeetingPoint extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -16,7 +17,7 @@ class MeetingPointEditBox extends Component {
   }
 
   storeData (values) {
-    this.props.storeDataOnAssessment(this.props.assessmentAddress, this.state.newMeetingPoint)
+    this.props.storeDataOnAssessment(this.props.assessment.address, this.state.newMeetingPoint)
     this.setState({displayMPEdit: false})
   }
 
@@ -69,10 +70,7 @@ class MeetingPointEditBox extends Component {
   }
 }
 
-export default MeetingPointEditBox
-
-const assessmentLabelContainer = styled('div').attrs({className: 'flex flex-row w-100 mb2'})`
-`
+export default MeetingPoint
 
 export const ViewMeetingPoint = styled('button')`
   display: inline-block;

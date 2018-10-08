@@ -106,12 +106,12 @@ export function reveal (assessmentAddress, score, salt, customReact = false) {
   }
 }
 
-export function storeDataOnAssessment (assessmentAddress, data) {
+export function storeDataOnAssessment (assessmentAddress, newData) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), assessmentAddress)
     // also salt should be saved in state
-    let dataAsBytes = getState().ethereum.web3.utils.utf8ToHex(data)
+    let dataAsBytes = getState().ethereum.web3.utils.utf8ToHex(newData)
     let firstEdit = getState().assessments[assessmentAddress].data === ''
     sendAndReactToTransaction(
       dispatch,
