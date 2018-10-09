@@ -2,7 +2,7 @@ import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 import { modalTopic } from '../Helpers/helperContent'
-import { Label, Body, Subheadline, Headline } from '../Global/Text.ts'
+import { Label, Body } from '../Global/Text.ts'
 import { ButtonPrimary, ButtonClose, ButtonSecondary } from '../Global/Buttons'
 
 export class AssessmentCreation extends Component {
@@ -43,7 +43,7 @@ export class AssessmentCreation extends Component {
         this.loadConceptContractAndCreateAssessment()
         break
       case 4:
-        this.props.cancelButton()
+        this.cancelButton()
         break
       case 5:
         // TODO handle retry
@@ -66,10 +66,10 @@ export class AssessmentCreation extends Component {
       transactionHash: (hash) => { this.setState({ step: 4, hash: hash }) },
       confirmation: (error, receipt) => {
         if (!error) {
-          // this.props.setModal(modalTopic.AssessmentCreation)
-          // let receiptAddress = receipt.events[0].raw.topics[2]
-          // let assessmentAddress = '0x' + receiptAddress.substring(26, receiptAddress.length)
-          // this.props.history.push('/assessment/' + assessmentAddress)
+          this.props.setModal(modalTopic.AssessmentCreation)
+          let receiptAddress = receipt.events[0].raw.topics[2]
+          let assessmentAddress = '0x' + receiptAddress.substring(26, receiptAddress.length)
+          this.props.history.push('/assessment/' + assessmentAddress)
         } else {
           console.log('uiuiu not sure why this happened..., please try to reproduce anf file a bug-issue')
           this.props.setModal(modalTopic.AssessmentCreationFailed)
@@ -88,8 +88,9 @@ export class AssessmentCreation extends Component {
 
   render () {
     let BottomPartContent = null
+    let step = this.state.step
 
-    switch (this.state.step) {
+    switch (step) {
       case 1:
         BottomPartContent = h(cardBodyContainer, [
           h(cardBodyColumnLeft, [
@@ -187,32 +188,25 @@ export class AssessmentCreation extends Component {
       1: 'Next',
       2: 'Next',
       3: 'Send Transaction',
-      4: 'Home',
+      4: 'Done',
       5: 'Retry'
     })
 
     let footerContent
-    if (this.state.step <= 3) {
+    if (step <= 3) {
       footerContent = [
         h(ButtonSecondary, {onClick: this.cancelButton.bind(this)}, 'Previous')
       ]
-    } else if (this.state.step === 4) {
-      // alex insert positive footerBar here
-      footerContent = [h(footerRow, [
-        h(icoSuccess),
-        h(Body, 'Your assessment is being created on Ethereum.')
-      ])]
     } else {
-      // negativ here
       footerContent = [h(footerRow, [
-        h(icoFailure),
-        h(Body, 'Your transaction could not be submitted.')
+        h(step === 4 ? icoSuccess : icoFailure),
+        h(Body, step === 4 ? 'Your assessment is being created on Ethereum.' : 'Your transaction could not be submitted.')
       ])]
     }
     footerContent.push(h(ButtonPrimary, {
       onClick: this.actionButton.bind(this),
-      active: this.state.step === 3
-    }, actionButtonText[this.state.step]))
+      active: step === 3
+    }, actionButtonText[step]))
 
     let stageActivity = Object.freeze({
       1: 'How much would you like to pay your assessors?',
@@ -225,10 +219,11 @@ export class AssessmentCreation extends Component {
     return h(createAssessmentContainer, [
       h(createAssessmentTopWrapper, [
         h(createAssessmentContainerProgressBar, [
-          h(createAssessmentProgressBarObject, {current: this.state.step === 1, past: this.state.step > 1}),
-          h(createAssessmentProgressBarObject, {current: this.state.step === 2, past: this.state.step > 2}),
-          h(createAssessmentProgressBarObject, {current: this.state.step === 3, past: this.state.step > 3}),
-          h(createAssessmentProgressBarObject, {current: this.state.step === 4, past: this.state.step > 4})
+          // REFACTOR: use general Purpose progressBar
+          h(createAssessmentProgressBarObject, {current: step === 1, past: step > 1}),
+          h(createAssessmentProgressBarObject, {current: step === 2, past: step > 2}),
+          h(createAssessmentProgressBarObject, {current: step === 3, past: step > 3}),
+          h(createAssessmentProgressBarObject, {current: step === 4, past: step > 4})
         ]),
         this.state.step < 4 ? h(ButtonClose, {onClick: this.cancelButton.bind(this)}) : null
       ]),
@@ -237,7 +232,7 @@ export class AssessmentCreation extends Component {
           h(createAssessmentHeader, [
             h(cardLabelTitle, 'Concept'),
             h(cardTextTitle, this.props.concept.name),
-            h(createAssessmentTextDesc, stageActivity[this.state.step])
+            h(createAssessmentTextDesc, stageActivity[step])
           ]),
           BottomPartContent
         ]),
@@ -347,9 +342,6 @@ color: ${props => props.theme.textBody};
 const cardContainerParameters = styled('div').attrs({className: 'flex w-100 flex-column items-start fw4 mv3'})`
 `
 
-const cardLabel = styled('h6').attrs({className: 'f5 fw4 tl mv1'})`
-color: ${props => props.theme.primary};
-`
 const cardTextObject = styled('h4').attrs({className: 'f4 fw4 tl mv1'})`
 color: ${props => props.theme.secondary};
 `
