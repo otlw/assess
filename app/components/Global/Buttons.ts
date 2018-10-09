@@ -8,10 +8,10 @@ color: ${props => props.theme.tertiary};
 background-color: ${props => props.theme.primary};
 `
 
-export const ButtonPrimary = styled('button').attrs(
+export const ButtonPrimary = styled('button').attrs<{active:boolean}>(
   {className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1',
    style: null} )`
-color: ${props => props.theme.tertiary};
+color: ${props => props.active ? props.theme.tertiary : props.theme.positiveGreen};
 background-color: ${props => props.theme.primary };
 `
 export const ButtonPrimaryGreen = styled('button').attrs({className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`
