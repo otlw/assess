@@ -4,6 +4,7 @@ import { Stage, StageDisplayNames } from '../../../constants.js'
 import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
 import styled from 'styled-components'
 import {ButtonPrimary, ButtonClose} from '../../Global/Buttons.ts'
+import inputField from '../../Global/inputField.ts'
 
 let completedStageTexts = {
   [Stage.Confirmed]: 'You have staked successfully!',
@@ -168,7 +169,8 @@ export class ProgressAndInputBar extends Component {
               (this.props.stage === Stage.Confirmed
                 ? (
                   h(rowObjectInput, [
-                    h(inputProgressBar, {
+                    h(inputField, {
+                      width: 4,
                       placeholder: 'From 0 - 100',
                       step: 0.5,
                       type: 'number',
@@ -212,10 +214,4 @@ export const rowObjectText = styled('div').attrs({className: 'flex w-100 items-c
 `
 
 export const rowObjectInput = styled('div').attrs({className: 'flex w-auto items-center justify-end b--light-gray  f5 gray ttu uppercase'})`;
-`
-
-export const inputProgressBar = styled('input').attrs({className: 'flex w4 bn br2 pa2 mr2'})`
-outline: none;
-color: ${props => props.theme.primary};
-background-color: ${props => props.theme.tertiary};
 `
