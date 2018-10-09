@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import styled from 'styled-components'
+import {Label, Body} from '../../Global/Text'
 import {Props} from './index'
 let icoClose = require('../../../assets/ico-close.svg')
 
@@ -26,10 +27,10 @@ export class HelperBar extends Component<Props> {
         h(barContainer, [
           h(barContainerTitle, [
             h(icoQuestion, '?'),
-            h(barTextTitle, topic.title)
+            h(Label, topic.title)
           ]),
           h(barObject, [
-            h(barTextDescription, topic.text),
+            h(Body, topic.text),
             (topic.learnMore
              ? h(barButtonPrimary, {onClick: this.learnMore.bind(this)}, 'Learn More')
              : null)
@@ -60,13 +61,6 @@ flex-shrink: 0;
 `
 
 export const icoQuestion = styled('div').attrs({className: 'flex items-center justify-center w2 h2 mr2 bg-green light-green br'})`
-`
-
-export const barTextTitle = styled('h4').attrs({className: 'f5 fw4 dark-green mv0 ph2'})`
-`
-
-export const barTextDescription = styled('h5').attrs({className: 'f5 fw4 dark-green mv0'})`
-flex-shrink: 2;
 `
 
 export const barButtonClose = styled('button').attrs({className: 'flex items-center justify-center w2 h2 mh2 ba br-100 b--near-black bg-transparent'})`
