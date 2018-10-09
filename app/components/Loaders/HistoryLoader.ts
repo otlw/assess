@@ -5,13 +5,13 @@ import Web3 from 'web3'
 
 import {State} from '../../store'
 import {LoadingStage} from '../../store/loading/reducer'
+import {getLocalStorageKey} from '../../utils.js'
 
 import {loadPersistedState} from '../../store/loading/asyncActions'
 
 // REFACTOR: as this component is really similar to MetamaskLoader, maybe there a way to generalize it!
 type Props = {
   historyLoadingState: LoadingStage
-  // loadPersistedState: typeof loadPersistedState
   loadPersistedState: typeof loadPersistedState
   networkID: number,
   userAddress: string,
@@ -55,3 +55,25 @@ const mapDispatchToProps = {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HistoryLoader)
+
+export const saveState = (state:State) => {
+  if (state.ethereum.isConnected) {
+    try {
+      let stateToSave = {
+        assessments: state.assessments,
+        concepts: state.concepts,
+        lastUpdatedAt: state.ethereum.lastUpdatedAt,
+        deployedConceptRegistryAt: state.ethereum.deployedConceptRegistryAt,
+        deployedFathomTokenAt: state.ethereum.deployedFathomTokenAt,
+        visits: state.navigation.visits
+      }
+      let key = getLocalStorageKey(state.ethereum.networkID, state.ethereum.userAddress, state.ethereum.web3)
+      const serializedState = JSON.stringify(stateToSave)
+      localStorage.setItem(key, serializedState) // eslint-disable-line no-undef
+    } catch (err) {
+      console.log('error saving state', err)
+    }
+  } else {
+    console.log('do not store Store yet')
+  }
+}

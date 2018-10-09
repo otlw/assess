@@ -57,7 +57,7 @@ export function toggleHidden() {
   return {type}
 }
 
-export function addVisit () {
+export function addVisit() {
     let type:'ADD_VISIT' = 'ADD_VISIT'
     return {
         type

@@ -30,7 +30,7 @@ export function web3EventsConnected (web3: EthereumState['web3']) {
 }
 // to save in state that one could not connect
 export function web3Disconnected () {
-  let type: 'WEB3_DISCONNECTED' = 'WEB3_DISCONNECTED'  
+  let type: 'WEB3_DISCONNECTED' = 'WEB3_DISCONNECTED'
   return {
     type,
     payload: {}
@@ -50,8 +50,8 @@ export function receiveVariable (name: string, value: any) {
 // to save something from the chain in state
 interface IPersistedState {
   lastUpdatedAt: number
-  deployedFathomTokenAt: string
-  deployedConceptRegistryAt: string 
+  deployedFathomTokenAt: number
+  deployedConceptRegistryAt: number
 }
 export function receivePersistedState (persistedState:IPersistedState) {
   let type: 'RECEIVE_PERSISTED_STATE' = 'RECEIVE_PERSISTED_STATE'

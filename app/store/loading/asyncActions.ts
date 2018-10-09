@@ -1,7 +1,7 @@
 import {Dispatch} from 'redux'
 import Web3 from 'web3'
 import { setMetamaskLoadingStage, setHistoryLoadingStage } from './actions'
-import { setModal, addVisit, receiveVisitHistory} from '../navigation/actions'
+import { setModal, addVisit, receiveVisitHistory } from '../navigation/actions'
 import {web3Connected, receiveVariable, receivePersistedState} from '../web3/actions'
 import {receiveAllAssessments} from '../assessment/actions'
 import {receiveConcepts} from '../concept/actions'
@@ -47,7 +47,7 @@ export const loadPersistedState = (networkID:number, userAddress:string, web3:We
       // let key = networkName(networkID) + 'State' + userAddress
       const serializedState = localStorage.getItem(key) // eslint-disable-line no-undef
       if (serializedState === null) {
-        return undefined
+        return
       }
       let persistedState = JSON.parse(serializedState)
       if (persistedState.assessments) {
@@ -61,8 +61,7 @@ export const loadPersistedState = (networkID:number, userAddress:string, web3:We
       }
       dispatch(receivePersistedState(persistedState))
       dispatch(addVisit())
-      dispatch(setHistoryLoadingStage('Loaded'))
-      return 1
+      return dispatch(setHistoryLoadingStage('Loaded'))
     } catch (e) {
       console.log('ERROR reading from localStorage')
       return dispatch(setHistoryLoadingStage('Error'))

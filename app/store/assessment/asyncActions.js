@@ -322,7 +322,7 @@ export function validateAndFetchAssessmentData (assessmentAddress) {
       // maybe the assessment was cancelled?
       const fathomTokenInstance = getInstance.fathomToken(getState())
       let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {
-        fromBlock: 0, // TODO put in deployedFathomTokenAt once it exists
+        fromBlock: getState().ethereum.deployedFathomTokenAt,
         toBlock: 'latest',
         filter: {sender: assessmentAddress}
       })

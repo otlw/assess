@@ -3,11 +3,11 @@ import thunk from 'redux-thunk'
 import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import {App} from './App'
-import rootReducer from './store/index'// / web3Reducer.js'
+import rootReducer from './store/index'
 import h from 'react-hyperscript'
 import  styled, {ThemeProvider}from 'styled-components'
 import throttle from 'lodash/throttle'
-import { saveState } from './utils.js'
+import { saveState } from './components/Loaders/HistoryLoader'
 
 const topLevelStyles = styled('div')`
 font-family:'system-ui', 'Helvetica Neue', sans-serif;
@@ -40,7 +40,7 @@ const theme = {
 // subscribe to any change in store and save it (at most once per second)
 store.subscribe(throttle(() => {
   saveState(store.getState())
-}, 1000))
+}, 500))
 
 render(
   h(Provider, {store},
