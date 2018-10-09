@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import { networkName } from '../../../constants.js'
 import { removeTransaction } from '../../../store/transaction/actions'
 import { Transaction } from '../../../store/transaction/reducer'
+import { ButtonClose } from '../../Global/Buttons'
 var h = require('react-hyperscript')
-let icoClose = require('../../../assets/ico-close.svg')
 
 const phrasing = Object.freeze({
   makeAssessment: 'create an assessment',
@@ -22,9 +22,8 @@ export interface ITxStatusProps {
   removeTX: typeof removeTransaction
 }
 
-// TODO comment on what to expect as props
 export class TxStatus extends Component<ITxStatusProps> {
-  deleteTX () {
+  removeTX () {
     this.props.removeTX(this.props.transaction.txHash)
   }
 
@@ -32,13 +31,12 @@ export class TxStatus extends Component<ITxStatusProps> {
     let tx = this.props.transaction
     let textField = `Your transaction to ${phrasing[tx.purpose]} has been ${tx.status} -- see etherscan for details:  `
     let targetURL = 'https://' + (networkName(this.props.networkID) === 'Mainnet' ? '' : networkName(this.props.networkID) + '.') + 'etherscan.io/tx/' + tx.txHash
-    console.log('tx', tx)
 
     return h(rowTxContainer, [
       h(textTransaction, textField),
       h(linkTransaction, {href: targetURL, target: '_blank'},
         tx.txHash.substring(0, 5) + '...' + tx.txHash.substring(60)),
-      h(barButtonClose, {onClick: this.deleteTX.bind(this)}, h('img', {alt: 'icoClose', src: icoClose, className: 'h1 ma1'}))
+      h(ButtonClose, {onClick: this.removeTX.bind(this)})
     ])
   }
 }
@@ -58,8 +56,3 @@ const textTransaction = styled('h5').attrs({className: 'f5 fw4 pa2 dark-gray'})`
 // `
 
 const linkTransaction = styled('a').attrs({className: 'link f5 fw4 blue'})``
-
-const barButtonClose = styled('button').attrs({className: 'flex items-center justify-center w2 h2 mh4 br-100 b--near-black bg-transparent'})`
-transition: 0.2s ease-in-out;
-:hover {background-color:hsla(158, 70%, 65%, 1); cursor:pointer;}
-`
