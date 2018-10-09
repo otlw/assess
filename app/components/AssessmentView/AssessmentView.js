@@ -8,7 +8,6 @@ import { StageDisplayNames, Stage } from '../../constants.js'
 import { convertDate, statusMessage } from '../../utils.js'
 import styled from 'styled-components'
 import progressBar from '../Global/progressBar.ts'
-import {ButtonClose} from '../Global/Buttons.ts'
 import { helperBarTopic } from '../../components/Helpers/helperContent'
 // import { NavLink } from 'react-router-dom'
 var h = require('react-hyperscript')
@@ -60,18 +59,8 @@ export class AssessmentData extends Component {
         ' to ' + StageDisplayNames[assessment.stage]
     }
     let isAssessee = assessment.assessee === this.props.userAddress
-    console.log('ButtonClose', typeof ButtonClose, ButtonClose, ButtonClose({}))
     return (
       h(SuperFrame, [
-        h(closeButtonFrame,
-          // h(NavLink, {
-          //   to: '/',
-          //   //activeStyle: activeStyle,
-          //   exact: true,
-          //   //className: 'link w4 tc ph3 pv2 blue'
-          // }, h(ButtonClose))
-          h(ButtonClose)
-        ),
         // holds role and concept title
         h(assessmentHeader, [
           h(assessmentLabelActivity, isAssessee ? 'Getting assessed in' : 'Assessing'),
@@ -157,10 +146,6 @@ const SuperFrame = styled('div').attrs({className: 'flex flex-column w-100 mw8 s
 font-family:'system-ui',sans-serif;
 max-width: 800px;
 position:relative;
-`
-const closeButtonFrame = styled('div')`
-position:absolute;
-right:-30px;
 `
 
 // assessmentView Header
