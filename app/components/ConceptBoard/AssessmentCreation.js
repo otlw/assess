@@ -157,6 +157,10 @@ export class AssessmentCreation extends Component {
           h(cardBodyColumnFull, [
             h(helpTextContainer, [
               h(cardTextObjectHelp, 'Click on the ‘Send’ button in MetaMask to send your assessment to Ethereum for creation.')
+            ]),
+            h(helpAlertContainer, [
+              h(helpAlertText, 'Dont see MetaMask?'),
+              h(cardTextObjectHelp, 'Try clicking on the MetaMask icon in your browser\'s extension section')
             ])
           ])
         ])
@@ -320,10 +324,18 @@ background-color: #d6dffa;
 const AmountPerAssessor = styled('input').attrs({className: 'flex w-25 tl pa1 bn bg-transparent '})`
 `
 const AHAUnit = styled('div').attrs({className: 'f5 mid-gray'})`
+`
 // replaced by global input component
 // const AmountPerAssessor = styled('input').attrs({className: 'flex w-25 tl pa1 bn bg-transparent '})`
 // `
 const helpTextContainer = styled('div').attrs({className: 'flex flex-column h-100 justify-end mv3 tl'})`
+`
+
+const helpAlertContainer = styled('div').attrs({className: 'flex flex-column h-100 justify-end mv3 tl br1 bw1'})`
+`
+
+const helpAlertText = styled('span').attrs({className: 'f4 mv0'})`
+color: ${props => props.theme.negativeRed}
 `
 
 const cardTextObjectHelp = styled('h5').attrs({className: 'flex f4 fw4 lh-copy tl mv2'})`
