@@ -136,11 +136,10 @@ export class ProgressAndInputBar extends Component {
     return (
       h(rowObjectText, [
         h(StageDescriptor, stageTexts[assessmentStage]),
-        h(containerProgressButton, [
-          h(buttonProgressActive, {
-            onClick: stageFunctions[assessmentStage]
-          }, StageDisplayNames[assessmentStage])
-        ])
+        h(ButtonPrimary, {
+          onClick: stageFunctions[assessmentStage],
+          active: false
+        }, StageDisplayNames[assessmentStage])
       ])
     )
   }
@@ -181,7 +180,10 @@ export class ProgressAndInputBar extends Component {
                 : null
               )
             ]),
-            h(ButtonPrimary, {onClick: this.state.action.bind(this)}, view)
+            h(ButtonPrimary, {
+              onClick: this.state.action.bind(this),
+              active: true
+            }, view)
           ])
         )
       }
@@ -199,19 +201,6 @@ margin-top: 1px;
 min-height: 64px;
 `
 
-export const ProgressButton = styled('button')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
-`
-
-export const containerProgressButton = styled('div').attrs({className: 'flex w-auto items-center justify-center'})`
-`
-
-export const buttonProgressActive = styled('button').attrs({className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`
-color: ${props => props.theme.tertiary};
-background-color: ${props => props.theme.primary};
-`
-
 export const stageTexts = styled('h5').attrs({className: 'f5 fw4 mv0'})`
 color: ${props => props.theme.primary};
 `
@@ -221,17 +210,8 @@ export const StageDescriptor = styled('div').attrs({className: 'flex w-auto item
 color: ${props => props.theme.primary};
 `
 
-export const rowObjectButton = styled('div').attrs({className: 'flex w-auto items-center justify-center'})`
-`
-
 export const rowObjectText = styled('div').attrs({className: 'flex w-100 items-center justify-between br b--light-gray f5 gray'})`;
 `
 
 export const rowObjectInput = styled('div').attrs({className: 'flex w-auto items-center justify-end b--light-gray  f5 gray ttu uppercase'})`;
-`
-
-export const Feedback = styled.div`
-  font-size: 0.7em;
-  font-style: italic;
-  color:${props => props.invalidScoreRange ? 'red' : 'lightgrey'};
 `
