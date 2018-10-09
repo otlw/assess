@@ -54,10 +54,10 @@ function linkButtons (assessment, isAssessee, setCardVisibility) {
     // not  userFault
     if (assessment.refunded) {
       // no assessment contract exits -> no link to detail-view
-      return [h(LinkSecondary, 'Why?'), h(LinkPrimary, {to: '/'}, 'Refunded')]
+      return [h(ButtonSecondary, 'Why?'), h(LinkPrimary, {to: '/'}, 'Refunded')]
     } else {
       // not refunded yet -> provide link
-      return [h(LinkSecondary, 'Why?'), h(LinkPrimary, {to: '/assessment/' + assessment.address}, 'Refund')]
+      return [h(ButtonSecondary, 'Why?'), h(LinkPrimary, {to: '/assessment/' + assessment.address}, 'Refund')]
     }
   } else {
     // NOTE this section could be refactored to be smaller, as the only thing that varies is the text of the button. But i am keeping this
