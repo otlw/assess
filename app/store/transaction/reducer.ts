@@ -22,6 +22,7 @@ let initialState:TransactionsState = {}
 //       txHash: {
 //         sender: ..
 //         assessment: 0x...
+//         data: Stage.Called
 //         stage: 1-4 // to only display the Txs relevant to the current stage
 //         status: pending/success/failure
 //         timestamp: Date.now() // to order them chronolically

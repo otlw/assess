@@ -7,31 +7,30 @@ import { TransactionReceipt, PromiEvent } from 'web3/types'
    @dispatch is needed to send the updates to state
    @transaction is a function that sends a tx to the chain (i.e., it calls a contract method, supplies any expected parameters)
    @userAddress, @assessmentAddress and @purpose are used to mark the place where the transaction was triggered
-   @confirmationCallback: a function to be called once the transaction has been confirmed
+   @callbacks: callback functions to be called in different transaction circumstances
 */
 
 export function sendAndReactToTransaction (
-  dispatch: Dispatch<any, any>, 
+  dispatch: Dispatch<any, any>,
   transaction: () => PromiEvent<any>,
-  purpose: 'makeAssessment' | 'meetingPointChange' | 'refund', 
-  userAddress: string, 
-  assessmentAddress: string, 
-  confirmationCallback: (status: boolean, receipt: TransactionReceipt | Error) => void) {
-
-  // transaction.method(...transaction.args).send({from: userAddress, gas: gas || 320000})
+  purpose: 'makeAssessment' | 'meetingPointChange' | 'refund',
+  userAddress: string,
+  assessmentAddress: string,
+  callbacks: {
+    transactionHash: (hash: string) => void | null,
+    confirmation: (status: boolean, receipt: TransactionReceipt | Error) => void,
+    error: (error: Error) => void
+  }
+  ) {
   transaction()
     .on('transactionHash', (hash: string) => {
-
-      // right after the transaction is published
-      // confirmationCallback(false, hash)
       dispatch(saveTransaction(assessmentAddress, userAddress, purpose, hash))
+      if (callbacks.transactionHash) callbacks.transactionHash(hash)
     })
     .on('confirmation', (confirmationNumber, receipt) => {
-
       // TODO: choose a good confirmation number (kovan and rinkeby accept 2, but local textnet requires 8)
       // when the transaction is confirmed into a block
       if (confirmationNumber === 8) {
-
         dispatch(updateTransaction(
           receipt.transactionHash,
           assessmentAddress,
@@ -39,21 +38,18 @@ export function sendAndReactToTransaction (
           purpose,
           receipt.status ? 'confirmed' : 'failed'
         ))
-      }
-      if (confirmationCallback && confirmationNumber === 9) {
-
-        if (receipt.status) {
-          confirmationCallback(false, receipt)
-
-        } else {
-          confirmationCallback(true, receipt)
-
-        }
+          if (callbacks.confirmation) {
+              if (receipt.status) {
+                  callbacks.confirmation(false, receipt)
+              } else {
+                  callbacks.confirmation(true, receipt)
+              }
+          }
       }
     })
     .on('error', (err: Error) => {
       // when there is an error
       console.log('err', err)
-      confirmationCallback(true, err)
+        if (callbacks.error) callbacks.error(err)
     })
 }

@@ -2,19 +2,18 @@ import { Component } from 'react'
 import h from 'react-hyperscript'
 import {Link} from 'react-router-dom'
 import styled from 'styled-components'
-import { StageDisplayNames, Stage, TimeOutReasons, CompletedStages } from '../../../constants.js'
+import { StageDisplayNames, Stage, CompletedStages } from '../../../constants.js'
 import { statusMessage } from '../../../utils.js'
+import progressBar from '../../Global/progressBar.ts'
 
 export class AssessmentCard extends Component {
   render () {
     const assessment = this.props.assessment
-    let userStage = assessment.userStage
     let stage = assessment.stage
 
     // set assessee/assessor view
     let isAssessee = this.props.userAddress === assessment.assessee
-    let actionRequired = stage === userStage && stage !== Stage.Done
-    let status = statusMessage(isAssessee, assessment)
+    let status = statusMessage(isAssessee, assessment, this.props.transactions)
     return (
       h(cardContainer, [
         h(cardContainerInfo, [
@@ -28,7 +27,12 @@ export class AssessmentCard extends Component {
           ])
         ]),
         h(cardContainerStatus, [
-          h(cardContainerProgressBar, progressButtons(stage, actionRequired, assessment.violation || false)),
+          h(cardContainerProgressBar, {},
+            h(progressBar, {
+              length: 4,
+              step: stage - 1,
+              failed: assessment.violation || false
+            })),
           h(cardTextStatus, [
             h(cardLabel, 'Status'),
             h(cardTextStatusMsg, status)
@@ -75,38 +79,6 @@ function linkButtons (assessment, isAssessee, setCardVisibility) {
     }
     return buttonList
   }
-}
-
-function progressButtons (stage, actionRequired, violation) {
-  return [
-    progressButton(stage, Stage.Called, actionRequired, violation),
-    progressButton(stage, Stage.Confirmed, actionRequired, violation),
-    progressButton(stage, Stage.Committed, actionRequired, violation),
-    progressButton(stage, Stage.Done, actionRequired, violation)
-  ]
-}
-
-function progressButton (assessmentStage, phase, actionRequired, violation) {
-  // check whether the assessment was aborted
-  if ((violation === TimeOutReasons.NotEnoughAssessors && phase === Stage.Called) ||
-      (violation === TimeOutReasons.NotEnoughCommits && phase === Stage.Confirmed) ||
-      (violation === TimeOutReasons.NotEnoughReveals && phase === Stage.Committed)) {
-    return h(cardProgressBarObjectFailed)
-  }
-  // it was not a violation! see whether the phase has been completed:
-  if (assessmentStage > phase || assessmentStage === Stage.Done) {
-    return h(cardProgressBarObjectComplete)
-  }
-  // see whether the stage is still ongoing and requires user input:
-  if (assessmentStage === phase && actionRequired) {
-    return h(cardProgressBarObjectActive)
-  }
-  // or whether the stage is the last one -> no user action required
-  if (assessmentStage === Stage.Done) {
-    return h(cardProgressBarObjectComplete)
-  }
-  // DEFAULT: the phase is on, but the user must no longer do anything
-  return h(cardProgressBarObjectInactive)
 }
 
 export default AssessmentCard
@@ -160,26 +132,7 @@ const cardTextStatus = styled('div').attrs({
 
 const cardContainerProgressBar = styled('div').attrs({
   className: 'absolute flex items-center'
-})`right: 16px; top: -8px;
-`
-
-const cardProgressBarObjectInactive = styled('div').attrs({
-  className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
-})`width: 20px; height: 20px;
-`
-
-const cardProgressBarObjectActive = styled('div').attrs({
-  className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
-})`width: 20px; height: 20px; background-color: #52A7CC;
-`
-const cardProgressBarObjectComplete = styled('div').attrs({
-  className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
-})`width: 20px; height: 20px; background-color: #52CC91;
-`
-
-const cardProgressBarObjectFailed = styled('div').attrs({
-  className: 'flex br-100 w2 h2 bg-light-blue mh1 shadow-4'
-})`width: 20px; height: 20px; background-color: #ff0000;
+})`right: 16px; top: -5px;
 `
 
 const cardTextStatusMsg = styled('div').attrs({

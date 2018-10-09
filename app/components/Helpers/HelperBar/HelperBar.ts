@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import styled from 'styled-components'
+import {Label, Body} from '../../Global/Text'
 import {Props} from './index'
 let icoClose = require('../../../assets/ico-close.svg')
 
@@ -27,10 +28,10 @@ export class HelperBar extends Component<Props> {
           h(barContainer, [
             h(barContainerTitle, [
               h(icoQuestion, '?'),
-              h(barTextTitle, topic.title)
+              h(Label, topic.title) // decrease size: 'h5' --> 'h4' ?
             ]),
             h(barObject, [
-              h(barTextDescription, topic.text),
+              h(Body, topic.text), // decrease font size: f6 --> f5 ?
               (topic.learnMore
                ? h(barButtonPrimary, {onClick: this.learnMore.bind(this)}, 'Learn More')
                : null)
@@ -50,7 +51,6 @@ export class HelperBar extends Component<Props> {
 export default HelperBar
 
 // style
-
 const helperBarContainer = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-center'})``
 
 export const barContainer = styled('div').attrs({className: 'relative flex flex-row items-center justify-between w-100 h3 pv3 mt3 br2 shadow-4'})`
@@ -70,15 +70,6 @@ border-color: ${props => props.theme.primary};
 export const icoQuestion = styled('div').attrs({className: 'flex items-center justify-center w2 h2 mr2 bg-green light-green br'})`
 color: ${props => props.theme.tertiary};
 background-color: ${props => props.theme.primary};
-`
-
-export const barTextTitle = styled('h4').attrs({className: 'f5 fw4 dark-green mv0 ph2'})`
-color: ${props => props.theme.primary};
-`
-
-export const barTextDescription = styled('h5').attrs({className: 'f6 fw4 dark-green mv0'})`
-color: ${props => props.theme.primary};
-flex-shrink: 2;
 `
 
 export const barButtonClose = styled('button').attrs({className: 'flex items-center justify-center w2 h2 mh2 ba br-100 b--near-black bg-transparent'})`
