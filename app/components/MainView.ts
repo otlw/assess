@@ -12,7 +12,6 @@ import ConceptBoard from './ConceptBoard'
 import AssessmentView from './AssessmentView'
 import Modal from './Helpers/Modal'
 import HelperBar from './Helpers/HelperBar'
-//import {LinkClose} from './Global/Links'
 
 import {State} from '../store'
 
@@ -33,7 +32,6 @@ class MainView extends Component<Props> {
             h(HelperBar),
             h(appContainer, [
               h(NavTabs),
-              h(containerButtonClose,"x"),// h(LinkClose)),
               (modal ? h(Modal) : null),
               h(Route, {exact: true, path: '/', component: AssessmentBoard}),
               h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
@@ -47,9 +45,6 @@ class MainView extends Component<Props> {
 }
 
 const appContainer = styled('div').attrs({className: 'relative flex flex-column w-100 h-100'})``
-
-const containerButtonClose = styled('div').attrs({className:'relative flex w-100 items-center justify-end ph3'})`
-`
 
 const mapStateToProps = (state:State) => {
   return {
