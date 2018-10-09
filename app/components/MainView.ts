@@ -12,7 +12,7 @@ import ConceptBoard from './ConceptBoard'
 import AssessmentView from './AssessmentView'
 import Modal from './Helpers/Modal'
 import HelperBar from './Helpers/HelperBar'
-import { TxList } from './Notifications/TxList'
+import TxList from './Notifications/TxList'
 
 import {State} from '../store'
 import { Transaction } from '../store/transaction/reducer'
@@ -24,6 +24,7 @@ type Props = {
   modal: string | null,
   transactions: Transaction[]
 }
+
 class MainView extends Component<Props> {
   render () {
     let modal = this.props.modal
