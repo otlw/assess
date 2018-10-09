@@ -4,10 +4,11 @@ import AssessorList from './AssessorList.js'
 import ProgressAndInputBar from './ProgressAndInputBar'
 import FinalResultBar from './FinalResultBar.js'
 import FailedBar from './FailedBar'
-import { StageDisplayNames, Stage } from '../../constants.js'
+import { Stage } from '../../constants.js'
 import { convertDate, statusMessage } from '../../utils.js'
 import styled from 'styled-components'
 import progressBar from '../Global/progressBar.ts'
+import { Headline, Label, Body } from '../Global/Text.ts'
 import { helperBarTopic } from '../../components/Helpers/helperContent'
 // import { NavLink } from 'react-router-dom'
 var h = require('react-hyperscript')
@@ -42,58 +43,58 @@ export class AssessmentData extends Component {
   render () {
     if (!this.props.assessment) return h('div', 'Loading Data...')
     if (this.props.assessment.invalid) return h('div', 'invalid assessment address!! you may be on the wrong network')
+    let isAssessee = this.props.assessment.assessee === this.props.userAddress
+    let status = statusMessage(isAssessee, this.props.assessment, this.props.transactions)
     if (this.props.assessment.refunded && !this.props.assessment.cost) {
       // this means the assessment was reconstructed
-      let status = statusMessage(this.props.assessment.assessee === this.props.userAddress, this.props.assessment)
       return h('div', status)
     }
     let assessment = this.props.assessment
-    let statusString
-    if (assessment.violation) statusString = 'Failed'
-    else if (assessment.stage === Stage.Done) statusString = 'Assessment Complete'
-    else {
-      let actionRequired = assessment.stage === assessment.userStage
-      let nOtherAssessorsToBeActive = assessment.size - (assessment.stage === Stage.Called ? assessment.assessors.length : assessment.done) - (actionRequired ? 1 : 0)
-      statusString = 'Waiting for ' + (actionRequired ? 'you and ' : '') + nOtherAssessorsToBeActive +
-        (nOtherAssessorsToBeActive !== 1 ? ' assessors' : 'assessor') +
-        ' to ' + StageDisplayNames[assessment.stage]
-    }
-    let isAssessee = assessment.assessee === this.props.userAddress
     return (
       h(SuperFrame, [
         // holds role and concept title
         h(assessmentHeader, [
-          h(assessmentLabelActivity, isAssessee ? 'Getting assessed in' : 'Assessing'),
-          h(assessmentTextTitle, assessment.conceptData.name)
+          h(Label, isAssessee ? 'Getting assessed in' : 'Assessing'),
+          h(Headline, assessment.conceptData.name)
         ]),
         // indicates status of assesssment
         h(assessmentRowSubHeader, [
           h(assessmentContainerStatus, [
-            h(assessmentLabelBody, 'STATUS'),
-            progressBar({length: 6, step: 2}), // TODO use a global utils function (assessment)=>(step) to put the right inputs into this
-            h(assessmentTextBody, statusString)
+            h(assessmentLabelContainer, [
+              h(Label, 'STATUS'),
+              progressBar({length: 6, step: 2}) // TODO use a global utils function (assessment)=>(step) to put the right inputs into this
+            ]),
+            h(Body, status)
           ]),
           h(assessmentContainerDate, [
-            h(assessmentLabelBody, assessment.stage === Stage.Done ? 'Completed on: ' : 'Due Date:'),
-            h(assessmentTextBody, convertDate(assessment.checkpoint))
+            h(assessmentLabelContainer, [
+              h(Label, assessment.stage === Stage.Done ? 'Completed on: ' : 'Due Date:')
+            ]),
+            h(Body, convertDate(assessment.checkpoint))
           ])
         ]),
         // basic info
         h(assessmentContainerBody, [
           h(assessmentObjectText, [
-            h(assessmentLabelBody, 'Assessee'),
-            h(assessmentTextAddress, isAssessee ? 'You' : assessment.assessee)
+            h(assessmentLabelContainer, [
+              h(Label, 'Assessee')
+            ]),
+            h(Body, isAssessee ? 'You' : assessment.assessee)
           ]),
           h(assessmentObjectTextRight, [
-            h(assessmentLabelBody, 'Assessors'),
+            h(assessmentLabelContainer, [
+              h(Label, 'Assessors')
+            ]),
             h(AssessorList, {
               assessors: assessment.assessors,
               userAddress: this.props.userAddress
             })
           ]),
           h(assessmentObjectText, [
-            h(assessmentLabelBody, 'Meeting Point'),
-            h(assessmentTextBody, [
+            h(assessmentLabelContainer, [
+              h(Label, 'Meeting Point')
+            ]),
+            h(Body, [
               assessment.data
                 ? h('a', {href: assessment.data}, assessment.data)
                 : isAssessee
@@ -109,8 +110,10 @@ export class AssessmentData extends Component {
             ])
           ]),
           h(assessmentObjectTextRight, [
-            h(assessmentLabelBody, 'Fee'),
-            h(assessmentTextBody, assessment.cost + ' AHA')
+            h(assessmentLabelContainer, [
+              h(Label, 'Fee')
+            ]),
+            h(Body, assessment.cost + ' AHA')
           ])
         ]),
         // progress-button, FinalResultBor or FailureIndicator
@@ -150,37 +153,22 @@ position:relative;
 
 // assessmentView Header
 
-const assessmentHeader = styled('div').attrs({className: 'flex flex-column w-100 pv3 ph3 br2 br--top'})`
+const assessmentHeader = styled('div').attrs({className: 'flex flex-column w-100 pv3 ph3 br2 br--top truncate ellipsis'})`
 background-color: ${props => props.theme.tertiary};
 `
 
-const assessmentLabelActivity = styled('h6').attrs({className: 'f5 tl ttu uppercase mv0 fw4'})`
-color: ${props => props.theme.primary};
-`
-
-const assessmentTextTitle = styled('h2').attrs({className: 'f2 tl dark-blue mt2 mb0 fw4'})`
-color: ${props => props.theme.primary};
-`
-
-const assessmentRowSubHeader = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-between pt4 pb2 ph3'})`
+const assessmentRowSubHeader = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-between pt4 pb3 ph3'})`
 background-color: ${props => props.theme.tertiary};
 `
 
 const assessmentContainerStatus = styled('div').attrs({className: 'flex flex-row flex-wrap w-50 items-center justify-start '})`
 `
 
+const assessmentLabelContainer = styled('div').attrs({className: 'flex flex-row w-100 mb2'})`
+
+`
+
 // End assessmentView Header
-
-const assessmentLabelBody = styled('h6').attrs({className: 'f5 w-auto mv0 fw4 tl ttu uppercase'})`
-color: ${props => props.theme.primary};
-`
-
-const assessmentTextBody = styled('h5').attrs({className: 'f5 gray mv2 mb0 fw4'})`
-color: ${props => props.theme.textBody};
-`
-
-const assessmentTextAddress = styled('h5').attrs({className: 'f5 gray mv2 mb0 fw4 gray w-50 truncate ellipsis'})`
-`
 
 const assessmentContainerDate = styled('div').attrs({className: 'flex flex-column w-40 items-start justify-between '})`
 `

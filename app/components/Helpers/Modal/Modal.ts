@@ -1,6 +1,7 @@
 import h from 'react-hyperscript'
 import styled from 'styled-components'
 import { Component } from 'react'
+import {Subheadline, Body} from '../../Global/Text'
 import {Props} from './index'
 import {ButtonPrimary,ButtonSecondary} from '../../Global/Buttons.ts'
 // import {Link} from 'react-router-dom'
@@ -24,14 +25,14 @@ export class Modal extends Component<Props> {
       h(appContainerObscurer, [
         h(modalContainer, [
           h(modalHeader, [
-            h(modalTextTitle, this.props.topic.title),
+            h(Subheadline, this.props.topic.title),
             h(modalHeaderObjectCircle),
             h(modalHeaderObjectTri),
             h(modalHeaderObjectTriLarger),
             h(modalHeaderObjectSquare)
           ]),
           h(modalBody, [
-            h(modalTextBody, this.props.topic.text)
+            h(Body, this.props.topic.text)
           ]),
           h(modalFooter, [
             h(ButtonSecondary, {onClick: this.closeScreen.bind(this)}, 'Close'),
@@ -98,13 +99,8 @@ transform:rotate(147deg);
 filter:blur(1px);
 `
 
-export const modalTextTitle = styled('h4').attrs({className: 'f3 dark-gray tc'})`
-`
-
 export const modalBody = styled('div').attrs({className: 'flex flex-column items-center justify-center pa3 b--gray ph5'})`
 min-height:120px;
 `
-
-export const modalTextBody = styled('p').attrs({className: 'f4 gray tl lh-copy'})``
 
 export const modalFooter = styled('div').attrs({className: 'flex flex-row items-center justify-around pa4-ns pa2'})``

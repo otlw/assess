@@ -43,9 +43,11 @@ export function confirmAssessor (assessmentAddress, customReact = false) {
       assessmentAddress,
       customReact
         ? customReact.callbck
-        : () => {
-          dispatch(fetchUserStage(assessmentAddress))
-          dispatch(setHelperBar(helperBarTopic.ConfirmedStake))
+        : {
+          confirmation: () => {
+            dispatch(fetchUserStage(assessmentAddress))
+            dispatch(setHelperBar(helperBarTopic.ConfirmedStake))
+          }
         }
     )
   }
@@ -68,9 +70,11 @@ export function commit (assessmentAddress, score, salt, customReact = false) {
       assessmentAddress,
       customReact
         ? customReact.callbck
-        : () => {
-          dispatch(fetchUserStage(assessmentAddress))
-          dispatch(setHelperBar(helperBarTopic.ConfirmedCommit))
+        : {
+          confirmation: () => {
+            dispatch(fetchUserStage(assessmentAddress))
+            dispatch(setHelperBar(helperBarTopic.ConfirmedCommit))
+          }
         }
     )
   }
@@ -92,9 +96,11 @@ export function reveal (assessmentAddress, score, salt, customReact = false) {
       assessmentAddress,
       customReact
         ? customReact.callbck
-        : () => {
-          dispatch(fetchUserStage(assessmentAddress))
-          dispatch(setHelperBar(helperBarTopic.ConfirmedReveal))
+        : {
+          confirmation: () => {
+            dispatch(fetchUserStage(assessmentAddress))
+            dispatch(setHelperBar(helperBarTopic.ConfirmedReveal))
+          }
         }
     )
   }
@@ -113,9 +119,11 @@ export function storeDataOnAssessment (assessmentAddress, data) {
       'meetingPointChange',
       userAddress,
       assessmentAddress,
-      () => {
-        dispatch(fetchStoredData(assessmentAddress))
-        if (firstEdit) dispatch(setHelperBar(helperBarTopic.FirstTimeMeetingPointSet))
+      {
+        confirmation: () => {
+          dispatch(fetchStoredData(assessmentAddress))
+          if (firstEdit) dispatch(setHelperBar(helperBarTopic.FirstTimeMeetingPointSet))
+        }
       }
     )
   }
@@ -136,7 +144,9 @@ export function refund (assessmentAddress, stage) {
     const react = {
       gas: 320000,
       saveKeyword: 'refund',
-      callbck: reactToRefund
+      callbck: {
+        confirmation: reactToRefund
+      }
     }
     switch (stage) {
       case Stage.Called:
@@ -292,7 +302,6 @@ export function reconstructAssessment (assessmentAddress, pastNotifications) {
 export function validateAndFetchAssessmentData (assessmentAddress) {
   return async (dispatch, getState) => {
     try {
-      console.log('in')
       let assessmentInstance = getInstance.assessment(getState(), assessmentAddress)
       // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
       let conceptAddress = await assessmentInstance.methods.concept().call()

@@ -1,4 +1,5 @@
 import h from 'react-hyperscript'
+import {Label, Headline, Subheadline} from '../Global/Text.ts'
 import styled from 'styled-components'
 
 export const CertificateCard = (props) => {
@@ -6,9 +7,9 @@ export const CertificateCard = (props) => {
     h(credentialContainer, [
       h(credentialContainerInfo, [
         h(credentialObjectText, [
-          h(credentialLabel, 'Credential'),
-          h(credentialTitleText, props.assessment.conceptData.name),
-          h(credentialLabel, 'Awarded To You')
+          h(Label, 'Credential'),
+          h(Headline, props.assessment.conceptData.name),
+          h(Label, 'Awarded To You')
         ]),
         h(credentialDecoCircleSmall),
         h(credentialDecoCircleLarge),
@@ -17,8 +18,8 @@ export const CertificateCard = (props) => {
       ]),
       h(credentialContainerBottom, [
         h(credentialContainerScore, [
-          h(credentialLabel, 'Score'),
-          h(credentialObjectScore, props.assessment.finalScore)
+          h(Label, 'Score'),
+          h(Subheadline, props.assessment.finalScore)
         ]),
         h(buttonPrimaryShare, 'Share') // TODO this is where Bridger comes in!!
       ])
@@ -43,18 +44,6 @@ height: 60%;
 const credentialObjectText = styled('div').attrs({
   className: 'flex flex-column'
 })`
-`
-
-const credentialLabel = styled('h6').attrs({
-  className: 'f5 fw4 mv1 ttu uppercase z-999'
-})`
-color: #2E998A;
-`
-
-const credentialTitleText = styled('h3').attrs({
-  className: 'f2 fw4 mv1'
-})`
-color: #006657;
 `
 
 const credentialDecoCircleLarge = styled('div').attrs({
@@ -111,12 +100,6 @@ height: 40%;
 
 const credentialContainerScore = styled('div').attrs({className: 'flex flex-column self-end items-center'
 })`
-`
-
-const credentialObjectScore = styled('div').attrs({className: 'flex self-end h3 w3  fw4 shadow-4 items-center justify-center align-center br-pill bg-dark-blue near-white ttu uppercase'
-})`
-font-size:1.75rem;
-background-color: #2E998A; width: 80px; height: 80px;
 `
 
 const buttonPrimaryShare = styled('div').attrs({className: 'flex self-end ph4 pv2 fw4 f5 shadow-4 items-center align-center br-pill bg-dark-blue near-white ttu uppercase'
