@@ -12,7 +12,7 @@ import ConceptBoard from './ConceptBoard'
 import AssessmentView from './AssessmentView'
 import Modal from './Helpers/Modal'
 import HelperBar from './Helpers/HelperBar'
-import TxList from './Notifications/TxList'
+import { TxList } from './Notifications/TxList'
 
 import {State} from '../store'
 import { Transaction } from '../store/transaction/reducer'
@@ -20,29 +20,29 @@ import { Transaction } from '../store/transaction/reducer'
 // the main frame on which everything is displayed.
 // It will call connect() when mounting the header)
 
-type Props = {
-  modal: string | null,
+interface IMainViewProps {
+  modal: string | null
   transactions: Transaction[]
 }
 
-class MainView extends Component<Props> {
+class MainView extends Component<IMainViewProps> {
   render () {
     let modal = this.props.modal
     return (
       h(HashRouter, [
-          h('div', [
-            h(Header),
-            h(TxList, { transactions: this.props.transactions }),
-            h(appContainer, [
-              h(NavTabs),
-              (modal ? h(Modal) : null),
-              h(HelperBar),
-              h(Route, {exact: true, path: '/', component: AssessmentBoard}),
-              h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
-              h(Route, {path: '/assessment/:id', component: AssessmentView}),
-              h(Route, {path: '/certificates/', component: CertificateBoard})
-            ])
+        h('div', [
+          h(Header),
+          h(TxList, { transactions: this.props.transactions }),
+          h(appContainer, [
+            h(NavTabs),
+            (modal ? h(Modal) : null),
+            h(HelperBar),
+            h(Route, { exact: true, path: '/', component: AssessmentBoard}),
+            h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
+            h(Route, {path: '/assessment/:id', component: AssessmentView}),
+            h(Route, {path: '/certificates/', component: CertificateBoard})
           ])
+        ])
       ])
     )
   }
@@ -50,7 +50,7 @@ class MainView extends Component<Props> {
 
 const appContainer = styled('div').attrs({className: 'relative flex flex-column w-100 h-100'})``
 
-const mapStateToProps = (state:State) => {
+const mapStateToProps = (state: State) => {
   return {
     modal: state.navigation.modal,
     transactions: Object.values(state.transactions)

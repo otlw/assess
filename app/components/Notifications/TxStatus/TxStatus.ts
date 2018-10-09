@@ -1,6 +1,9 @@
 import { Component } from 'react'
 import styled from 'styled-components'
 import { networkName } from '../../../constants.js'
+// import { ITxStatusProps } from './index'
+import { removeTransaction } from '../../../store/transaction/actions'
+import { Transaction } from '../../../store/transaction/reducer'
 var h = require('react-hyperscript')
 let icoClose = require('../../../assets/ico-close.svg')
 
@@ -14,8 +17,14 @@ const phrasing = Object.freeze({
   refund: 'obtain a refund'
 })
 
+export interface ITxStatusProps {
+  transaction: Transaction
+  networkID: number
+  removeTX: typeof removeTransaction
+}
+
 // TODO comment on what to expect as props
-export class TxStatus extends Component {
+export class TxStatus extends Component<ITxStatusProps> {
   deleteTX () {
     this.props.removeTX(this.props.transaction.txHash)
   }

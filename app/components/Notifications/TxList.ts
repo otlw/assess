@@ -8,7 +8,7 @@ interface ITxListProps {
 	transactions: Transaction[]
 }
 
-class TxList extends Component<ITxListProps, null> {
+export class TxList extends Component<ITxListProps> {
   render () {
     console.log('TxList -- props: ', this.props) // DEBUG
     // this should not be necessary but somehow if this next line is not here
@@ -22,4 +22,3 @@ class TxList extends Component<ITxListProps, null> {
 
 const containerTransaction = styled('div').attrs({className: 'relative flex flex-column items-center justify-between w-100 pv1 bg-light-green'})``
 
- export default TxList

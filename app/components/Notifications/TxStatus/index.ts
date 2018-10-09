@@ -1,8 +1,14 @@
 import { connect } from 'react-redux'
 import TxStatus from './TxStatus'
 import { removeTransaction } from '../../../store/transaction/actions'
+import { State } from '../../../store'
 
-const mapStateToProps = state => {
+// export interface ITxStatusProps {
+// 	networkID: number
+// 	removeTX: typeof removeTransaction
+// }
+
+const mapStateToProps = (state:State) => {
   return {
     networkID: state.ethereum.networkID
   }
