@@ -1,9 +1,17 @@
 import { Component } from 'react'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 import {Headline, Label, Body} from '../Global/Text.ts'
+import {toggleAvailability} from '../../store/concept/asyncActions.js'
 
 export class ConceptCard extends Component {
+
+  toggleAvailabilityAsAssessor(e) {
+    console.log('e', e.target.id)
+    this.props.toggleAvailability(e.target.id)
+  }
+
   render () {
     // NOTE once the concept definition process is more defined we will want to
     // use the learnMore field that the ipfs description of a concept provides
@@ -13,6 +21,7 @@ export class ConceptCard extends Component {
     // if (this.props.conceptData.learnMore) {
     //   LearnMore = h(cardButtonSecondary, {href: this.props.conceptData.learnMore, target: '_blank'}, 'Learn')
     // }
+
     return h(cardContainer, [
       h(cardContainerInfo, [
         h(cardTextObject, [
@@ -25,6 +34,14 @@ export class ConceptCard extends Component {
           h(Body, this.props.conceptData.description)
         ]),
         h(cardContainerButtons, [
+          this.props.conceptData.userIsMember
+            ? h(cardButtonPrimary, {
+              onClick: this.toggleAvailabilityAsAssessor.bind(this),
+              id: this.props.conceptAddress},
+                this.props.conceptData.userIsActiveAssessor
+                ? 'Stop Assessing'
+                : 'Be Assesssor')
+          : null,
           h(cardButtonPrimary, {onClick: this.props.selectConcept.bind(this), id: this.props.conceptAddress}, 'Get Assessed')
         ])
       ])
@@ -32,7 +49,11 @@ export class ConceptCard extends Component {
   }
 }
 
-export default ConceptCard
+const mapDispatchToProps = {
+  toggleAvailability
+}
+
+export default connect(null, mapDispatchToProps)(ConceptCard)
 
 // styles
 

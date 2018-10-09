@@ -1,6 +1,7 @@
 import { getInstance } from '../../utils'
+import extend from 'xtend'
 import { sendAndReactToTransaction } from '../transaction/asyncActions'
-import { receiveConcepts } from './actions'
+import { receiveConcepts, updateUserStatus } from './actions'
 import { beginLoadingConcepts, endLoadingConcepts } from '../loading/actions.ts'
 
 export function loadConceptsFromConceptRegistery () {
@@ -22,7 +23,10 @@ export function loadConceptsFromConceptRegistery () {
       // get and decode data
       let hash = await conceptInstance.methods.data().call()
       let decodedConceptDataHash = Buffer.from(hash.slice(2), 'hex').toString('utf8')
-      let decodedConceptData
+      let concept = {
+        userIsMember: false,
+        userIsActiveAssessor: false
+      }
 
       // retrieve JSON from IPFS if the data is an IPFS hash
       if (decodedConceptDataHash.substring(0, 2) === 'Qm') {
@@ -30,21 +34,31 @@ export function loadConceptsFromConceptRegistery () {
         const ipfsAPI = require('ipfs-api')
         const ipfs = ipfsAPI('ipfs.infura.io', '5001', {protocol: 'https'})
 
-        // verify that description is correctly stord and log it
+        // verify that description is correctly stored and parse it to JSON
         let resp = await ipfs.get(decodedConceptDataHash)
-        decodedConceptData = resp[0].content.toString()
+        let ipfsContent = JSON.parse(resp[0].content.toString())
+        concept = extend(concept, ipfsContent)
 
-        // parse JSON
-        decodedConceptData = JSON.parse(decodedConceptData)
       } else {
         // if no ipfs hash, just use data string decodedConceptDataHash
-        decodedConceptData = {
+        concept = {
           name: decodedConceptDataHash,
           description: decodedConceptDataHash
         }
       }
 
-      return (concepts[conceptAddress] = decodedConceptData)
+      // check if user could act as assessor in this concept
+      let userWeight = await conceptInstance.methods.getWeight(getState().ethereum.userAddress).call()
+      if (Number(userWeight) > 0) {
+        concept.userIsMember = true
+        // see whether he is currently available to act as assessor
+        let userData = await conceptInstance.methods.memberData(getState().ethereum.userAddress).call()
+        if (Number(userData.index) !== 0) {
+          concept.userIsActiveAssessor = true
+        }
+      }
+
+      return (concepts[conceptAddress] = concept)
     }))
     dispatch(receiveConcepts(concepts))
     dispatch(endLoadingConcepts())
@@ -89,5 +103,28 @@ export function estimateAssessmentCreationGasCost (conceptAddress, cost, callBac
     let gasPrice = await getState().ethereum.web3.eth.getGasPrice()
     // then convert it to eth from wei and multiply it by the estimate
     callBack(estimate * getState().ethereum.web3.utils.fromWei(gasPrice.toString(), 'ether'))
+  }
+}
+
+export function toggleAvailability (conceptAddress) {
+  return async (dispatch, getState) => {
+    let userAddress = getState().ethereum.userAddress
+    let isActiveAssessor = getState().concepts[conceptAddress].isActiveAssessor
+    let conceptInstance = getInstance.concept(getState(), conceptAddress)
+    sendAndReactToTransaction(
+      dispatch,
+      () => {
+        return conceptInstance.methods.toggleAvailability().send({from: userAddress})
+      },
+      isActiveAssessor ? 'stopBeingAssessor' :'beAssessor',
+      userAddress,
+      conceptAddress,
+      {
+        transactionHash: () => {console.log('do somehting here')},
+        confirmation: () => {
+          dispatch(updateUserStatus(conceptAddress, 'userIsActiveAssessor', !isActiveAssessor))
+          console.log('do somehting here')}
+      }
+    )
   }
 }
