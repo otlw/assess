@@ -10,6 +10,7 @@ import styled from 'styled-components'
 import progressBar from '../Global/progressBar.ts'
 import { Headline, Label, Body } from '../Global/Text.ts'
 import { helperBarTopic } from '../../components/Helpers/helperContent'
+// import { NavLink } from 'react-router-dom'
 var h = require('react-hyperscript')
 
 export class AssessmentData extends Component {
@@ -147,6 +148,7 @@ export default AssessmentData
 const SuperFrame = styled('div').attrs({className: 'flex flex-column w-100 mw8 self-center mt3 br2 shadow-4'})`
 font-family:'system-ui',sans-serif;
 max-width: 800px;
+position:relative;
 `
 
 // assessmentView Header
