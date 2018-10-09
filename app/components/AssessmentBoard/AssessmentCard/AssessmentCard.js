@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { StageDisplayNames, Stage, CompletedStages } from '../../../constants.js'
 import { statusMessage } from '../../../utils.js'
 import { Headline, Label, Body } from '../../Global/Text.ts'
+import {LinkPrimary} from '../../Global/Links.ts'
 import { ButtonPrimary, ButtonSecondary } from '../../Global/Buttons.ts'
 import progressBar from '../../Global/progressBar.ts'
 
@@ -49,14 +50,14 @@ export class AssessmentCard extends Component {
 function linkButtons (assessment, isAssessee, setCardVisibility) {
   let userFault = (assessment.violation && assessment.userStage === assessment.stage) || assessment.userStage === Stage.Burned
   if (assessment.violation) {
-    if (userFault) return [h(ButtonSecondary, 'Why?'), h(ButtonPrimary, {to: '/'}, 'Closed')] // TODO why should be a link
+    if (userFault) return [h(ButtonSecondary, 'Why?'), h(LinkPrimary, {to: '/'}, 'Closed')] // TODO why should be a link
     // not  userFault
     if (assessment.refunded) {
       // no assessment contract exits -> no link to detail-view
-      return [h(ButtonSecondary, 'Why?'), h(ButtonPrimary, {to: '/'}, 'Refunded')]
+      return [h(ButtonSecondary, 'Why?'), h(LinkPrimary, {to: '/'}, 'Refunded')]
     } else {
       // not refunded yet -> provide link
-      return [h(ButtonSecondary, 'Why?'), h(ButtonPrimary, {to: '/assessment/' + assessment.address}, 'Refund')]
+      return [h(ButtonSecondary, 'Why?'), h(LinkPrimary, {to: '/assessment/' + assessment.address}, 'Refund')]
     }
   } else {
     // NOTE this section could be refactored to be smaller, as the only thing that varies is the text of the button. But i am keeping this
@@ -70,12 +71,12 @@ function linkButtons (assessment, isAssessee, setCardVisibility) {
     ]
     if (assessment.stage < Stage.Done && assessment.userStage === assessment.stage) {
       buttonList.push(
-        h(ButtonPrimary,
+        h(LinkPrimary,
           {to: '/assessment/' + assessment.address},
           assessment.userStage === Stage.None ? 'View' : StageDisplayNames[assessment.stage]))
     } else {
       buttonList.push(
-        h(ButtonPrimary,
+        h(LinkPrimary,
           {to: '/assessment/' + assessment.address},
           assessment.userStage === Stage.None ? 'View' : CompletedStages[assessment.stage]))
     }
