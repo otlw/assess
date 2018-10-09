@@ -17,8 +17,8 @@ background-color: ${props => props.theme.tertiary};
 
 // This is the link-version of ButtonClose. It should reference that style.
 
-export const LinkClose = (props:{onClick:any}) => {
-  return h(styleLinkClose, props, [
+export const LinkClose = () => {
+  return h(styleLinkClose, [
     h(imgClose)
   ])
 }

@@ -12,6 +12,7 @@ import ConceptBoard from './ConceptBoard'
 import AssessmentView from './AssessmentView'
 import Modal from './Helpers/Modal'
 import HelperBar from './Helpers/HelperBar'
+//import {LinkClose} from './Global/Links'
 
 import {State} from '../store'
 
@@ -32,7 +33,7 @@ class MainView extends Component<Props> {
             h(HelperBar),
             h(appContainer, [
               h(NavTabs),
-              h(containerButtonClose, 'Close Button Here'),
+              h(containerButtonClose,"x"),// h(LinkClose)),
               (modal ? h(Modal) : null),
               h(Route, {exact: true, path: '/', component: AssessmentBoard}),
               h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
