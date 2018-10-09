@@ -32,7 +32,6 @@ export function sendAndReactToTransaction (
       // TODO: choose a good confirmation number (kovan and rinkeby accept 2, but local textnet requires 8)
       // when the transaction is confirmed into a block
       if (confirmationNumber === 8) {
-        console.log('calling conf', confirmationNumber)
         dispatch(updateTransaction(
           receipt.transactionHash,
           receipt.status ? 'Tx confirmed' : 'Tx failed'

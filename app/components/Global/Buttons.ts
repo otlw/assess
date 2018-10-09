@@ -12,7 +12,7 @@ export const ButtonPrimary = styled('button').attrs(
   {className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1',
    style: null} )`
 color: ${props => props.theme.tertiary};
-background-color: ${props => (props.style && props.style === 'stageView') ? props.theme.primary : props.theme.positiveGreen};
+background-color: ${props => props.theme.primary};
 `
 
 export const ButtonSecondary = styled('button').attrs({className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`

@@ -3,8 +3,7 @@ import styled from 'styled-components'
 import h from 'react-hyperscript'
 import { modalTopic } from '../Helpers/helperContent'
 import { Label } from '../Global/Text.ts'
-
-import icoClose from '../../assets/ico-close.svg'
+import { ButtonPrimary, ButtonClose, ButtonSecondary } from '../Global/Buttons'
 
 export class AssessmentCreation extends Component {
   constructor (props) {
@@ -30,15 +29,25 @@ export class AssessmentCreation extends Component {
     }
   }
 
-  nextButton () {
+  actionButton () {
     let step = this.state.step
-    if (step === 1) {
-      this.setState({step: 2})
-      this.estimateGasCost()
-    } else if (step === 2) {
-      this.setState({step: 3})
-    } else if (step === 3) {
-      this.loadConceptContractAndCreateAssessment()
+    switch (step) {
+      case 1:
+        this.setState({step: 2})
+        this.estimateGasCost()
+        break
+      case 2:
+        this.setState({step: 3})
+        break
+      case 3:
+        this.loadConceptContractAndCreateAssessment()
+        break
+      case 4:
+        this.props.cancelButton()
+        break
+      case 5:
+        // TODO handle retry
+        console.log('this is not yet handled...')
     }
   }
 
@@ -153,50 +162,50 @@ export class AssessmentCreation extends Component {
         ])
         break
       case 4:
-        BottomPartContent = h(cardBodyColumnLeft, [
-          h(cardTextTitle, 'Submitted & Pending'),
-          h(cardTextObjectHelp, 'Your assessment has been sent to the Ethereum blockchain and is pending confirmation.'),
-          h(cardTextObjectHelp, 'We’ll notify you once the transaction has been confirmed & your assessment is created.')
+        BottomPartContent = h(cardBodyContainer, [
+          h(cardBodyColumnFull, [
+            h(helpTextContainer, [
+              h(cardTextObjectHelp, 'We\'ll notify you once your assessment has been processed and created by Ethereum. \n  This can take a from few minutes to a few seconds.')
+            ])
+          ])
         ])
         break
       case 5:
-        BottomPartContent = h(cardBodyColumnLeft, [
-          h(cardTextTitle, 'There was an error!'),
-          h(cardTextObjectHelp, 'No problem, just scream loud and try again in 15sec.') // TODO this needs to be actual help
+        BottomPartContent = h(cardBodyContainer, [
+          h(cardBodyColumnFull, [
+            h(helpTextContainer, [
+              h(cardTextObjectHelp, 'Ooops, looks like something did not check out with your transaction. Scream loud and try again in 15 seconds.') // TODO we need better help. simply trying again will most likely fail for the same reasons, costing them gas.
+            ])
+          ])
         ])
-        break
     }
+    const actionButtonText = Object.freeze({
+      1: 'Next',
+      2: 'Next',
+      3: 'Send Transaction',
+      4: 'Home',
+      5: 'Retry'
+    })
 
-    // set Navigation buttons according to step
-    let Navigation = (h(createAssessmentFooter, [
-      h(createAssessmentButtonSecondary, {
-        onClick: this.cancelButton.bind(this),
-        disabled: this.state.step !== 1
-      }, [
-        h('span', 'Previous')
-      ]),
-      h(createAssessmentButtonPrimary, {onClick: this.nextButton.bind(this)}, [
-        h('span', this.state.step === 3 ? 'Send Transaction!' : 'Next') // TODO change color to positiveGreen in stage 4
-      ])
-    ]))
-
-    if ((this.state.step === 4)) {
-      Navigation = (h(createAssessmentFooter, [
-        h(CloseButton, {onClick: this.cancelButton.bind(this)}, [
-          h('img', {alt: 'icoClose', src: icoClose, className: 'h1 ma1'}),
-          h('span', 'Home')
-        ])
-      ]))
+    let footerContent
+    if (this.state.step <= 3) {
+      footerContent = [
+        h(ButtonSecondary, {onClick: this.cancelButton.bind(this)}, 'Previous')
+      ]
+    } else if (this.state.step === 4) {
+      // alex insert positive footerBar here
+      footerContent = [h('div', [
+        h('span', 'i am a green positive dot'),
+        h('span', 'Your assessment is being created on ethereum.')
+      ])]
+    } else {
+      // negativ here
+      footerContent = [h('div', [
+        h('span', 'i am a red angry dot'),
+        h('span', 'Ooops, looks like your transaction could not be submitted.')
+      ])]
     }
-
-    // set cancelCross according to step
-    // REFACTOR THIS once we have a global progress-Component
-    let CancelCrossButton = (h(CancelCrossContainer, [
-      h(CancelCross, {onClick: this.cancelButton.bind(this), alt: 'icoClose', src: icoClose})
-    ]))
-    if (this.state.step === 4) {
-      CancelCrossButton = h(CancelCrossContainer, '')
-    }
+    footerContent.push(h(ButtonPrimary, {onClick: this.actionButton.bind(this)}, actionButtonText[this.state.step]))
 
     let stageActivity = Object.freeze({
       1: 'How much would you like to pay your assessors?',
@@ -214,7 +223,7 @@ export class AssessmentCreation extends Component {
           h(createAssessmentProgressBarObject, {current: this.state.step === 3, past: this.state.step > 3}),
           h(createAssessmentProgressBarObject, {current: this.state.step === 4, past: this.state.step > 4})
         ]),
-        CancelCrossButton
+        this.state.step < 4 ? h(ButtonClose, {onClick: this.cancelButton.bind(this)}) : null
       ]),
       h(createAssessmentWrapper, [
         h(createAssessmentCardContainer, [
@@ -225,7 +234,7 @@ export class AssessmentCreation extends Component {
           ]),
           BottomPartContent
         ]),
-        Navigation
+        h(createAssessmentFooter, footerContent)
       ])
     ])
   }
@@ -339,24 +348,4 @@ color: ${props => props.theme.secondary};
 const createAssessmentFooter = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-between pa3 shadow-4'})`
 margin-top: 1px;
 background-color: #F5F5FF;
-`
-const createAssessmentButtonSecondary = styled('div').attrs({className: 'flex items-center justify-center ph4 pv2 br-pill shadow-2'})`
-cursor:pointer;
-color: #322EE5;
-background-color: #fff;
-`
-const createAssessmentButtonPrimary = styled('div').attrs({className: 'flex flex-row items-center justify-center ph4 pv2 br-pill ttu uppercase shadow-2'})`
-cursor:pointer;
-color: #F1F2FB;
-background-color: #322EE5;
-`
-const CloseButton = styled('div').attrs({className: 'flex self-center items-center justify-center w4 h2 br4 ba'})`
-border-color: #C4C4C4;
-background-color:#C4C4C4;
-cursor:pointer;
-`
-const CancelCrossContainer = styled('div').attrs({className: 'flex justify-end w-auto h2'})`
-`
-const CancelCross = styled('img').attrs({className: 'ma2 f4'})`
-cursor:pointer;
 `
