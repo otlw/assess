@@ -3,11 +3,6 @@ import TxStatus from './TxStatus'
 import { removeTransaction } from '../../../store/transaction/actions'
 import { State } from '../../../store'
 
-// export interface ITxStatusProps {
-// 	networkID: number
-// 	removeTX: typeof removeTransaction
-// }
-
 const mapStateToProps = (state:State) => {
   return {
     networkID: state.ethereum.networkID

@@ -1,7 +1,6 @@
 import { Component } from 'react'
 import styled from 'styled-components'
 import { networkName } from '../../../constants.js'
-// import { ITxStatusProps } from './index'
 import { removeTransaction } from '../../../store/transaction/actions'
 import { Transaction } from '../../../store/transaction/reducer'
 var h = require('react-hyperscript')
@@ -33,8 +32,7 @@ export class TxStatus extends Component<ITxStatusProps> {
     let tx = this.props.transaction
     let textField = `Your transaction to ${phrasing[tx.purpose]} has been ${tx.status} -- see etherscan for details:  `
     let targetURL = 'https://' + (networkName(this.props.networkID) === 'Mainnet' ? '' : networkName(this.props.networkID) + '.') + 'etherscan.io/tx/' + tx.txHash
-    console.log('tx', tx) // DEBUG
-    console.log('textField: ', textField) // DEBUG
+    console.log('tx', tx)
 
     return h(rowTxContainer, [
       h(textTransaction, textField),
