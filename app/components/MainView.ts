@@ -32,6 +32,7 @@ class MainView extends Component<Props> {
             h(HelperBar),
             h(appContainer, [
               h(NavTabs),
+              h(containerButtonClose, 'Close Button Here'),
               (modal ? h(Modal) : null),
               h(Route, {exact: true, path: '/', component: AssessmentBoard}),
               h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
@@ -45,6 +46,9 @@ class MainView extends Component<Props> {
 }
 
 const appContainer = styled('div').attrs({className: 'relative flex flex-column w-100 h-100'})``
+
+const containerButtonClose = styled('div').attrs({className:'relative flex w-100 items-center justify-end ph3'})`
+`
 
 const mapStateToProps = (state:State) => {
   return {
