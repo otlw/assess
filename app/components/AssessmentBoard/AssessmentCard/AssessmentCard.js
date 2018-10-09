@@ -5,8 +5,8 @@ import styled from 'styled-components'
 import { StageDisplayNames, Stage, CompletedStages } from '../../../constants.js'
 import { statusMessage } from '../../../utils.js'
 import { Headline, Label, Body } from '../../Global/Text.ts'
-import { ButtonPrimary, ButtonSecondary } from '../../Global/Buttons.ts'
-import { LinkPrimary, LinkSecondary } from '../../Global/Links.ts'
+import {LinkPrimary} from '../../Global/Links.ts'
+import { ButtonSecondary } from '../../Global/Buttons.ts'
 import progressBar from '../../Global/progressBar.ts'
 
 export class AssessmentCard extends Component {
