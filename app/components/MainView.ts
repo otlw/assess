@@ -50,7 +50,7 @@ class MainView extends Component<IMainViewProps> {
 
 const appContainer = styled('div').attrs({className: 'relative flex flex-column w-100 h-100'})``
 
-const mapStateToProps = (state: State) => {
+const mapStateToProps = (state:State) => {
   return {
     modal: state.navigation.modal,
     transactions: Object.values(state.transactions)
