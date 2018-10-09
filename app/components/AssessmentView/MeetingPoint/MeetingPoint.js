@@ -48,7 +48,7 @@ class MeetingPoint extends Component {
               ? null
               : this.state.displayMPEdit
                 ? h(ButtonClose, {onClick: this.toggleMPeditability.bind(this)})
-                : h(ButtonTertiary, {onClick: this.toggleMPeditability.bind(this)})
+                : h(ButtonTertiary, {onClick: this.toggleMPeditability.bind(this)}, 'Edit')
           ])
         ]),
         h(rowMeetingPoint, [ // second row
