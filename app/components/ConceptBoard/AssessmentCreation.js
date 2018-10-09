@@ -205,7 +205,10 @@ export class AssessmentCreation extends Component {
         h('span', 'Ooops, looks like your transaction could not be submitted.')
       ])]
     }
-    footerContent.push(h(ButtonPrimary, {onClick: this.actionButton.bind(this)}, actionButtonText[this.state.step]))
+    footerContent.push(h(ButtonPrimary, {
+      onClick: this.actionButton.bind(this),
+      active: this.state.step === 3
+    }, actionButtonText[this.state.step]))
 
     let stageActivity = Object.freeze({
       1: 'How much would you like to pay your assessors?',
