@@ -2,7 +2,7 @@ import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 import { modalTopic } from '../Helpers/helperContent'
-import { Label } from '../Global/Text.ts'
+import { Label, Body, Subheadline, Headline } from '../Global/Text.ts'
 import { ButtonPrimary, ButtonClose, ButtonSecondary } from '../Global/Buttons'
 
 export class AssessmentCreation extends Component {
@@ -94,7 +94,7 @@ export class AssessmentCreation extends Component {
         BottomPartContent = h(cardBodyContainer, [
           h(cardBodyColumnLeft, [
             h(cardContainerParameters, [
-              h(cardLabel, 'ASSESSOR FEE'),
+              h(Label, 'ASSESSOR FEE'),
               h(ButtonCaptionContainer, [
                 h(ButtonCaptionBox
                 ),
@@ -113,11 +113,11 @@ export class AssessmentCreation extends Component {
               ])
             ]),
             h(cardContainerParameters, [
-              h(cardLabel, 'NO. OF ASSESSORS'),
+              h(Label, 'NO. OF ASSESSORS'),
               h(cardTextObject, '5')
             ]),
             h(cardContainerParameters, [
-              h(cardLabel, 'TOTAL COST'),
+              h(Label, 'TOTAL COST'),
               h(cardTextObject, this.state.amountPerAssessor * 5 + ' AHA')
             ])
           ]),
@@ -134,11 +134,11 @@ export class AssessmentCreation extends Component {
         BottomPartContent = h(cardBodyContainer, [
           h(cardBodyColumnLeft, [
             h(cardContainerParameters, [
-              h(cardLabel, 'TRANSACTION COST'),
+              h(Label, 'TRANSACTION COST'),
               h(cardTextObject, this.state.gasEstimate.toString().substring(0, 8) + ' ETH')
             ]),
             h(cardContainerParameters, [
-              h(cardLabel, 'EQUAL TO'),
+              h(Label, 'EQUAL TO'),
               h(cardTextObject, (this.state.gasEstimate * 220).toString().substring(0, 4) + ' USD')
             ])
           ]),
@@ -165,7 +165,7 @@ export class AssessmentCreation extends Component {
         BottomPartContent = h(cardBodyContainer, [
           h(cardBodyColumnFull, [
             h(helpTextContainer, [
-              h(cardTextObjectHelp, 'We\'ll notify you once your assessment has been processed and created by Ethereum. \n  This can take a from few minutes to a few seconds.')
+              h(cardTextObjectHelp, 'We\'ll notify you once your assessment has been processed and created by Ethereum. \n  This can take a from few seconds to a few minutes.')
             ])
           ])
         ])
@@ -194,15 +194,15 @@ export class AssessmentCreation extends Component {
       ]
     } else if (this.state.step === 4) {
       // alex insert positive footerBar here
-      footerContent = [h('div', [
-        h('span', 'i am a green positive dot'),
-        h('span', 'Your assessment is being created on ethereum.')
+      footerContent = [h(footerRow, [
+        h(icoSuccess),
+        h(Body, 'Your assessment is being created on Ethereum.')
       ])]
     } else {
       // negativ here
-      footerContent = [h('div', [
-        h('span', 'i am a red angry dot'),
-        h('span', 'Ooops, looks like your transaction could not be submitted.')
+      footerContent = [h(footerRow, [
+        h(icoFailure),
+        h(Body, 'Your transaction could not be submitted.')
       ])]
     }
     footerContent.push(h(ButtonPrimary, {
@@ -314,7 +314,7 @@ const InputContainer = styled('div').attrs({className: 'flex flex-row justify-be
 const ButtonCaptionBox = styled('div').attrs({className: 'flex justify-between f6'})`
 `
 
-const ButtonGroup = styled('div').attrs({className: 'flex flex-row justify-between br1 ph3 f4'})`
+const ButtonGroup = styled('div').attrs({className: 'flex flex-row justify-between br1 ph3 f4 mt2'})`
 background-color: #d6dffa;
 `
 const AmountPerAssessor = styled('input').attrs({className: 'flex w-25 tl pa1 bn bg-transparent '})`
@@ -326,8 +326,8 @@ const AHAUnit = styled('div').attrs({className: 'f5 mid-gray'})`
 const helpTextContainer = styled('div').attrs({className: 'flex flex-column h-100 justify-end mv3 tl'})`
 `
 
-const cardTextObjectHelp = styled('h5').attrs({className: 'flex f5 fw4 lh-copy tl mv2'})`
-color:#0A4A66;
+const cardTextObjectHelp = styled('h5').attrs({className: 'flex f4 fw4 lh-copy tl mv2'})`
+color: ${props => props.theme.textBody};
 `
 
 // step 2
@@ -351,4 +351,21 @@ color: ${props => props.theme.secondary};
 const createAssessmentFooter = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-between pa3 shadow-4'})`
 margin-top: 1px;
 background-color: #F5F5FF;
+`
+
+// end states
+
+const footerRow = styled('div').attrs({className: 'flex flex-row w-100 items-center'})`
+`
+
+const icoSuccess = styled('div').attrs({className: 'flex br-100 mr3'})`
+width: 24px;
+height: 24px;
+background-color: ${props => props.theme.positiveGreenContrast};
+`
+
+const icoFailure = styled('div').attrs({className: 'flex br-100 mr3'})`
+width: 24px;
+height: 24px;
+background-color: ${props => props.theme.negativeRedContrast};
 `
