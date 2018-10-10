@@ -1,11 +1,9 @@
 import Web3 from 'web3'
-import { getInstance, hmmmToAha, getLocalStorageKey, getBlockDeployedAt } from '../../utils'
+import { getInstance, hmmmToAha, getBlockDeployedAt } from '../../utils'
 import { networkName, LoadingStage } from '../../constants'
 import { processEvent } from '../assessment/asyncActions'
 import { setModal } from '../navigation/actions'
-import {receiveAllAssessments} from '../assessment/actions.ts'
-import {receiveConcepts} from '../concept/actions.ts'
-import { web3EventsConnected, receiveVariable, receivePersistedState } from './actions'
+import { web3EventsConnected, receiveVariable } from './actions'
 import { modalTopic } from '../../components/Helpers/helperContent'
 
 var Dagger = require('eth-dagger')
@@ -14,10 +12,10 @@ const { FathomToken } = require('fathom-contracts')
 // actions to instantiate web3 related info
 export const connect = () => {
   return async (dispatch, getState) => {
-    let fathomTokenDeployedAt = getState().ethereum.fathomTokenDeployedAt
+    let deployedFathomTokenAt = getState().ethereum.deployedFathomTokenAt
     let network = networkName(getState().ethereum.networkID)
 
-    if (!fathomTokenDeployedAt) dispatch(loadFathomNetworkParams())
+    if (!deployedFathomTokenAt) dispatch(loadFathomNetworkParams())
     dispatch(fetchUserBalance())
 
     // set a second web3 instance to subscribe to events via websocket
@@ -42,33 +40,10 @@ export const connect = () => {
 const loadFathomNetworkParams = () => {
   return async (dispatch, getState) => {
     console.log('ONLY ONCE!: looking up when stuff was deployed kk')
-    let deployedFathomTokenAt = await getBlockDeployedAt.fathomToken(getState())
-    let deployedConceptRegistryAt = await getBlockDeployedAt.conceptRegistry(getState())
+    let deployedFathomTokenAt = Number(await getBlockDeployedAt.fathomToken(getState()))
+    let deployedConceptRegistryAt = Number(await getBlockDeployedAt.conceptRegistry(getState()))
     dispatch(receiveVariable('deployedFathomTokenAt', deployedFathomTokenAt))
     dispatch(receiveVariable('deployedConceptRegistryAt', deployedConceptRegistryAt))
-  }
-}
-
-export const loadPersistedState = (networkID, userAddress, web3) => {
-  return async (dispatch, getState) => {
-    try {
-      let key = getLocalStorageKey(networkID, userAddress, web3)
-      // let key = networkName(networkID) + 'State' + userAddress
-      const serializedState = localStorage.getItem(key) // eslint-disable-line no-undef
-      if (serializedState === null) {
-        return undefined
-      }
-      let persistedState = JSON.parse(serializedState)
-      if (persistedState.assessments) {
-        dispatch(receiveAllAssessments(persistedState.assessments))
-      }
-      if (persistedState.concepts) {
-        dispatch(receiveConcepts(persistedState.concepts))
-      }
-      dispatch(receivePersistedState(persistedState))
-    } catch (e) {
-      console.log('ERROR reading from localStorage')
-    }
   }
 }
 

@@ -4,12 +4,12 @@ import h from 'react-hyperscript'
 
 import {State} from '../../store'
 import {ConnectMetamask} from '../../store/loading/asyncActions'
-import {LoadingState} from '../../store/loading/reducer'
+import {LoadingStage} from '../../store/loading/reducer'
 
 import Modal from '../Helpers/Modal'
 
 type Props = {
-  MetamaskLoadingState: LoadingState['metamask'],
+  MetamaskLoadingState: LoadingStage //LoadingState['metamask'],
   ConnectMetamask: typeof ConnectMetamask
 }
 export class MetamaskLoader extends Component<Props> {
@@ -37,7 +37,7 @@ export class MetamaskLoader extends Component<Props> {
 
 const mapStateToProps = (state:State) => {
   return {
-    MetamaskLoadingState: state.loading.metamask
+    MetamaskLoadingState: state.loading.metamask,
   }
 }
 const mapDispatchToProps = {
