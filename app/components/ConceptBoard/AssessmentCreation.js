@@ -200,7 +200,7 @@ export class AssessmentCreation extends Component {
     } else {
       footerContent = [h(footerRow, [
         h(step === 4 ? icoSuccess : icoFailure),
-        h(Body, step === 4 ? 'Your assessment is being created on Ethereum.' : 'Your transaction could not be submitted.')
+        h(Body, {feedBack: step === 4 ? 'success' : 'failed'}, step === 4 ? 'Your assessment is being created on Ethereum.' : 'Your transaction could not be submitted.')
       ])]
     }
     footerContent.push(h(ButtonPrimary, {
