@@ -25,21 +25,21 @@ type Props = {
 class MainView extends Component<Props> {
   render () {
     let modal = this.props.modal
+
     return (
       h(HashRouter, [
           h('div', [
             h(Header),
             h(HelperBar),
-            (h(appContainer,
-               modal
-               ? [h(NavTabs), h(Modal)]
-               : [h(NavTabs),
-                  h(Route, {exact: true, path: '/', component: AssessmentBoard}),
-                  h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
-                  h(Route, {path: '/assessment/:id', component: AssessmentView}),
-                  h(Route, {path: '/certificates/', component: CertificateBoard})
-                 ])
-            )
+            h(appContainer, [
+              h(NavTabs),
+              (modal ? h(Modal) : null),
+              h(Route, {exact: true, path: '/', component: AssessmentBoard}),
+              h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
+              h(Route, {path: '/assessment/:id', component: AssessmentView}),
+              h(Route,{path: '/certificates', exact: true, component: CertificateBoard}),
+              h(Route, {path: '/certificates/:address', component: CertificateBoard})
+            ])
           ])
       ])
     )

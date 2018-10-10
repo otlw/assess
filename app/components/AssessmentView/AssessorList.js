@@ -14,10 +14,11 @@ class AssessorList extends Component {
   }
 }
 
-const containerListAssessors = styled('ul').attrs({className: 'list self-start pl0 mt0 lh-copy gray'})`
+const containerListAssessors = styled('ul').attrs({className: 'list self-start pl0 mt0 lh-copy'})`
 `
 
 const containerListItem = styled('li').attrs({className: 'w5 ellipsis truncate'})`
+color: ${props => props.theme.textBody}
 `
 
 export default AssessorList

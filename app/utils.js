@@ -73,8 +73,9 @@ export function convertFromUIScoreToOnChainScore (x) {
 returns the message to be displayed on the assessment Card and DetailView, which is different depending on
 whether the user needs to be active, the assessment was cancelled and the phase of the assessment
 */
-export function statusMessage (isAssessee, assessment) {
+export function statusMessage (isAssessee, assessment, transactions = []) {
   let actionRequired = assessment.stage === assessment.userStage && assessment.stage !== Stage.Done
+  let nOtherAssessorsToBeActive = assessment.size - (assessment.stage === Stage.Called ? assessment.assessors.length : assessment.done) - (actionRequired ? 1 : 0)
   let status = ''
   console.log()
   // assessment Failed?
@@ -109,12 +110,18 @@ export function statusMessage (isAssessee, assessment) {
       }
     } else if (!actionRequired) {
       // assessment not done, but user must not do something
-      status += 'Waiting...'
+      status += `Waiting for ${nOtherAssessorsToBeActive} remaining assessors to ${StageDisplayNames[assessment.stage]}.`
     } else {
       // assessment not done because user (and others) need to do something
-      let nOtherAssessorsToBeActive = assessment.size - assessment.done - (actionRequired ? 1 : 0)
-      // user must do something
-      status += 'Waiting for you and ' + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[assessment.stage]
+      // user must do something (or has done something which is awaiting confirmation)
+      // no idea why the commented out comparison in the next line is failing,
+      // but we don't really need it as when the tx is confirmed this else clause will not be reached
+      let txToChangeState = transactions.filter(x => x.data === assessment.stage) // && x.status === 'Tx Published' )
+      if (txToChangeState.length > 0) {
+        status = 'Awaiting confirmation...'
+      } else {
+        status += 'Waiting for you and ' + nOtherAssessorsToBeActive + ' assessors to ' + StageDisplayNames[assessment.stage]
+      }
     }
   }
   return status
@@ -124,25 +131,4 @@ export const getLocalStorageKey = (networkID, userAddress, web3) => {
   // the address of the FathomToken is appended so that redeployments on a local
   // testnet do not show assessment from earlier migrations
   return 'State' + networkName(networkID) + userAddress + FathomToken.networks[networkID].address
-}
-
-export const saveState = (state) => {
-  if (state.ethereum.isConnected) {
-    try {
-      let stateToSave = {
-        assessments: state.assessments,
-        concepts: state.concepts,
-        lastUpdatedAt: state.ethereum.lastUpdatedAt,
-        deployedConceptRegistryAt: state.ethereum.deployedConceptRegistryAt,
-        deployedFathomTokenAt: state.ethereum.deployedFathomTokenAt
-      }
-      let key = getLocalStorageKey(state.ethereum.networkID, state.ethereum.userAddress, state.ethereum.web3)
-      const serializedState = JSON.stringify(stateToSave)
-      localStorage.setItem(key, serializedState) // eslint-disable-line no-undef
-    } catch (err) {
-      console.log('error saving state', err)
-    }
-  } else {
-    console.log('do not store Store yet')
-  }
 }

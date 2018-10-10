@@ -11,46 +11,42 @@ import { TransactionReceipt, PromiEvent } from 'web3/types'
 */
 
 export function sendAndReactToTransaction (
-  dispatch: Dispatch<any, any>, 
+  dispatch: Dispatch<any, any>,
   transaction: () => PromiEvent<any>,
-  saveData: 'makeAssessment' | 'meetingPointChange' | 'refund', 
-  userAddress: string, 
-  assessmentAddress: string, 
-  confirmationCallback: (status: boolean, receipt: TransactionReceipt | Error) => void) {
-
-  // transaction.method(...transaction.args).send({from: userAddress, gas: gas || 320000})
+  saveData: 'makeAssessment' | 'meetingPointChange' | 'refund',
+  userAddress: string,
+  assessmentAddress: string,
+  callbacks: {
+    transactionHash: (hash: string) => void | null,
+    confirmation: (status: boolean, receipt: TransactionReceipt | Error) => void,
+    error: (error: Error) => void
+  }
+  ) {
   transaction()
     .on('transactionHash', (hash: string) => {
-
-      // right after the transaction is published
-      // confirmationCallback(false, hash)
       dispatch(saveTransaction(assessmentAddress, userAddress, saveData, hash))
+      if (callbacks.transactionHash) callbacks.transactionHash(hash)
     })
     .on('confirmation', (confirmationNumber, receipt) => {
-
       // TODO: choose a good confirmation number (kovan and rinkeby accept 2, but local textnet requires 8)
       // when the transaction is confirmed into a block
       if (confirmationNumber === 8) {
-
         dispatch(updateTransaction(
           receipt.transactionHash,
           receipt.status ? 'Tx confirmed' : 'Tx failed'
         ))
-      }
-      if (confirmationCallback && confirmationNumber === 9) {
-
-        if (receipt.status) {
-          confirmationCallback(false, receipt)
-
-        } else {
-          confirmationCallback(true, receipt)
-
-        }
+          if (callbacks.confirmation) {
+              if (receipt.status) {
+                  callbacks.confirmation(false, receipt)
+              } else {
+                  callbacks.confirmation(true, receipt)
+              }
+          }
       }
     })
     .on('error', (err: Error) => {
       // when there is an error
       console.log('err', err)
-      confirmationCallback(true, err)
+        if (callbacks.error) callbacks.error(err)
     })
 }

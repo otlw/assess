@@ -8,9 +8,10 @@ color: ${props => props.theme.tertiary};
 background-color: ${props => props.theme.primary};
 `
 
-export const ButtonPrimary = styled('button').attrs({className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`
+export const ButtonPrimary = styled('button').attrs<{active:boolean}>(
+  {className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`
 color: ${props => props.theme.tertiary};
-background-color: ${props => props.theme.primary};
+background-color: ${props => !props.active ? props.theme.primary : props.theme.positiveGreen}
 `
 
 export const ButtonSecondary = styled('button').attrs({className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`
@@ -18,7 +19,7 @@ color: ${props => props.theme.primary};
 background-color: ${props => props.theme.tertiary};
 `
 
-export const ButtonTertiary = styled('button').attrs({className: 'flex pv2 ph3 items-center justify-center br4 ttu uppercase pointer'})`
+export const ButtonTertiary = styled('button').attrs({className: 'flex pv2 ph3 items-center justify-center br1 bg-transparent f6 ttu uppercase pointer'})`
 color: ${props => props.theme.primary};
 border: 1px solid ${props => props.theme.primary};
 `
@@ -29,7 +30,7 @@ export const ButtonClose = (props:{onClick:any}) => {
   ])
 }
 
-const styleButtonClose = styled('button').attrs({className: 'flex h-100 items-center justify-center pa0 mr2 bg-transparent pointer br-100'})`
+const styleButtonClose = styled('button').attrs({className: 'flex h-100 items-center justify-center pa0 bg-transparent pointer br-100'})`
 transition:0.2s ease-in-out;
 border: 1px solid transparent;
 width: 32px;
