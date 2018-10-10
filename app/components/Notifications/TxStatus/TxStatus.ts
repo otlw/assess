@@ -43,16 +43,11 @@ export class TxStatus extends Component<ITxStatusProps> {
 
 export default TxStatus
 
-// styled components ------------------------ //
+// styled
 const rowTxContainer = styled('div').attrs({className: 'flex flex-row w-100 h3 items-center justify-center br2 pv1 shadow-4'})`
   border-color: ${props => props.theme.tertiary};
 `
 
 const textTransaction = styled('h5').attrs({className: 'f5 fw4 pa2 dark-gray'})``
-
-// TODO: highlight keywords...
-// const boldText = textTransaction.extend`
-//   font-weight: bold;
-// `
 
 const linkTransaction = styled('a').attrs({className: 'link f5 fw4 blue'})``
