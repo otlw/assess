@@ -354,7 +354,7 @@ const createAssessmentFooter = styled('div').attrs({
   className: 'flex flex-row w-100 items-center justify-between pa3 shadow-4'
 })`
 margin-top: 1px;
-background-color: ${props => props.highlight ? (props.highlight === 'success' ? props.theme.lightgreen : props.theme.negativeRed) : '#F5F5FF'};
+background-color: ${props => props.highlight ? (props.highlight === 'success' ? props.theme.positiveGreen : props.theme.negativeRed) : '#F5F5FF'};
 `
 
 // end states
