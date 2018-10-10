@@ -12,8 +12,8 @@ export const AssessmentBoard = (props) => {
       if (props.userAddress === assessment.assessee) {
         return (assessment.stage < Stage.Done && !assessment.violation)
       }
-
-      if (assessment.assessors.includes(props.userAddress)) {
+      // console.log('ass', assessment)
+      if (assessment.assessors && assessment.assessors.includes(props.userAddress)) {
         return assessment.stage > Stage.Called && assessment.stage < Stage.Done && !assessment.violation
       }
       return false

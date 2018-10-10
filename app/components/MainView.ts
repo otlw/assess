@@ -36,9 +36,7 @@ class MainView extends Component<IMainViewProps> {
           h(TxList, { transactions: this.props.transactions }),
           h(appContainer, [
             h(NavTabs),
-            (modal ? h(Modal) : null),
             h(HelperBar),
-              h(NavTabs),
               (modal ? h(Modal) : null),
               h(Route, {exact: true, path: '/', component: AssessmentBoard}),
               h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
@@ -47,7 +45,6 @@ class MainView extends Component<IMainViewProps> {
               h(Route, {path: '/certificates/:address', component: CertificateBoard})
             ])
           ])
-        ])
       ])
     )
   }
