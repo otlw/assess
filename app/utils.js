@@ -136,7 +136,7 @@ export function mapAssessmentStageToStatus (assessmentStage, userStage, violatio
   if ((violation === TimeOutReasons.NotEnoughAssessors && step === Stage.Called) ||
       (violation === TimeOutReasons.NotEnoughCommits && step === Stage.Confirmed) ||
       (violation === TimeOutReasons.NotEnoughReveals && step === Stage.Committed)) {
-    return 'canceled'
+    return 'failed'
   }
   // it was not a violation! see whether the step has been completed:
   if (assessmentStage > step || assessmentStage === Stage.Done) {
