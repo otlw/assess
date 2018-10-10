@@ -27,10 +27,10 @@ export class HelperBar extends Component<Props> {
           h(barContainer, [
             h(barContainerTitle, [
               h(icoQuestion, '?'),
-              h(Label, topic.title) // decrease header size? (e.g., 'h5' --> 'h4')
+              h(Label, topic.title)
             ]),
             h(barObject, [
-              h(Body, topic.text), // decrease font size? (e.g., f6 --> f5)
+              h(Body, topic.text),
               (topic.learnMore
                ? h(barButtonPrimary, {onClick: this.learnMore.bind(this)}, 'Learn More')
                : null)
