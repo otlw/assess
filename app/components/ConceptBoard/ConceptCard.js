@@ -22,9 +22,7 @@ export class ConceptCard extends Component {
         ])
       ]),
       h(cardContainerDescription, [
-        h(cardObjectDescription, [
-          h(Body, this.props.conceptData.description)
-        ]),
+        h(Body, this.props.conceptData.description),
         h(cardContainerButtons, [
           h(ButtonPrimary, {onClick: this.props.selectConcept.bind(this), id: this.props.conceptAddress}, 'Get Assessed')
         ])
@@ -39,12 +37,16 @@ export default ConceptCard
 
 const cardContainer = styled('div').attrs({
   className: 'flex flex-column ma3 br2 shadow-4'
-})`height: 420px; width: 300px;background: linear-gradient(180.1deg, #FFFFFF 0.05%, #E9F7FD 52.48%, #CFF9EF 85.98%);
+})`
+height: 420px; 
+width: 300px;
+background: linear-gradient(180deg, #FFFFFF 0%, #BFD4FF 100%);
+box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
 `
 const cardContainerInfo = styled('div').attrs({
   className: 'flex justify-between flex-column w-100 pa3'
 })`
-height: 60%;
+height: 50%;
 `
 
 const cardTextObject = styled('div').attrs({
@@ -53,10 +55,9 @@ const cardTextObject = styled('div').attrs({
 `
 
 const cardContainerDescription = styled('div').attrs({
-  className: 'relative flex content-between flex-column w-100'
+  className: 'relative flex content-between flex-column w-100 justify-between pa3'
 })`
-height: 40%;
-background-color: #D3ECF7;
+height: 50%;
 `
 
 const cardObjectDescription = styled('div').attrs({
@@ -64,7 +65,7 @@ const cardObjectDescription = styled('div').attrs({
 })`
 `
 
-const cardContainerButtons = styled('div').attrs({className: 'flex flex-row justify-center w-100 pb3 ph3'})`
+const cardContainerButtons = styled('div').attrs({className: 'flex flex-row justify-center w-100'})`
 `
 
 // const cardButtonSecondary = styled('div').attrs({
