@@ -60,11 +60,6 @@ const cardContainerDescription = styled('div').attrs({
 height: 50%;
 `
 
-const cardObjectDescription = styled('div').attrs({
-  className: 'flex flex-column h-100 pl3 pa3'
-})`
-`
-
 const cardContainerButtons = styled('div').attrs({className: 'flex flex-row justify-center w-100'})`
 `
 
