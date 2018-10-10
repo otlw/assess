@@ -36,7 +36,8 @@ class MainView extends Component<Props> {
               h(Route, {exact: true, path: '/', component: AssessmentBoard}),
               h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
               h(Route, {path: '/assessment/:id', component: AssessmentView}),
-              h(Route, {path: '/certificates/', component: CertificateBoard})
+              h(Route,{path: '/certificates', exact: true, component: CertificateBoard}),
+              h(Route, {path: '/certificates/:address', component: CertificateBoard})
             ])
           ])
       ])

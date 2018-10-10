@@ -164,6 +164,22 @@ export function refund (assessmentAddress, stage) {
   }
 }
 
+export function fetchCredentials (address) {
+  return async (dispatch, getState) => {
+    const fathomTokenInstance = getInstance.fathomToken(getState())
+    const deployedFathomTokenAt = getState().ethereum.deployedFathomTokenAt
+    let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {
+      filter: {to: address, topic: 7},
+      fromBlock: deployedFathomTokenAt,
+      toBlock: 'latest'
+    })
+
+    pastNotifications.map((notification) => {
+      dispatch(fetchAssessmentData(notification.returnValues.sender))
+    })
+  }
+}
+
 /*
   Called ONLY ONCE via the loading-hoc of FilterView-component.
   Fetches all data for all assessments (static, dynamic info & assessor-related info)
