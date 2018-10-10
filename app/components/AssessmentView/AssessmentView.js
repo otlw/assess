@@ -60,21 +60,13 @@ export class AssessmentData extends Component {
         // indicates status of assesssment
         h(assessmentRowSubHeader, [
           h(assessmentContainerStatus, [
-<<<<<<< HEAD
             h(assessmentLabelBody, 'STATUS'),
             progressBar({
-              length: 5,
+              length: 4,
               step: assessment.userStage,
               status: mapAssessmentStageToStatus(assessment.stage, assessment.userStage, assessment.violation, assessment.userStage)
             }),
             h(assessmentTextBody, statusString)
-=======
-            h(assessmentLabelContainer, [
-              h(Label, 'STATUS'),
-              progressBar({length: 6, step: 2}) // TODO use a global utils function (assessment)=>(step) to put the right inputs into this
-            ]),
-            h(Body, status)
->>>>>>> master
           ]),
           h(assessmentContainerDate, [
             h(assessmentLabelContainer, [

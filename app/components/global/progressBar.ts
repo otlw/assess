@@ -4,7 +4,7 @@ import h from 'react-hyperscript'
 type Props = {
   length: number,
   step:number
-  failed: boolean
+  status: string
 }
 
 const progressBar = (props:Props) => {
@@ -12,10 +12,13 @@ const progressBar = (props:Props) => {
 	let i=0
 	for (i = 0; i < props.length; i++) {
 		let newDot=h(Inactive)
-		if (i<props.step){
-			newDot=h(Complete)
-		} else if (i==props.step){
-			newDot= props.failed ? h(Failed) : h(Active)
+		if ((i<props.step)||(props.status=="inactive"&&props.step==i)){
+			newDot=h(Complete);
+		} else if ((props.status=="active")&&(i==props.step)) {
+			newDot=h(Active);
+		} else if ((props.status=="failed")&&(i>=props.step)) {
+			newDot=h(Failed);	
+
 		}
 	    Dots.push(newDot);
 	}
