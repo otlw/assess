@@ -236,7 +236,7 @@ export class AssessmentCreation extends Component {
           ]),
           BottomPartContent
         ]),
-        h(createAssessmentFooter, footerContent)
+        h(createAssessmentFooter, {highlight: step > 3 ? (step === 4 ? 'success' : 'failure') : ''}, footerContent)
       ])
     ])
   }
@@ -350,11 +350,11 @@ color: ${props => props.theme.secondary};
 
 // Custom styles no longer necessary for Step 4
 
-// navigation buttons
-
-const createAssessmentFooter = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-between pa3 shadow-4'})`
+const createAssessmentFooter = styled('div').attrs({
+  className: 'flex flex-row w-100 items-center justify-between pa3 shadow-4'
+})`
 margin-top: 1px;
-background-color: #F5F5FF;
+background-color: ${props => props.highlight ? (props.highlight === 'success' ? props.theme.lightgreen : props.theme.negativeRed) : '#F5F5FF'};
 `
 
 // end states

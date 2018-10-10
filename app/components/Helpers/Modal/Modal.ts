@@ -9,7 +9,6 @@ import {Props} from './index'
 // idea: if this is styled to be transparent, the user see's that stuff changes and that he has to click to close it.
 export class Modal extends Component<Props> {
   closeScreen () {
-    console.log('fddsf')
     this.props.setModal(null)
   }
 
