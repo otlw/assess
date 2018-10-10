@@ -13,13 +13,13 @@ export const AssessmentBoard = (props) => {
         return (assessment.stage < Stage.Done && !assessment.violation)
       }
 
-      if (assessment.assessors.includes(props.userAddress)) {
+      if (assessment.assessors && assessment.assessors.includes(props.userAddress)) {
         return assessment.stage > Stage.Called && assessment.stage < Stage.Done && !assessment.violation
       }
       return false
     }),
     Available: assessmentsAsList.filter(assessment => {
-      return (assessment.assessors.includes(props.userAddress) &&
+      return (assessment.userStage === Stage.Called &&
               assessment.stage === Stage.Called &&
               !assessment.violation &&
               (!assessment.hidden || (assessment.hidden && props.showHidden)))
@@ -27,7 +27,7 @@ export const AssessmentBoard = (props) => {
     Past: assessmentsAsList.filter(assessment => {
       return (
         (assessment.assessee === props.userAddress ||
-         assessment.assessors.includes(props.userAddress)) &&
+         (assessment.assessors && assessment.assessors.includes(props.userAddress))) &&
           (assessment.stage === Stage.Done || assessment.violation))
     })
   }
