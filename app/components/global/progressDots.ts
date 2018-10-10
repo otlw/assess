@@ -7,7 +7,7 @@ type Props = {
   status: string
 }
 
-const progressBar = (props:Props) => {
+const progressDots = (props:Props) => {
 	let Dots=[]
 	let i=1
 	for (i = 1; i < props.length+1; i++) {
@@ -27,7 +27,7 @@ const progressBar = (props:Props) => {
     )
 }
 
-export default progressBar
+export default progressDots
 
 // styles
 

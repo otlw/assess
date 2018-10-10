@@ -7,7 +7,7 @@ import FailedBar from './FailedBar'
 import { StageDisplayNames, Stage } from '../../constants.js'
 import { convertDate, statusMessage, mapAssessmentStageToStatus } from '../../utils.js'
 import styled from 'styled-components'
-import progressBar from '../Global/progressBar.ts'
+import progressDots from '../Global/progressDots.ts'
 import { Headline, Label, Body } from '../Global/Text.ts'
 import { helperBarTopic } from '../../components/Helpers/helperContent'
 // import { NavLink } from 'react-router-dom'
@@ -62,7 +62,7 @@ export class AssessmentData extends Component {
           h(assessmentContainerStatus, [
             h(assessmentLabelContainer, [
               h(Label, 'STATUS'),
-              progressBar({
+              progressDots({
                 length: 4,
                 step: assessment.userStage,
                 status: mapAssessmentStageToStatus(assessment.stage, assessment.userStage, assessment.violation, assessment.userStage)
