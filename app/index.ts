@@ -3,11 +3,12 @@ import thunk from 'redux-thunk'
 import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import {App} from './App'
-import rootReducer from './store/index'// / web3Reducer.js'
+import rootReducer from './store/index'
 import h from 'react-hyperscript'
 import  styled, {ThemeProvider}from 'styled-components'
 import throttle from 'lodash/throttle'
-import { saveState } from './utils.js'
+import {State} from './store'
+import {getLocalStorageKey} from './utils.js'
 
 const topLevelStyles = styled('div')`
 font-family:'system-ui', 'Helvetica Neue', sans-serif;
@@ -42,7 +43,7 @@ const theme = {
 // subscribe to any change in store and save it (at most once per second)
 store.subscribe(throttle(() => {
   saveState(store.getState())
-}, 1000))
+}, 500))
 
 render(
   h(Provider, {store},
@@ -51,3 +52,25 @@ render(
      )),
   document.getElementById('root')
 )
+
+const saveState = (state:State) => {
+  if (state.ethereum.isConnected) {
+    try {
+      let stateToSave = {
+        assessments: state.assessments,
+        concepts: state.concepts,
+        lastUpdatedAt: state.ethereum.lastUpdatedAt,
+        deployedConceptRegistryAt: state.ethereum.deployedConceptRegistryAt,
+        deployedFathomTokenAt: state.ethereum.deployedFathomTokenAt,
+        visits: state.navigation.visits
+      }
+      let key = getLocalStorageKey(state.ethereum.networkID, state.ethereum.userAddress, state.ethereum.web3)
+      const serializedState = JSON.stringify(stateToSave)
+      localStorage.setItem(key, serializedState) // eslint-disable-line no-undef
+    } catch (err) {
+      console.log('error saving state', err)
+    }
+  } else {
+    console.log('do not store Store yet')
+  }
+}

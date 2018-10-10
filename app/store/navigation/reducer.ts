@@ -28,7 +28,15 @@ export type NavigationState = {
   modal: ModalTopics
   helperBar: helperBarTopics,
   inputBar: string,
-  showHiddenCards: boolean
+  showHiddenCards: boolean,
+  visits: VisitState
+}
+
+export type VisitState = {
+  site: number,
+  assessor: 0 | 1 | 2 | 3 | 4,
+  assessee: 0 | 1 | 2 | 3 | 4,
+  hasSeenConcepts: boolean
 }
 
 const initialState:NavigationState = {
@@ -36,7 +44,13 @@ const initialState:NavigationState = {
   modal: null,
   helperBar: null,
   inputBar: '',
-  showHiddenCards: false
+  showHiddenCards: false,
+  visits: {
+    site: 0,
+    assessor: 0,
+    assessee: 0,
+    hasSeenConcepts: false
+  }
 }
 
 export function NavigationReducer (state = initialState, action:Action):NavigationState {
@@ -66,6 +80,30 @@ export function NavigationReducer (state = initialState, action:Action):Navigati
         ...state,
         showHiddenCards: !state.showHiddenCards
       }
+    case 'RECEIVE_VISIT_HISTORY':
+      return {
+        ...state,
+        visits: action.visits
+      }
+    case 'ADD_VISIT':
+      return {
+        ...state,
+        visits: {
+          ...state.visits,
+          site: state.visits.site + 1
+        }
+      }
+      /*
+        case SAVE_PROGRESSION:
+          return {
+              ...state,
+              visits: {
+                  ...state.visits,
+                  [action.role]: action.stage > state.visits[action.role] ? action.stage : state.visits[action.role]
+              }
+          }
+      */
+
     default: return state
   }
 }

@@ -28,6 +28,7 @@ interface IMainViewProps {
 class MainView extends Component<IMainViewProps> {
   render () {
     let modal = this.props.modal
+
     return (
       h(HashRouter, [
         h('div', [
@@ -37,10 +38,14 @@ class MainView extends Component<IMainViewProps> {
             h(NavTabs),
             (modal ? h(Modal) : null),
             h(HelperBar),
-            h(Route, { exact: true, path: '/', component: AssessmentBoard}),
-            h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
-            h(Route, {path: '/assessment/:id', component: AssessmentView}),
-            h(Route, {path: '/certificates/', component: CertificateBoard})
+              h(NavTabs),
+              (modal ? h(Modal) : null),
+              h(Route, {exact: true, path: '/', component: AssessmentBoard}),
+              h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
+              h(Route, {path: '/assessment/:id', component: AssessmentView}),
+              h(Route,{path: '/certificates', exact: true, component: CertificateBoard}),
+              h(Route, {path: '/certificates/:address', component: CertificateBoard})
+            ])
           ])
         ])
       ])

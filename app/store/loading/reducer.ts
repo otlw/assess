@@ -2,15 +2,19 @@ import {Actions} from './actions'
 import { LoadingStage } from '../../constants'
 
 export type LoadingStage = null | "Loading" | "Loaded" | "Error"
+
 export type LoadingState = {
   assessments: number,
   concepts: number,
-  metamask: LoadingStage
+  metamask: LoadingStage,
+  history: LoadingStage
 }
-let initialState:LoadingState = {
+
+let initialState: LoadingState = {
   assessments: LoadingStage.None,
   concepts: LoadingStage.None,
-  metamask: null
+  metamask: null,
+  history: null
 }
 
 export function LoadingReducer (state = initialState, action:Actions):LoadingState {
@@ -41,6 +45,12 @@ export function LoadingReducer (state = initialState, action:Actions):LoadingSta
       return {
         ...state,
         metamask: action.stage
+      }
+    }
+    case "SET_HISTORY_LOADING_STAGE" : {
+      return {
+        ...state,
+        history: action.stage
       }
     }
     default:

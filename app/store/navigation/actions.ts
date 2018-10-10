@@ -1,11 +1,15 @@
-import { NavigationState } from './reducer'
+import { NavigationState, VisitState } from './reducer'
 
 export type Action =
   ReturnType<typeof setDashboardTab> |
   ReturnType<typeof setModal> |
   ReturnType<typeof setHelperBar> |
   ReturnType<typeof setInputBar> |
-  ReturnType<typeof toggleHidden>
+  ReturnType<typeof toggleHidden> |
+  ReturnType<typeof addVisit> |
+  ReturnType<typeof receiveVisitHistory>
+  // ReturnType<typeof saveProgression>
+
 
 export function setDashboardTab (dashboardTab: NavigationState['dashboardTab']) {
   let type: 'SET_DASHBOARD_TAB' = 'SET_DASHBOARD_TAB'
@@ -43,3 +47,27 @@ export function toggleHidden() {
   let type: 'TOGGLE_HIDDEN_CARDS' = 'TOGGLE_HIDDEN_CARDS'
   return {type}
 }
+
+export function addVisit() {
+    let type:'ADD_VISIT' = 'ADD_VISIT'
+    return {
+        type
+    }
+}
+
+export function receiveVisitHistory (visits:VisitState) {
+  let type:'RECEIVE_VISIT_HISTORY' = 'RECEIVE_VISIT_HISTORY'
+  return {
+    type,
+    visits
+  }
+}
+
+// export function saveProgression (role:string, stage:) {
+//     let type:'SAVE_PROGRESSSION' = 'SAVE_PROGRESSSION'
+//     return {
+//         type,
+//         role,
+//         stage
+//     }
+// }
