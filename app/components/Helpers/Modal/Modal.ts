@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Component } from 'react'
 import {Subheadline, Body} from '../../Global/Text'
 import {Props} from './index'
+import {ButtonPrimary,ButtonSecondary} from '../../Global/Buttons.ts'
 // import {Link} from 'react-router-dom'
 
 // TODO HOW can we make this component dissappear? when the user clicks on somthing from the navbar?
@@ -34,9 +35,9 @@ export class Modal extends Component<Props> {
             h(Body, this.props.topic.text)
           ]),
           h(modalFooter, [
-            h(modalButtonSecondary, {onClick: this.closeScreen.bind(this)}, 'Close'),
+            h(ButtonSecondary, {onClick: this.closeScreen.bind(this)}, 'Close'),
             this.props.topic.followUp
-              ? h(modalButtonPrimary, {onClick: this.nextScreen.bind(this)}, 'Learn More')
+              ? h(ButtonPrimary, {onClick: this.nextScreen.bind(this),active:true}, 'Learn More')
               : null
           ])
         ])
@@ -103,15 +104,3 @@ min-height:120px;
 `
 
 export const modalFooter = styled('div').attrs({className: 'flex flex-row items-center justify-around pa4-ns pa2'})``
-
-export const modalButtonPrimary = styled('button').attrs({className: 'flex ph4 pv2 fw4 f5 mh2 shadow-4 items-center align-center br-pill bg-green near-white ttu uppercase'})`
-background-color: #116187;
-:hover {cursor:pointer;}
-`
-
-const modalButtonSecondary = styled('div').attrs({
-  className: 'flex ph4 pv2 fw4 f5 mh2 items-center align-center br-pill dark-gray'
-})`box-shadow: 0px 0px 0px 1px hsla(214, 100%, 31%, 0.1);
-transition: 0.2s ease-in-out;
-:hover {cursor:pointer; background: #ccc; color: #444;}
-`

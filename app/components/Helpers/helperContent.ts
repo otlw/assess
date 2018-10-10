@@ -123,6 +123,16 @@ export function helperBarText (topic: helperBarTopics):helperBar {
           target: 'Smues'
         }
       }
+    case "FirstTimeMeetingPointSet":
+      return {
+        title: 'You set a meeting point!',
+        text: 'Great, now you are all set to get started and meet your assessors.',
+      }
+    case "MeetingPointChanged":
+      return {
+        title: 'You changed the meeting point!',
+        text: 'Remember to leave a note at your previous meeting point about it.'
+      }
     default:
       if (topic) console.log('no helperBarText defined for topic', topic)
       return {
