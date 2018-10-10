@@ -1,11 +1,9 @@
 import { connect } from 'react-redux'
 import { storeDataOnAssessment } from '../../../store/assessment/asyncActions'
-import { setInputBar } from '../../../store/navigation/actions'
-import MeetingPointEditBox from './MeetingPointEditBox.js'
+import MeetingPoint from './MeetingPoint.js'
 
 const mapDispatchToProps = {
-  storeDataOnAssessment,
-  setInputBar
+  storeDataOnAssessment
 }
 
-export default connect(null, mapDispatchToProps)(MeetingPointEditBox)
+export default connect(null, mapDispatchToProps)(MeetingPoint)
