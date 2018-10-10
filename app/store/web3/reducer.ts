@@ -14,8 +14,8 @@ export type EthereumState = {
   networkID: number
   AhaBalance: number
   lastUpdatedAt: number
-  deployedFathomTokenAt: string
-  deployedConceptRegistryAt: string  
+  deployedFathomTokenAt: number | null
+  deployedConceptRegistryAt: number | null
 }
 
 let initialState:EthereumState = {
@@ -28,8 +28,8 @@ let initialState:EthereumState = {
   networkID: 4,
   AhaBalance: 0,
   lastUpdatedAt: 0,
-  deployedFathomTokenAt: '',
-  deployedConceptRegistryAt: ''
+  deployedFathomTokenAt: null,
+  deployedConceptRegistryAt: null
 }
 
 export function EthereumReducer (state = initialState, action:Actions):EthereumState {

@@ -106,23 +106,24 @@ export function reveal (assessmentAddress, score, salt, customReact = false) {
   }
 }
 
-export function storeDataOnAssessment (assessmentAddress, data) {
+export function storeDataOnAssessment (assessmentAddress, newData) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), assessmentAddress)
     // also salt should be saved in state
-    let dataAsBytes = getState().ethereum.web3.utils.utf8ToHex(data)
+    let dataAsBytes = getState().ethereum.web3.utils.utf8ToHex(newData)
     let firstEdit = getState().assessments[assessmentAddress].data === ''
     sendAndReactToTransaction(
       dispatch,
       () => { return assessmentInstance.methods.addData(dataAsBytes).send({from: userAddress}) },
-      'meetingPointChange',
+      firstEdit ? 'FirstTimeMeetingPointSet' : 'meetingPointChange',
       userAddress,
       assessmentAddress,
       {
         confirmation: () => {
           dispatch(fetchStoredData(assessmentAddress))
           if (firstEdit) dispatch(setHelperBar(helperBarTopic.FirstTimeMeetingPointSet))
+          else { dispatch(setHelperBar(helperBarTopic.MeetingPointChanged)) }
         }
       }
     )
@@ -337,7 +338,7 @@ export function validateAndFetchAssessmentData (assessmentAddress) {
       // maybe the assessment was cancelled?
       const fathomTokenInstance = getInstance.fathomToken(getState())
       let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {
-        fromBlock: 0, // TODO put in deployedFathomTokenAt once it exists
+        fromBlock: getState().ethereum.deployedFathomTokenAt,
         toBlock: 'latest',
         filter: {sender: assessmentAddress}
       })
@@ -524,6 +525,7 @@ export function fetchStoredData (selectedAssessment) {
     let assessee = await assessmentInstance.methods.assessee().call()
     let data = await assessmentInstance.methods.data(assessee).call()
     if (data) {
+      console.log('data')
       data = getState().ethereum.web3.utils.hexToUtf8(data)
       dispatch(updateAssessmentVariable(assessmentAddress, 'data', data))
     }
