@@ -30,17 +30,19 @@ export class AssessmentCard extends Component {
           ])
         ]),
         h(cardContainerStatus, [
-          h(cardContainerProgressBar, {},
-            h(progressBar, {
-              length: 4,
-              step: stage - 1,
-              failed: assessment.violation || false
-            })),
           h(cardTextStatus, [
-            h(Label, 'Status'),
+            h(cardRowStatus, [
+              h(Label, 'Status'),
+              h(cardContainerProgressBar, {},
+                h(progressBar, {
+                  length: 4,
+                  step: stage - 1,
+                  failed: assessment.violation || false
+                }))
+            ]),
             h(Body, status)
           ]),
-          h('div', {className: 'flex flex-row justify-between w-100 pb3 ph3'}, linkButtons(assessment, isAssessee, this.props.setCardVisibility))
+          h('div', {className: 'flex flex-row justify-between w-100'}, linkButtons(assessment, isAssessee, this.props.setCardVisibility))
         ])
       ])
     )
@@ -100,22 +102,29 @@ height: 60%;
 
 const cardTextObject = styled('div').attrs({
   className: 'flex flex-column tl'
-})`
+})` 
 `
 
 const cardContainerStatus = styled('div').attrs({
-  className: 'relative flex content-between flex-column w-100'
+  className: 'relative flex content-between flex-column w-100 pa3 justify-between'
 })`
 height: 40%;
 background-color: #D3ECF7;
 `
 
 const cardTextStatus = styled('div').attrs({
-  className: 'flex flex-column h-100 pl3 pa3 tl'
+  className: 'flex flex-column tl'
+})`
+max-height: 80px;
+overflow: hidden; 
+`
+
+const cardRowStatus = styled('div').attrs({
+  className: 'flex flex-row items-center'
 })`
 `
 
 const cardContainerProgressBar = styled('div').attrs({
-  className: 'absolute flex items-center'
-})`right: 16px; top: -5px;
+  className: 'flex items-center'
+})`
 `
