@@ -9,8 +9,8 @@ type Props = {
 
 const progressBar = (props:Props) => {
 	let Dots=[]
-	let i=0
-	for (i = 0; i < props.length; i++) {
+	let i=1
+	for (i = 1; i < props.length+1; i++) {
 		let newDot=h(Inactive)
 		if ((i<props.step)||(props.status=="inactive"&&props.step==i)){
 			newDot=h(Complete);
