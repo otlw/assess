@@ -34,6 +34,7 @@
     "@types/react-dom": "^16.0.7",
     "@types/react-hyperscript": "^3.0.3",
     "@types/react-redux": "^6.0.9",
+    "@types/react-router-dom": "^4.3.1",
     "@types/redux-form": "^7.4.8",
     "@types/xtend": "^4.0.2",
     "enzyme": "^2.8.2",

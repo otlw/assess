@@ -12,15 +12,24 @@ export const AssessmentBoard = (props) => {
       if (props.userAddress === assessment.assessee) {
         return (assessment.stage < Stage.Done && !assessment.violation)
       }
-      return assessment.stage > Stage.Called && assessment.stage < Stage.Done && !assessment.violation
+
+      if (assessment.assessors.includes(props.userAddress)) {
+        return assessment.stage > Stage.Called && assessment.stage < Stage.Done && !assessment.violation
+      }
+      return false
     }),
     Available: assessmentsAsList.filter(assessment => {
-      return (props.userAddress !== assessment.assessee &&
+      return (assessment.assessors.includes(props.userAddress) &&
               assessment.stage === Stage.Called &&
               !assessment.violation &&
               (!assessment.hidden || (assessment.hidden && props.showHidden)))
     }),
-    Past: assessmentsAsList.filter(assessment => assessment.stage === Stage.Done || assessment.violation)
+    Past: assessmentsAsList.filter(assessment => {
+      return (
+        (assessment.assessee === props.userAddress ||
+         assessment.assessors.includes(props.userAddress)) &&
+          (assessment.stage === Stage.Done || assessment.violation))
+    })
   }
 
   return h('div', Object.keys(assessmentLists).map((key, index) => {
