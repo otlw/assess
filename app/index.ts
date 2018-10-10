@@ -7,7 +7,8 @@ import rootReducer from './store/index'
 import h from 'react-hyperscript'
 import  styled, {ThemeProvider}from 'styled-components'
 import throttle from 'lodash/throttle'
-import { saveState } from './components/Loaders/HistoryLoader'
+import {State} from './store'
+import {getLocalStorageKey} from './utils.js'
 
 const topLevelStyles = styled('div')`
 font-family:'system-ui', 'Helvetica Neue', sans-serif;
@@ -49,3 +50,25 @@ render(
      )),
   document.getElementById('root')
 )
+
+const saveState = (state:State) => {
+  if (state.ethereum.isConnected) {
+    try {
+      let stateToSave = {
+        assessments: state.assessments,
+        concepts: state.concepts,
+        lastUpdatedAt: state.ethereum.lastUpdatedAt,
+        deployedConceptRegistryAt: state.ethereum.deployedConceptRegistryAt,
+        deployedFathomTokenAt: state.ethereum.deployedFathomTokenAt,
+        visits: state.navigation.visits
+      }
+      let key = getLocalStorageKey(state.ethereum.networkID, state.ethereum.userAddress, state.ethereum.web3)
+      const serializedState = JSON.stringify(stateToSave)
+      localStorage.setItem(key, serializedState) // eslint-disable-line no-undef
+    } catch (err) {
+      console.log('error saving state', err)
+    }
+  } else {
+    console.log('do not store Store yet')
+  }
+}

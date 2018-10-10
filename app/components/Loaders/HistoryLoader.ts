@@ -2,10 +2,9 @@ import {Component} from 'react'
 import { connect } from 'react-redux'
 import h from 'react-hyperscript'
 import Web3 from 'web3'
-
 import {State} from '../../store'
+
 import {LoadingStage} from '../../store/loading/reducer'
-import {getLocalStorageKey} from '../../utils.js'
 
 import {loadPersistedState} from '../../store/loading/asyncActions'
 
@@ -29,11 +28,10 @@ export class HistoryLoader extends Component<Props> {
     switch(this.props.historyLoadingState) {
       case null:
       case "Loading": {
-        return h('div', 'Loadin visit history, yaaa')
+        return h('div', 'Loading visit history')
       }
       case 'Error': {
-        console.log('uiuiuiiiui')
-        return h('div', 'iuiuiuiuuiiui')
+        return h('div', 'Uuiuiuiuuiiui, error loading from local storage.')
       }
       case 'Loaded': {
         return this.props.children
@@ -55,25 +53,3 @@ const mapDispatchToProps = {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HistoryLoader)
-
-export const saveState = (state:State) => {
-  if (state.ethereum.isConnected) {
-    try {
-      let stateToSave = {
-        assessments: state.assessments,
-        concepts: state.concepts,
-        lastUpdatedAt: state.ethereum.lastUpdatedAt,
-        deployedConceptRegistryAt: state.ethereum.deployedConceptRegistryAt,
-        deployedFathomTokenAt: state.ethereum.deployedFathomTokenAt,
-        visits: state.navigation.visits
-      }
-      let key = getLocalStorageKey(state.ethereum.networkID, state.ethereum.userAddress, state.ethereum.web3)
-      const serializedState = JSON.stringify(stateToSave)
-      localStorage.setItem(key, serializedState) // eslint-disable-line no-undef
-    } catch (err) {
-      console.log('error saving state', err)
-    }
-  } else {
-    console.log('do not store Store yet')
-  }
-}
