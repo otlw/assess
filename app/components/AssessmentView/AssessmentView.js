@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import MeetingPointEditBox from './MeetingPoint/'
+import MeetingPoint from './MeetingPoint'
 import AssessorList from './AssessorList.js'
 import ProgressAndInputBar from './ProgressAndInputBar'
 import FinalResultBar from './FinalResultBar.js'
@@ -91,23 +91,7 @@ export class AssessmentData extends Component {
             })
           ]),
           h(assessmentObjectText, [
-            h(assessmentLabelContainer, [
-              h(Label, 'Meeting Point')
-            ]),
-            h(Body, [
-              assessment.data
-                ? h('a', {href: assessment.data}, assessment.data)
-                : isAssessee
-                  ? 'You haven\'t set a meeting point'
-                  : 'No meeting point has been set yet']),
-            h(assessmentRow, [
-              assessment.assessee === this.props.userAddress
-                ? h(MeetingPointEditBox, {
-                  assessee: assessment.assessee,
-                  assessmentAddress: assessment.address
-                })
-                : null
-            ])
+            h(MeetingPoint, {assessment: assessment, isAssessee: isAssessee})
           ]),
           h(assessmentObjectTextRight, [
             h(assessmentLabelContainer, [
@@ -164,8 +148,7 @@ background-color: ${props => props.theme.tertiary};
 const assessmentContainerStatus = styled('div').attrs({className: 'flex flex-row flex-wrap w-50 items-center justify-start '})`
 `
 
-const assessmentLabelContainer = styled('div').attrs({className: 'flex flex-row w-100 mb2'})`
-
+export const assessmentLabelContainer = styled('div').attrs({className: 'flex flex-row w-100 mb2 items-center'})`
 `
 
 // End assessmentView Header
@@ -181,13 +164,6 @@ const assessmentObjectText = styled('div').attrs({className: 'flex flex-column w
 `
 
 const assessmentObjectTextRight = styled('div').attrs({className: 'flex flex-column w-40  items-start justify-center self-start mv4'})`
-`
-
-// Commented out as we may need to re-implement this very soon
-// const assessmentListAssessors = styled('div').attrs({className: 'flex flex-column w-100 h-100
-// self-start  items-start justify-center self-start mv3'})``
-
-const assessmentRow = styled('div').attrs({className: 'flex flex-row w-100 mw5 justify-between mt3 '})`
 `
 
 const assessmentFooter = styled('div').attrs({className: 'relative flex flex-row w-100'})`
