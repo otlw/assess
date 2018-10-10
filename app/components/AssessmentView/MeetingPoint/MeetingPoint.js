@@ -91,4 +91,5 @@ export const containerMeetingPointInput = styled('div').attrs({className: 'flex 
 
 export const rowMeetingPoint = styled('div').attrs({className: 'flex flex-row w-100'})`
 min-height: 34px;
+min-width: 14.5rem;
 `
