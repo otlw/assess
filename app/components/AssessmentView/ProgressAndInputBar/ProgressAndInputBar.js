@@ -3,8 +3,8 @@ import h from 'react-hyperscript'
 import { Stage, StageDisplayNames } from '../../../constants.js'
 import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
 import styled from 'styled-components'
-import buttonPrimary from '../../global/buttonPrimary.ts'
-import buttonClose from '../../global/buttonClose.ts'
+import {ButtonPrimary, ButtonClose} from '../../Global/Buttons.ts'
+import inputField from '../../Global/inputField.ts'
 
 let completedStageTexts = {
   [Stage.Confirmed]: 'You have staked successfully!',
@@ -136,11 +136,10 @@ export class ProgressAndInputBar extends Component {
     return (
       h(rowObjectText, [
         h(StageDescriptor, stageTexts[assessmentStage]),
-        h(containerProgressButton, [
-          h(buttonProgressActive, {
-            onClick: stageFunctions[assessmentStage]
-          }, StageDisplayNames[assessmentStage])
-        ])
+        h(ButtonPrimary, {
+          onClick: stageFunctions[assessmentStage],
+          active: false
+        }, StageDisplayNames[assessmentStage])
       ])
     )
   }
@@ -164,13 +163,14 @@ export class ProgressAndInputBar extends Component {
       case 'Reveal': {
         return (
           h(containerProgressBar, [
-            h(buttonClose, {onClick: this.closeInputBar.bind(this)}),
+            h(ButtonClose, {onClick: this.closeInputBar.bind(this)}),
             h(rowObjectText, [
               h(StageDescriptor, this.state.displayText),
               (this.props.stage === Stage.Confirmed
                 ? (
                   h(rowObjectInput, [
-                    h(inputProgressBar, {
+                    h(inputField, {
+                      width: 4,
                       placeholder: 'From 0 - 100',
                       step: 0.5,
                       type: 'number',
@@ -180,7 +180,10 @@ export class ProgressAndInputBar extends Component {
                 : null
               )
             ]),
-            h(buttonPrimary, {onClick: this.state.action.bind(this)}, view)
+            h(ButtonPrimary, {
+              onClick: this.state.action.bind(this),
+              active: true
+            }, view)
           ])
         )
       }
@@ -198,19 +201,6 @@ margin-top: 1px;
 min-height: 64px;
 `
 
-export const ProgressButton = styled('button')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
-`
-
-export const containerProgressButton = styled('div').attrs({className: 'flex w-auto items-center justify-center'})`
-`
-
-export const buttonProgressActive = styled('button').attrs({className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`
-color: ${props => props.theme.tertiary};
-background-color: ${props => props.theme.primary};
-`
-
 export const stageTexts = styled('h5').attrs({className: 'f5 fw4 mv0'})`
 color: ${props => props.theme.primary};
 `
@@ -220,23 +210,8 @@ export const StageDescriptor = styled('div').attrs({className: 'flex w-auto item
 color: ${props => props.theme.primary};
 `
 
-export const rowObjectButton = styled('div').attrs({className: 'flex w-auto items-center justify-center'})`
-`
-
 export const rowObjectText = styled('div').attrs({className: 'flex w-100 items-center justify-between br b--light-gray f5 gray'})`;
 `
 
 export const rowObjectInput = styled('div').attrs({className: 'flex w-auto items-center justify-end b--light-gray  f5 gray ttu uppercase'})`;
-`
-
-export const Feedback = styled.div`
-  font-size: 0.7em;
-  font-style: italic;
-  color:${props => props.invalidScoreRange ? 'red' : 'lightgrey'};
-`
-
-export const inputProgressBar = styled('input').attrs({className: 'flex w4 bn br2 pa2 mr2'})`
-outline: none;
-color: ${props => props.theme.primary};
-background-color: ${props => props.theme.tertiary};
 `

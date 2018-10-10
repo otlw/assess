@@ -43,9 +43,11 @@ export function confirmAssessor (assessmentAddress, customReact = false) {
       assessmentAddress,
       customReact
         ? customReact.callbck
-        : () => {
-          dispatch(fetchUserStage(assessmentAddress))
-          dispatch(setHelperBar(helperBarTopic.ConfirmedStake))
+        : {
+          confirmation: () => {
+            dispatch(fetchUserStage(assessmentAddress))
+            dispatch(setHelperBar(helperBarTopic.ConfirmedStake))
+          }
         }
     )
   }
@@ -68,9 +70,11 @@ export function commit (assessmentAddress, score, salt, customReact = false) {
       assessmentAddress,
       customReact
         ? customReact.callbck
-        : () => {
-          dispatch(fetchUserStage(assessmentAddress))
-          dispatch(setHelperBar(helperBarTopic.ConfirmedCommit))
+        : {
+          confirmation: () => {
+            dispatch(fetchUserStage(assessmentAddress))
+            dispatch(setHelperBar(helperBarTopic.ConfirmedCommit))
+          }
         }
     )
   }
@@ -92,30 +96,35 @@ export function reveal (assessmentAddress, score, salt, customReact = false) {
       assessmentAddress,
       customReact
         ? customReact.callbck
-        : () => {
-          dispatch(fetchUserStage(assessmentAddress))
-          dispatch(setHelperBar(helperBarTopic.ConfirmedReveal))
+        : {
+          confirmation: () => {
+            dispatch(fetchUserStage(assessmentAddress))
+            dispatch(setHelperBar(helperBarTopic.ConfirmedReveal))
+          }
         }
     )
   }
 }
 
-export function storeDataOnAssessment (assessmentAddress, data) {
+export function storeDataOnAssessment (assessmentAddress, newData) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let assessmentInstance = getInstance.assessment(getState(), assessmentAddress)
     // also salt should be saved in state
-    let dataAsBytes = getState().ethereum.web3.utils.utf8ToHex(data)
+    let dataAsBytes = getState().ethereum.web3.utils.utf8ToHex(newData)
     let firstEdit = getState().assessments[assessmentAddress].data === ''
     sendAndReactToTransaction(
       dispatch,
       () => { return assessmentInstance.methods.addData(dataAsBytes).send({from: userAddress}) },
-      'meetingPointChange',
+      firstEdit ? 'FirstTimeMeetingPointSet' : 'meetingPointChange',
       userAddress,
       assessmentAddress,
-      () => {
-        dispatch(fetchStoredData(assessmentAddress))
-        if (firstEdit) dispatch(setHelperBar(helperBarTopic.FirstTimeMeetingPointSet))
+      {
+        confirmation: () => {
+          dispatch(fetchStoredData(assessmentAddress))
+          if (firstEdit) dispatch(setHelperBar(helperBarTopic.FirstTimeMeetingPointSet))
+          else { dispatch(setHelperBar(helperBarTopic.MeetingPointChanged)) }
+        }
       }
     )
   }
@@ -136,7 +145,9 @@ export function refund (assessmentAddress, stage) {
     const react = {
       gas: 320000,
       saveKeyword: 'refund',
-      callbck: reactToRefund
+      callbck: {
+        confirmation: reactToRefund
+      }
     }
     switch (stage) {
       case Stage.Called:
@@ -292,7 +303,6 @@ export function reconstructAssessment (assessmentAddress, pastNotifications) {
 export function validateAndFetchAssessmentData (assessmentAddress) {
   return async (dispatch, getState) => {
     try {
-      console.log('in')
       let assessmentInstance = getInstance.assessment(getState(), assessmentAddress)
       // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
       let conceptAddress = await assessmentInstance.methods.concept().call()
@@ -499,6 +509,7 @@ export function fetchStoredData (selectedAssessment) {
     let assessee = await assessmentInstance.methods.assessee().call()
     let data = await assessmentInstance.methods.data(assessee).call()
     if (data) {
+      console.log('data')
       data = getState().ethereum.web3.utils.hexToUtf8(data)
       dispatch(updateAssessmentVariable(assessmentAddress, 'data', data))
     }
