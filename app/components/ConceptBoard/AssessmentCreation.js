@@ -37,11 +37,10 @@ export class AssessmentCreation extends Component {
         this.estimateGasCost()
         break
       case 2:
+        this.loadConceptContractAndCreateAssessment()
         this.setState({step: 3})
         break
       case 3:
-        this.loadConceptContractAndCreateAssessment()
-        break
       case 4:
         this.cancelButton()
         break
@@ -157,7 +156,7 @@ export class AssessmentCreation extends Component {
         BottomPartContent = h(cardBodyContainer, [
           h(cardBodyColumnFull, [
             h(helpTextContainer, [
-              h(cardTextObjectHelp, 'Click on the ‘Send’ button in MetaMask to send your assessment to Ethereum for creation.')
+              h(cardTextObjectHelp, 'Click on the ‘Confirm’ button in MetaMask to send your assessment to Ethereum for creation.')
             ]),
             h(helpAlertContainer, [
               h(helpAlertText, 'Dont see MetaMask?'),
@@ -186,8 +185,8 @@ export class AssessmentCreation extends Component {
     }
     const actionButtonText = Object.freeze({
       1: 'Next',
-      2: 'Next',
-      3: 'Send Transaction',
+      2: 'Send Transaction',
+      3: 'Cancel',
       4: 'Done',
       5: 'Retry'
     })
@@ -203,10 +202,12 @@ export class AssessmentCreation extends Component {
         h(Body, {feedBack: step === 4 ? 'success' : 'failed'}, step === 4 ? 'Your assessment is being created on Ethereum.' : 'Your transaction could not be submitted.')
       ])]
     }
-    footerContent.push(h(ButtonPrimary, {
-      onClick: this.actionButton.bind(this),
-      active: step === 3
-    }, actionButtonText[step]))
+    if (step !== 3) {
+      footerContent.push(h(ButtonPrimary, {
+        onClick: this.actionButton.bind(this),
+        active: step === 2
+      }, actionButtonText[step]))
+    }
 
     let stageActivity = Object.freeze({
       1: 'How much would you like to pay your assessors?',
