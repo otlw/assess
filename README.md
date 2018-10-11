@@ -51,6 +51,14 @@ and a 70:
 
 See the comments in the first lines of completeAssessment.js for more options.
 
+### NB: On a testnet, you can deploy contracts and create example concepts and assessments with a one line script:
+
+` npm run full-deploy-testnet`
+
+- deploys contracts
+- creates 2 concepts and 2 assessments
+- creates assessments ran until each possible step, for testing purposes
+
 Contributing
 =========
 
