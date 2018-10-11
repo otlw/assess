@@ -100,8 +100,8 @@ export function helperBarText (topic: helperBarTopics):helperBar {
   switch (topic) {
     case "Staking":
       return {
-        title: 'What\'s staking?',
-        text: 'Staking is where each Assessor needs to pay a small fee to assess you. It’s done so that they have “skin in the game” and are more likely to assess you fairly.',
+        title: 'Staking' ,
+        text: ' is where each Assessor needs to pay a small fee to assess you.',
         learnMore: {
           target: 'AssessmentProcess'
         }
