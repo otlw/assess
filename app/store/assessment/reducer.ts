@@ -1,13 +1,15 @@
 import extend from 'xtend'
 import {Actions} from './actions'
 
+type AssessmentStage = 0 | 1 | 2 | 3 | 4
 export type Assessment = {
     address: string
     cost: number,
     size: number,
     assessee: string,
     assessors: string[]
-    stage: 0 | 1 | 2 | 3 | 4
+    userStage: AssessmentStage
+    stage: AssessmentStage
     finalScore: number,
     data: {
       [prop: string]: string

@@ -4,6 +4,7 @@ import { Stage, StageDisplayNames } from '../../../constants.js'
 import { convertFromUIScoreToOnChainScore } from '../../../utils.js'
 import styled from 'styled-components'
 import {ButtonPrimary, ButtonClose} from '../../Global/Buttons.ts'
+import {Body} from '../../Global/Text.ts'
 import inputField from '../../Global/inputField.ts'
 
 let completedStageTexts = {
@@ -135,7 +136,7 @@ export class ProgressAndInputBar extends Component {
     }
     return (
       h(rowObjectText, [
-        h(StageDescriptor, stageTexts[assessmentStage]),
+        h(Body, stageTexts[assessmentStage]),
         h(ButtonPrimary, {
           onClick: stageFunctions[assessmentStage],
           active: false
@@ -165,7 +166,7 @@ export class ProgressAndInputBar extends Component {
           h(containerProgressBar, [
             h(ButtonClose, {onClick: this.closeInputBar.bind(this)}),
             h(rowObjectText, [
-              h(StageDescriptor, this.state.displayText),
+              h(Body, this.state.displayText),
               (this.props.stage === Stage.Confirmed
                 ? (
                   h(rowObjectInput, [
@@ -202,11 +203,6 @@ min-height: 64px;
 `
 
 export const stageTexts = styled('h5').attrs({className: 'f5 fw4 mv0'})`
-color: ${props => props.theme.primary};
-`
-
-// TODO need to rename to progressBarTextDescription
-export const StageDescriptor = styled('div').attrs({className: 'flex w-auto items-center justify-center f5 gray debug'})`
 color: ${props => props.theme.primary};
 `
 
