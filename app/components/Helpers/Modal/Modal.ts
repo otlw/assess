@@ -15,12 +15,14 @@ export class Modal extends Component<Props> {
 
   nextScreen () {
     this.closeScreen()
+    if(!this.props.topic) return
     if (this.props.topic.followUp) {
       this.props.setModal(this.props.topic.followUp.target)
     }
   }
 
   render () {
+    if(!this.props.topic) return null
     return (
       h(appContainerObscurer, [
         h(modalContainer, [
