@@ -8,7 +8,7 @@ type Props = {
 }
 
 const progressDots = (props:Props) => {
-	let Dots=[]
+	let Dots = []
 	let i=0
 	for (i = 0; i < props.length; i++) {
 		let newDot=h(Inactive)
@@ -19,9 +19,7 @@ const progressDots = (props:Props) => {
 		}
 	    Dots.push(newDot);
 	}
-    return h(styleProgressBar,
-        Dots
-    )
+    return h(styleProgressBar,Dots)
 }
 
 export default progressDots
