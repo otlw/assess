@@ -2,7 +2,7 @@ import { Component } from 'react'
 import styled from 'styled-components'
 import {Label, Body} from '../../Global/Text'
 import {Props} from './index'
-import { ButtonClose } from '../../Global/Buttons'
+import { ButtonClose, ButtonTertiary } from '../../Global/Buttons'
 var h = require('react-hyperscript')
 
 export class HelperBar extends Component<Props> {
@@ -32,7 +32,7 @@ export class HelperBar extends Component<Props> {
             h(barObject, [
               h(Body, topic.text),
               (topic.learnMore
-               ? h(barButtonPrimary, {onClick: this.learnMore.bind(this)}, 'Learn More')
+               ? h(ButtonTertiary, {onClick: this.learnMore.bind(this)}, 'Learn More')
                : null)
             ]),
             h(ButtonClose, {onClick: this.closeBar.bind(this)})
@@ -69,12 +69,4 @@ border-color: ${props => props.theme.primary};
 export const icoQuestion = styled('div').attrs({className: 'flex items-center justify-center w2 h2 mr2 bg-green light-green br'})`
 color: ${props => props.theme.tertiary};
 background-color: ${props => props.theme.primary};
-`
-
-export const barButtonPrimary = styled('button').attrs({className: 'flex f6 bg-transparent ph1 pv1 ml1 ttu uppercase ba br1 b--dark-green cursor'})`
-color: ${props => props.theme.primary};
-border-color: ${props => props.theme.primary};
-outline: 0px;
-transition: 0.2s ease-in-out;
-:hover {cursor:pointer; background-color: ${props => props.theme.primary}; color: ${props => props.theme.tertiary};}
 `
