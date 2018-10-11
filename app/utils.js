@@ -129,9 +129,9 @@ export function statusMessage (isAssessee, assessment, transactions = []) {
 
 // map stage (range [0,5] , cf constant.js file) to step (range[1,4])
 export function mapAssessmentStageToStep (assessmentStage) {
-  if (assessmentStage==0||assessmentStage==1||assessmentStage==5){
+  if (assessmentStage === 0 || assessmentStage === 1 || assessmentStage === 5) {
     return 1
-  }else {
+  } else {
     return assessmentStage
   }
 }
