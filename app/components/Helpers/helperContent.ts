@@ -39,7 +39,7 @@ type helperBar = {
 }
 
 // this functions delivers simple one-liner explanations on given topics + a keyWord under which more can be learned
-export function modalText (topic: ModalTopics):Modal {
+export function modalText (topic: ModalTopics):Modal | null {
   switch (topic) {
     case "UnlockMetaMask":
       return {
@@ -84,7 +84,8 @@ export function modalText (topic: ModalTopics):Modal {
         title: 'You want to know what smüs means?',
         text: 'That\'s best explained by an example. Take this totally smüs sentence: "Is it smüs how saying sentences backwards creates backwards sentences saying how smüs it is? \n'
       }
-
+    case null:
+      return null
     default:
       if (topic) console.log('no modalText defined for topic', topic)
       return {

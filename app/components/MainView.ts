@@ -21,14 +21,11 @@ import { Transaction } from '../store/transaction/reducer'
 // It will call connect() when mounting the header)
 
 interface IMainViewProps {
-  modal: string | null
   transactions: Transaction[]
 }
 
 class MainView extends Component<IMainViewProps> {
   render () {
-    let modal = this.props.modal
-
     return (
       h(HashRouter, [
         h('div', [
@@ -37,12 +34,12 @@ class MainView extends Component<IMainViewProps> {
           h(appContainer, [
             h(NavTabs),
             h(HelperBar),
-              (modal ? h(Modal) : null),
-              h(Route, {exact: true, path: '/', component: AssessmentBoard}),
-              h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
-              h(Route, {path: '/assessment/:id', component: AssessmentView}),
-              h(Route,{path: '/certificates', exact: true, component: CertificateBoard}),
-              h(Route, {path: '/certificates/:address', component: CertificateBoard})
+            h(Modal),
+            h(Route, {exact: true, path: '/', component: AssessmentBoard}),
+            h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
+            h(Route, {path: '/assessment/:id', component: AssessmentView}),
+            h(Route,{path: '/certificates', exact: true, component: CertificateBoard}),
+            h(Route, {path: '/certificates/:address', component: CertificateBoard})
             ])
           ])
       ])
@@ -54,7 +51,6 @@ const appContainer = styled('div').attrs({className: 'relative flex flex-column 
 
 const mapStateToProps = (state:State) => {
   return {
-    modal: state.navigation.modal,
     transactions: Object.values(state.transactions)
   }
 }
