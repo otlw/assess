@@ -9,12 +9,12 @@ const mapStateToProps = state => {
   return {
     concepts: state.concepts,
     loadedConcepts: (state.loading.concepts === LoadingStage.Done),
-    loading: state.loading,
+    loading: state.loading
   }
 }
 
 const mapDispatchToProps = {
-  load: loadConceptsFromConceptRegistery,
+  load: loadConceptsFromConceptRegistery
 }
 
 export default compose(
