@@ -7,7 +7,7 @@ type Props = {
   failed: boolean
 }
 
-const progressBar = (props:Props) => {
+const progressDots = (props:Props) => {
 	let Dots=[]
 	let i=0
 	for (i = 0; i < props.length; i++) {
@@ -24,7 +24,7 @@ const progressBar = (props:Props) => {
     )
 }
 
-export default progressBar
+export default progressDots
 
 // styles
 

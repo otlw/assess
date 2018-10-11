@@ -5,9 +5,9 @@ import ProgressAndInputBar from './ProgressAndInputBar'
 import FinalResultBar from './FinalResultBar.js'
 import FailedBar from './FailedBar'
 import { Stage } from '../../constants.js'
-import { convertDate, statusMessage } from '../../utils.js'
+import { convertDate, statusMessage, mapAssessmentStageToStep } from '../../utils.js'
 import styled from 'styled-components'
-import progressBar from '../Global/progressBar.ts'
+import progressDots from '../Global/progressDots.ts'
 import { Headline, Label, Body } from '../Global/Text.ts'
 import { helperBarTopic } from '../../components/Helpers/helperContent'
 // import { NavLink } from 'react-router-dom'
@@ -62,7 +62,11 @@ export class AssessmentData extends Component {
           h(assessmentContainerStatus, [
             h(assessmentLabelContainer, [
               h(Label, 'STATUS'),
-              progressBar({length: 6, step: 2}) // TODO use a global utils function (assessment)=>(step) to put the right inputs into this
+              progressDots({
+                length: 4, 
+                step: mapAssessmentStageToStep(assessment.stage-1), //reajust because progressDots index starts at zero
+                failed:assessment.violation
+              })
             ]),
             h(Body, status)
           ]),
