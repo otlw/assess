@@ -34,11 +34,11 @@ export class AssessmentCard extends Component {
             h(cardRowStatus, [
               h(Label, 'Status'),
               h(cardContainerProgressBar, {},
-              h(progressDots, {
-                length: 4,
-                step: mapAssessmentStageToStep(stage) - 1,
-                failed: assessment.violation || false
-              })),
+                h(progressDots, {
+                  length: 4,
+                  step: mapAssessmentStageToStep(stage) - 1,
+                  failed: assessment.violation || false
+                }))
             ]),
             h(Body, status)
           ]),
