@@ -30,12 +30,9 @@ export class ConceptBoard extends Component {
       let ConceptHeader = h(Subheadline, 'Choose a Concept')
       if (this.state.selectedConceptAddress !== '0') {
         ConceptHeader = h(AssessmentCreation, {
-          setModal: this.props.setModal,
-          concept: this.props.concepts[this.state.selectedConceptAddress],
           conceptAddress: this.state.selectedConceptAddress,
-          loadConceptContractAndCreateAssessment: this.props.loadConceptContractAndCreateAssessment,
-          estimateGasCost: this.props.estimateAssessmentCreationGasCost,
-          cancelCreation: this.cancelCreation.bind(this)
+          cancelCreation: this.cancelCreation.bind(this),
+          history: this.props.history
         })
       }
 

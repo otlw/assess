@@ -37,6 +37,7 @@ export type VisitState = {
   assessor: 0 | 1 | 2 | 3 | 4,
   assessee: 0 | 1 | 2 | 3 | 4,
   hasSeenConcepts: boolean
+  hasCreatedAssessment: boolean
 }
 
 const initialState:NavigationState = {
@@ -49,7 +50,8 @@ const initialState:NavigationState = {
     site: 0,
     assessor: 0,
     assessee: 0,
-    hasSeenConcepts: false
+    hasSeenConcepts: false,
+    hasCreatedAssessment: false
   }
 }
 
@@ -91,6 +93,25 @@ export function NavigationReducer (state = initialState, action:Action):Navigati
         visits: {
           ...state.visits,
           site: state.visits.site + 1
+        }
+      }
+    case 'RESET_VISITS':
+      return {
+        ...state,
+        visits: {
+          site: 0,
+          assessor: 0,
+          assessee: 0,
+          hasSeenConcepts: false,
+          hasCreatedAssessment: false
+        }
+      }
+    case 'HAS_DONE_X':
+      return {
+        ...state,
+        visits: {
+          ...state.visits,
+          [action.activity]: true
         }
       }
       /*

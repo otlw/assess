@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import HelperBar from './HelperBar'
-import { setHelperBar, setModal } from '../../../store/navigation/actions'
+import { setHelperBar, setModal, resetVisits } from '../../../store/navigation/actions'
 import { helperBarText } from '../helperContent'
 import {State} from '../../../store'
 
@@ -8,6 +8,7 @@ export type Props = {
   topic: ReturnType<typeof helperBarText>
   setModal: typeof setModal
   setHelperBar: typeof setHelperBar
+  resetVisits: typeof resetVisits
   showBar: boolean
 }
 
@@ -20,7 +21,7 @@ const mapStateToProps = (state:State) => {
 }
 
 const mapDispatchToProps = {
-  // resetVisits,
+  resetVisits,
   setHelperBar,
   setModal
 }
