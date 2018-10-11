@@ -25,17 +25,18 @@ export class HelperBar extends Component<Props> {
       return (
         h(helperBarContainer, [
           h(barContainer, [
-            h(barContainerTitle, [
-              h(icoQuestion, '?'),
-              h(Label, topic.title)
-            ]),
+            h(ButtonClose, {onClick: this.closeBar.bind(this)}),
             h(barObject, [
-              h(Body, topic.text),
+              h(barContainerTitle, [
+                h(Label, topic.title),
+              ]),
+              h(Body, topic.text)
+            ]),
+            h(barObject, [,
               (topic.learnMore
                ? h(ButtonTertiary, {onClick: this.learnMore.bind(this)}, 'Learn More')
                : null)
             ]),
-            h(ButtonClose, {onClick: this.closeBar.bind(this)})
             //
             // h('button', {onClick: this.resetVisits.bind(this)}, 'resetToNoob!') // this is for us, so we can pretend being a first timer
           ])
@@ -52,7 +53,7 @@ export default HelperBar
 // style
 const helperBarContainer = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-center'})``
 
-export const barContainer = styled('div').attrs({className: 'relative flex flex-row items-center justify-between w-100 h3 pv3 mt3 br2 shadow-4'})`
+export const barContainer = styled('div').attrs({className: 'relative flex flex-row items-center justify-between w-100 pv2 mt3 pl2 br2'})`
 max-width: 800px;
 background-color: ${props => props.theme.tertiary};
 `
@@ -60,10 +61,8 @@ background-color: ${props => props.theme.tertiary};
 export const barObject = styled('div').attrs({className: 'flex items-center justify-center mh2'})`
 `
 
-export const barContainerTitle = styled('div').attrs({className: 'flex items-center justify-center mh2 ba br1 b--green'})`
+export const barContainerTitle = styled('div').attrs({className: 'flex items-center justify-center mr1'})`
 flex-shrink: 0;
-color: ${props => props.theme.primary};
-border-color: ${props => props.theme.primary};
 `
 
 export const icoQuestion = styled('div').attrs({className: 'flex items-center justify-center w2 h2 mr2 bg-green light-green br'})`
