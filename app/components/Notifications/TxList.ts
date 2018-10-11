@@ -1,9 +1,14 @@
 import { Component } from 'react'
 import styled from 'styled-components'
 import TxStatus from './TxStatus'
+import { Transaction } from '../../store/transaction/reducer'
 var h = require('react-hyperscript')
 
-export class TxList extends Component {
+interface ITxListProps {
+	transactions: Transaction[]
+}
+
+export class TxList extends Component<ITxListProps> {
   render () {
     // this should not be necessary but somehow if this next line is not here
     // a big green empty field will be displayed
@@ -14,8 +19,5 @@ export class TxList extends Component {
   }
 }
 
-const containerTransaction = styled('div').attrs({className: 'absolute flex w-100 h-100'})`
-background-color: #8CDCC9;
-`
+const containerTransaction = styled('div').attrs({className: 'relative flex flex-column items-center justify-between w-100 pv1 bg-light-green'})``
 
-export default TxList

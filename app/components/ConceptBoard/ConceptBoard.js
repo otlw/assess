@@ -35,9 +35,7 @@ export class ConceptBoard extends Component {
           conceptAddress: this.state.selectedConceptAddress,
           loadConceptContractAndCreateAssessment: this.props.loadConceptContractAndCreateAssessment,
           estimateGasCost: this.props.estimateAssessmentCreationGasCost,
-          cancelCreation: this.cancelCreation.bind(this),
-          setNotificationBar: this.props.setNotificationBar,
-          history: this.props.history
+          cancelCreation: this.cancelCreation.bind(this)
         })
       }
 
@@ -57,6 +55,5 @@ export class ConceptBoard extends Component {
 export default ConceptBoard
 
 // styles
-
 const ConceptHeaderBox = styled('div').attrs({className: 'w-100 tc mv4'})`
 `

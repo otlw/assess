@@ -6,9 +6,9 @@ export type Transaction = {
   sender: string
   txHash: string
   address: string
-  data: string
-  status: 'Tx published' | 'Tx confirmed' | 'Tx failed'
-  time: number  
+  purpose: 'stake' | 'commit' | 'reveal' | 'refund' | 'setMeetingPoint' | 'meetingPointChange' | 'makeAssessment'
+  status: 'published' | 'confirmed' | 'failed'
+  time: number
 }
 
 export type TransactionsState = {
@@ -37,18 +37,25 @@ export function TransactionsReducer (state = initialState, action:Actions):Trans
       return {
         ...state,
         [action.txHash]: {
-          sender: action.sender,
           txHash: action.txHash,
           address: action.address,
-          data: action.data,
-          status: 'Tx published',
+          sender: action.sender,
+          purpose: action.purpose,
+          status: 'published',
           time: Date.now()
         }
       }
     case 'UPDATE_TRANSACTION':
       return {
         ...state,
-        [action.txHash]: extend(state[action.txHash], {status: action.status})
+        [action.txHash]: extend(state[action.txHash], {
+          txHash: action.txHash,
+          address: action.address,
+          sender: action.sender,
+          purpose: action.purpose,
+          status: action.status,
+          time: Date.now()
+        })
       }
     case 'REMOVE_TRANSACTION': {
       let newState = {...state}
@@ -59,4 +66,3 @@ export function TransactionsReducer (state = initialState, action:Actions):Trans
       return state
   }
 }
-

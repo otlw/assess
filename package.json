@@ -17,7 +17,9 @@
   "license": "MIT",
   "standard": {
     "parser": "typescript-eslint-parser",
-    "plugins": [ "typescript" ],
+    "plugins": [
+      "typescript"
+    ],
     "globals": [
       "it",
       "contract",

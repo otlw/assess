@@ -1,6 +1,5 @@
 import { Component } from 'react'
 import styled from 'styled-components'
-import TxList from '../../TxList.js'
 import { statusMessage } from '../../../utils.js'
 import { ButtonPrimary } from '../../Global/Buttons.ts'
 var h = require('react-hyperscript')
@@ -29,10 +28,8 @@ class FailedBar extends Component {
             // user has not been refunded yet -> show button
               ? h(ButtonPrimary, {onClick: this.refund.bind(this)}, 'Refund')
               : h(ButtonPrimary, 'Refunded')
-            : undefined),
-        this.props.transactions
-          ? h(TxList, {transactions: this.props.transactions})
-          : null
+            : undefined
+        )
       ])
     )
   }
@@ -42,27 +39,10 @@ class FailedBar extends Component {
 
 export default FailedBar
 
-export const FailedStatusText = styled('div')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
-`
-
 export const WhyButton = styled('button')`
   padding: 0.25em 1em;
   border: 2px solid palevioletred;
 `
-
-export const RefundButton = styled('button')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
-`
-
-export const RefundedButton = styled('div')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
-`
-
-//
 
 export const containerProgressBar = styled('div').attrs({className: 'flex flex-row w-100 pa3 items-center shadow-4'})`
 margin-top: 1px;
@@ -70,29 +50,9 @@ min-height: 64px;
 background-color: ${props => props.theme.bgSecondary};
 `
 
-export const ProgressButton = styled('button')`
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
-`
-
-export const containerProgressButton = styled('div').attrs({className: 'flex w-auto items-center justify-center'})`
-`
-
-export const buttonProgressActive = styled('button').attrs({className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`
-color: ${props => props.theme.tertiary};
-background-color: ${props => props.theme.primary};
-`
-
-export const stageTexts = styled('h5').attrs({className: 'f5 fw4 mv0'})`
-color: ${props => props.theme.primary};
-`
-
 // TODO need to rename to progressBarTextDescription
 export const StageDescriptor = styled('div').attrs({className: 'flex w-auto items-center justify-center f5 gray debug'})`
 color: ${props => props.theme.primary};
-`
-
-export const rowObjectButton = styled('div').attrs({className: 'flex w-auto items-center justify-center'})`
 `
 
 export const rowObjectText = styled('div').attrs({className: 'flex w-100 items-center justify-between br b--light-gray f5 gray'})`;
