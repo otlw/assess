@@ -2,10 +2,7 @@ import CertificateCard from './CertificateCard.js'
 import AssessmentList from '../AssessmentBoard/AssessmentList.js'
 import h from 'react-hyperscript'
 import {Assessment} from '../../store/assessment/reducer'
-
 import { NavTabs } from '../NavTabs'
-import HelperBar from '../Helpers/HelperBar'
-import Modal from '../Helpers/Modal'
 
 type Props = {
   assessments:  Assessment[]
@@ -19,8 +16,6 @@ export const CertificateList = (props:Props) => {
   }
   return h('div', [
     h(NavTabs),
-    h(HelperBar),
-    h(Modal),
     h(AssessmentList, {
       assessmentCard: CertificateCard,
       assessments: props.assessments,

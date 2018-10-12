@@ -7,8 +7,6 @@ import ConceptList from './ConceptList'
 import AssessmentCreation from './AssessmentCreation'
 
 import { NavTabs } from '../NavTabs'
-import HelperBar from '../Helpers/HelperBar'
-import Modal from '../Helpers/Modal'
 
 export class ConceptBoard extends Component {
   constructor (props) {
@@ -44,8 +42,6 @@ export class ConceptBoard extends Component {
           cancelCreation: this.cancelCreation.bind(this)
         })
         return h('div', [
-          h(HelperBar),
-          h(Modal),
           h(ConceptHeaderBox, [
             ConceptHeader
           ])
@@ -55,8 +51,9 @@ export class ConceptBoard extends Component {
       // if no concept is selected, display ConceptList
       return h('div', [
         h(NavTabs),
-        h(HelperBar),
-        h(Modal),
+        h(ConceptHeaderBox, [
+          ConceptHeader
+        ]),
         this.state.selectedConceptAddress === '0' ? h(ConceptList, {
           concepts, selectConceptAddress: this.selectConceptAddress.bind(this)
         }) : null

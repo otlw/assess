@@ -16,6 +16,7 @@ import TxList from './Notifications/TxList'
 
 // the main frame on which everything is displayed.
 // It will call connect() when mounting the header)
+
 export interface IMatch {[key: string]: any}
 
 export default class MainView extends Component {
@@ -25,16 +26,18 @@ export default class MainView extends Component {
         h('div', [
           h(Header),
           h(TxList),
+          h(HelperBar),
+          h(Modal),
           h(appContainer, [
             h(Route, {
               exact: true,
               path: '/',
-              render: () => h('div', [h(NavTabs), h(HelperBar), h(Modal), h(AssessmentBoard)])
+              render: () => h('div', [h(NavTabs), h(AssessmentBoard)])
             }),
             h(Route, {
               path: '/assessment/:id',
               render: ( {match}: IMatch ) => h(subContainer, [
-                h(LinkCloseRight, {to: '/'}), h(HelperBar), h(Modal), h(AssessmentView, {match})
+                h(LinkCloseRight, {to: '/'}), h(AssessmentView, {match})
               ])
             }),
             h(Route, {
@@ -51,7 +54,7 @@ export default class MainView extends Component {
             h(Route, {
               path: '/certificates/:address',
               render: ( {match}:IMatch ) => h(subContainer, [
-                h(LinkCloseRight, {to: '/certificates'}), h(HelperBar), h(Modal), h(CertificateBoard, {match})
+                h(LinkCloseRight, {to: '/certificates'}), h(CertificateBoard, {match})
               ])
             })
           ])

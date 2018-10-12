@@ -10,7 +10,6 @@ import styled from 'styled-components'
 import progressBar from '../Global/progressBar.ts'
 import { Headline, Label, Body } from '../Global/Text.ts'
 import { helperBarTopic } from '../../components/Helpers/helperContent'
-// import { NavLink } from 'react-router-dom'
 var h = require('react-hyperscript')
 
 export class AssessmentData extends Component {

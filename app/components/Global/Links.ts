@@ -37,10 +37,10 @@ height: 32px;
 :hover {border: 1px solid ${props => props.theme.primary};}`
 
 const styleLinkCloseRight = styleLinkClose.extend`
-	position: absolute;
+	position: fixed;
   top: 0;
   right: 0;
-  margin: 20px;
+  margin: 70px 20px;
 `
 const icoClose = require('../../assets/ico-close.svg');
 const imgClose = styled('img').attrs({alt:'close', src: icoClose})`
