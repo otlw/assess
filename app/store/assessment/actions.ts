@@ -5,7 +5,8 @@ export type Actions =
   ReturnType<typeof receiveAllAssessments> |
   ReturnType<typeof updateAssessmentVariable> |
   ReturnType<typeof removeAssessment> |
-  ReturnType<typeof setAssessmentAsInvalid>
+  ReturnType<typeof setAssessmentAsInvalid> |
+  ReturnType<typeof setCardVisibility>
 
 export function setCardVisibility (assessmentAddress:string, hidden:boolean) {
   let type:'SET_CARD_VISIBILITY' = 'SET_CARD_VISIBILITY'
