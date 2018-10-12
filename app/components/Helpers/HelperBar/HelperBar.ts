@@ -64,13 +64,6 @@ export const barObject = styled('div').attrs({className: 'flex items-center just
 export const barObjectButton = styled('div').attrs({className: 'flex items-center justify-center mh2'})`
 margin-left: auto;
 `
-
-
 export const barContainerTitle = styled('div').attrs({className: 'flex items-center justify-center mr1'})`
 flex-shrink: 0;
-`
-
-export const icoQuestion = styled('div').attrs({className: 'flex items-center justify-center w2 h2 mr2 bg-green light-green br'})`
-color: ${props => props.theme.tertiary};
-background-color: ${props => props.theme.primary};
 `
