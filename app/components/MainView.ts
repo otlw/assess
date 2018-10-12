@@ -27,16 +27,16 @@ export default class MainView extends Component {
             h(NavTabs),
             h(HelperBar),
             h(Modal),
-            h(Route, {exact: true, path: '/', component: AssessmentBoard}),
-            h(Route, {exact: true, path: '/concepts/', component: ConceptBoard}),
-            h(Route, {path: '/assessment/:id', component: AssessmentView}),
-            h(Route,{path: '/certificates', exact: true, component: CertificateBoard}),
-            h(Route, {path: '/certificates/:address', component: CertificateBoard})
-            ])
+            h(Route, { exact: true, path: '/', component: AssessmentBoard }),
+            h(Route, { exact: true, path: '/concepts/', component: ConceptBoard }),
+            h(Route, { path: '/assessment/:id', component: AssessmentView }),
+            h(Route,{ path: '/certificates', exact: true, component: CertificateBoard }),
+            h(Route, { path: '/certificates/:address', component: CertificateBoard })
           ])
+        ])
       ])
     )
   }
 }
 
-const appContainer = styled('div').attrs({className: 'relative flex flex-column w-100 h-100'})``
+const appContainer = styled('div').attrs({ className: 'relative flex flex-column w-100 h-100' })``

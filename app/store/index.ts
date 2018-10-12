@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux'
 import { EthereumReducer, EthereumState } from './web3/reducer'
 import { AssessmentsReducer, AssessmentsState } from './assessment/reducer'
-import {ConceptsReducer, ConceptsState }from './concept/reducer'
+import { ConceptsReducer, ConceptsState }from './concept/reducer'
 import { TransactionsReducer, TransactionsState } from './transaction/reducer'
 import { NavigationReducer, NavigationState } from './navigation/reducer'
-import {LoadingReducer, LoadingState} from './loading/reducer'
+import { LoadingReducer, LoadingState } from './loading/reducer'
 
 export type State = {
   ethereum: EthereumState,
