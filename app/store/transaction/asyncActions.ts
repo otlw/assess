@@ -6,7 +6,7 @@ import { TransactionReceipt, PromiEvent } from 'web3/types'
    Params:
    @dispatch is needed to send the updates to state
    @transaction is a function that sends a tx to the chain (i.e., it calls a contract method, supplies any expected parameters)
-   @userAddress, @assessmentAddress and @purpose are used to mark the place where the transaction was triggered
+   @userAddress, @contractAddress and @purpose are used to mark the place where the transaction was triggered
    @callbacks: callback functions to be called in different transaction circumstances
 */
 
@@ -15,7 +15,7 @@ export function sendAndReactToTransaction (
   transaction: () => PromiEvent<any>,
   purpose: 'makeAssessment' | 'meetingPointChange' | 'refund',
   userAddress: string,
-  assessmentAddress: string,
+  contractAddress: string,
   callbacks: {
     transactionHash: (hash: string) => void | null,
     confirmation: (status: boolean, receipt: TransactionReceipt | Error) => void,
@@ -24,7 +24,7 @@ export function sendAndReactToTransaction (
   ) {
   transaction()
     .on('transactionHash', (hash: string) => {
-      dispatch(saveTransaction(assessmentAddress, userAddress, purpose, hash))
+      dispatch(saveTransaction(contractAddress, userAddress, purpose, hash))
       if (callbacks.transactionHash) callbacks.transactionHash(hash)
     })
     .on('confirmation', (confirmationNumber, receipt) => {
@@ -32,7 +32,7 @@ export function sendAndReactToTransaction (
       if (confirmationNumber === 4) {
         dispatch(updateTransaction(
           receipt.transactionHash,
-          assessmentAddress,
+          contractAddress,
           userAddress,
           purpose,
           receipt.status ? 'confirmed' : 'failed'
