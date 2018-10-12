@@ -11,7 +11,8 @@
     "fix": "standard --fix './app/index.js' './app/**/*.js' ",
     "build": "webpack",
     "dev": "webpack-dev-server --open",
-    "deploy-testnet": "cd node_modules/fathom-contracts && truffle migrate --reset"
+    "deploy-testnet": "cd node_modules/fathom-contracts && truffle migrate --reset",
+    "full-deploy-testnet": "npm run deploy-testnet && node scripts/create2concepts2assessments.js && node scripts/completeAssessment.js -s stake && node scripts/completeAssessment.js -s commit && node scripts/completeAssessment.js -s reveal && node scripts/completeAssessment.js"
   },
   "author": "Jared Pereira",
   "license": "MIT",
