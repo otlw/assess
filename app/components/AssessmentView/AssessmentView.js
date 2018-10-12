@@ -9,7 +9,9 @@ import { convertDate, statusMessage } from '../../utils.js'
 import styled from 'styled-components'
 import progressBar from '../Global/progressBar.ts'
 import { Headline, Label, Body } from '../Global/Text.ts'
+import { LinkCloseRight } from '../Global/Links'
 import { helperBarTopic } from '../../components/Helpers/helperContent'
+
 var h = require('react-hyperscript')
 
 export class AssessmentData extends Component {
@@ -49,7 +51,9 @@ export class AssessmentData extends Component {
       return h('div', status)
     }
     let assessment = this.props.assessment
-    return (
+    // return (
+    return h(viewContainer, [
+      h(LinkCloseRight, {to: '/'}),
       h(SuperFrame, [
         // holds role and concept title
         h(assessmentHeader, [
@@ -122,11 +126,14 @@ export class AssessmentData extends Component {
               : h(ProgressAndInputBar, {assessmentAddress: assessment.address})
         ])
       ])
-    )
+    ])
+    // )
   }
 }
 
 export default AssessmentData
+
+const viewContainer = styled('div').attrs({className: 'relative flex flex-column w-100 h-100'})``
 
 const SuperFrame = styled('div').attrs({className: 'flex flex-column w-100 mw8 self-center mt3 br2 shadow-4'})`
 font-family:'system-ui',sans-serif;

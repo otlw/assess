@@ -2,10 +2,7 @@ import { Component } from 'react'
 import h from 'react-hyperscript'
 import { HashRouter, Route } from 'react-router-dom'
 import styled from 'styled-components'
-import { LinkCloseRight } from './Global/Links'
-
 import Header from './Header'
-import { NavTabs } from './NavTabs'
 import AssessmentBoard from './AssessmentBoard'
 import CertificateBoard from './CertificateBoard'
 import ConceptBoard from './ConceptBoard'
@@ -32,30 +29,25 @@ export default class MainView extends Component {
             h(Route, {
               exact: true,
               path: '/',
-              render: () => h('div', [h(NavTabs), h(AssessmentBoard)])
+              component: AssessmentBoard
             }),
             h(Route, {
               path: '/assessment/:id',
-              render: ( {match}: IMatch ) => h(subContainer, [
-                h(LinkCloseRight, {to: '/'}), h(AssessmentView, {match})
-              ])
+              render: ({match}:IMatch) => h(AssessmentView, {match})
             }),
             h(Route, {
               exact: true,
               path: '/concepts/',
-              render: () => h(ConceptBoard)
+              component: ConceptBoard
             }),
             h(Route,{
               path: '/certificates',
               exact: true,
-              // render: () => h('div', [h(NavTabs), h(HelperBar), h(Modal), h(CertificateBoard)])
               component: CertificateBoard
             }),
             h(Route, {
               path: '/certificates/:address',
-              render: ( {match}:IMatch ) => h(subContainer, [
-                h(LinkCloseRight, {to: '/certificates'}), h(CertificateBoard, {match})
-              ])
+              render: ({match}:IMatch) => h(CertificateBoard, {match})
             })
           ])
         ])
@@ -65,6 +57,3 @@ export default class MainView extends Component {
 }
 
 const appContainer = styled('div').attrs({className: 'relative flex flex-column w-100 h-100'})``
-const subContainer = appContainer.extend`
-  padding-top: 20px;
-`

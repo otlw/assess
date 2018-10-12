@@ -1,8 +1,7 @@
 import CertificateCard from './CertificateCard.js'
 import AssessmentList from '../AssessmentBoard/AssessmentList.js'
-import h from 'react-hyperscript'
 import {Assessment} from '../../store/assessment/reducer'
-import { NavTabs } from '../NavTabs'
+import h from 'react-hyperscript'
 
 type Props = {
   assessments:  Assessment[]
@@ -14,15 +13,12 @@ export const CertificateList = (props:Props) => {
   if(props.loggedInUser.toLowerCase() === props.userAddress.toLowerCase()){
     name = 'Your Certificates'
   }
-  return h('div', [
-    h(NavTabs),
-    h(AssessmentList, {
-      assessmentCard: CertificateCard,
-      assessments: props.assessments,
-      name,
-      userAddress: props.userAddress
-    })
-  ])
+  return h(AssessmentList, {
+    assessmentCard: CertificateCard,
+    assessments: props.assessments,
+    name,
+    userAddress: props.userAddress
+  })
 }
 
 export default CertificateList
