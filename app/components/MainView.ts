@@ -51,7 +51,7 @@ export default class MainView extends Component {
             h(Route, {
               path: '/certificates/:address',
               render: ( {match}:IMatch ) => h(subContainer, [
-                h(LinkCloseRight, {to: '/'}), h(HelperBar), h(Modal), h(CertificateBoard, {match})
+                h(LinkCloseRight, {to: '/certificates'}), h(HelperBar), h(Modal), h(CertificateBoard, {match})
               ])
             })
           ])
