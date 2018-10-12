@@ -10,9 +10,9 @@ export class HelperBar extends Component<Props> {
     this.props.setHelperBar(null)
   }
 
-  // resetVisits () {
-  //   this.props.resetVisits()
-  // }
+  resetVisits () {
+    this.props.resetVisits()
+  }
 
   learnMore () {
     this.closeBar()
@@ -35,9 +35,8 @@ export class HelperBar extends Component<Props> {
                ? h(ButtonTertiary, {onClick: this.learnMore.bind(this)}, 'Learn More')
                : null)
             ]),
-            h(ButtonClose, {onClick: this.closeBar.bind(this)})
-            //
-            // h('button', {onClick: this.resetVisits.bind(this)}, 'resetToNoob!') // this is for us, so we can pretend being a first timer
+            h(ButtonClose, {onClick: this.closeBar.bind(this)}),
+            h('button', {onClick: this.resetVisits.bind(this)}, 'resetToNoob!') // this is for us, so we can pretend being a first timer
           ])
         ])
       )

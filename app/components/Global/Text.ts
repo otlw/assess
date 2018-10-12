@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 
+
 export const Headline = styled('h2').attrs({className: 'f2 fw4 mt3 mb0'})`
 color: ${props => props.theme.primary};
 `

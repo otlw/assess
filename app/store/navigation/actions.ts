@@ -7,7 +7,9 @@ export type Action =
   ReturnType<typeof setInputBar> |
   ReturnType<typeof toggleHidden> |
   ReturnType<typeof addVisit> |
-  ReturnType<typeof receiveVisitHistory>
+  ReturnType<typeof resetVisits> |
+  ReturnType<typeof receiveVisitHistory> |
+  ReturnType<typeof hasDoneX>
   // ReturnType<typeof saveProgression>
 
 
@@ -53,6 +55,20 @@ export function addVisit() {
     return {
         type
     }
+}
+export function resetVisits() {
+  let type:'RESET_VISITS' = 'RESET_VISITS'
+  return {
+    type
+  }
+}
+
+export function hasDoneX(activity:string) {
+  let type:'HAS_DONE_X' = 'HAS_DONE_X'
+  return {
+    type,
+    activity
+  }
 }
 
 export function receiveVisitHistory (visits:VisitState) {

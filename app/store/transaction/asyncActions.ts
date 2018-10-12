@@ -29,8 +29,7 @@ export function sendAndReactToTransaction (
     })
     .on('confirmation', (confirmationNumber, receipt) => {
       // TODO: choose a good confirmation number (kovan and rinkeby accept 2, but local textnet requires 8)
-      // when the transaction is confirmed into a block
-      if (confirmationNumber === 8) {
+      if (confirmationNumber === 4) {
         dispatch(updateTransaction(
           receipt.transactionHash,
           assessmentAddress,
@@ -38,13 +37,13 @@ export function sendAndReactToTransaction (
           purpose,
           receipt.status ? 'confirmed' : 'failed'
         ))
-          if (callbacks.confirmation) {
-              if (receipt.status) {
-                  callbacks.confirmation(false, receipt)
-              } else {
-                  callbacks.confirmation(true, receipt)
-              }
+        if (callbacks.confirmation) {
+          if (receipt.status) {
+            callbacks.confirmation(false, receipt)
+          } else {
+            callbacks.confirmation(true, receipt)
           }
+        }
       }
     })
     .on('error', (err: Error) => {
