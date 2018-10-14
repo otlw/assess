@@ -27,6 +27,13 @@ let initialState:AssessmentsState = {}
 
 export function AssessmentsReducer (state = initialState, action:Actions):AssessmentsState {
   switch (action.type) {
+    case "SET_CARD_VISIBILITY": {
+      let assessmentAddress = action.assessmentAddress
+      let assessment = state[assessmentAddress]
+      return extend(state, {
+        [assessmentAddress]: extend(assessment, {hidden: action.hidden})
+      })
+    }
     case "RECEIVE_ASSESSMENT": {
       let assessmentAddress = action.assessment.address
       return extend(state, {[assessmentAddress]: extend(state[assessmentAddress], action.assessment)})
