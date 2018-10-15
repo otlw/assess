@@ -32,6 +32,7 @@ const theme = {
   negativeRed: '#ff6666',
   negativeRedText:'#4d0000',
   inactiveGray: '#CCCCCC',
+  nearWhite: '#f5f5f5',
   dark: '#29434e',
   lightgrey: '#d3d3d3',
   blue: '#2F80ED',
