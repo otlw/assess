@@ -14,8 +14,6 @@ import TxList from './Notifications/TxList'
 // the main frame on which everything is displayed.
 // It will call connect() when mounting the header)
 
-export interface IMatch {[key: string]: any}
-
 export default class MainView extends Component {
   render () {
     return (
@@ -33,7 +31,7 @@ export default class MainView extends Component {
             }),
             h(Route, {
               path: '/assessment/:id',
-              render: ({match}:IMatch) => h(AssessmentView, {match})
+              component: AssessmentView
             }),
             h(Route, {
               exact: true,
@@ -47,7 +45,7 @@ export default class MainView extends Component {
             }),
             h(Route, {
               path: '/certificates/:address',
-              render: ({match}:IMatch) => h(CertificateBoard, {match})
+              component: CertificateBoard
             })
           ])
         ])
