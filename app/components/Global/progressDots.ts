@@ -13,13 +13,13 @@ type Props = {
 
 const progressDots = (props:Props) => {
 	let Dots = []
-	let i=0
+	let i = 0
 	for (i = 0; i < props.length; i++) {
 		let newDot=h(Inactive)
-		if (i<props.step || i === props.length){
+		if (i < props.step || i === props.length){
 			newDot=h(Complete)
 		} else if (i === props.step){
-			newDot= props.failed ? h(Failed) : h(Active)
+			newDot = props.failed ? h(Failed) : h(Active)
 		}
 	    Dots.push(newDot);
 	}

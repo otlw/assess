@@ -15,7 +15,7 @@ export type Assessment = {
       [prop: string]: string
     },
     payout: number,
-    violation: boolean,
+    violation: number,
     refunded: boolean
     hidden: boolean,
 }

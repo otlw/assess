@@ -127,7 +127,7 @@ export function statusMessage (isAssessee, assessment, transactions = []) {
   return status
 }
 
-// map assessment stage (range [0,5] , cf constant.js file) to ProgressDots (progress bar used in assessment view and assessment card) steps (range[1,4] for assessments)
+// map assessment stage (range [0,5] , cf constant.js file) to ProgressDots steps (range[1,4] for assessments)
 export function mapAssessmentStageToStep (assessmentStage) {
   if (assessmentStage === 0 || assessmentStage === 1) {
     return 1
