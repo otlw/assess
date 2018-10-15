@@ -5,9 +5,9 @@ import ProgressAndInputBar from './ProgressAndInputBar'
 import FinalResultBar from './FinalResultBar.js'
 import FailedBar from './FailedBar'
 import { Stage } from '../../constants.js'
-import { convertDate, statusMessage } from '../../utils.js'
+import { convertDate, statusMessage, mapAssessmentStageToStep } from '../../utils.js'
 import styled from 'styled-components'
-import progressBar from '../Global/progressBar.ts'
+import progressDots from '../Global/progressDots.ts'
 import { Headline, Label, Body } from '../Global/Text.ts'
 import { LinkCloseRight } from '../Global/Links'
 import { helperBarTopic } from '../../components/Helpers/helperContent'
@@ -65,7 +65,12 @@ export class AssessmentData extends Component {
           h(assessmentContainerStatus, [
             h(assessmentLabelContainer, [
               h(Label, 'STATUS'),
-              progressBar({length: 6, step: 2}) // TODO use a global utils function (assessment)=>(step) to put the right inputs into this
+              h(progressDots, {
+                length: 4,
+                // reajust because progressDots index starts at zero
+                step: assessment.violation ? assessment.violation : mapAssessmentStageToStep(assessment.stage) - 1,
+                failed: assessment.violation > 0 || false
+              })
             ]),
             h(Body, status)
           ]),
