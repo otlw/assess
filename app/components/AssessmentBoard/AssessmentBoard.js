@@ -1,5 +1,6 @@
 import AssessmentList from './AssessmentList.js'
 import AssessmentCard from './AssessmentCard'
+import { NavTabs } from '../NavTabs'
 import { Stage } from '../../constants.js'
 import h from 'react-hyperscript'
 
@@ -31,17 +32,20 @@ export const AssessmentBoard = (props) => {
     })
   }
 
-  return h('div', Object.keys(assessmentLists).map((key, index) => {
-    return h(AssessmentList, {
-      assessmentCard: AssessmentCard,
-      assessments: assessmentLists[key],
-      name: key,
-      showHidden: props.showHidden,
-      toggleHidden: props.toggleHidden,
-      userAddress: userAddress,
-      networkID: props.networkID
-    })
-  }))
+  return h('div', [
+    h(NavTabs),
+    h('div', Object.keys(assessmentLists).map((key, index) => {
+      return h(AssessmentList, {
+        assessmentCard: AssessmentCard,
+        assessments: assessmentLists[key],
+        name: key,
+        showHidden: props.showHidden,
+        toggleHidden: props.toggleHidden,
+        userAddress: userAddress,
+        networkID: props.networkID
+      })
+    }))
+  ])
 }
 
 export default AssessmentBoard

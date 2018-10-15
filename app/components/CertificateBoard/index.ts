@@ -3,6 +3,7 @@ import {Component} from 'react'
 import CertificateList from './CertificateList'
 import {State} from '../../store'
 import {match} from 'react-router-dom'
+import { NavTabs } from '../NavTabs'
 import h from 'react-hyperscript'
 
 import {Assessment} from '../../store/assessment/reducer'
@@ -22,7 +23,10 @@ class CertificateLoader extends Component<Props> {
   }
 
   render() {
-    return h(CertificateList, {assessments: this.props.assessments, userAddress: this.props.userAddress, loggedInUser: this.props.loggedInUser})
+    return h('div', [
+      h(NavTabs),
+      h(CertificateList, {assessments: this.props.assessments, userAddress: this.props.userAddress, loggedInUser: this.props.loggedInUser})
+    ])
   }
 }
 
