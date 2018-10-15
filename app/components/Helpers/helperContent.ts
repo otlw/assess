@@ -50,15 +50,15 @@ export function modalText (topic: ModalTopics):Modal | null {
         }
       }
     case "NoMetaMask":
-      return {
-        title: topic,
-        text: "You don't have the MetaMask browser extension that allows to use this app.\n Please Download it to use the features of this interface"
-      }
+        return {
+          title: topic,
+          text: "You don't have the MetaMask.\n Please download it from https://metamask.io/ to continue."
+        }
     case "EducateAboutMetaMask":
-      return {
-        title: topic,
-        text: 'There is this cool thing called Metamask, we need so you can be safe and foxxy.'
-      }
+        return {
+          title: topic,
+          text: 'MetaMask is a digital wallet that allows you to use Ethereum. We use MetaMask to create your assessments for you. You can learn more about it at their website: https://metamask.io/'
+        }
     case "UndeployedNetwork":
       return {
         title: topic,
@@ -89,8 +89,8 @@ export function modalText (topic: ModalTopics):Modal | null {
     default:
       if (topic) console.log('no modalText defined for topic', topic)
       return {
-        title: 'Error 404 Kinda',
-        text: "You should'nt have got here"
+        title: 'Error 404',
+        text: "You should'nt have got here!"
       }
   }
 }
@@ -109,16 +109,16 @@ export function helperBarText (topic: helperBarTopics):helperBar {
     case "ConfirmedStake":
       // not sure that this is what we want to do, just want to test the feedback on immediate action
       return {
-        title: 'Awesome!',
-        text: 'Now you just need to wait until there are enough other assessors and the assessment starts. If you\'re curious you can learn already learn what you need to do in the next stage: The commit-stage.',
+        title: 'Great',
+        text: ',now we need 5 assessors to stake for the assessment to start.',
         learnMore: {
           target: 'AssessmentProcess'
         }
       }
     case "Committing":
       return {
-        title: 'What\'s committing?',
-        text: 'This is were you rate the assessee. Give him 100 points if you think he is smüs.',
+        title: 'Committing',
+        text: 'is when you commit your score of the assessee out of 100.',
         learnMore: {
           target: 'Smues'
         }
@@ -136,8 +136,8 @@ export function helperBarText (topic: helperBarTopics):helperBar {
     default:
       if (topic) console.log('no helperBarText defined for topic', topic)
       return {
-        title: 'Error 404 Kinda',
-        text: "You should'nt have got here"
+        title: 'Error 404',
+        text: "You should'nt have got here!"
       }
   }
 }
