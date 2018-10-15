@@ -6,7 +6,8 @@ import { Transaction } from '../../../store/transaction/reducer'
 import { ButtonClose } from '../../Global/Buttons'
 var h = require('react-hyperscript')
 
-const phrasing = Object.freeze({
+type Phrasing = {[key in Transaction['purpose']]: string}
+const phrasing:Phrasing = Object.freeze({
   makeAssessment: 'create an assessment',
   setMeetingPoint: 'set a meeting point',
   meetingPointChange: 'make changes to the meeting point',
