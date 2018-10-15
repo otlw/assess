@@ -65,7 +65,7 @@ export class AssessmentData extends Component {
               h(progressDots, {
                 length: 4,
                 // reajust because progressDots index starts at zero
-                step: assessment.violation? assessment.violation : mapAssessmentStageToStep(assessment.stage) - 1, 
+                step: assessment.violation ? assessment.violation : mapAssessmentStageToStep(assessment.stage) - 1,
                 failed: assessment.violation > 0 || false
               })
             ]),
