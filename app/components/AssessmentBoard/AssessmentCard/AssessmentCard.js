@@ -10,6 +10,55 @@ import progressDots from '../../Global/progressDots.ts'
 import { statusMessage, mapAssessmentStageToStep } from '../../../utils.js'
 
 export class AssessmentCard extends Component {
+  constructor (props) {
+    super(props)
+    this.state={
+      toggleWhy:false
+    }
+  }
+
+  toggleWhy(){
+    this.setState({toggleWhy:!this.state.toggleWhy})
+  }
+
+
+  linkButtons (assessment, isAssessee, setCardVisibility) {
+    let userFault = (assessment.violation && assessment.userStage === assessment.stage) || assessment.userStage === Stage.Burned
+    if (assessment.violation) {
+      if (userFault) return [h(ButtonSecondary,{onClick:this.toggleWhy.bind(this)}, 'Why?'), h(LinkPrimary, {to: '/'}, 'Closed')]
+      // not  userFault
+      if (assessment.refunded) {
+        // no assessment contract exits -> no link to detail-view
+        return [h(ButtonSecondary,{onClick:this.toggleWhy.bind(this)}, 'Why?'), h(LinkPrimary, {to: '/'}, 'Refunded')]
+      } else {
+        // not refunded yet -> provide link
+        return [h(ButtonSecondary,{onClick:this.toggleWhy.bind(this)}, 'Why?'), h(LinkPrimary, {to: '/assessment/' + assessment.address}, 'Refund')]
+      }
+    } else {
+      // NOTE this section could be refactored to be smaller, as the only thing that varies is the text of the button. But i am keeping this
+      // longer structure becasue once we want to provide different links on the why-button, it will come in handy to have the cases be more explicit.
+      // no violation!
+      // is the user done (for the respective stage?)
+      let buttonList = [
+        h(ButtonSecondary, {
+          onClick: () => setCardVisibility(assessment.address, !assessment.hidden)
+        }, assessment.hidden ? 'Unhide' : 'Hide')
+      ]
+      if (assessment.stage < Stage.Done && assessment.userStage === assessment.stage) {
+        buttonList.push(
+          h(LinkPrimary,
+            {to: '/assessment/' + assessment.address},
+            assessment.userStage === Stage.None ? 'View' : StageDisplayNames[assessment.stage]))
+      } else {
+        buttonList.push(
+          h(LinkPrimary,
+            {to: '/assessment/' + assessment.address},
+            assessment.userStage === Stage.None ? 'View' : CompletedStages[assessment.stage]))
+      }
+      return buttonList
+    }
+  }
+
   render () {
     const assessment = this.props.assessment
     let stage = assessment.stage
@@ -17,8 +66,8 @@ export class AssessmentCard extends Component {
     // set assessee/assessor view
     let isAssessee = this.props.userAddress === assessment.assessee
     let status = statusMessage(isAssessee, assessment, this.props.transactions)
-    return (
-      h(cardContainer, [
+
+    let regularCardContent=h(cardContainer, [
         h(cardContainerInfo, [
           h(cardTextObject, [
             h(Label, 'Assessment'),
@@ -42,49 +91,21 @@ export class AssessmentCard extends Component {
             ]),
             h(Body, status)
           ]),
-          h('div', {className: 'flex flex-row justify-between w-100'}, linkButtons(assessment, isAssessee, this.props.setCardVisibility))
+          h('div', {className: 'flex flex-row justify-between w-100'}, this.linkButtons(assessment, isAssessee, this.props.setCardVisibility))
         ])
+      ]) 
+
+    let explainerCard=h(cardContainer, ["ok"
       ])
-    )
+
+    if (this.state.toggleWhy){
+      return explainerCard
+    } else {
+      return regularCardContent
+    }
   }
 }
 
-function linkButtons (assessment, isAssessee, setCardVisibility) {
-  let userFault = (assessment.violation && assessment.userStage === assessment.stage) || assessment.userStage === Stage.Burned
-  if (assessment.violation) {
-    if (userFault) return [h(ButtonSecondary, 'Why?'), h(LinkPrimary, {to: '/'}, 'Closed')] // TODO why should be a link
-    // not  userFault
-    if (assessment.refunded) {
-      // no assessment contract exits -> no link to detail-view
-      return [h(ButtonSecondary, 'Why?'), h(LinkPrimary, {to: '/'}, 'Refunded')]
-    } else {
-      // not refunded yet -> provide link
-      return [h(ButtonSecondary, 'Why?'), h(LinkPrimary, {to: '/assessment/' + assessment.address}, 'Refund')]
-    }
-  } else {
-    // NOTE this section could be refactored to be smaller, as the only thing that varies is the text of the button. But i am keeping this
-    // longer structure becasue once we want to provide different links on the why-button, it will come in handy to have the cases be more explicit.
-    // no violation!
-    // is the user done (for the respective stage?)
-    let buttonList = [
-      h(ButtonSecondary, {
-        onClick: () => setCardVisibility(assessment.address, !assessment.hidden)
-      }, assessment.hidden ? 'Unhide' : 'Hide')
-    ]
-    if (assessment.stage < Stage.Done && assessment.userStage === assessment.stage) {
-      buttonList.push(
-        h(LinkPrimary,
-          {to: '/assessment/' + assessment.address},
-          assessment.userStage === Stage.None ? 'View' : StageDisplayNames[assessment.stage]))
-    } else {
-      buttonList.push(
-        h(LinkPrimary,
-          {to: '/assessment/' + assessment.address},
-          assessment.userStage === Stage.None ? 'View' : CompletedStages[assessment.stage]))
-    }
-    return buttonList
-  }
-}
 
 export default AssessmentCard
 
