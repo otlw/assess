@@ -77,7 +77,7 @@ export function modalText (topic: ModalTopics):Modal | null {
     case "AssessmentCreationFailed":
       return {
         title: topic,
-        text: 'Ooopsi'
+        text: 'Your assessment has failed.'
       }
     case 'Smues':
       return {
