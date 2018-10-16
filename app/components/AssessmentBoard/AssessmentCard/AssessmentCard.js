@@ -12,27 +12,27 @@ import { statusMessage, mapAssessmentStageToStep } from '../../../utils.js'
 export class AssessmentCard extends Component {
   constructor (props) {
     super(props)
-    this.state={
-      toggleWhy:false
+    this.state = {
+      toggleWhy: false,
+      whyReason: ''
     }
   }
 
-  toggleWhy(){
-    this.setState({toggleWhy:!this.state.toggleWhy})
+  toggleWhy (e) {
+    this.setState({toggleWhy: !this.state.toggleWhy, whyReason: e.target.id || ''})
   }
-
 
   linkButtons (assessment, isAssessee, setCardVisibility) {
     let userFault = (assessment.violation && assessment.userStage === assessment.stage) || assessment.userStage === Stage.Burned
     if (assessment.violation) {
-      if (userFault) return [h(ButtonSecondary,{onClick:this.toggleWhy.bind(this)}, 'Why?'), h(LinkPrimary, {to: '/'}, 'Closed')]
+      if (userFault) return [h(ButtonSecondary, {onClick: this.toggleWhy.bind(this), id: 'userFault'}, 'Why?'), h(LinkPrimary, {to: '/'}, 'Closed')]
       // not  userFault
       if (assessment.refunded) {
         // no assessment contract exits -> no link to detail-view
-        return [h(ButtonSecondary,{onClick:this.toggleWhy.bind(this)}, 'Why?'), h(LinkPrimary, {to: '/'}, 'Refunded')]
+        return [h(ButtonSecondary, {onClick: this.toggleWhy.bind(this), id: 'refunded'}, 'Why?'), h(LinkPrimary, {to: '/'}, 'Refunded')]
       } else {
         // not refunded yet -> provide link
-        return [h(ButtonSecondary,{onClick:this.toggleWhy.bind(this)}, 'Why?'), h(LinkPrimary, {to: '/assessment/' + assessment.address}, 'Refund')]
+        return [h(ButtonSecondary, {onClick: this.toggleWhy.bind(this), id: 'notRefundedYet'}, 'Why?'), h(LinkPrimary, {to: '/assessment/' + assessment.address}, 'Refund')]
       }
     } else {
       // NOTE this section could be refactored to be smaller, as the only thing that varies is the text of the button. But i am keeping this
@@ -67,45 +67,44 @@ export class AssessmentCard extends Component {
     let isAssessee = this.props.userAddress === assessment.assessee
     let status = statusMessage(isAssessee, assessment, this.props.transactions)
 
-    let regularCardContent=h(cardContainer, [
-        h(cardContainerInfo, [
-          h(cardTextObject, [
-            h(Label, 'Assessment'),
-            h(Headline, assessment.conceptData.name)
-          ]),
-          h(cardTextObject, [
-            h(Label, 'Assessee'),
-            h(Body, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
-          ])
+    let regularCardContent = h(cardContainer, [
+      h(cardContainerInfo, [
+        h(cardTextObject, [
+          h(Label, 'Assessment'),
+          h(Headline, assessment.conceptData.name)
         ]),
-        h(cardContainerStatus, [
-          h(cardTextStatus, [
-            h(cardRowStatus, [
-              h(Label, 'Status'),
-              h(cardContainerProgressBar, {},
-                h(progressDots, {
-                  length: 4,
-                  step: mapAssessmentStageToStep(stage) - 1,
-                  failed: assessment.violation || false
-                }))
-            ]),
-            h(Body, status)
-          ]),
-          h('div', {className: 'flex flex-row justify-between w-100'}, this.linkButtons(assessment, isAssessee, this.props.setCardVisibility))
+        h(cardTextObject, [
+          h(Label, 'Assessee'),
+          h(Body, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
         ])
-      ]) 
-
-    let explainerCard=h(cardContainer, ["ok"
+      ]),
+      h(cardContainerStatus, [
+        h(cardTextStatus, [
+          h(cardRowStatus, [
+            h(Label, 'Status'),
+            h(cardContainerProgressBar, {},
+              h(progressDots, {
+                length: 4,
+                step: mapAssessmentStageToStep(stage) - 1,
+                failed: assessment.violation || false
+              }))
+          ]),
+          h(Body, status)
+        ]),
+        h('div', {className: 'flex flex-row justify-between w-100'}, this.linkButtons(assessment, isAssessee, this.props.setCardVisibility))
       ])
+    ])
 
-    if (this.state.toggleWhy){
+    let explainerCard = h(cardContainer, [this.state.whyReason
+    ])
+
+    if (this.state.toggleWhy) {
       return explainerCard
     } else {
       return regularCardContent
     }
   }
 }
-
 
 export default AssessmentCard
 
