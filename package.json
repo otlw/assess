@@ -41,6 +41,7 @@
     "@types/redux-form": "^7.4.8",
     "@types/xtend": "^4.0.2",
     "enzyme": "^2.8.2",
+    "eslint": "^5.7.0",
     "eslint-plugin-typescript": "^0.12.0",
     "ethjs-abi": "^0.2.0",
     "fathom-contracts": "^1.2.2",
