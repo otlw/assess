@@ -44,7 +44,7 @@ export function updateTransaction (
 export function removeTransaction (txHash: Transaction['txHash']) {
   let type: 'REMOVE_TRANSACTION' = 'REMOVE_TRANSACTION'
   return {
-    type ,
+    type,
     txHash
   }
 }
