@@ -54,6 +54,5 @@ const styledToggleWrapper = styled('div').attrs({className: 'flex fw4 w-100 just
 const styledToggleLabel = styled('h4').attrs({className: 'fw4 mv0 mr2'})`
   color: ${props => props.active ? 'green' : '#8c8c8c'}
 `
-
 const dashboardHeader = styled('div').attrs({className: 'flex items-center w-100 flex-wrap'})`
 `

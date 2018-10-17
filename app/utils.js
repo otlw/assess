@@ -127,6 +127,15 @@ export function statusMessage (isAssessee, assessment, transactions = []) {
   return status
 }
 
+// map assessment stage (range [0,5] , cf constant.js file) to ProgressDots steps (range[1,4] for assessments)
+export function mapAssessmentStageToStep (assessmentStage) {
+  if (assessmentStage === 0 || assessmentStage === 1) {
+    return 1
+  } else {
+    return assessmentStage
+  }
+}
+
 export const getLocalStorageKey = (networkID, userAddress, web3) => {
   // the address of the FathomToken is appended so that redeployments on a local
   // testnet do not show assessment from earlier migrations

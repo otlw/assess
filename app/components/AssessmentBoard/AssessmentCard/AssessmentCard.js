@@ -3,11 +3,11 @@ import h from 'react-hyperscript'
 // can we remove this? import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 import { StageDisplayNames, Stage, CompletedStages } from '../../../constants.js'
-import { statusMessage } from '../../../utils.js'
 import { Headline, Label, Body } from '../../Global/Text.ts'
 import {LinkPrimary} from '../../Global/Links.ts'
 import { ButtonSecondary } from '../../Global/Buttons.ts'
-import progressBar from '../../Global/progressBar.ts'
+import progressDots from '../../Global/progressDots.ts'
+import { statusMessage, mapAssessmentStageToStep } from '../../../utils.js'
 
 export class AssessmentCard extends Component {
   render () {
@@ -34,9 +34,9 @@ export class AssessmentCard extends Component {
             h(cardRowStatus, [
               h(Label, 'Status'),
               h(cardContainerProgressBar, {},
-                h(progressBar, {
+                h(progressDots, {
                   length: 4,
-                  step: stage - 1,
+                  step: mapAssessmentStageToStep(stage) - 1,
                   failed: assessment.violation || false
                 }))
             ]),

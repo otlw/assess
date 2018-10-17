@@ -28,9 +28,9 @@ const theme = {
   bgPrimary: '#E8E9F7',
   bgSecondary: '#F5F5FF',
   positiveGreen: '#15D49A',
-  positiveGreenText: '#004d36',
-  negativeRed: '#ff6666',
-  negativeRedText:'#4d0000',
+  positiveGreenContrast: '#004d36', // Used for text or other contrasting elements on top of positiveGreen
+  negativeRed: '#ff8080',
+  negativeRedContrast:'#800000', // Used for text or other contrasting elements on top of negativeRed
   inactiveGray: '#CCCCCC',
   nearWhite: '#f5f5f5',
   dark: '#29434e',

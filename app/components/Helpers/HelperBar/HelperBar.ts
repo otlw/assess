@@ -10,9 +10,9 @@ export class HelperBar extends Component<Props> {
     this.props.setHelperBar(null)
   }
 
-  // resetVisits () {
-  //   this.props.resetVisits()
-  // }
+  resetVisits () {
+    this.props.resetVisits()
+  }
 
   learnMore () {
     this.closeBar()

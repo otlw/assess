@@ -6,7 +6,8 @@ export const modalTopic = Object.freeze({
   NoMetaMask: 'NoMetaMask',
   EducateAboutMetaMask: 'EducateAboutMetaMask',
   UndeployedNetwork: 'UndeployedNetwork',
-  AssessmentCreation: 'AssessmentCreation'
+  AssessmentCreation: 'AssessmentCreation',
+  AssessmentCreationFailed: 'AssessmentCreationFailed'
 })
 
 export const helperBarTopic = Object.freeze({
@@ -72,7 +73,7 @@ export function modalText (topic: ModalTopics):Modal | null {
     case "AssessmentCreation":
       return {
         title: topic,
-        text: 'Success! Your assessment has been created. Click this link (TODO) to view the details.'
+        text: 'Success! Your assessment has been created.'
       }
     case "AssessmentCreationFailed":
       return {

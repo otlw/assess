@@ -22,7 +22,7 @@ export const Header = (props) => {
           h(headerItem, {name: 'Network', value: network > 10000000 ? 'Local' : network})
         ]),
         h(headerRowRight, [
-          h(headerItem, {name: 'Balance', value: balance})
+          h(headerItemBalance, balance)
         ])
       ])
   )
@@ -41,11 +41,21 @@ const headerRowRight = styled('ul').attrs({
   className: 'list pl0 flex w-auto flex-row ma0 items-center justify-end'})`
       `
 
-const headerItemContainer = styled('li').attrs({className: 'flex ba br1 b--dark-purple lightest-blue mh2'})`
+const headerItemBalance = styled('div').attrs({className: 'flex ba br1 ph3 pv2 mh4'})`
+color: ${props => props.theme.primary};
+background: ${props => props.theme.tertiary};
+border-color: ${props => props.theme.primary};
 `
-const headerItemLabel = styled('div').attrs({className: 'ph3 pv2'})`
+
+const headerItemContainer = styled('li').attrs({className: 'flex ba br1 mh2'})`
+color: ${props => props.theme.primary};
+border-color: ${props => props.theme.tertiary};
 `
-const headerItemValue = styled('div').attrs({className: 'bg-lightest-blue dark-blue ph3 pv2'})`
+const headerItemLabel = styled('div').attrs({className: 'ph3 pv2 br--right br1'})`
+background: ${props => props.theme.tertiary};
+`
+const headerItemValue = styled('div').attrs({className: 'ph3 pv2 bl br--right br1 bg-transparent'})`
+color: ${props => props.theme.tertiary};
 `
 
 const headerItem = (props) => {

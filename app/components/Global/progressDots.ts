@@ -3,28 +3,30 @@ import h from 'react-hyperscript'
 
 type Props = {
   length: number,
-  step:number
+  step: number
   failed: boolean
 }
 
-const progressBar = (props:Props) => {
-	let Dots=[]
-	let i=0
-	for (i = 0; i < props.length; i++) {
-		let newDot=h(Inactive)
-		if (i<props.step){
-			newDot=h(Complete)
-		} else if (i==props.step){
-			newDot= props.failed ? h(Failed) : h(Active)
+// Display a progress bar made of dots, of 'length' specified in props.
+// "step"-prop designates the step that is colored as active, unless it is the last
+// step, in which case it is considered complete (as in our use case the last
+// step is always passive)
+// The starting index is 0.
+const progressDots = (props:Props)=> {
+	let Dots = []
+	for (let i = 0; i < props.length; i++) {
+		let newDot = h(Inactive)
+		if (i < props.step || props.step === props.length - 1){
+			newDot = h(Complete)
+		} else if (i === props.step){
+			newDot = props.failed ? h(Failed) : h(Active)
 		}
-	    Dots.push(newDot);
+	  Dots.push(newDot);
 	}
-    return h(styleProgressBar,
-        Dots
-    )
+  return h(styleProgressBar,Dots)
 }
 
-export default progressBar
+export default progressDots
 
 // styles
 

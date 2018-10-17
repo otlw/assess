@@ -9,9 +9,9 @@ background-color: ${props => props.theme.primary};
 `
 
 export const ButtonPrimary = styled('button').attrs<{active:boolean}>(
-  {className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`
-color: ${props =>  !props.active ? props.theme.tertiary : props.theme.positiveGreenText};
-background-color: ${props => !props.active ? props.theme.primary : props.theme.positiveGreen}
+  {className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'} )`
+color: ${props => !props.active ? props.theme.tertiary : props.theme.positiveGreenContrast};
+background-color: ${props => !props.active ? props.theme.primary : props.theme.positiveGreen};
 `
 
 export const ButtonSecondary = styled('button').attrs({className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'})`

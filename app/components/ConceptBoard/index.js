@@ -3,28 +3,18 @@ import { compose } from 'redux'
 import { LoadComponent } from '../hocs/loadComponent.js'
 import { LoadingStage } from '../../constants.js'
 import ConceptBoard from './ConceptBoard.js'
-import { setModal } from '../../store/navigation/actions'
-import {
-  loadConceptContractAndCreateAssessment,
-  loadConceptsFromConceptRegistery,
-  estimateAssessmentCreationGasCost } from '../../store/concept/asyncActions'
+import {loadConceptsFromConceptRegistery} from '../../store/concept/asyncActions'
 
 const mapStateToProps = state => {
   return {
     concepts: state.concepts,
     loadedConcepts: (state.loading.concepts === LoadingStage.Done),
-    loading: state.loading,
-    transactions: Object.values(state.transactions).filter(
-      tx => (tx.data === 'makeAssessment')
-    )
+    loading: state.loading
   }
 }
 
 const mapDispatchToProps = {
-  load: loadConceptsFromConceptRegistery,
-  loadConceptContractAndCreateAssessment,
-  estimateAssessmentCreationGasCost,
-  setModal
+  load: loadConceptsFromConceptRegistery
 }
 
 export default compose(

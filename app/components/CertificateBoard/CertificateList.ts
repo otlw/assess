@@ -1,7 +1,7 @@
 import CertificateCard from './CertificateCard.js'
 import AssessmentList from '../AssessmentBoard/AssessmentList.js'
-import h from 'react-hyperscript'
 import {Assessment} from '../../store/assessment/reducer'
+import h from 'react-hyperscript'
 
 type Props = {
   assessments:  Assessment[]
