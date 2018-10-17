@@ -10,6 +10,7 @@ import styled from 'styled-components'
 import progressDots from '../Global/progressDots.ts'
 import { Headline, Label, Body } from '../Global/Text.ts'
 import { LinkCloseRight } from '../Global/Links'
+import { ButtonHelp } from '../Global/Buttons'
 import { helperBarTopic } from '../../components/Helpers/helperContent'
 
 var h = require('react-hyperscript')
@@ -85,13 +86,15 @@ export class AssessmentData extends Component {
         h(assessmentContainerBody, [
           h(assessmentObjectText, [
             h(assessmentLabelContainer, [
-              h(Label, 'Assessee')
+              h(Label, 'Assessee'),
+              h(ButtonHelp)
             ]),
             h(Body, isAssessee ? 'You' : assessment.assessee)
           ]),
           h(assessmentObjectTextRight, [
             h(assessmentLabelContainer, [
-              h(Label, 'Assessors')
+              h(Label, 'Assessors'),
+              h(ButtonHelp)
             ]),
             h(AssessorList, {
               assessors: assessment.assessors,
@@ -99,7 +102,7 @@ export class AssessmentData extends Component {
             })
           ]),
           h(assessmentObjectText, [
-            h(MeetingPoint, {assessment: assessment, isAssessee: isAssessee})
+            h(MeetingPoint, {assessment: assessment, isAssessee: isAssessee}),
           ]),
           h(assessmentObjectTextRight, [
             h(assessmentLabelContainer, [
@@ -159,7 +162,7 @@ background-color: ${props => props.theme.tertiary};
 const assessmentContainerStatus = styled('div').attrs({className: 'flex flex-row flex-wrap w-50 items-center justify-start '})`
 `
 
-export const assessmentLabelContainer = styled('div').attrs({className: 'flex flex-row w-100 mb2 items-center'})`
+export const assessmentLabelContainer = styled('div').attrs({className: 'flex flex-row w-100 mb2 items-center justify'})`
 `
 
 // End assessmentView Header
