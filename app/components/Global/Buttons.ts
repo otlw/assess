@@ -1,12 +1,48 @@
+import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 
-export const ButtonHelp = styled('button').attrs({className: 'flex items-center justify-center content-center f6 fw1 br-100 bn ttu uppercase pointer'})`
+const ButtonHelpStyle = styled('button').attrs({className: 'flex items-center justify-center content-center f6 fw1 br-100 bn ttu uppercase pointer'})`
 width: 24px;
 height: 24px;
 color: ${props => props.theme.tertiary};
 background-color: ${props => props.theme.primary};
 `
+const TooltipStyle = styled('div').attrs({className: 'flex items-center justify-center content-center'})`
+width: 30px;
+height: 20px;
+color: ${props => props.theme.tertiary};
+background-color: ${props => props.theme.primary};
+position:absolute;
+bottom:30px;
+`
+
+const ButtonHelpFrame=styled('div')`
+position:relative;
+`
+
+type HelpButtonState = {
+  open: boolean,
+}
+export class ButtonHelp extends Component<any, HelpButtonState> {
+	constructor (props:any) {
+	    super(props)
+	    this.state = {
+	      open: false,
+	    }
+	}
+
+	toggleTooltip(){
+		this.setState({open:!this.state.open})
+	}
+
+	render () {
+	    return (h(ButtonHelpFrame,[
+	    	(this.state.open)? h(TooltipStyle,"very very very very looonnnnnnnnng tooltip"):null,
+	    	h(ButtonHelpStyle,{onClick:this.toggleTooltip.bind(this)},"?")
+	    ]))
+	}
+}
 
 export const ButtonPrimary = styled('button').attrs<{active:boolean}>(
   {className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1'} )`

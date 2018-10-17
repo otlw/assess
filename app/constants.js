@@ -82,3 +82,12 @@ export const TimeOutReasons = Object.freeze({
   NotEnoughCommits: 2,
   NotEnoughReveals: 3
 })
+
+
+// Help texts // TODO: IMO we should have all texts centralized in one place, so basically I think we should bring helperContent.js here
+
+export const HelpTexts= Object.freeze({
+  assessee:"This is the person that is being assessed in a concept. They need to pay to get assessed.",
+  meetingPoint:"This is the url where the assessee and the assessors will meet to discuss the terms of the assessment.",
+  assessors:"Those are the randomly selected users that will determine the final score and the methods for assessing it."
+})
