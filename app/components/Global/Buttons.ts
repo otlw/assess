@@ -2,9 +2,9 @@ import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 
-const ButtonHelpStyle = styled('button').attrs({className: 'flex items-center justify-center content-center f6 fw1 br-100 bn ttu uppercase pointer'})`
-width: 24px;
-height: 24px;
+const ButtonHelpStyle = styled('button').attrs({className: 'flex items-center justify-center content-center f7 fw1 br-100 bn ttu uppercase pointer'})`
+width: 16px;
+height: 16px;
 color: ${props => props.theme.tertiary};
 background-color: ${props => props.theme.primary};
 `
