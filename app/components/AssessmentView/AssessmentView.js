@@ -102,7 +102,7 @@ export class AssessmentData extends Component {
             })
           ]),
           h(assessmentObjectText, [
-            h(MeetingPoint, {assessment: assessment, isAssessee: isAssessee}),
+            h(MeetingPoint, {assessment: assessment, isAssessee: isAssessee})
           ]),
           h(assessmentObjectTextRight, [
             h(assessmentLabelContainer, [
