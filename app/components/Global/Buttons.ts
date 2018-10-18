@@ -2,19 +2,24 @@ import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 
-const ButtonHelpStyle = styled('button').attrs({className: 'flex items-center justify-center content-center f7 fw1 br-100 bn ttu uppercase pointer'})`
+const ButtonHelpStyle = styled('button').attrs({className: 'flex items-center justify-center content-center f7 fw1 mh3 br-100 bn ttu uppercase pointer'})`
 width: 16px;
 height: 16px;
 color: ${props => props.theme.tertiary};
 background-color: ${props => props.theme.primary};
+transition: 0.2s ease-in-out;
+:hover {transform:translate(0px, -2px);}
 `
-const TooltipStyle = styled('div').attrs({className: 'flex items-center justify-center content-center'})`
-width: 30px;
-height: 20px;
-color: ${props => props.theme.tertiary};
-background-color: ${props => props.theme.primary};
+const TooltipStyle = styled('div').attrs({className: 'flex items-start justify-center pa3 br1 shadow-3'})`
 position:absolute;
-bottom:30px;
+bottom:24px;
+width: 200px;
+min-height: 160px;
+border-top: 2px solid ${props => props.theme.primary};
+color: ${props => props.theme.primary};
+background-color: ${props => props.theme.bgSecondary};
+transition: 0.15s ease-in-out;
+:hover {transform:translate(0px, -2px);}
 `
 
 const ButtonHelpFrame=styled('div')`
