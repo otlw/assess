@@ -7,6 +7,7 @@ import { Headline, Label, Body } from '../../Global/Text.ts'
 import {LinkPrimary} from '../../Global/Links.ts'
 import { ButtonSecondary } from '../../Global/Buttons.ts'
 import progressDots from '../../Global/progressDots.ts'
+import {ExplanationCard} from '../../Global/cardContainers.ts'
 import { statusMessage, mapAssessmentStageToStep } from '../../../utils.js'
 
 export class AssessmentCard extends Component {
@@ -19,7 +20,11 @@ export class AssessmentCard extends Component {
   }
 
   toggleWhy (e) {
-    this.setState({toggleWhy: !this.state.toggleWhy, whyReason: e.target.id || ''})
+    if (e) {
+      this.setState({toggleWhy: !this.state.toggleWhy, whyReason: e.target.id || ''})
+    } else {
+      this.setState({toggleWhy: !this.state.toggleWhy})
+    }
   }
 
   // returns the two buttons at the bottom of the assessment Card
@@ -122,11 +127,8 @@ export class AssessmentCard extends Component {
       ])
     ])
 
-    let explainerCard = h(cardContainer, [this.state.whyReason
-    ])
-
     if (this.state.toggleWhy) {
-      return explainerCard
+      return h(ExplanationCard, {goBack: this.toggleWhy.bind(this), title: this.state.whyReason, text: this.state.whyReason})
     } else {
       return regularCardContent
     }
