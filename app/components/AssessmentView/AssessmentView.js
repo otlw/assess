@@ -87,14 +87,14 @@ export class AssessmentData extends Component {
           h(assessmentObjectText, [
             h(assessmentLabelContainer, [
               h(Label, 'Assessee'),
-              h(ButtonHelp)
+              h(ButtonHelp,{text:"The assessee is the one being assessed"})
             ]),
             h(Body, isAssessee ? 'You' : assessment.assessee)
           ]),
           h(assessmentObjectTextRight, [
             h(assessmentLabelContainer, [
               h(Label, 'Assessors'),
-              h(ButtonHelp)
+              h(ButtonHelp,{text:"The assessors are in charge of deciding the final score of the assessee."})
             ]),
             h(AssessorList, {
               assessors: assessment.assessors,

@@ -10,7 +10,7 @@ background-color: ${props => props.theme.primary};
 transition: 0.2s ease-in-out;
 :hover {transform:translate(0px, -2px);}
 `
-const TooltipStyle = styled('div').attrs({className: 'flex items-start justify-center pa3 br1 shadow-3'})`
+const TooltipStyle = styled('div').attrs({className: 'flex items-start justify-between pa3 br1 shadow-3'})`
 position:absolute;
 bottom:24px;
 width: 200px;
@@ -25,11 +25,13 @@ transition: 0.15s ease-in-out;
 const ButtonHelpFrame=styled('div')`
 position:relative;
 `
-
+type HelpButtonProps = {
+  text: string,
+}
 type HelpButtonState = {
   open: boolean,
 }
-export class ButtonHelp extends Component<any, HelpButtonState> {
+export class ButtonHelp extends Component<HelpButtonProps, HelpButtonState> {
 	constructor (props:any) {
 	    super(props)
 	    this.state = {
@@ -43,7 +45,10 @@ export class ButtonHelp extends Component<any, HelpButtonState> {
 
 	render () {
 	    return (h(ButtonHelpFrame,[
-	    	(this.state.open)? h(TooltipStyle,"very very very very looonnnnnnnnng tooltip"):null,
+	    	(this.state.open)? h(TooltipStyle,[
+	    		this.props.text,
+	    		h('div',{style:{position:"relative",right:"0px"}},h(ButtonClose,{onClick:this.toggleTooltip.bind(this)})),
+	    	]):null,
 	    	h(ButtonHelpStyle,{onClick:this.toggleTooltip.bind(this)},"?")
 	    ]))
 	}
