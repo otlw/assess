@@ -50,12 +50,12 @@ export function helperText (topic: ModalTopics):Modal {
     case "NoMetaMask":
       return {
         title: topic,
-        text: "You don't have the MetaMask browser extension that allows to use this app.\n Please Download it to use the features of this interface"
+        text: "You don't have the MetaMask browser extension.\n Please download it from https://www.metamask.io to start using Fathom."
       }
     case "EducateAboutMetaMask":
       return {
         title: topic,
-        text: 'There is this cool thing called Metamask, we need so you can be safe and foxxy.'
+        text: 'MetaMask is a digital wallet that lets you communicate with Ethereum, the blockchain Fathom relies on to keep your assessments and certificates safe and secure.'
       }
     case "UndeployedNetwork":
       return {
@@ -75,12 +75,12 @@ export function helperText (topic: ModalTopics):Modal {
     case "AssessmentCreationFailed":
       return {
         title: topic,
-        text: 'It looks like Ethereum couldn’t complete the creation of the assessment. This shouldn\'t have happened. Please look at your Metamask or the browser-console (F12) to learn why.'
+        text: 'It looks like Ethereum couldn’t complete the creation of the assessment. This can happen from time to time. Please open Metamask to learn why.'
       }
     case "WelcomeAsAssessor":
       return {
         title: topic,
-        text: 'Thank you. Assessors help the world of Fathom to continue spinning. We have a few tips to help you fairly assess others. Shall we get started? ',
+        text: 'Thank you! Assessors like you help the world of Fathom keep spinning. We have a few tips to help you fairly assess others. Shall we get started? ',
         followUp: {
           target: "HowToBeAssessor1"
         }
@@ -102,7 +102,7 @@ export function helperText (topic: ModalTopics):Modal {
     case "FailedStake":
       return {
         title: 'Your assessment couldn\'t continue',
-        text: 'We couldn’t get 5 assessors to join your assessment. It happens occasionally, and isn’t your fault. Let’s recreate your assessment and try again.',
+        text: 'We couldn’t get 5 assessors to join your assessment. It happens occasionally, and isn’t your fault. Let’s recreate your assessment and try again!',
         followUp: {
           target: "FailedStakeWhy",
           linkText: 'Why?'
