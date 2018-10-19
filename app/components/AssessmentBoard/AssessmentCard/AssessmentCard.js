@@ -16,6 +16,7 @@ export class AssessmentCard extends Component {
       toggleWhy: false,
       whyReason: ''
     }
+    this.isAssessee = props.userAddress === props.assessment.assessee
   }
 
   toggleWhy (e) {
@@ -91,8 +92,7 @@ export class AssessmentCard extends Component {
     let stage = assessment.stage
 
     // set assessee/assessor view
-    let isAssessee = this.props.userAddress === assessment.assessee
-    let status = statusMessage(isAssessee, assessment, this.props.transactions)
+    let status = statusMessage(this.isAssessee, assessment, this.props.transactions)
 
     let explainerCard = h(cardContainer, [this.state.whyReason
     ])
@@ -108,7 +108,7 @@ export class AssessmentCard extends Component {
           ]),
           h(cardTextObject, [
             h(Label, 'Assessee'),
-            h(Body, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
+            h(Body, this.isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
           ])
         ]),
         h(cardContainerStatus, [
@@ -124,7 +124,7 @@ export class AssessmentCard extends Component {
             ]),
             h(Body, status)
           ]),
-          h('div', {className: 'flex flex-row justify-between w-100'}, this.linkButtons(assessment, isAssessee, this.props.setCardVisibility))
+          h('div', {className: 'flex flex-row justify-between w-100'}, this.linkButtons(assessment, this.isAssessee, this.props.setCardVisibility))
         ])
       ])
     }
