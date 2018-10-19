@@ -94,41 +94,39 @@ export class AssessmentCard extends Component {
     let isAssessee = this.props.userAddress === assessment.assessee
     let status = statusMessage(isAssessee, assessment, this.props.transactions)
 
-    let regularCardContent = h(cardContainer, [
-      h(cardContainerInfo, [
-        h(cardTextObject, [
-          h(Label, 'Assessment'),
-          h(Headline, assessment.conceptData.name)
-        ]),
-        h(cardTextObject, [
-          h(Label, 'Assessee'),
-          h(Body, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
-        ])
-      ]),
-      h(cardContainerStatus, [
-        h(cardTextStatus, [
-          h(cardRowStatus, [
-            h(Label, 'Status'),
-            h(cardContainerProgressBar, {},
-              h(progressDots, {
-                length: 4,
-                step: mapAssessmentStageToStep(stage) - 1,
-                failed: assessment.violation || false
-              }))
-          ]),
-          h(Body, status)
-        ]),
-        h('div', {className: 'flex flex-row justify-between w-100'}, this.linkButtons(assessment, isAssessee, this.props.setCardVisibility))
-      ])
-    ])
-
     let explainerCard = h(cardContainer, [this.state.whyReason
     ])
 
     if (this.state.toggleWhy) {
       return explainerCard
     } else {
-      return regularCardContent
+      return h(cardContainer, [
+        h(cardContainerInfo, [
+          h(cardTextObject, [
+            h(Label, 'Assessment'),
+            h(Headline, assessment.conceptData.name)
+          ]),
+          h(cardTextObject, [
+            h(Label, 'Assessee'),
+            h(Body, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
+          ])
+        ]),
+        h(cardContainerStatus, [
+          h(cardTextStatus, [
+            h(cardRowStatus, [
+              h(Label, 'Status'),
+              h(cardContainerProgressBar, {},
+                h(progressDots, {
+                  length: 4,
+                  step: mapAssessmentStageToStep(stage) - 1,
+                  failed: assessment.violation || false
+                }))
+            ]),
+            h(Body, status)
+          ]),
+          h('div', {className: 'flex flex-row justify-between w-100'}, this.linkButtons(assessment, isAssessee, this.props.setCardVisibility))
+        ])
+      ])
     }
   }
 }
