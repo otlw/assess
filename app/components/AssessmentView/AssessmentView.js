@@ -9,8 +9,8 @@ import { convertDate, statusMessage, mapAssessmentStageToStep } from '../../util
 import styled from 'styled-components'
 import progressDots from '../Global/progressDots.ts'
 import { Headline, Label, Body } from '../Global/Text.ts'
-import { LinkCloseRight } from '../Global/Links'
 import { ButtonHelp } from '../Global/Buttons'
+import { LinkClose } from '../Global/Links'
 import { helperBarTopic } from '../../components/Helpers/helperContent'
 
 var h = require('react-hyperscript')
@@ -54,7 +54,9 @@ export class AssessmentData extends Component {
     let assessment = this.props.assessment
     // return (
     return h(viewContainer, [
-      h(LinkCloseRight, {to: '/'}),
+      h(containerLinkClose, [
+        h(LinkClose, {to: '/'})
+      ]),
       h(SuperFrame, [
         // holds role and concept title
         h(assessmentHeader, [
@@ -184,3 +186,5 @@ const assessmentFooter = styled('div').attrs({className: 'relative flex flex-row
 margin-top:1px;
 background-color: ${props => props.theme.bgSecondary};
 `
+
+const containerLinkClose = styled('div').attrs({className: 'relative flex w-100 justify-end'})``
