@@ -24,55 +24,49 @@ export class AssessmentCard extends Component {
   }
 
   // returns the two buttons at the bottom of the assessment Card
-  linkButtons (assessment, isAssessee, setCardVisibility) {
+  linkButtons () {
     let buttonList = []
-    // The whyText variable indicates what the first button will display (information/hide)
-    // and the 'secondButtonText' variable will determine what the second button will display (the action button)
-    let whyText = 'Hide'
+    let assessment = this.props.assessment
+
+    // The 'secondButtonText' variable will determine what the second button will display (the action button)
     let secondButtonText = 'Stake'
 
     // First let's determine if the assessment failed
     if (assessment.violation) {
       let userFault = (assessment.violation && assessment.userStage === assessment.stage) || assessment.userStage === Stage.Burned
       if (userFault) {
-        whyText = 'userFault'
         secondButtonText = 'Closed'
       } else {
         if (assessment.refunded) {
-          whyText = 'refunded'
           secondButtonText = 'Refunded'
         } else {
-          whyText = 'notRefundedYet'
           secondButtonText = 'Refund'
         }
       }
 
       // Else, let's use the assessment stages to determine what to display
     } else if (assessment.userStage === Stage.None) {
-      // Waiting for other users
-      whyText = 'none' // TODO figure out case where this is displayed and what appropriate text to display
+      // TODO figure out case where this is displayed and what appropriate text to display
       // why is this different from other 'completed' stages ?
       secondButtonText = 'View'
     } else if (assessment.stage < Stage.Done && assessment.userStage === assessment.stage && assessment.userStage !== 1) {
       // 'Active' status
       secondButtonText = StageDisplayNames[assessment.stage]
-      whyText = secondButtonText
     } else if (assessment.userStage !== 1) {
       // 'Completed' stages (waiting for others)
       secondButtonText = CompletedStages[assessment.stage]
-      whyText = secondButtonText
     }
 
     // First button is always 'WHY', unless the assessment is in 'available' mode, in which case it's "Hide"
-    if (whyText === 'Hide') {
+    if (secondButtonText === 'Stake') {
       buttonList.push(h(
         ButtonSecondary, {
-          onClick: () => setCardVisibility(assessment.address, !assessment.hidden)
+          onClick: () => this.props.setCardVisibility(assessment.address, !assessment.hidden)
         }, assessment.hidden ? 'Unhide' : 'Hide')
       )
     } else {
       buttonList.push(
-        h(ButtonSecondary, {onClick: this.toggleWhy.bind(this), id: whyText}, 'Why?')
+        h(ButtonSecondary, {onClick: this.toggleWhy.bind(this), id: secondButtonText}, 'Why?')
       )
     }
 
@@ -124,7 +118,7 @@ export class AssessmentCard extends Component {
             ]),
             h(Body, status)
           ]),
-          h('div', {className: 'flex flex-row justify-between w-100'}, this.linkButtons(assessment, this.isAssessee, this.props.setCardVisibility))
+          h('div', {className: 'flex flex-row justify-between w-100'}, this.linkButtons())
         ])
       ])
     }
