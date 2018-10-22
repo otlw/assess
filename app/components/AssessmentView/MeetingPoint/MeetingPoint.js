@@ -44,7 +44,7 @@ class MeetingPoint extends Component {
         h('div', [ // First Row
           h(assessmentLabelContainerMP, [
             h(Label, 'Meeting Point'),
-            h(ButtonHelp,{text:"This is the url that assessors and assessee will use to communicate."}),
+            h(ButtonHelp, {text: 'This is the url that assessors and assessee will use to communicate.'}),
             !this.props.isAssessee
               ? null
               : this.state.displayMPEdit
