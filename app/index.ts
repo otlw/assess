@@ -1,36 +1,35 @@
 import { render } from 'react-dom'
 import thunk from 'redux-thunk'
 import { createStore, applyMiddleware } from 'redux'
+
 import { persistStore, persistReducer } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web and AsyncStorage for react-native
+
 import { Provider } from 'react-redux'
 import {App} from './App'
 import rootReducer from './store/index'
 import h from 'react-hyperscript'
 import  styled, {ThemeProvider}from 'styled-components'
-import throttle from 'lodash/throttle'
-import {State} from './store'
-import {getLocalStorageKey} from './utils.js'
 
 const topLevelStyles = styled('div')`
 font-family:'system-ui', 'Helvetica Neue', sans-serif;
 font-weight: 400;
 `
-// const store = createStore(
-//   rootReducer,
-//   applyMiddleware(thunk)
-// )
 
 // Configure redux-persist store
 
 const persistConfig = {
   key: 'root',
   storage,
+  whitelist:['assessments','concepts']
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
-let store = createStore(persistedReducer)
+let store = createStore(
+  persistedReducer,
+  applyMiddleware(thunk)
+)
 let persistor = persistStore(store)
 
 // - - -
@@ -59,10 +58,6 @@ const theme = {
   lightgreen: '#A5FBA9'
 }
 
-// subscribe to any change in store and save it (at most once per second)
-// store.subscribe(throttle(() => {
-//   saveState(store.getState())
-// }, 500))
 
 let loadingLocalStorageComponent=h('div','loading local storage') // TODO add a proper component
 
@@ -76,25 +71,3 @@ render(
   ),
   document.getElementById('root')
 )
-
-// const saveState = (state:State) => {
-//   if (state.ethereum.isConnected) {
-//     try {
-//       let stateToSave = {
-//         assessments: state.assessments,
-//         concepts: state.concepts,
-//         lastUpdatedAt: state.ethereum.lastUpdatedAt,
-//         deployedConceptRegistryAt: state.ethereum.deployedConceptRegistryAt,
-//         deployedFathomTokenAt: state.ethereum.deployedFathomTokenAt,
-//         visits: state.navigation.visits
-//       }
-//       let key = getLocalStorageKey(state.ethereum.networkID, state.ethereum.userAddress, state.ethereum.web3)
-//       const serializedState = JSON.stringify(stateToSave)
-//       localStorage.setItem(key, serializedState) // eslint-disable-line no-undef
-//     } catch (err) {
-//       console.log('error saving state', err)
-//     }
-//   } else {
-//     console.log('do not store Store yet')
-//   }
-// }

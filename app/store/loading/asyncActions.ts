@@ -8,7 +8,7 @@ import {receiveConcepts} from '../concept/actions'
 import {getLocalStorageKey} from '../../utils.js'
 
 export const ConnectMetamask = () => {
-  return async (dispatch:Dispatch<any, any>) => {
+  return async (dispatch:Dispatch<any>) => {
     if (typeof (window as any)['web3'] === 'undefined') {
       dispatch(setModal("NoMetaMask"))
       return dispatch(setMetamaskLoadingStage('Error'))
@@ -41,7 +41,7 @@ export const ConnectMetamask = () => {
 }
 
 export const loadPersistedState = (networkID:number, userAddress:string, web3:Web3) => {
-  return async (dispatch:Dispatch<any, any>) => {
+  return async (dispatch:Dispatch<any>) => {
     try {
       let key = getLocalStorageKey(networkID, userAddress, web3)
       // let key = networkName(networkID) + 'State' + userAddress

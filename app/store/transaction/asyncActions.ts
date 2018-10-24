@@ -11,7 +11,7 @@ import { TransactionReceipt, PromiEvent } from 'web3/types'
 */
 
 export function sendAndReactToTransaction (
-  dispatch: Dispatch<any, any>,
+  dispatch: Dispatch<any>,
   transaction: () => PromiEvent<any>,
   purpose: 'makeAssessment' | 'meetingPointChange' | 'refund',
   userAddress: string,
