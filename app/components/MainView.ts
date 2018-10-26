@@ -6,6 +6,7 @@ import Header from './Header'
 import AssessmentBoard from './AssessmentBoard'
 import CertificateBoard from './CertificateBoard'
 import ConceptBoard from './ConceptBoard'
+import AssessmentCreation from './AssessmentCreation'
 import AssessmentView from './AssessmentView'
 import Modal from './Helpers/Modal'
 import HelperBar from './Helpers/HelperBar'
@@ -37,6 +38,11 @@ export default class MainView extends Component {
               exact: true,
               path: '/concepts/',
               component: ConceptBoard
+            }),
+            h(Route, {
+              exact: true,
+              path: '/concepts/:address/create',
+              component: AssessmentCreation
             }),
             h(Route,{
               path: '/certificates',
