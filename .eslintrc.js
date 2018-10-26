@@ -8,22 +8,15 @@ module.exports = {
         "ecmaVersion": 2016,
         "sourceType": "module"
     },
+    "parser": "typescript-eslint-parser",
+    "plugins": [
+      "typescript"
+    ],
+    "extends": "standard-with-typescript",
     "rules": {
-        "indent": [
-            "error",
-            4
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "quotes": [
-            "error",
-            "double"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ]
+      "indent": ['error', 2],
+      "typescript/explicit-function-return-type": 0,
+      "typescript/explicit-member-accessibility": 0,
+      "camelcase": 0
     }
 };
