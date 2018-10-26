@@ -4,12 +4,10 @@ import h from 'react-hyperscript'
 
 import { Subheadline } from '../Global/Text.ts'
 import ConceptList from './ConceptList'
-import AssessmentCreation from '../AssessmentCreation'
 
 import { NavTabs } from '../NavTabs'
 
 export class ConceptBoard extends Component {
-
   render () {
     if (this.props.loadedConcepts) {
       let concepts = this.props.concepts

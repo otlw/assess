@@ -24,7 +24,7 @@ export class ConceptCard extends Component {
       h(cardContainerDescription, [
         h(Body, this.props.conceptData.description),
         h(cardContainerButtons, [
-          h(LinkPrimary, {to: '/concepts/'+this.props.conceptAddress+'/create'}, 'Get Assessed')
+          h(LinkPrimary, {to: '/concepts/' + this.props.conceptAddress + '/create'}, 'Get Assessed')
         ])
       ])
     ])

@@ -25,8 +25,8 @@ export class AssessmentCreation extends Component {
     if (this.state.step > 1 && this.state.step < 4) {
       this.setState({step: this.state.step - 1})
     } else {
-      let url=window.location.host
-      window.location.href ='http://'+url+'/#/concepts/'
+      let url = window.location.host
+      window.location.href = 'http://' + url + '/#/concepts/'
     }
   }
 
