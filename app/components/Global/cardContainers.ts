@@ -28,19 +28,14 @@ const explanationFrame = styled('div').attrs({
 type ExplanationCardProps = {
   title: string,
   text: string,
-  goBack: any,
+  goBack: Function,
 }
 export class ExplanationCard extends Component<ExplanationCardProps, any> {
-	constructor (props:any) {
-	    super(props)
-	}
-
 	goBack(){
 		this.props.goBack()
 	}
 
 	render () {
-		console.log(ButtonPrimary)
 	    return (h(cardContainer,[
 	    	h(explanationFrame,[
 		    	h(titleStyle,this.props.title),
