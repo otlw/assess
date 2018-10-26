@@ -11,8 +11,7 @@ export class ConceptList extends Component {
         return h(ConceptCard, {
           conceptAddress: conceptAdress,
           conceptData: this.props.concepts[conceptAdress],
-          key: k,
-          selectConcept: this.props.selectConceptAddress.bind(this)
+          key: k
         })
       })
     ])
