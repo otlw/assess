@@ -1,4 +1,4 @@
-import {Assessment, AssessmentsState} from './reducer'
+import { Assessment, AssessmentsState } from './reducer'
 export type Actions =
   ReturnType<typeof receiveAssessor> |
   ReturnType<typeof receiveAssessment> |
@@ -8,8 +8,8 @@ export type Actions =
   ReturnType<typeof setAssessmentAsInvalid> |
   ReturnType<typeof setCardVisibility>
 
-export function setCardVisibility (assessmentAddress:string, hidden:boolean) {
-  let type:'SET_CARD_VISIBILITY' = 'SET_CARD_VISIBILITY'
+export function setCardVisibility (assessmentAddress: string, hidden: boolean) {
+  let type: 'SET_CARD_VISIBILITY' = 'SET_CARD_VISIBILITY'
   return {
     type,
     assessmentAddress,
@@ -17,8 +17,8 @@ export function setCardVisibility (assessmentAddress:string, hidden:boolean) {
   }
 }
 
-export function receiveAssessor (assessmentAddress:string, assessor:string) {
-  let type:'RECEIVE_ASSESSOR' = 'RECEIVE_ASSESSOR'
+export function receiveAssessor (assessmentAddress: string, assessor: string) {
+  let type: 'RECEIVE_ASSESSOR' = 'RECEIVE_ASSESSOR'
   return {
     type,
     assessmentAddress,
@@ -26,8 +26,8 @@ export function receiveAssessor (assessmentAddress:string, assessor:string) {
   }
 }
 
-export function receiveAssessment (assessment:Assessment) {
-  let type:'RECEIVE_ASSESSMENT' = 'RECEIVE_ASSESSMENT'
+export function receiveAssessment (assessment: Assessment) {
+  let type: 'RECEIVE_ASSESSMENT' = 'RECEIVE_ASSESSMENT'
   return {
     type,
     assessment
@@ -35,15 +35,15 @@ export function receiveAssessment (assessment:Assessment) {
 }
 
 export function receiveAllAssessments (assessments: AssessmentsState) {
-  let type: "RECEIVE_ALL_ASSESSMENTS" = "RECEIVE_ALL_ASSESSMENTS"
+  let type: "RECEIVE_ALL_ASSESSMENTS" = 'RECEIVE_ALL_ASSESSMENTS'
   return {
     type,
     assessments
   }
 }
 
-export function updateAssessmentVariable (assessmentAddress:string, name:string, value:any) {
-  let type:'UPDATE_ASSESSMENT_VARIABLE' = 'UPDATE_ASSESSMENT_VARIABLE'
+export function updateAssessmentVariable (assessmentAddress: string, name: string, value: any) {
+  let type: 'UPDATE_ASSESSMENT_VARIABLE' = 'UPDATE_ASSESSMENT_VARIABLE'
   return {
     type,
     assessmentAddress,
@@ -52,16 +52,16 @@ export function updateAssessmentVariable (assessmentAddress:string, name:string,
   }
 }
 
-export function removeAssessment (assessmentAddress:string) {
-  let type:'REMOVE_ASSESSMENT' = 'REMOVE_ASSESSMENT'
+export function removeAssessment (assessmentAddress: string) {
+  let type: 'REMOVE_ASSESSMENT' = 'REMOVE_ASSESSMENT'
   return {
     type,
     assessmentAddress
   }
 }
 
-export function setAssessmentAsInvalid (assessmentAddress:string) {
-  let type: "SET_ASSESSMENT_AS_INVALID" = "SET_ASSESSMENT_AS_INVALID"
+export function setAssessmentAsInvalid (assessmentAddress: string) {
+  let type: "SET_ASSESSMENT_AS_INVALID" = 'SET_ASSESSMENT_AS_INVALID'
   return {
     type,
     assessmentAddress

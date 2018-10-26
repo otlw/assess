@@ -1,4 +1,4 @@
-import {Actions} from './actions'
+import { Actions } from './actions'
 export type ConceptsState = {
   [prop: string]: {
     description: string
@@ -8,11 +8,11 @@ export type ConceptsState = {
 }
 let initialState = {}
 
-export function ConceptsReducer (state = initialState, action:Actions):ConceptsState {
+export function ConceptsReducer (state = initialState, action: Actions): ConceptsState {
   switch (action.type) {
-    case "RECEIVE_CONCEPTS":
-      return action.concepts
-    default:
-      return state
+  case 'RECEIVE_CONCEPTS':
+    return action.concepts
+  default:
+    return state
   }
 }
