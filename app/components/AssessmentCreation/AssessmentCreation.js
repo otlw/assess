@@ -1,9 +1,9 @@
 import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
-import { modalTopic } from '../../Helpers/helperContent'
-import { Label, Body } from '../../Global/Text.ts'
-import { ButtonPrimary, ButtonClose, ButtonSecondary } from '../../Global/Buttons'
+import { modalTopic } from '../Helpers/helperContent'
+import { Label, Body } from '../Global/Text.ts'
+import { ButtonPrimary, ButtonClose, ButtonSecondary } from '../Global/Buttons'
 
 export class AssessmentCreation extends Component {
   constructor (props) {
@@ -25,7 +25,8 @@ export class AssessmentCreation extends Component {
     if (this.state.step > 1 && this.state.step < 4) {
       this.setState({step: this.state.step - 1})
     } else {
-      this.props.cancelCreation()
+      let url=window.location.host
+      window.location.href ='http://'+url+'/#/concepts/'
     }
   }
 
@@ -52,7 +53,7 @@ export class AssessmentCreation extends Component {
 
   estimateGasCost () {
     this.props.estimateGasCost(
-      this.props.conceptAddress,
+      this.props.match.params.address,
       this.state.amountPerAssessor,
       (cost) => {
         this.setState({gasEstimate: cost, step: 2})
@@ -82,7 +83,7 @@ export class AssessmentCreation extends Component {
 
     }
     this.props.loadConceptContractAndCreateAssessment(
-      this.props.conceptAddress,
+      this.props.match.params.address,
       this.state.amountPerAssessor,
       react
     )

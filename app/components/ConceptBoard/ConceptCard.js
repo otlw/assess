@@ -2,7 +2,7 @@ import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 import {Headline, Label, Body} from '../Global/Text.ts'
-import {ButtonPrimary} from '../Global/Buttons.ts'
+import {LinkPrimary} from '../Global/Links.ts'
 
 export class ConceptCard extends Component {
   render () {
@@ -24,7 +24,7 @@ export class ConceptCard extends Component {
       h(cardContainerDescription, [
         h(Body, this.props.conceptData.description),
         h(cardContainerButtons, [
-          h(ButtonPrimary, {onClick: this.props.selectConcept.bind(this), id: this.props.conceptAddress}, 'Get Assessed')
+          h(LinkPrimary, {to: '/concepts/'+this.props.conceptAddress+'/create'}, 'Get Assessed')
         ])
       ])
     ])

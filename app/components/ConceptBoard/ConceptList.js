@@ -12,7 +12,6 @@ export class ConceptList extends Component {
           conceptAddress: conceptAdress,
           conceptData: this.props.concepts[conceptAdress],
           key: k,
-          selectConcept: this.props.selectConceptAddress.bind(this)
         })
       })
     ])
