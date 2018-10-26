@@ -6,7 +6,6 @@ import {
   estimateAssessmentCreationGasCost } from '../../store/concept/asyncActions'
 
 const mapStateToProps = (state, ownProps) => {
-  console.log(ownProps.match.params.address)
   return {
     concept: state.concepts[ownProps.match.params.address],
     visits: state.navigation.visits
