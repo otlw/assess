@@ -31,21 +31,21 @@ type ExplanationCardProps = {
   goBack: Function,
 }
 export class ExplanationCard extends Component<ExplanationCardProps, any> {
-	goBack(){
-		this.props.goBack()
-	}
+  goBack(){
+    this.props.goBack()
+  }
 
-	render () {
-	    return (h(cardContainer,[
-	    	h(explanationFrame,[
-		    	h(titleStyle,this.props.title),
-		    	h(textStyle,this.props.text),
-		    	h(backButtonContainer,[
-		    		h(ButtonPrimary,{onClick:this.goBack.bind(this),active:false},"Back")
-		    	])
-		    ])
-	    ]))
-	}
+  render () {
+    return (h(cardContainer,[
+	  h(explanationFrame,[
+		h(titleStyle,this.props.title),
+		h(textStyle,this.props.text),
+		h(backButtonContainer,[
+		  h(ButtonPrimary,{onClick:this.goBack.bind(this),active:false},"Back")
+		])
+	  ])
+	]))
+  }
 }
 
 

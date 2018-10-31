@@ -15,13 +15,13 @@ export class AssessmentCard extends Component {
     super(props)
     this.state = {
       toggleWhy: false,
-      whyReason: ''
+      explanation: ''
     }
   }
 
   toggleWhy (e) {
     if (e) {
-      this.setState({toggleWhy: !this.state.toggleWhy, whyReason: e.target.id || ''})
+      this.setState({toggleWhy: !this.state.toggleWhy, explanation: e.target.id || ''})
     } else {
       this.setState({toggleWhy: !this.state.toggleWhy})
     }
@@ -30,45 +30,36 @@ export class AssessmentCard extends Component {
   // returns the two buttons at the bottom of the assessment Card
   linkButtons (assessment, isAssessee, setCardVisibility) {
     let buttonList = []
-    // The whyText variable indicates what the first button will display (information/hide)
-    // and the 'secondButtonText' variable will determine what the second button will display (the action button)
-    let whyText = 'Hide'
-    let secondButtonText = 'Stake'
+    // This is the status from the user's pov and will determine what the right hand side button will display (the action button)
+    let status = 'Stake'
 
     // First let's determine if the assessment failed
     if (assessment.violation) {
       let userFault = (assessment.violation && assessment.userStage === assessment.stage) || assessment.userStage === Stage.Burned
       if (userFault) {
-        whyText = 'userFault'
-        secondButtonText = 'Closed'
+        status = 'Closed'
       } else {
         if (assessment.refunded) {
-          whyText = 'refunded'
-          secondButtonText = 'Refunded'
+          status = 'Refunded'
         } else {
-          whyText = 'notRefundedYet'
-          secondButtonText = 'Refund'
+          status = 'Refund'
         }
       }
 
       // Else, let's use the assessment stages to determine what to display
     } else if (assessment.userStage === Stage.None) {
-      // Waiting for other users
-      whyText = 'none' // TODO figure out case where this is displayed and what appropriate text to display
-      // why is this different from other 'completed' stages ?
-      secondButtonText = 'View'
-    } else if (assessment.stage < Stage.Done && assessment.userStage === assessment.stage && assessment.userStage !== 1) {
-      // 'Active' status
-      secondButtonText = StageDisplayNames[assessment.stage]
-      whyText = secondButtonText
-    } else if (assessment.userStage !== 1) {
-      // 'Completed' stages (waiting for others)
-      secondButtonText = CompletedStages[assessment.stage]
-      whyText = secondButtonText
+      // this is when the user is assessee is not required to take actions on the assessment
+      status = 'View'
+    } else if (assessment.stage < Stage.Done && assessment.userStage === assessment.stage) {
+      // 'Active' status: this means the user is required to take an action
+      status = StageDisplayNames[assessment.stage]
+    } else {
+      // 'Completed' stages : user is waiting for other assessors to take action to move on to the next stage (assessment.userStage > assessment.stage)
+      status = CompletedStages[assessment.stage]
     }
 
     // First button is always 'WHY', unless the assessment is in 'available' mode, in which case it's "Hide"
-    if (whyText === 'Hide') {
+    if (status === 'Stake') {
       buttonList.push(h(
         ButtonSecondary, {
           onClick: () => setCardVisibility(assessment.address, !assessment.hidden)
@@ -76,15 +67,15 @@ export class AssessmentCard extends Component {
       )
     } else {
       buttonList.push(
-        h(ButtonSecondary, {onClick: this.toggleWhy.bind(this), id: whyText}, 'Why?')
+        h(ButtonSecondary, {onClick: this.toggleWhy.bind(this), id: status}, 'Why?')
       )
     }
 
     // Second Button
     buttonList.push(
       h(LinkPrimary,
-        {to: (secondButtonText === 'Closed' || secondButtonText === 'Refunded') ? '/' : '/assessment/' + assessment.address},
-        secondButtonText
+        {to: (status === 'Closed' || status === 'Refunded') ? '/' : '/assessment/' + assessment.address},
+        status
       )
     )
 
@@ -92,45 +83,45 @@ export class AssessmentCard extends Component {
   }
 
   render () {
-    const assessment = this.props.assessment
-    let stage = assessment.stage
-
-    // set assessee/assessor view
-    let isAssessee = this.props.userAddress === assessment.assessee
-    let status = statusMessage(isAssessee, assessment, this.props.transactions)
-
-    let regularCardContent = h(cardContainer, [
-      h(cardContainerInfo, [
-        h(cardTextObject, [
-          h(Label, 'Assessment'),
-          h(Headline, assessment.conceptData.name)
-        ]),
-        h(cardTextObject, [
-          h(Label, 'Assessee'),
-          h(Body, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
-        ])
-      ]),
-      h(cardContainerStatus, [
-        h(cardTextStatus, [
-          h(cardRowStatus, [
-            h(Label, 'Status'),
-            h(cardContainerProgressBar, {},
-              h(progressDots, {
-                length: 4,
-                step: mapAssessmentStageToStep(stage) - 1,
-                failed: assessment.violation || false
-              }))
-          ]),
-          h(Body, status)
-        ]),
-        h('div', {className: 'flex flex-row justify-between w-100'}, this.linkButtons(assessment, isAssessee, this.props.setCardVisibility))
-      ])
-    ])
-
     if (this.state.toggleWhy) {
-      return h(ExplanationCard, {goBack: this.toggleWhy.bind(this), title: this.state.whyReason, text: this.state.whyReason})
+      // explanation card
+      return h(ExplanationCard, {goBack: this.toggleWhy.bind(this), title: this.state.explanation, text: this.state.explanation})
     } else {
-      return regularCardContent
+      // regular content
+      const assessment = this.props.assessment
+      let stage = assessment.stage
+
+      // set assessee/assessor view
+      let isAssessee = this.props.userAddress === assessment.assessee
+      let status = statusMessage(isAssessee, assessment, this.props.transactions)
+
+      return h(cardContainer, [
+        h(cardContainerInfo, [
+          h(cardTextObject, [
+            h(Label, 'Assessment'),
+            h(Headline, assessment.conceptData.name)
+          ]),
+          h(cardTextObject, [
+            h(Label, 'Assessee'),
+            h(Body, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
+          ])
+        ]),
+        h(cardContainerStatus, [
+          h(cardTextStatus, [
+            h(cardRowStatus, [
+              h(Label, 'Status'),
+              h(cardContainerProgressBar, {},
+                h(progressDots, {
+                  length: 4,
+                  step: mapAssessmentStageToStep(stage) - 1,
+                  failed: assessment.violation || false
+                }))
+            ]),
+            h(Body, status)
+          ]),
+          h('div', {className: 'flex flex-row justify-between w-100'}, this.linkButtons(assessment, isAssessee, this.props.setCardVisibility))
+        ])
+      ])
     }
   }
 }
