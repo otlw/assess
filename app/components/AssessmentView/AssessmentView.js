@@ -4,7 +4,7 @@ import AssessorList from './AssessorList.js'
 import ProgressAndInputBar from './ProgressAndInputBar'
 import FinalResultBar from './FinalResultBar.js'
 import FailedBar from './FailedBar'
-import { Stage } from '../../constants.js'
+import { Stage, HelpTexts } from '../../constants.js'
 import { convertDate, statusMessage, mapAssessmentStageToStep } from '../../utils.js'
 import styled from 'styled-components'
 import progressDots from '../Global/progressDots.ts'
@@ -89,14 +89,14 @@ export class AssessmentData extends Component {
           h(assessmentObjectText, [
             h(assessmentLabelContainer, [
               h(Label, 'Assessee'),
-              h(ButtonHelp, {text: 'The assessee is the one being assessed'})
+              h(ButtonHelp, {text: HelpTexts.assessee})
             ]),
             h(Body, isAssessee ? 'You' : assessment.assessee)
           ]),
           h(assessmentObjectTextRight, [
             h(assessmentLabelContainer, [
               h(Label, 'Assessors'),
-              h(ButtonHelp, {text: 'The assessors are in charge of deciding the final score of the assessee.'})
+              h(ButtonHelp, {text: HelpTexts.assessors})
             ]),
             h(AssessorList, {
               assessors: assessment.assessors,
