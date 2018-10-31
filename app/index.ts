@@ -1,14 +1,9 @@
 import { render } from 'react-dom'
-import thunk from 'redux-thunk'
-import { createStore, applyMiddleware } from 'redux'
 
-import { persistStore, persistReducer } from 'redux-persist'
-import { PersistGate } from 'redux-persist/integration/react'
-import storage from 'redux-persist/lib/storage' // defaults to localStorage for web and AsyncStorage for react-native
-
-import { Provider } from 'react-redux'
 import {App} from './App'
-import rootReducer from './store/index'
+import {PersistStoreInstanciator} from './PersistStoreInstanciator'
+import {InitialMetamaskLoader} from './components/Loaders/InitialMetamaskLoader'
+
 import h from 'react-hyperscript'
 import  styled, {ThemeProvider}from 'styled-components'
 
@@ -16,26 +11,6 @@ const topLevelStyles = styled('div')`
 font-family:'system-ui', 'Helvetica Neue', sans-serif;
 font-weight: 400;
 `
-
-// Configure redux-persist store
-
-const persistConfig = {
-  key: 'root',
-  storage,
-  whitelist:['assessments','concepts']
-}
-
-const persistedReducer = persistReducer(persistConfig, rootReducer)
-let store = createStore(
-  persistedReducer,
-  applyMiddleware(thunk)
-)
-let persistor = persistStore(store)
-
-// - - -
-
-
-console.log('defaultState', store.getState())
 
 const theme = {
   primary: '#322EE5',
@@ -59,15 +34,16 @@ const theme = {
 }
 
 
-let loadingLocalStorageComponent=h('div','loading local storage') // TODO add a proper component
-
 render(
-  h(Provider, {store},
-    h(ThemeProvider, {theme},
-      h(PersistGate,{loading:loadingLocalStorageComponent,persistor},
-        h(topLevelStyles, [h(App)])
-      )
-    )
+  h(ThemeProvider, {theme},
+      h(InitialMetamaskLoader,{child:
+        (key:string)=>{
+          return h(PersistStoreInstanciator,{
+            rootKey:key,
+            child:h(topLevelStyles, [h(App)])
+          }) 
+        }
+      })
   ),
   document.getElementById('root')
 )

@@ -1,21 +1,29 @@
 // this component loads the network and userAddress before anything else, in order to load/persist the right data
 import {Component} from 'react'
-import { connect } from 'react-redux'
 import h from 'react-hyperscript'
 import Web3 from 'web3'
 
-type Props = {
-  setNetworkAndUser: any 
+type State={
+  status:string,
+  networkID:number,
+  userAddress:string
 }
-export class InitialMetamaskLoader extends Component<Props> {
 
-  constructor (props) {
+type Props={
+  child:any
+}
+
+export class InitialMetamaskLoader extends Component<Props,State> {
+
+  constructor (props:Props) {
     super(props)
     this.state = {
       status: 'initial',
+      networkID:0,
+      userAddress:''
     }
   }
-  componentDidMount() {
+  async componentDidMount() {
     if (typeof (window as any)['web3'] === 'undefined') {
       this.setState({status:'NoMetaMask'})
     }
@@ -27,21 +35,21 @@ export class InitialMetamaskLoader extends Component<Props> {
     if (accounts.length === 0) {
       this.setState({status:'UnlockMetaMask'})
     } else {
-      this.props.setNetworkAndUser(networkID,userAddress)
+      this.setState({status:'loaded',networkID,userAddress:accounts[0]})
     }
   }
 
   render () {
+    let child=this.props.child
     switch(this.state.status) {
       case null:
-      case "initial": {
-        return h('div', 'Loadin metamask')
-      }
-      case "loaded":{
-        return this.props.children
-      }
+      case "initial": 
+        return h('div', 'Loading metamask')
+      
+      case "loaded":
+        return child(this.state.networkID+this.state.userAddress)
       default:
-        return h('div',this.state.status)
+        return h('div',this.state.status);
     }
   }
 }
