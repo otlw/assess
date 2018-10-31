@@ -1,13 +1,13 @@
 import { connect } from 'react-redux'
 import AssessmentCreation from './AssessmentCreation.js'
-import { hasDoneX, setModal } from '../../../store/navigation/actions'
+import { hasDoneX, setModal } from '../../store/navigation/actions'
 import {
   loadConceptContractAndCreateAssessment,
-  estimateAssessmentCreationGasCost } from '../../../store/concept/asyncActions'
+  estimateAssessmentCreationGasCost } from '../../store/concept/asyncActions'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    concept: state.concepts[ownProps.conceptAddress],
+    concept: state.concepts[ownProps.match.params.address],
     visits: state.navigation.visits
   }
 }

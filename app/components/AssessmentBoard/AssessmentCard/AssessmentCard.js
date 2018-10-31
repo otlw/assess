@@ -17,6 +17,7 @@ export class AssessmentCard extends Component {
       toggleWhy: false,
       explanation: ''
     }
+    this.isAssessee = props.userAddress === props.assessment.assessee
   }
 
   toggleWhy (e) {
@@ -28,8 +29,10 @@ export class AssessmentCard extends Component {
   }
 
   // returns the two buttons at the bottom of the assessment Card
-  linkButtons (assessment, isAssessee, setCardVisibility) {
+  linkButtons () {
     let buttonList = []
+    let assessment = this.props.assessment
+
     // This is the status from the user's pov and will determine what the right hand side button will display (the action button)
     let status = 'Stake'
 
@@ -62,7 +65,7 @@ export class AssessmentCard extends Component {
     if (status === 'Stake') {
       buttonList.push(h(
         ButtonSecondary, {
-          onClick: () => setCardVisibility(assessment.address, !assessment.hidden)
+          onClick: () => this.props.setCardVisibility(assessment.address, !assessment.hidden)
         }, assessment.hidden ? 'Unhide' : 'Hide')
       )
     } else {
@@ -92,8 +95,7 @@ export class AssessmentCard extends Component {
       let stage = assessment.stage
 
       // set assessee/assessor view
-      let isAssessee = this.props.userAddress === assessment.assessee
-      let status = statusMessage(isAssessee, assessment, this.props.transactions)
+      let status = statusMessage(this.isAssessee, assessment, this.props.transactions)
 
       return h(cardContainer, [
         h(cardContainerInfo, [
@@ -103,7 +105,7 @@ export class AssessmentCard extends Component {
           ]),
           h(cardTextObject, [
             h(Label, 'Assessee'),
-            h(Body, isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
+            h(Body, this.isAssessee ? 'You' : assessment.assessee.substring(0, 8) + '...')
           ])
         ]),
         h(cardContainerStatus, [
@@ -119,7 +121,7 @@ export class AssessmentCard extends Component {
             ]),
             h(Body, status)
           ]),
-          h('div', {className: 'flex flex-row justify-between w-100'}, this.linkButtons(assessment, isAssessee, this.props.setCardVisibility))
+          h('div', {className: 'flex flex-row justify-between w-100'}, this.linkButtons())
         ])
       ])
     }
