@@ -19,7 +19,7 @@ type Props={
   child:any
 }
 
-export class PersistStoreInstanciator extends Component<Props> {
+export class PersistStoreInstantiator extends Component<Props> {
 
   constructor (props:Props) {
     super(props)
@@ -28,9 +28,6 @@ export class PersistStoreInstanciator extends Component<Props> {
       networkID:0,
       userAddress:''
     }
-  }
-  componentDidMount() {
-
   }
 
   render () {
@@ -62,5 +59,5 @@ export class PersistStoreInstanciator extends Component<Props> {
   }
 }
 
-export default PersistStoreInstanciator
+export default PersistStoreInstantiator
 

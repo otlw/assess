@@ -1,7 +1,7 @@
 import { render } from 'react-dom'
 
 import {App} from './App'
-import {PersistStoreInstanciator} from './PersistStoreInstanciator'
+import {PersistStoreInstantiator} from './PersistStoreInstantiator'
 import {InitialMetamaskLoader} from './components/Loaders/InitialMetamaskLoader'
 
 import h from 'react-hyperscript'
@@ -38,7 +38,7 @@ render(
   h(ThemeProvider, {theme},
       h(InitialMetamaskLoader,{child:
         (key:string)=>{
-          return h(PersistStoreInstanciator,{
+          return h(PersistStoreInstantiator,{
             rootKey:key,
             child:h(topLevelStyles, [h(App)])
           }) 
