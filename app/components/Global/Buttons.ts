@@ -22,7 +22,7 @@ transition: 0.15s ease-in-out;
 :hover {transform:translate(0px, -2px);}
 `
 
-const ButtonHelpFrame=styled('div')`
+const ButtonHelpFrame = styled('div')`
 position:relative;
 `
 type HelpButtonProps = {
@@ -32,7 +32,7 @@ type HelpButtonState = {
   open: boolean,
 }
 export class ButtonHelp extends Component<HelpButtonProps, HelpButtonState> {
-	constructor (props:any) {
+	constructor (props: any) {
 	    super(props)
 	    this.state = {
 	      open: false,
@@ -40,16 +40,18 @@ export class ButtonHelp extends Component<HelpButtonProps, HelpButtonState> {
 	}
 
 	toggleTooltip(){
-		this.setState({open:!this.state.open})
+		this.setState({open: !this.state.open})
 	}
 
 	render () {
-	    return (h(ButtonHelpFrame,[
-	    	(this.state.open)? h(TooltipStyle,[
+	    return (h(ButtonHelpFrame, [
+	    	(this.state.open)? h(TooltipStyle, [
 	    		this.props.text,
-	    		h('div',{style:{position:"relative",right:"0px"}},h(ButtonClose,{onClick:this.toggleTooltip.bind(this)})),
+	    		h('div', {style: {position: "relative", right: "0px"}}, 
+	    			h(ButtonClose, {onClick: this.toggleTooltip.bind(this)})
+	    		),
 	    	]):null,
-	    	h(ButtonHelpStyle,{onClick:this.toggleTooltip.bind(this)},"?")
+	    	h(ButtonHelpStyle, {onClick: this.toggleTooltip.bind(this)}, "?")
 	    ]))
 	}
 }
