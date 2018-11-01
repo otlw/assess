@@ -1,4 +1,4 @@
-import { Stage, TimeOutReasons, StageDisplayNames, networkName } from './constants'
+import { Stage, TimeOutReasons, StageDisplayNames, networkName, CompletedStages } from './constants'
 let { Assessment, Concept, FathomToken, ConceptRegistry } = require('fathom-contracts')
 
 function getContractInstance (web3, abi, contractAddress) {
@@ -67,6 +67,30 @@ export function convertFromOnChainScoreToUIScore (x) {
 
 export function convertFromUIScoreToOnChainScore (x) {
   return (x * 2) - 100
+}
+
+// This function takes an assessment object and returns the status of the user (what is required to do)
+
+export function userStatus (assessment) {
+  let status = 'Stake'
+
+  // First let's determine if the assessment failed
+  if (assessment.violation) {
+    let userFault = (assessment.violation && assessment.userStage === assessment.stage) || assessment.userStage === Stage.Burned
+    status = userFault ? 'Closed' : assessment.refunded ? 'Refunded' : 'Refund'
+
+    // Else, let's use the assessment stages to determine what to display
+  } else if (assessment.userStage === Stage.None) {
+    // this is when the user is assessee is not required to take actions on the assessment
+    status = 'View'
+  } else if (assessment.stage < Stage.Done && assessment.userStage === assessment.stage) {
+    // 'Active' status: this means the user is required to take an action
+    status = StageDisplayNames[assessment.stage]
+  } else {
+    // 'Completed' stages : user is waiting for other assessors to take action to move on to the next stage (assessment.userStage > assessment.stage)
+    status = CompletedStages[assessment.stage]
+  }
+  return status
 }
 
 /*

@@ -2,13 +2,12 @@ import { Component } from 'react'
 import h from 'react-hyperscript'
 // can we remove this? import {Link} from 'react-router-dom'
 import styled from 'styled-components'
-import { StageDisplayNames, Stage, CompletedStages } from '../../../constants.js'
 import { Headline, Label, Body } from '../../Global/Text.ts'
 import {LinkPrimary} from '../../Global/Links.ts'
 import { ButtonSecondary } from '../../Global/Buttons.ts'
 import progressDots from '../../Global/progressDots.ts'
 import {ExplanationCard} from '../../Global/cardContainers.ts'
-import { statusMessage, mapAssessmentStageToStep } from '../../../utils.js'
+import { statusMessage, userStatus, mapAssessmentStageToStep } from '../../../utils.js'
 
 export class AssessmentCard extends Component {
   constructor (props) {
@@ -34,32 +33,7 @@ export class AssessmentCard extends Component {
     let assessment = this.props.assessment
 
     // This is the status from the user's pov and will determine what the right hand side button will display (the action button)
-    let status = 'Stake'
-
-    // First let's determine if the assessment failed
-    if (assessment.violation) {
-      let userFault = (assessment.violation && assessment.userStage === assessment.stage) || assessment.userStage === Stage.Burned
-      if (userFault) {
-        status = 'Closed'
-      } else {
-        if (assessment.refunded) {
-          status = 'Refunded'
-        } else {
-          status = 'Refund'
-        }
-      }
-
-      // Else, let's use the assessment stages to determine what to display
-    } else if (assessment.userStage === Stage.None) {
-      // this is when the user is assessee is not required to take actions on the assessment
-      status = 'View'
-    } else if (assessment.stage < Stage.Done && assessment.userStage === assessment.stage) {
-      // 'Active' status: this means the user is required to take an action
-      status = StageDisplayNames[assessment.stage]
-    } else {
-      // 'Completed' stages : user is waiting for other assessors to take action to move on to the next stage (assessment.userStage > assessment.stage)
-      status = CompletedStages[assessment.stage]
-    }
+    let status = userStatus(assessment)
 
     // First button is always 'WHY', unless the assessment is in 'available' mode, in which case it's "Hide"
     if (status === 'Stake') {
