@@ -19,6 +19,7 @@ export const ConnectMetamask = () => {
             await (window as any)['ethereum'].enable();
         } catch (error) {
             // User denied account access...
+            // TODO setup 'user rejection modal'
         }
     }
     // Legacy dapp browsers...
@@ -29,7 +30,7 @@ export const ConnectMetamask = () => {
     // Non-dapp browsers...
     else {
         console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
-      dispatch(setModal("NoMetaMask"))
+      dispatch(setModal("NoMetaMask")) // TODO this modal shouldnt be able to be closed
       return dispatch(setMetamaskLoadingStage('Error'))
     }
 
@@ -46,7 +47,7 @@ export const ConnectMetamask = () => {
     }, 1000)
 
     if (accounts.length === 0) {
-      dispatch(setModal("UnlockMetaMask"))
+      dispatch(setModal("UnlockMetaMask")) // TODO this modal shouldnt be able to be closed
       return dispatch(setMetamaskLoadingStage('Error'))
     }
 
