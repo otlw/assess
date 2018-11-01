@@ -33,7 +33,6 @@ export const ConnectMetamask = () => {
       return dispatch(setMetamaskLoadingStage('Error'))
     }
 
-    //let web3 = new Web3((window as any)['web3'].currentProvider)
     let accounts = await web3.eth.getAccounts()
     let networkID = await web3.eth.net.getId()
 
