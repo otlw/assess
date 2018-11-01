@@ -14,17 +14,17 @@ export class AssessmentCard extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      toggleWhy: false,
+      showBackSide: false,
       explanation: ''
     }
     this.isAssessee = props.userAddress === props.assessment.assessee
   }
 
-  toggleWhy (e) {
+  showBackSide (e) {
     if (e) {
-      this.setState({toggleWhy: !this.state.toggleWhy, explanation: e.target.id || ''})
+      this.setState({showBackSide: !this.state.showBackSide, explanation: e.target.id || ''})
     } else {
-      this.setState({toggleWhy: !this.state.toggleWhy})
+      this.setState({showBackSide: !this.state.showBackSide})
     }
   }
 
@@ -70,7 +70,7 @@ export class AssessmentCard extends Component {
       )
     } else {
       buttonList.push(
-        h(ButtonSecondary, {onClick: this.toggleWhy.bind(this), id: status}, 'Why?')
+        h(ButtonSecondary, {onClick: this.showBackSide.bind(this), id: status}, 'Why?')
       )
     }
 
@@ -86,9 +86,9 @@ export class AssessmentCard extends Component {
   }
 
   render () {
-    if (this.state.toggleWhy) {
+    if (this.state.showBackSide) {
       // explanation card
-      return h(ExplanationCard, {goBack: this.toggleWhy.bind(this), title: this.state.explanation, text: this.state.explanation})
+      return h(ExplanationCard, {goBack: this.showBackSide.bind(this), title: this.state.explanation, text: this.state.explanation})
     } else {
       // regular content
       const assessment = this.props.assessment
