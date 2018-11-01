@@ -9,12 +9,31 @@ import {getLocalStorageKey} from '../../utils.js'
 
 export const ConnectMetamask = () => {
   return async (dispatch:Dispatch<any, any>) => {
-    if (typeof (window as any)['web3'] === 'undefined') {
+
+    // Modern dapp browsers...
+    let web3:any;
+    if ((window as any)['ethereum']) {
+        web3 = new Web3((window as any)['ethereum']);
+        try {
+            // Request account access if needed
+            await (window as any)['ethereum'].enable();
+        } catch (error) {
+            // User denied account access...
+        }
+    }
+    // Legacy dapp browsers...
+    else if ((window as any)['web3']) {
+        web3 = new Web3((window as any)['web3'].currentProvider);
+        // Acccounts always exposed
+    }
+    // Non-dapp browsers...
+    else {
+        console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
       dispatch(setModal("NoMetaMask"))
       return dispatch(setMetamaskLoadingStage('Error'))
     }
 
-    let web3 = new Web3((window as any)['web3'].currentProvider)
+    //let web3 = new Web3((window as any)['web3'].currentProvider)
     let accounts = await web3.eth.getAccounts()
     let networkID = await web3.eth.net.getId()
 
