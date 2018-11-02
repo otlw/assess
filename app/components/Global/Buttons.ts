@@ -1,12 +1,60 @@
+import { Component } from 'react'
 import styled from 'styled-components'
 import h from 'react-hyperscript'
 
-export const ButtonHelp = styled('button').attrs({ className: 'flex items-center justify-center content-center f6 fw1 br-100 bn ttu uppercase pointer' })`
-width: 24px;
-height: 24px;
+const ButtonHelpStyle = styled('button').attrs({ className: 'flex items-center justify-center content-center f7 fw1 mh3 br-100 bn ttu uppercase pointer' })`
+width: 16px;
+height: 16px;
 color: ${props => props.theme.tertiary};
 background-color: ${props => props.theme.primary};
+transition: 0.2s ease-in-out;
+:hover {transform:translate(0px, -2px);}
 `
+const TooltipStyle = styled('div').attrs({ className: 'flex items-start justify-between pa3 br1 shadow-3' })`
+position:absolute;
+bottom:24px;
+width: 200px;
+min-height: 160px;
+border-top: 2px solid ${props => props.theme.primary};
+color: ${props => props.theme.primary};
+background-color: ${props => props.theme.bgSecondary};
+transition: 0.15s ease-in-out;
+:hover {transform:translate(0px, -2px);}
+`
+
+const ButtonHelpFrame = styled('div')`
+position:relative;
+`
+type HelpButtonProps = {
+  text: string
+}
+type HelpButtonState = {
+  open: boolean
+}
+export class ButtonHelp extends Component<HelpButtonProps, HelpButtonState> {
+  constructor (props: any) {
+    super(props)
+    this.state = {
+      open: false
+    }
+  }
+
+  toggleTooltip () {
+    this.setState({ open: !this.state.open })
+  }
+
+  render () {
+    return (h(ButtonHelpFrame, [
+      (this.state.open) ? h(TooltipStyle, [
+        this.props.text,
+        h('div', { style: { position: 'relative', right: '0px' } },
+          h(ButtonClose, { onClick: this.toggleTooltip.bind(this) })
+        )
+      ]) : null,
+      h(ButtonHelpStyle, { onClick: this.toggleTooltip.bind(this) }, '?')
+    ]))
+  }
+}
 
 export const ButtonPrimary = styled('button').attrs<{active:boolean}>(
   { className: 'flex pv2 ph4 items-center justify-center br-pill bn ttu uppercase pointer shadow-1' })`

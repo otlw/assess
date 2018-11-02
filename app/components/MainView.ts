@@ -44,7 +44,7 @@ export default class MainView extends Component {
               path: '/concepts/:address/create',
               component: AssessmentCreation
             }),
-            h(Route,{
+            h(Route, {
               path: '/certificates',
               exact: true,
               component: CertificateBoard

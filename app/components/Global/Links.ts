@@ -22,15 +22,14 @@ export const LinkClose = (props: {to: string}) => {
   ])
 }
 
-const styleLinkClose = styled(Link).attrs({className: 'flex h-100 items-center justify-center pa0 mr2 bg-transparent pointer br-100'})`
+const styleLinkClose = styled(Link).attrs({ className: 'flex h-100 items-center justify-center pa0 mr2 bg-transparent pointer br-100' })`
 transition:0.2s ease-in-out;
 border: 1px solid transparent;
 width: 32px;
 height: 32px;
 :hover {border: 1px solid ${props => props.theme.primary};}`
 
-
-const icoClose = require('../../assets/ico-close.svg');
-const imgClose = styled('img').attrs({alt:'close', src: icoClose})`
+const icoClose = require('../../assets/ico-close.svg')
+const imgClose = styled('img').attrs({ alt: 'close', src: icoClose })`
 width: 16px;
 `

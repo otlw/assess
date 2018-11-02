@@ -4,11 +4,12 @@ import AssessorList from './AssessorList.js'
 import ProgressAndInputBar from './ProgressAndInputBar'
 import FinalResultBar from './FinalResultBar.js'
 import FailedBar from './FailedBar'
-import { Stage } from '../../constants.js'
+import { Stage, HelpTexts } from '../../constants.js'
 import { convertDate, statusMessage, mapAssessmentStageToStep } from '../../utils.js'
 import styled from 'styled-components'
 import progressDots from '../Global/progressDots.ts'
 import { Headline, Label, Body } from '../Global/Text.ts'
+import { ButtonHelp } from '../Global/Buttons'
 import { LinkClose } from '../Global/Links'
 import { helperBarTopic } from '../../components/Helpers/helperContent'
 
@@ -87,13 +88,15 @@ export class AssessmentData extends Component {
         h(assessmentContainerBody, [
           h(assessmentObjectText, [
             h(assessmentLabelContainer, [
-              h(Label, 'Assessee')
+              h(Label, 'Assessee'),
+              h(ButtonHelp, {text: HelpTexts.assessee})
             ]),
             h(Body, isAssessee ? 'You' : assessment.assessee)
           ]),
           h(assessmentObjectTextRight, [
             h(assessmentLabelContainer, [
-              h(Label, 'Assessors')
+              h(Label, 'Assessors'),
+              h(ButtonHelp, {text: HelpTexts.assessors})
             ]),
             h(AssessorList, {
               assessors: assessment.assessors,
@@ -161,7 +164,7 @@ background-color: ${props => props.theme.tertiary};
 const assessmentContainerStatus = styled('div').attrs({className: 'flex flex-row flex-wrap w-50 items-center justify-start '})`
 `
 
-export const assessmentLabelContainer = styled('div').attrs({className: 'flex flex-row w-100 mb2 items-center'})`
+export const assessmentLabelContainer = styled('div').attrs({className: 'flex flex-row w-100 mb2 items-center justify'})`
 `
 
 // End assessmentView Header
