@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import styled from 'styled-components'
-import {Label, Body} from '../../Global/Text'
-import {Props} from './index'
+import { Label, Body } from '../../Global/Text'
+import { Props } from './index'
 import { ButtonClose, ButtonTertiary } from '../../Global/Buttons'
 var h = require('react-hyperscript')
 
@@ -25,18 +25,18 @@ export class HelperBar extends Component<Props> {
       return (
         h(helperBarContainer, [
           h(barContainer, [
-            h(ButtonClose, {onClick: this.closeBar.bind(this)}),
+            h(ButtonClose, { onClick: this.closeBar.bind(this) }),
             h(barObject, [
               h(barContainerTitle, [
-                h(Label, topic.title),
+                h(Label, topic.title)
               ]),
               h(Body, topic.text)
             ]),
-            h(barObjectButton, [,
+            h(barObjectButton, [
               (topic.learnMore
-               ? h(ButtonTertiary, {onClick: this.learnMore.bind(this)}, 'Learn More')
-               : null)
-            ]),
+                ? h(ButtonTertiary, { onClick: this.learnMore.bind(this) }, 'Learn More')
+                : null)
+            ])
             //
             // h('button', {onClick: this.resetVisits.bind(this)}, 'resetToNoob!') // this is for us, so we can pretend being a first timer
           ])
@@ -51,19 +51,19 @@ export class HelperBar extends Component<Props> {
 export default HelperBar
 
 // style
-const helperBarContainer = styled('div').attrs({className: 'flex flex-row w-100 items-center justify-center'})``
+const helperBarContainer = styled('div').attrs({ className: 'flex flex-row w-100 items-center justify-center' })``
 
-export const barContainer = styled('div').attrs({className: 'relative flex flex-row items-center justify-start w-100 pv2 mt3 pl2 br2'})`
+export const barContainer = styled('div').attrs({ className: 'relative flex flex-row items-center justify-start w-100 pv2 mt3 pl2 br2' })`
 max-width: 800px;
 background-color: ${props => props.theme.tertiary};
 `
 
-export const barObject = styled('div').attrs({className: 'flex items-center justify-center mh2'})`
+export const barObject = styled('div').attrs({ className: 'flex items-center justify-center mh2' })`
 `
 
-export const barObjectButton = styled('div').attrs({className: 'flex items-center justify-center mh2'})`
+export const barObjectButton = styled('div').attrs({ className: 'flex items-center justify-center mh2' })`
 margin-left: auto;
 `
-export const barContainerTitle = styled('div').attrs({className: 'flex items-center justify-center mr1'})`
+export const barContainerTitle = styled('div').attrs({ className: 'flex items-center justify-center mr1' })`
 flex-shrink: 0;
 `

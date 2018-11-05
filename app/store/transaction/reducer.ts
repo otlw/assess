@@ -15,7 +15,7 @@ export type TransactionsState = {
   [prop: string]: Transaction
 }
 
-let initialState:TransactionsState = {}
+let initialState: TransactionsState = {}
 
 // state will look like this:
 // state = {
@@ -31,38 +31,38 @@ let initialState:TransactionsState = {}
 //   }
 // }
 
-export function TransactionsReducer (state = initialState, action:Actions):TransactionsState {
+export function TransactionsReducer (state = initialState, action: Actions): TransactionsState {
   switch (action.type) {
-    case 'SAVE_TRANSACTION':
-      return {
-        ...state,
-        [action.txHash]: {
-          txHash: action.txHash,
-          address: action.address,
-          sender: action.sender,
-          purpose: action.purpose,
-          status: 'published',
-          time: Date.now()
-        }
+  case 'SAVE_TRANSACTION':
+    return {
+      ...state,
+      [action.txHash]: {
+        txHash: action.txHash,
+        address: action.address,
+        sender: action.sender,
+        purpose: action.purpose,
+        status: 'published',
+        time: Date.now()
       }
-    case 'UPDATE_TRANSACTION':
-      return {
-        ...state,
-        [action.txHash]: extend(state[action.txHash], {
-          txHash: action.txHash,
-          address: action.address,
-          sender: action.sender,
-          purpose: action.purpose,
-          status: action.status,
-          time: Date.now()
-        })
-      }
-    case 'REMOVE_TRANSACTION': {
-      let newState = {...state}
-      delete newState[action.txHash]
-      return newState
     }
-    default:
-      return state
+  case 'UPDATE_TRANSACTION':
+    return {
+      ...state,
+      [action.txHash]: extend(state[action.txHash], {
+        txHash: action.txHash,
+        address: action.address,
+        sender: action.sender,
+        purpose: action.purpose,
+        status: action.status,
+        time: Date.now()
+      })
+    }
+  case 'REMOVE_TRANSACTION': {
+    let newState = { ...state }
+    delete newState[action.txHash]
+    return newState
+  }
+  default:
+    return state
   }
 }

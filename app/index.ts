@@ -2,13 +2,13 @@ import { render } from 'react-dom'
 import thunk from 'redux-thunk'
 import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
-import {App} from './App'
+import { App } from './App'
 import rootReducer from './store/index'
 import h from 'react-hyperscript'
-import  styled, {ThemeProvider}from 'styled-components'
+import styled, { ThemeProvider } from 'styled-components'
 import throttle from 'lodash/throttle'
-import {State} from './store'
-import {getLocalStorageKey} from './utils.js'
+import { State } from './store'
+import { getLocalStorageKey } from './utils.js'
 
 const topLevelStyles = styled('div')`
 font-family:'system-ui', 'Helvetica Neue', sans-serif;
@@ -30,7 +30,7 @@ const theme = {
   positiveGreen: '#15D49A',
   positiveGreenContrast: '#004d36', // Used for text or other contrasting elements on top of positiveGreen
   negativeRed: '#ff8080',
-  negativeRedContrast:'#800000', // Used for text or other contrasting elements on top of negativeRed
+  negativeRedContrast: '#800000', // Used for text or other contrasting elements on top of negativeRed
   inactiveGray: '#CCCCCC',
   nearWhite: '#f5f5f5',
   dark: '#29434e',
@@ -47,14 +47,14 @@ store.subscribe(throttle(() => {
 }, 500))
 
 render(
-  h(Provider, {store},
-    h(ThemeProvider, {theme},
+  h(Provider, { store },
+    h(ThemeProvider, { theme },
       h(topLevelStyles, [h(App)])
-     )),
+    )),
   document.getElementById('root')
 )
 
-const saveState = (state:State) => {
+const saveState = (state: State) => {
   if (state.ethereum.isConnected) {
     try {
       let stateToSave = {
