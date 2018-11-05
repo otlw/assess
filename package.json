@@ -7,8 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "lint": "standard --verbose './app/**./*.ts' './app/**/*.js'| snazzy && eslint 'app/**.ts' 'app/**/**.ts' 'app/**/**/**.ts'",
-    "fix": "standard --fix './app/index.js' './app/**/*.js' && eslint --fix 'app/**.ts' 'app/**/**.ts' 'app/**/**/**.ts'  ",
+    "lint": "standard --verbose './app/**/*.js' && eslint './app/**/*.ts'",
+    "fix": "standard --fix './app/**/*.js' && eslint --fix './app/**/*.ts'",
     "build": "webpack",
     "dev": "webpack-dev-server --open",
     "deploy-testnet": "cd node_modules/fathom-contracts && truffle migrate --reset",
