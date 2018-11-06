@@ -41,7 +41,7 @@ const theme = {
   lightgreen: '#A5FBA9'
 }
 
-const saveState = (state:State) => {
+const saveState = (state: State) => {
   if (state.ethereum.isConnected) {
     try {
       let stateToSave = {
@@ -69,10 +69,9 @@ store.subscribe(throttle(() => {
 }, 500))
 
 render(
-  h(Provider, {store},
-    h(ThemeProvider, {theme},
+  h(Provider, { store },
+    h(ThemeProvider, { theme },
       h(topLevelStyles, [h(App)])
-     )),
+    )),
   document.getElementById('root')
 )
-
