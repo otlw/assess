@@ -2,25 +2,29 @@ import { Component } from 'react'
 import h from 'react-hyperscript'
 // can we remove this? import {Link} from 'react-router-dom'
 import styled from 'styled-components'
-import { StageDisplayNames, Stage, CompletedStages } from '../../../constants.js'
 import { Headline, Label, Body } from '../../Global/Text.ts'
 import {LinkPrimary} from '../../Global/Links.ts'
 import { ButtonSecondary } from '../../Global/Buttons.ts'
 import progressDots from '../../Global/progressDots.ts'
-import { statusMessage, mapAssessmentStageToStep } from '../../../utils.js'
+import {ExplanationCard} from '../../Global/cardContainers.ts'
+import { statusMessage, userStatus, mapAssessmentStageToStep } from '../../../utils.js'
 
 export class AssessmentCard extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      toggleWhy: false,
-      whyReason: ''
+      showBackSide: false,
+      explanation: ''
     }
     this.isAssessee = props.userAddress === props.assessment.assessee
   }
 
-  toggleWhy (e) {
-    this.setState({toggleWhy: !this.state.toggleWhy, whyReason: e.target.id || ''})
+  showBackSide (e) {
+    if (e) {
+      this.setState({showBackSide: !this.state.showBackSide, explanation: e.target.id || ''})
+    } else {
+      this.setState({showBackSide: !this.state.showBackSide})
+    }
   }
 
   // returns the two buttons at the bottom of the assessment Card
@@ -28,37 +32,11 @@ export class AssessmentCard extends Component {
     let buttonList = []
     let assessment = this.props.assessment
 
-    // The 'secondButtonText' variable will determine what the second button will display (the action button)
-    let secondButtonText = 'Stake'
-
-    // First let's determine if the assessment failed
-    if (assessment.violation) {
-      let userFault = (assessment.violation && assessment.userStage === assessment.stage) || assessment.userStage === Stage.Burned
-      if (userFault) {
-        secondButtonText = 'Closed'
-      } else {
-        if (assessment.refunded) {
-          secondButtonText = 'Refunded'
-        } else {
-          secondButtonText = 'Refund'
-        }
-      }
-
-      // Else, let's use the assessment stages to determine what to display
-    } else if (assessment.userStage === Stage.None) {
-      // TODO figure out case where this is displayed and what appropriate text to display
-      // why is this different from other 'completed' stages ?
-      secondButtonText = 'View'
-    } else if (assessment.stage < Stage.Done && assessment.userStage === assessment.stage && assessment.userStage !== 1) {
-      // 'Active' status
-      secondButtonText = StageDisplayNames[assessment.stage]
-    } else if (assessment.userStage !== 1) {
-      // 'Completed' stages (waiting for others)
-      secondButtonText = CompletedStages[assessment.stage]
-    }
+    // This is the status from the user's pov and will determine what the right hand side button will display (the action button)
+    let status = userStatus(assessment)
 
     // First button is always 'WHY', unless the assessment is in 'available' mode, in which case it's "Hide"
-    if (secondButtonText === 'Stake') {
+    if (status === 'Stake') {
       buttonList.push(h(
         ButtonSecondary, {
           onClick: () => this.props.setCardVisibility(assessment.address, !assessment.hidden)
@@ -66,15 +44,15 @@ export class AssessmentCard extends Component {
       )
     } else {
       buttonList.push(
-        h(ButtonSecondary, {onClick: this.toggleWhy.bind(this), id: secondButtonText}, 'Why?')
+        h(ButtonSecondary, {onClick: this.showBackSide.bind(this), id: status}, 'Why?')
       )
     }
 
     // Second Button
     buttonList.push(
       h(LinkPrimary,
-        {to: (secondButtonText === 'Closed' || secondButtonText === 'Refunded') ? '/' : '/assessment/' + assessment.address},
-        secondButtonText
+        {to: (status === 'Closed' || status === 'Refunded') ? '/' : '/assessment/' + assessment.address},
+        status
       )
     )
 
@@ -82,18 +60,17 @@ export class AssessmentCard extends Component {
   }
 
   render () {
-    const assessment = this.props.assessment
-    let stage = assessment.stage
-
-    // set assessee/assessor view
-    let status = statusMessage(this.isAssessee, assessment, this.props.transactions)
-
-    let explainerCard = h(cardContainer, [this.state.whyReason
-    ])
-
-    if (this.state.toggleWhy) {
-      return explainerCard
+    if (this.state.showBackSide) {
+      // explanation card
+      return h(ExplanationCard, {goBack: this.showBackSide.bind(this), title: this.state.explanation, text: this.state.explanation})
     } else {
+      // regular content
+      const assessment = this.props.assessment
+      let stage = assessment.stage
+
+      // set assessee/assessor view
+      let status = statusMessage(this.isAssessee, assessment, this.props.transactions)
+
       return h(cardContainer, [
         h(cardContainerInfo, [
           h(cardTextObject, [

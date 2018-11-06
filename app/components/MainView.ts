@@ -44,7 +44,7 @@ export default class MainView extends Component {
               path: '/concepts/:address/create',
               component: AssessmentCreation
             }),
-            h(Route,{
+            h(Route, {
               path: '/certificates',
               exact: true,
               component: CertificateBoard
@@ -60,4 +60,4 @@ export default class MainView extends Component {
   }
 }
 
-const appContainer = styled('div').attrs({className: 'relative flex flex-column w-100 h-100'})``
+const appContainer = styled('div').attrs({ className: 'relative flex flex-column w-100 h-100' })``

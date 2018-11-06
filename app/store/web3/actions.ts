@@ -53,7 +53,7 @@ interface IPersistedState {
   deployedFathomTokenAt: number
   deployedConceptRegistryAt: number
 }
-export function receivePersistedState (persistedState:IPersistedState) {
+export function receivePersistedState (persistedState: IPersistedState) {
   let type: 'RECEIVE_PERSISTED_STATE' = 'RECEIVE_PERSISTED_STATE'
   return {
     type,

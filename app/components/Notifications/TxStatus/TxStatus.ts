@@ -7,7 +7,7 @@ import { ButtonClose } from '../../Global/Buttons'
 var h = require('react-hyperscript')
 
 type Phrasing = {[key in Transaction['purpose']]: string}
-const phrasing:Phrasing = Object.freeze({
+const phrasing: Phrasing = Object.freeze({
   makeAssessment: 'create an assessment',
   setMeetingPoint: 'set a meeting point',
   meetingPointChange: 'make changes to the meeting point',
@@ -35,9 +35,9 @@ export class TxStatus extends Component<ITxStatusProps> {
 
     return h(rowTxContainer, [
       h(textTransaction, textField),
-      h(linkTransaction, {href: targetURL, target: '_blank'},
+      h(linkTransaction, { href: targetURL, target: '_blank' },
         tx.txHash.substring(0, 5) + '...' + tx.txHash.substring(60)),
-      h(ButtonClose, {onClick: this.removeTX.bind(this)})
+      h(ButtonClose, { onClick: this.removeTX.bind(this) })
     ])
   }
 }
@@ -45,10 +45,10 @@ export class TxStatus extends Component<ITxStatusProps> {
 export default TxStatus
 
 // styled
-const rowTxContainer = styled('div').attrs({className: 'flex flex-row w-100 h3 items-center justify-center br2 pv1 shadow-4'})`
+const rowTxContainer = styled('div').attrs({ className: 'flex flex-row w-100 h3 items-center justify-center br2 pv1 shadow-4' })`
   border-color: ${props => props.theme.tertiary};
 `
 
-const textTransaction = styled('h5').attrs({className: 'f5 fw4 pa2 dark-gray'})``
+const textTransaction = styled('h5').attrs({ className: 'f5 fw4 pa2 dark-gray' })``
 
-const linkTransaction = styled('a').attrs({className: 'link f5 fw4 blue'})``
+const linkTransaction = styled('a').attrs({ className: 'link f5 fw4 blue' })``
