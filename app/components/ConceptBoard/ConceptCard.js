@@ -6,11 +6,10 @@ import {LinkPrimary} from '../Global/Links.ts'
 import { ExplanationCard } from '../Global/cardContainers.ts'
 
 export class ConceptCard extends Component {
-
   constructor (props) {
     super(props)
     this.state = {
-      showBackSide: false,
+      showBackSide: false
     }
   }
 
@@ -32,8 +31,8 @@ export class ConceptCard extends Component {
         ]),
         h(cardContainerDescription, [
           h(Body, [
-            h('span',this.props.conceptData.description),
-            h(moreStyle,{onClick:this.showBackSide.bind(this)},' MORE')
+            h('span', this.props.conceptData.description),
+            h(moreStyle, {onClick: this.showBackSide.bind(this)}, ' MORE')
           ]),
           h(cardContainerButtons, [
             h(LinkPrimary, {to: '/concepts/' + this.props.conceptAddress + '/create'}, 'Get Assessed')
@@ -79,4 +78,3 @@ const moreStyle = styled('span')`
 color: ${props => props.theme.primary};
 cursor:pointer;
 `
-
