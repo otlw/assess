@@ -222,10 +222,10 @@ export class AssessmentCreation extends Component {
     })
 
     return h(createAssessmentContainer, [
-      this.state.step < 4 ? 
-      h(containerLinkClose, [
-        h(ButtonClose, {onClick: this.cancelButton.bind(this)})
-      ]): null,
+      this.state.step < 4
+        ? h(containerLinkClose, [
+          h(ButtonClose, {onClick: this.cancelButton.bind(this)})
+        ]) : null,
       h(createAssessmentTopWrapper, [
         h(createAssessmentContainerProgressBar, [
           // TODO REFACTOR: use general Purpose progressBar
