@@ -222,15 +222,18 @@ export class AssessmentCreation extends Component {
     })
 
     return h(createAssessmentContainer, [
+      this.state.step < 4 ? 
+      h(containerLinkClose, [
+        h(ButtonClose, {onClick: this.cancelButton.bind(this)})
+      ]): null,
       h(createAssessmentTopWrapper, [
         h(createAssessmentContainerProgressBar, [
-          // REFACTOR: use general Purpose progressBar
+          // TODO REFACTOR: use general Purpose progressBar
           h(createAssessmentProgressBarObject, {current: step === 1, past: step > 1}),
           h(createAssessmentProgressBarObject, {current: step === 2, past: step > 2}),
           h(createAssessmentProgressBarObject, {current: step === 3, past: step > 3}),
           h(createAssessmentProgressBarObject, {current: step === 4, past: step > 4})
-        ]),
-        this.state.step < 4 ? h(ButtonClose, {onClick: this.cancelButton.bind(this)}) : null
+        ])
       ]),
       h(createAssessmentWrapper, [
         h(createAssessmentCardContainer, [
@@ -253,6 +256,7 @@ export default AssessmentCreation
 
 const createAssessmentContainer = styled('div').attrs({ className: 'flex flex-column items-center w-100 h-100 bg-white pa2 tc' })`
 `
+const containerLinkClose = styled('div').attrs({className: 'relative flex w-100 justify-end'})``
 
 const createAssessmentTextDesc = styled('h4').attrs({className: 'f4 fw4 tl mt4 mb0'})`
 color: ${props => props.theme.primary};
