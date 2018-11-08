@@ -38,7 +38,7 @@ export const ConnectMetamask = () => {
         window.location.reload()
       }
     }, 1000)
-    
+
     if (accounts.length === 0) {
       dispatch(setModal('UnlockMetaMask')) // TODO this modal shouldnt be able to be closed
       return dispatch(setMetamaskLoadingStage('Error'))
