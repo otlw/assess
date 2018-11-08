@@ -3,31 +3,43 @@ import styled from 'styled-components'
 import h from 'react-hyperscript'
 import {Headline, Label, Body} from '../Global/Text.ts'
 import {LinkPrimary} from '../Global/Links.ts'
+import { ExplanationCard } from '../Global/cardContainers.ts'
 
 export class ConceptCard extends Component {
-  render () {
-    // NOTE once the concept definition process is more defined we will want to
-    // use the learnMore field that the ipfs description of a concept provides
+  constructor (props) {
+    super(props)
+    this.state = {
+      showBackSide: false
+    }
+  }
 
-    // set LearnMore link if it's provided by the concept data
-    // let LearnMore = null
-    // if (this.props.conceptData.learnMore) {
-    //   LearnMore = h(cardButtonSecondary, {href: this.props.conceptData.learnMore, target: '_blank'}, 'Learn')
-    // }
-    return h(cardContainer, [
-      h(cardContainerInfo, [
-        h(cardTextObject, [
-          h(Label, 'Concept'),
-          h(Headline, this.props.conceptData.name)
-        ])
-      ]),
-      h(cardContainerDescription, [
-        h(Body, this.props.conceptData.description),
-        h(cardContainerButtons, [
-          h(LinkPrimary, {to: '/concepts/' + this.props.conceptAddress + '/create'}, 'Get Assessed')
+  showBackSide (e) {
+    this.setState({showBackSide: !this.state.showBackSide})
+  }
+
+  render () {
+    if (this.state.showBackSide) {
+      // explanation card
+      return h(ExplanationCard, {goBack: this.showBackSide.bind(this), title: this.props.conceptData.name, text: this.props.conceptData.description})
+    } else {
+      return h(cardContainer, [
+        h(cardContainerInfo, [
+          h(cardTextObject, [
+            h(Label, 'Concept'),
+            h(Headline, this.props.conceptData.name)
+          ])
+        ]),
+        h(cardContainerDescription, [
+          h(Body, [
+            h('span', this.props.conceptData.description),
+            h(moreStyle, {onClick: this.showBackSide.bind(this)}, ' MORE')
+          ]),
+          h(cardContainerButtons, [
+            h(LinkPrimary, {to: '/concepts/' + this.props.conceptAddress + '/create'}, 'Get Assessed')
+          ])
         ])
       ])
-    ])
+    }
   }
 }
 
@@ -62,8 +74,7 @@ height: 50%;
 
 const cardContainerButtons = styled('div').attrs({className: 'flex flex-row justify-center w-100'})`
 `
-
-// const cardButtonSecondary = styled('div').attrs({
-//   className: 'flex self-end ph4 pv2 fw4 f5 items-center align-center br-pill dark-blue'
-// })`box-shadow: 0px 0px 0px 1px hsla(214, 100%, 31%, 0.1);
-// `
+const moreStyle = styled('span')`
+color: ${props => props.theme.primary};
+cursor:pointer;
+`
