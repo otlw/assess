@@ -6,7 +6,7 @@ import { Headline, Label, Body } from '../../Global/Text.ts'
 import {LinkPrimary} from '../../Global/Links.ts'
 import { ButtonSecondary } from '../../Global/Buttons.ts'
 import progressDots from '../../Global/progressDots.ts'
-import {ExplanationCard} from '../../Global/cardContainers.ts'
+import { ExplanationCard } from '../../Global/cardContainers.ts'
 import { statusMessage, userStatus, mapAssessmentStageToStep } from '../../../utils.js'
 
 export class AssessmentCard extends Component {
