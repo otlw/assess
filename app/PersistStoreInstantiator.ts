@@ -16,7 +16,7 @@ let loadingLocalStorageComponent=h('div','loading local storage') // TODO add a 
 
 type Props={
   rootKey:string,
-  child:any
+  children?: any,
 }
 
 export class PersistStoreInstantiator extends Component<Props> {
@@ -53,7 +53,7 @@ export class PersistStoreInstantiator extends Component<Props> {
 
     return h(Provider, {store},
       h(PersistGate,{loading:loadingLocalStorageComponent,persistor},
-        this.props.child
+        this.props.children
       )
     )
   }

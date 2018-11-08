@@ -40,8 +40,7 @@ render(
         (key:string)=>{
           return h(PersistStoreInstantiator,{
             rootKey:key,
-            child:h(topLevelStyles, [h(App)])
-          }) 
+          }, h(topLevelStyles, [h(App)])) 
         }
       })
   ),
