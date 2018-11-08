@@ -3,7 +3,7 @@ import TxStatus from './TxStatus'
 import { removeTransaction } from '../../../store/transaction/actions'
 import { State } from '../../../store'
 
-const mapStateToProps = (state:State) => {
+const mapStateToProps = (state: State) => {
   return {
     networkID: state.ethereum.networkID
   }

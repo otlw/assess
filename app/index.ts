@@ -22,7 +22,7 @@ const theme = {
   positiveGreen: '#15D49A',
   positiveGreenContrast: '#004d36', // Used for text or other contrasting elements on top of positiveGreen
   negativeRed: '#ff8080',
-  negativeRedContrast:'#800000', // Used for text or other contrasting elements on top of negativeRed
+  negativeRedContrast: '#800000', // Used for text or other contrasting elements on top of negativeRed
   inactiveGray: '#CCCCCC',
   nearWhite: '#f5f5f5',
   dark: '#29434e',

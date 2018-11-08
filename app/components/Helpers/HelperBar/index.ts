@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import HelperBar from './HelperBar'
 import { setHelperBar, setModal, resetVisits } from '../../../store/navigation/actions'
 import { helperBarText } from '../helperContent'
-import {State} from '../../../store'
+import { State } from '../../../store'
 
 export type Props = {
   topic: ReturnType<typeof helperBarText>
@@ -12,7 +12,7 @@ export type Props = {
   showBar: boolean
 }
 
-const mapStateToProps = (state:State) => {
+const mapStateToProps = (state: State) => {
   return {
     // visits: state.navigation.visits, // TODO this will be used to decide whether the user is a novice or not
     topic: helperBarText(state.navigation.helperBar),

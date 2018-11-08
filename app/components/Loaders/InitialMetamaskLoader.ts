@@ -24,11 +24,29 @@ export class InitialMetamaskLoader extends Component<Props,State> {
     }
   }
   async componentDidMount() {
-    if (typeof (window as any)['web3'] === 'undefined') {
-      this.setState({status:'NoMetaMask'})
+
+    // Modern dapp browsers...
+    let web3: any
+    if ((window as any)['ethereum']) {
+      web3 = new Web3((window as any)['ethereum'])
+      try {
+        // Request account access if needed
+        await (window as any)['ethereum'].enable()
+      } catch (error) {
+        // User denied account access...
+        // TODO setup 'user rejection modal'
+        console.log('user rejection')
+        this.setState({status:'UserRejection'})
+      }
+    } else if ((window as any)['web3']) { // Legacy dapp browsers...
+      web3 = new Web3((window as any)['web3'].currentProvider)
+      // Acccounts always exposed
+    } else { // Non-dapp browsers...
+      console.log('Non-Ethereum browser detected. You should consider trying MetaMask!')
+      this.setState({status:'NoMetaMask'})// TODO this modal shouldnt be able to be closed
     }
 
-    let web3 = new Web3((window as any)['web3'].currentProvider)
+    web3 = new Web3((window as any)['web3'].currentProvider)
     let accounts = await web3.eth.getAccounts()
     let networkID = await web3.eth.net.getId()
 

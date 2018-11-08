@@ -1,8 +1,9 @@
 import { Component } from 'react'
 import styled from 'styled-components'
 import inputField from '../../Global/inputField.ts'
-import {ButtonTertiary, ButtonClose} from '../../Global/Buttons'
+import {ButtonTertiary, ButtonClose, ButtonHelp} from '../../Global/Buttons'
 import { Label, Body } from '../../Global/Text.ts'
+import { HelpTexts } from '../../../constants.js'
 
 var h = require('react-hyperscript')
 
@@ -44,6 +45,7 @@ class MeetingPoint extends Component {
         h('div', [ // First Row
           h(assessmentLabelContainerMP, [
             h(Label, 'Meeting Point'),
+            h(ButtonHelp, {text: HelpTexts.meetingPoint}),
             !this.props.isAssessee
               ? null
               : this.state.displayMPEdit

@@ -17,11 +17,11 @@ export function sendAndReactToTransaction (
   userAddress: string,
   contractAddress: string,
   callbacks: {
-    transactionHash: (hash: string) => void | null,
-    confirmation: (status: boolean, receipt: TransactionReceipt | Error) => void,
-    error: (error: Error) => void
+  transactionHash: (hash: string) => void | null,
+  confirmation: (status: boolean, receipt: TransactionReceipt | Error) => void,
+  error: (error: Error) => void
   }
-  ) {
+) {
   transaction()
     .on('transactionHash', (hash: string) => {
       dispatch(saveTransaction(contractAddress, userAddress, purpose, hash))
@@ -49,6 +49,6 @@ export function sendAndReactToTransaction (
     .on('error', (err: Error) => {
       // when there is an error
       console.log('err', err)
-        if (callbacks.error) callbacks.error(err)
+      if (callbacks.error) callbacks.error(err)
     })
 }
