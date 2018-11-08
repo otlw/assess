@@ -59,7 +59,7 @@ export const loadPersistedState = (networkID: number, userAddress: string, web3:
       // let key = networkName(networkID) + 'State' + userAddress
       const serializedState = localStorage.getItem(key) // eslint-disable-line no-undef
       if (serializedState === null) {
-        return
+        return dispatch(setHistoryLoadingStage('Loaded'))
       }
       let persistedState = JSON.parse(serializedState)
       if (persistedState.assessments) {
