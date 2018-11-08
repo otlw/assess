@@ -41,19 +41,6 @@ const theme = {
   lightgreen: '#A5FBA9'
 }
 
-// subscribe to any change in store and save it (at most once per second)
-store.subscribe(throttle(() => {
-  saveState(store.getState())
-}, 500))
-
-render(
-  h(Provider, { store },
-    h(ThemeProvider, { theme },
-      h(topLevelStyles, [h(App)])
-    )),
-  document.getElementById('root')
-)
-
 const saveState = (state: State) => {
   if (state.ethereum.isConnected) {
     try {
@@ -75,3 +62,16 @@ const saveState = (state: State) => {
     console.log('do not store Store yet')
   }
 }
+
+// subscribe to any change in store and save it (at most once per second)
+store.subscribe(throttle(() => {
+  saveState(store.getState())
+}, 500))
+
+render(
+  h(Provider, { store },
+    h(ThemeProvider, { theme },
+      h(topLevelStyles, [h(App)])
+    )),
+  document.getElementById('root')
+)
