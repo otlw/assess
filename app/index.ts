@@ -36,12 +36,12 @@ render(
   h(ThemeProvider, { theme },
     // h(InitialMetamaskLoader, { child:
     //     (key: string) => {
-          //return 
-          h(PersistStoreInstantiator, {
-           // rootKey: key
-          }, h(topLevelStyles, [h(App)]))
-        //}
-    //})
+    // return
+    h(PersistStoreInstantiator, {
+      // rootKey: key
+    }, h(topLevelStyles, [h(App)]))
+    // }
+    // })
   ),
   document.getElementById('root')
 )

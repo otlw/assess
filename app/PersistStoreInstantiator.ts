@@ -23,7 +23,7 @@ type Props = {
   children?: any
 }
 
-export class PersistStoreInstantiator extends Component<Props,State> {
+export class PersistStoreInstantiator extends Component<Props, State> {
   constructor (props: any) {
     super(props)
     this.state = {
@@ -32,7 +32,6 @@ export class PersistStoreInstantiator extends Component<Props,State> {
       userAddress: ''
     }
   }
-
 
   async componentDidMount () {
     // load networkID and user address to use as rootKey for the data persistor
@@ -70,7 +69,6 @@ export class PersistStoreInstantiator extends Component<Props,State> {
   }
 
   render () {
-
     switch (this.state.status) {
     case null:
     case 'initial':
@@ -80,25 +78,25 @@ export class PersistStoreInstantiator extends Component<Props,State> {
     // Metamask data loaded
     // Configure redux-persist store
 
-    const persistConfig = {
-      key: this.state.networkID + this.state.userAddress,
-      storage,
-      whitelist: ['assessments', 'concepts']
-    }
+      const persistConfig = {
+        key: this.state.networkID + this.state.userAddress,
+        storage,
+        whitelist: ['assessments', 'concepts']
+      }
 
-    const persistedReducer = persistReducer(persistConfig, rootReducer)
-    let store = createStore(
-      persistedReducer,
-      applyMiddleware(thunk)
-    )
-    let persistor = persistStore(store)
-
-    // - - -
-    return h(Provider, { store },
-      h(PersistGate, { loading: loadingLocalStorageComponent, persistor },
-        this.props.children
+      const persistedReducer = persistReducer(persistConfig, rootReducer)
+      let store = createStore(
+        persistedReducer,
+        applyMiddleware(thunk)
       )
-    )
+      let persistor = persistStore(store)
+
+      // - - -
+      return h(Provider, { store },
+        h(PersistGate, { loading: loadingLocalStorageComponent, persistor },
+          this.props.children
+        )
+      )
     default:
       return h('div', this.state.status)
     }
