@@ -6,7 +6,7 @@ import { TransactionsReducer, TransactionsState } from './transaction/reducer'
 import { NavigationReducer, NavigationState } from './navigation/reducer'
 import { LoadingReducer, LoadingState } from './loading/reducer'
 
-import { persistReducer } from 'redux-persist'
+import { persistReducer, PersistConfig } from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web and AsyncStorage for react-native
 
 export type State = {
@@ -16,12 +16,6 @@ export type State = {
   transactions: TransactionsState
   navigation: NavigationState
   loading: LoadingState
-}
-
-type PersistConfig = {
-  key: string
-  storage: any
-  whitelist: string[]
 }
 
 // we need to declare nested persisted states here

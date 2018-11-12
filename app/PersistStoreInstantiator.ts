@@ -46,8 +46,6 @@ export class PersistStoreInstantiator extends Component<Props> {
 
     // - - -
 
-    console.log('defaultState', store.getState())
-
     return h(Provider, { store },
       h(PersistGate, { loading: loadingLocalStorageComponent, persistor },
         this.props.children
