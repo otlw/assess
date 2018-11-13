@@ -10,24 +10,10 @@ export const ConnectMetamask = () => {
     let web3: any
     if ((window as any)['ethereum']) {
       web3 = new Web3((window as any)['ethereum'])
-      try {
-        // Request account access if needed
-        await (window as any)['ethereum'].enable()
-      } catch (error) {
-        // User denied account access...
-        // TODO setup 'user rejection modal'
-        console.log('user rejection')
-        return dispatch(setMetamaskLoadingStage('Error'))
-      }
     } else if ((window as any)['web3']) { // Legacy dapp browsers...
       web3 = new Web3((window as any)['web3'].currentProvider)
       // Acccounts always exposed
-    } else { // Non-dapp browsers...
-      console.log('Non-Ethereum browser detected. You should consider trying MetaMask!')
-      dispatch(setModal('NoMetaMask')) // TODO this modal shouldnt be able to be closed
-      return dispatch(setMetamaskLoadingStage('Error'))
-    }
-
+    } 
     let accounts = await web3.eth.getAccounts()
     let networkID = await web3.eth.net.getId()
 
