@@ -13,7 +13,7 @@ export const ConnectMetamask = () => {
     } else if ((window as any)['web3']) { // Legacy dapp browsers...
       web3 = new Web3((window as any)['web3'].currentProvider)
       // Acccounts always exposed
-    } 
+    }
     let accounts = await web3.eth.getAccounts()
     let networkID = await web3.eth.net.getId()
 
