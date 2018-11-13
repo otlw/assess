@@ -15,7 +15,7 @@ import h from 'react-hyperscript'
 let loadingLocalStorageComponent = h('div', 'loading local storage') // TODO add a proper component
 
 type State = {
-  status: string
+  status: null || 'initial'|| 'UserRejection'|| 'NoMetaMask'|| 'UnlockMetaMask'|| 'loaded'
   networkID: number
   userAddress: string
 }
