@@ -14,7 +14,7 @@ export const connect = () => {
   return async (dispatch, getState) => {
     let deployedFathomTokenAt = getState().ethereum.deployedFathomTokenAt
     let network = networkName(getState().ethereum.networkID)
-
+    
     if (!deployedFathomTokenAt) dispatch(loadFathomNetworkParams())
     dispatch(fetchUserBalance())
 

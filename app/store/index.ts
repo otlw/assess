@@ -18,24 +18,25 @@ export type State = {
   loading: LoadingState
 }
 
-// we need to declare nested persisted states here
-const EthereumPersistConfig: PersistConfig = {
-  key: 'ethereum',
-  storage: storage,
-  whitelist: ['lastUpdatedAt', 'deployedConceptRegistryAt', 'deployedFathomTokenAt']
-}
+export default function rootReducer (key: string) {
+  // we need to declare nested persisted states here
+  const EthereumPersistConfig: PersistConfig = {
+    key: 'ethereum' + key,
+    storage: storage,
+    whitelist: ['lastUpdatedAt', 'deployedConceptRegistryAt', 'deployedFathomTokenAt']
+  }
 
-const NavigationPersistConfig: PersistConfig = {
-  key: 'navigation',
-  storage: storage,
-  whitelist: ['visits']
+  const NavigationPersistConfig: PersistConfig = {
+    key: 'navigation' + key,
+    storage: storage,
+    whitelist: ['visits']
+  }
+  return combineReducers({
+    ethereum: persistReducer(EthereumPersistConfig, EthereumReducer),
+    assessments: AssessmentsReducer,
+    concepts: ConceptsReducer,
+    transactions: TransactionsReducer,
+    navigation: persistReducer(NavigationPersistConfig, NavigationReducer),
+    loading: LoadingReducer
+  })
 }
-
-export default combineReducers({
-  ethereum: persistReducer(EthereumPersistConfig, EthereumReducer),
-  assessments: AssessmentsReducer,
-  concepts: ConceptsReducer,
-  transactions: TransactionsReducer,
-  navigation: persistReducer(NavigationPersistConfig, NavigationReducer),
-  loading: LoadingReducer
-})
