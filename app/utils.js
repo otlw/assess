@@ -165,3 +165,23 @@ export const getLocalStorageKey = (networkID, userAddress, web3) => {
   // testnet do not show assessment from earlier migrations
   return 'State' + networkName(networkID) + userAddress + FathomToken.networks[networkID].address
 }
+
+// Infura related
+
+// jlm's token for the fathom-app
+const appInfuraToken = '9eb575d245744c979ba3530967d0e787'
+
+export function infuraEndpoint (networkID) {
+  switch (networkID) {
+    case 1:
+      return 'wss://mainnet.infura.io/ws/' + appInfuraToken
+    case 3:
+      return 'wss://ropsten.infura.io/ws/' + appInfuraToken
+    case 4:
+      return 'wss://rinkeby.infura.io/ws/' + appInfuraToken
+    case 42:
+      return 'wss://kovan.infura.io/ws/' + appInfuraToken
+    default:
+      return 'ws://localhost:8545/'
+  }
+}
