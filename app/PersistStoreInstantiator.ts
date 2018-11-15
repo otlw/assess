@@ -72,7 +72,7 @@ export class PersistStoreInstantiator extends Component<Props, State> {
     switch (this.state.status) {
     case null:
     case 'initial':
-      return h('div', 'Loading metamask')
+      return h('div', 'Loading metamask (persist store)')
 
     case 'loaded':
     // Metamask data loaded

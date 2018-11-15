@@ -3,7 +3,7 @@ import { sendAndReactToTransaction } from '../transaction/asyncActions'
 import { receiveConcepts } from './actions'
 import { beginLoadingConcepts, endLoadingConcepts } from '../loading/actions.ts'
 
-export function loadConceptsFromConceptRegistery () {
+export function loadConceptsFromConceptRegistry () {
   return async (dispatch, getState) => {
     dispatch(beginLoadingConcepts())
     const conceptRegistryInstance = getInstance.conceptRegistry(getState())

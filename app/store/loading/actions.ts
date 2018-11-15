@@ -5,6 +5,7 @@ export type Actions =
   ReturnType<typeof beginLoadingConcepts> |
   ReturnType<typeof endLoadingConcepts> |
   ReturnType<typeof setMetamaskLoadingStage> |
+  ReturnType<typeof setBlockDataLoadingStage> |
   ReturnType<typeof setHistoryLoadingStage>
 
 export function beginLoadingAssessments () {
@@ -45,6 +46,14 @@ export function setMetamaskLoadingStage (stage: LoadingStage) {
 
 export function setHistoryLoadingStage (stage: LoadingStage) {
   let type: 'SET_HISTORY_LOADING_STAGE' = 'SET_HISTORY_LOADING_STAGE'
+  return {
+    type,
+    stage
+  }
+}
+
+export function setBlockDataLoadingStage (stage: LoadingStage) {
+  let type: 'SET_BLOCKDATA_LOADING_STAGE' = 'SET_BLOCKDATA_LOADING_STAGE'
   return {
     type,
     stage

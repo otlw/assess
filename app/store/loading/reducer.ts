@@ -8,13 +8,15 @@ export type LoadingState = {
   concepts: number
   metamask: LoadingStage
   history: LoadingStage
+  blockData: LoadingStage
 }
 
 let initialState: LoadingState = {
   assessments: LoadingConst.None,
   concepts: LoadingConst.None,
   metamask: null,
-  history: null
+  history: null,
+  blockData: null
 }
 
 export function LoadingReducer (state = initialState, action: Actions): LoadingState {
@@ -51,6 +53,12 @@ export function LoadingReducer (state = initialState, action: Actions): LoadingS
     return {
       ...state,
       history: action.stage
+    }
+  }
+  case 'SET_BLOCKDATA_LOADING_STAGE' : {
+    return {
+      ...state,
+      blockData: action.stage
     }
   }
   default:
