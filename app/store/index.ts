@@ -18,7 +18,7 @@ export type State = {
   loading: LoadingState
 }
 
-export default function rootReducer (networkID: string, userAddress: string) {
+export default function rootReducer (networkID: number, userAddress: string) {
   // we need to declare nested persisted states here
   const EthereumPersistConfig: PersistConfig = {
     key: 'ethereum' + networkID + userAddress,
