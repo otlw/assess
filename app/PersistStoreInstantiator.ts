@@ -12,10 +12,15 @@ import Web3 from 'web3'
 import rootReducer from './store/index'
 import h from 'react-hyperscript'
 
+// Modals
+import Modal from './components/Helpers/Modal/Modal.ts'
+//import { modalText } from './components/Helpers/helperContent'
+import { ModalTopics } from './store/navigation/reducer'
+
 let loadingLocalStorageComponent = h('div', 'loading local storage') // TODO add a proper component
 
 type State = {
-  status: 'initial'| 'UserRejection'| 'NoMetaMask'| 'UnlockMetaMask'| 'loaded'|null
+  status: 'initial'| 'UserRejection'| 'NoMetaMask'| 'UnlockMetaMask'| 'loaded'|ModalTopics | null
   networkID: number
   userAddress: string
 }
@@ -98,8 +103,14 @@ export class PersistStoreInstantiator extends Component<Props, State> {
           this.props.children
         )
       )
+    // case 'initial':
+    //   return h('div', 'Loading metamask')
+
     default:
-      return h('div', this.state.status)
+      return h(Modal,{topic: {
+        title:this.state.status,
+        text:this.state.status //modalText(this.state.status)
+      }}) // //h('div', this.state.status)
     }
   }
 }

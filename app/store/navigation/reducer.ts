@@ -2,6 +2,7 @@ import { Action } from './actions'
 
 export type ModalTopics =
   null |
+  'UserRejection' |
   'AssessmentCreation' |
   'UndeployedNetwork' |
   'EducateAboutMetaMask' |

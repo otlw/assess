@@ -6,7 +6,7 @@ import { State } from '../../../store'
 
 export type Props = {
   topic: ReturnType<typeof modalText>
-  setModal: typeof setModal
+  setModal?: typeof setModal
 }
 
 const mapStateToProps = (state: State) => {
