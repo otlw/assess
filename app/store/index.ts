@@ -18,16 +18,17 @@ export type State = {
   loading: LoadingState
 }
 
-export default function rootReducer (key: string) {
+export default function rootReducer (networkID: string, userAddress: string) {
   // we need to declare nested persisted states here
   const EthereumPersistConfig: PersistConfig = {
-    key: 'ethereum' + key,
+    key: 'ethereum' + networkID + userAddress,
     storage: storage,
     whitelist: ['lastUpdatedAt', 'deployedConceptRegistryAt', 'deployedFathomTokenAt']
   }
 
+  // only used for helpers atm so we don't need to add the network
   const NavigationPersistConfig: PersistConfig = {
-    key: 'navigation' + key,
+    key: 'navigation' + userAddress,
     storage: storage,
     whitelist: ['visits']
   }
