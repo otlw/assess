@@ -34,7 +34,9 @@ const theme = {
 
 render(
   h(ThemeProvider, { theme },
-    h(PersistStoreInstantiator, {}, h(topLevelStyles, [h(App)]))
+    h(topLevelStyles, [
+      h(PersistStoreInstantiator, [h(App)])
+    ])
   ),
   document.getElementById('root')
 )
