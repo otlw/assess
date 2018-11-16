@@ -69,9 +69,15 @@ export class ProgressAndInputBar extends Component {
     })
   }
 
+  setConfirmMM () {
+    this.setState({
+      view: 'confirmMM'
+    })
+  }
+
   stake () {
     this.props.confirmAssessor(this.props.assessmentAddress)
-    this.setProgressView()
+    this.setConfirmMM()
   }
 
   commit () {
@@ -83,7 +89,7 @@ export class ProgressAndInputBar extends Component {
     // save salt and score in local storage
     let cacheCommitData = JSON.stringify({score: this.state.score, salt: this.state.salt})
     window.localStorage.setItem(this.props.assessmentAddress + this.props.userAddress, cacheCommitData)
-    this.setProgressView()
+    this.setConfirmMM()
   }
 
   reveal () {
@@ -91,7 +97,7 @@ export class ProgressAndInputBar extends Component {
     // convert score to onChain score (FE:0-100, BE: -100,100)
     let onChainScore = convertFromUIScoreToOnChainScore(this.state.score)
     this.props.reveal(this.props.assessmentAddress, onChainScore, this.state.salt)
-    this.setProgressView()
+    this.setConfirmMM()
   }
 
   setScore (e) {
@@ -149,6 +155,10 @@ export class ProgressAndInputBar extends Component {
     let view = this.props.inputType || this.state.view
     let activeUser = this.props.userStage === this.props.stage
     switch (view) {
+      case 'confirmMM':
+      return (h(rowObjectText, [
+        h(Warning, "Please confirm MetaMask transaction"),
+      ]))
       case 'stageView': {
         return (
           this.props.userStage === Stage.None
@@ -207,6 +217,8 @@ color: ${props => props.theme.primary};
 `
 
 export const rowObjectText = styled('div').attrs({className: 'flex w-100 items-center justify-between br b--light-gray f5 gray'})`;
+`
+export const Warning = styled('div').attrs({className: 'flex ma3 f5 red'})`;
 `
 
 export const rowObjectInput = styled('div').attrs({className: 'flex w-auto items-center justify-end b--light-gray  f5 gray ttu uppercase'})`;
