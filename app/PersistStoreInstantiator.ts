@@ -79,12 +79,12 @@ export class PersistStoreInstantiator extends Component<Props, State> {
     // Configure redux-persist store
 
       const persistConfig = {
-        key: this.state.networkID + this.state.userAddress,
+        key: 'root' + this.state.networkID + this.state.userAddress,
         storage,
         whitelist: ['assessments', 'concepts']
       }
 
-      const persistedReducer = persistReducer(persistConfig, rootReducer)
+      const persistedReducer = persistReducer(persistConfig, rootReducer(this.state.networkID, this.state.userAddress))
       let store = createStore(
         persistedReducer,
         applyMiddleware(thunk)
