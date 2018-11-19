@@ -3,7 +3,7 @@ import { getInstance, hmmmToAha, getBlockDeployedAt } from '../../utils'
 import { networkName, LoadingStage, NotificationTopic } from '../../constants'
 import { processEvent } from '../assessment/asyncActions'
 import { setModal } from '../navigation/actions'
-import { web3EventsConnected, receiveVariable } from './actions'
+import { web3EventsConnected, receiveVariable, registerSubscription } from './actions'
 import { modalTopic } from '../../components/Helpers/helperContent'
 import {setBlockDataLoadingStage} from '../../store/loading/actions.ts'
 import {fetchLatestAssessments} from '../../store/assessment/asyncActions.js'
@@ -49,7 +49,6 @@ export const loadAllData = () => {
     }
 
     // Assessments
-    // TODO modify fetchAssessmentData to also set up an event watcher / a subscription
     // TODO modify event processing Actions to cancel subscriptions if assessment becomes out of date
     dispatch(fetchLatestAssessments())
     // Concepts
@@ -87,9 +86,7 @@ export const setUpAssessmentEventWatcher = (assessmentAddress) => {
       )
       dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic), log.blockNumber))
     })
-    console.log('subscription ', subscription )
-    // dispatch(registerSubscription(subscription))
-
+    dispatch(registerSubscription(subscription, assessmentAddress))
   }
 }
 

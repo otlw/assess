@@ -2,7 +2,7 @@ import { getInstance, convertFromOnChainScoreToUIScore, hmmmToAha } from '../../
 import { sendAndReactToTransaction } from '../transaction/asyncActions'
 import { setUpAssessmentEventWatcher } from '../web3/asyncActions'
 import { setHelperBar } from '../navigation/actions'
-import { receiveVariable } from '../web3/actions'
+import { receiveVariable, deleteSubscription } from '../web3/actions'
 import { fetchUserBalance } from '../web3/asyncActions'
 import { Stage, UserStageAction, LoadingStage, NotificationTopic, TimeOutReasons } from '../../constants'
 import {
@@ -470,7 +470,10 @@ export function fetchAssessmentData (assessmentAddress, getState) {
         payout,
         hidden: false
       }))
-      dispatch(setUpAssessmentEventWatcher(assessmentAddress))
+      // only watch for changes on the event if it is not done already
+      if (stage < Stage.Done) {
+        dispatch(setUpAssessmentEventWatcher(assessmentAddress))
+      }
     } catch (e) {
       console.log('reading assessment-data from the chain did not work for assessment: ', assessmentAddress, e)
     }
@@ -536,6 +539,19 @@ export function fetchStoredData (selectedAssessment) {
   }
 }
 
+function cancelSubscription (assessmentAddress) {
+  return async (dispatch, getState) => {
+    let subs = getState().ethereum.subscriptions
+    if (subs[assessmentAddress]) {
+      subs[assessmentAddress].unsubscribe((err, success) => {
+        if (success) console.log('Successfully unsubscribed from assessment ', assessmentAddress)
+        else {console.log('whoooops, could not unsubscribe...')}
+      })
+      dispatch(deleteSubscription(assessmentAddress))
+    }
+  }
+}
+
 /*
   Updates the store by calling the respective function for each type of event.
 */
@@ -581,14 +597,14 @@ export function processEvent (user, sender, topic, blockNumber) {
           dispatch(fetchPayout(sender, user))
           dispatch(fetchFinalScore(sender, user))
           dispatch(fetchUserBalance())
-          // dispatch(cancelSubscription(sender))
+          dispatch(cancelSubscription(sender))
         }
         break
       case NotificationTopic.AssessmentCancelled:
         if (isUser) {
           dispatch(updateAssessmentVariable(sender, 'refunded', true))
           dispatch(fetchUserBalance())
-          // dispatch(cancelSubscription(sender))
+          dispatch(cancelSubscription(sender))
         }
         break
       default:
