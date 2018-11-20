@@ -2,7 +2,7 @@ import { getInstance, convertFromOnChainScoreToUIScore, hmmmToAha } from '../../
 import { sendAndReactToTransaction } from '../transaction/asyncActions'
 import { setUpAssessmentEventWatcher } from '../web3/asyncActions'
 import { setHelperBar } from '../navigation/actions'
-import { receiveVariable, deleteSubscription } from '../web3/actions'
+import { receiveVariable } from '../web3/actions'
 import { fetchUserBalance } from '../web3/asyncActions'
 import { Stage, UserStageAction, LoadingStage, NotificationTopic, TimeOutReasons } from '../../constants'
 import {
@@ -597,14 +597,12 @@ export function processEvent (user, sender, topic, blockNumber) {
           dispatch(fetchPayout(sender, user))
           dispatch(fetchFinalScore(sender, user))
           dispatch(fetchUserBalance())
-          dispatch(cancelSubscription(sender))
         }
         break
       case NotificationTopic.AssessmentCancelled:
         if (isUser) {
           dispatch(updateAssessmentVariable(sender, 'refunded', true))
           dispatch(fetchUserBalance())
-          dispatch(cancelSubscription(sender))
         }
         break
       default:

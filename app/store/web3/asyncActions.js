@@ -3,7 +3,7 @@ import { getInstance, hmmmToAha, getBlockDeployedAt } from '../../utils'
 import { networkName, LoadingStage, NotificationTopic } from '../../constants'
 import { processEvent } from '../assessment/asyncActions'
 import { setModal } from '../navigation/actions'
-import { web3EventsConnected, receiveVariable, registerSubscription } from './actions'
+import { web3EventsConnected, receiveVariable } from './actions'
 import { modalTopic } from '../../components/Helpers/helperContent'
 import {setBlockDataLoadingStage} from '../../store/loading/actions.ts'
 import {fetchLatestAssessments} from '../../store/assessment/asyncActions.js'
@@ -55,6 +55,7 @@ export const loadAllData = () => {
     dispatch(loadConceptsFromConceptRegistry())
 
     dispatch(setBlockDataLoadingStage('Loaded'))
+      console.log(getState().ethereum.web3.eth.subscribe)
   }
 }
 
@@ -86,7 +87,6 @@ export const setUpAssessmentEventWatcher = (assessmentAddress) => {
       )
       dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic), log.blockNumber))
     })
-    dispatch(registerSubscription(subscription, assessmentAddress))
   }
 }
 

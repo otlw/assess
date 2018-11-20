@@ -16,7 +16,6 @@ export type EthereumState = {
   lastUpdatedAt: number
   deployedFathomTokenAt: number | null
   deployedConceptRegistryAt: number | null
-  subscriptions: Object
 }
 
 let initialState: EthereumState = {
@@ -30,8 +29,7 @@ let initialState: EthereumState = {
   AhaBalance: 0,
   lastUpdatedAt: 0,
   deployedFathomTokenAt: null,
-  deployedConceptRegistryAt: null,
-  subscriptions: {}
+  deployedConceptRegistryAt: null
 }
 
 export function EthereumReducer (state = initialState, action: Actions): EthereumState {
@@ -65,17 +63,6 @@ export function EthereumReducer (state = initialState, action: Actions): Ethereu
       deployedConceptRegistryAt: action.persistedState.deployedConceptRegistryAt,
       deployedFathomTokenAt: action.persistedState.deployedFathomTokenAt
     }
-  case 'REGISTER_SUBSCRIPTION': {
-    return {
-      ...state,
-      'subscriptions': extend(state.subscriptions, { [action.assessmentAddress]: action.subscription })
-    }
-  }
-  case 'DELETE_SUBSCRIPTION': {
-    let newState = { ...state }
-    // delete newState.subscriptions[action.assessmentAddress]
-    return newState
-  }
   default:
     return state
   }

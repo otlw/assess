@@ -5,8 +5,6 @@ export type Actions =
   ReturnType<typeof web3EventsConnected> |
   ReturnType<typeof web3Disconnected> |
   ReturnType<typeof receiveVariable> |
-  ReturnType<typeof registerSubscription> |
-  ReturnType<typeof deleteSubscription> |
   ReturnType<typeof receivePersistedState>
 
 // action to save the connedted web3-instance in state
@@ -46,23 +44,6 @@ export function receiveVariable (name: string, value: any) {
     type,
     name,
     value
-  }
-}
-
-export function registerSubscription (subscription:any, assessmentAddress: string) {
-  let type: 'REGISTER_SUBSCRIPTION' = 'REGISTER_SUBSCRIPTION'
-  return {
-    type,
-    assessmentAddress,
-    subscription
-  }
-}
-
-export function deleteSubscription (assessmentAddress: string) {
-  let type: 'DELETE_SUBSCRIPTION' = 'DELETE_SUBSCRIPTION'
-  return {
-    type,
-    assessmentAddress
   }
 }
 
