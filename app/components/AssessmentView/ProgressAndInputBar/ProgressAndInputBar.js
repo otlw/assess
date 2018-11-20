@@ -37,6 +37,25 @@ export class ProgressAndInputBar extends Component {
         invalidScoreRange: false
       }
     }
+    this.react = {
+      transactionHash: (hash) => { this.setProgressView() },
+      confirmation: (error, receipt) => {
+        if (!error) {
+          // show confirmation to first timers only
+          // if (!this.props.visits.hasCreatedAssessment) {
+          //   this.props.setModal(modalTopic.AssessmentCreation)
+          //   this.props.hasDoneX('hasCreatedAssessment')
+          // }
+          // let receiptAddress = receipt.events[0].raw.topics[2]
+          // let assessmentAddress = '0x' + receiptAddress.substring(26, receiptAddress.length)
+          // this.props.history.push('/assessment/' + assessmentAddress)
+        } else {
+          // this.props.setModal(modalTopic.AssessmentCreationFailed)
+          // this.setState({step: 5})
+        }
+      },
+      error: () => { console.log("error zdf") }
+    }
   }
 
   setStakeAction () {
@@ -76,7 +95,7 @@ export class ProgressAndInputBar extends Component {
   }
 
   stake () {
-    this.props.confirmAssessor(this.props.assessmentAddress)
+    this.props.confirmAssessor(this.props.assessmentAddress,{callbck:this.react,purpose:"stake"})
     this.setConfirmMM()
   }
 
@@ -85,7 +104,7 @@ export class ProgressAndInputBar extends Component {
     window.alert('Please write down your salt:' + this.state.salt)
     // convert score to onChain score (FE:0-100, BE: -100,100)
     let onChainScore = convertFromUIScoreToOnChainScore(this.state.score)
-    this.props.commit(this.props.assessmentAddress, onChainScore, this.state.salt)
+    this.props.commit(this.props.assessmentAddress, onChainScore, this.state.salt,{callbck:this.react,purpose:"commit"})
     // save salt and score in local storage
     let cacheCommitData = JSON.stringify({score: this.state.score, salt: this.state.salt})
     window.localStorage.setItem(this.props.assessmentAddress + this.props.userAddress, cacheCommitData)
@@ -96,7 +115,7 @@ export class ProgressAndInputBar extends Component {
     console.log('reveal', this.props.assessmentAddress, this.state.score, this.state.salt)
     // convert score to onChain score (FE:0-100, BE: -100,100)
     let onChainScore = convertFromUIScoreToOnChainScore(this.state.score)
-    this.props.reveal(this.props.assessmentAddress, onChainScore, this.state.salt)
+    this.props.reveal(this.props.assessmentAddress, onChainScore, this.state.salt,{callbck:this.react,purpose:"reveal"})
     this.setConfirmMM()
   }
 

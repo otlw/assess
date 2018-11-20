@@ -48,7 +48,7 @@ export function sendAndReactToTransaction (
     })
     .on('error', (err: Error) => {
       // when there is an error
-      console.log('err', err)
+      console.log('error from onchain transaction', err)
       if (callbacks.error) callbacks.error(err)
     })
 }
