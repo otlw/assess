@@ -319,19 +319,13 @@ export function reconstructAssessment (assessmentAddress, pastNotifications) {
 export function validateAndFetchAssessmentData (assessmentAddress) {
   return async (dispatch, getState) => {
     try {
-      console.log(1)
       let assessmentInstance = getInstance.assessment(getState(), assessmentAddress)
       // get conceptRegistry instance to verify assessment/concept/conceptRegistry link authenticity
-      console.log(1)
       let conceptAddress = await assessmentInstance.methods.concept().call()
-      console.log(1)
       let conceptRegistryInstance = getInstance.conceptRegistry(getState())
-      console.log(1)
       let isValidConcept = await conceptRegistryInstance.methods.conceptExists(conceptAddress).call()
-      console.log(1)
       // check if assessment is from concept
       let conceptInstance = getInstance.concept(getState(), conceptAddress)
-      console.log(1)
       let isValidAssessment = await conceptInstance.methods.assessmentExists(assessmentAddress).call()
       // if concept is from Registry and assessment is from concept,
       // go ahead and fetch data, otherwise, add an invalid assessment object
@@ -383,12 +377,12 @@ export function fetchAssessmentData (assessmentAddress) {
       let stage = Number(await assessmentInstance.methods.assessmentStage().call())
 
       // handle concept data
-      let decodedConceptDataHash, decodedConceptData;
+      let decodedConceptDataHash, decodedConceptData
       let hash = await conceptInstance.methods.data().call()
-      if (hash){
+      if (hash) {
         decodedConceptDataHash = Buffer.from(hash.slice(2), 'hex').toString('utf8')
       } else {
-        decodedConceptDataHash = "No concept data hash"
+        decodedConceptDataHash = 'No concept data hash'
       }
 
       // retrieve JSON from IPFS if the concept data is an IPFS hash

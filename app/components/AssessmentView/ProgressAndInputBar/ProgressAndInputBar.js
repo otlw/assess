@@ -40,7 +40,7 @@ export class ProgressAndInputBar extends Component {
     // to trigger visual feedback of assessment transactions
     this.react = {
       transactionHash: (hash) => { this.setWaiting() },
-      error: () => { this.setProgressView()}
+      error: () => { this.setProgressView() }
     }
   }
 
@@ -89,7 +89,7 @@ export class ProgressAndInputBar extends Component {
   }
 
   stake () {
-    this.props.confirmAssessor(this.props.assessmentAddress,{callbck:this.react,purpose:"stake"})
+    this.props.confirmAssessor(this.props.assessmentAddress, {callbck: this.react, purpose: 'stake'})
     this.setConfirmMM()
   }
 
@@ -98,7 +98,7 @@ export class ProgressAndInputBar extends Component {
     window.alert('Please write down your salt:' + this.state.salt)
     // convert score to onChain score (FE:0-100, BE: -100,100)
     let onChainScore = convertFromUIScoreToOnChainScore(this.state.score)
-    this.props.commit(this.props.assessmentAddress, onChainScore, this.state.salt,{callbck:this.react,purpose:"commit"})
+    this.props.commit(this.props.assessmentAddress, onChainScore, this.state.salt, {callbck: this.react, purpose: 'commit'})
     // save salt and score in local storage
     let cacheCommitData = JSON.stringify({score: this.state.score, salt: this.state.salt})
     window.localStorage.setItem(this.props.assessmentAddress + this.props.userAddress, cacheCommitData)
@@ -109,7 +109,7 @@ export class ProgressAndInputBar extends Component {
     console.log('reveal', this.props.assessmentAddress, this.state.score, this.state.salt)
     // convert score to onChain score (FE:0-100, BE: -100,100)
     let onChainScore = convertFromUIScoreToOnChainScore(this.state.score)
-    this.props.reveal(this.props.assessmentAddress, onChainScore, this.state.salt,{callbck:this.react,purpose:"reveal"})
+    this.props.reveal(this.props.assessmentAddress, onChainScore, this.state.salt, {callbck: this.react, purpose: 'reveal'})
     this.setConfirmMM()
   }
 
@@ -170,11 +170,11 @@ export class ProgressAndInputBar extends Component {
     switch (view) {
       case 'confirmMM':
         return (h(rowObjectText, [
-          h(Warning, "Please confirm MetaMask transaction"),
+          h(Warning, 'Please confirm MetaMask transaction')
         ]))
       case 'waiting':
         return (h(rowObjectText, [
-          h(Body, "Waiting for confirmation..."),
+          h(Body, 'Waiting for confirmation...')
         ]))
       case 'stageView': {
         return (
