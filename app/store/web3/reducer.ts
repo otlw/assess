@@ -56,13 +56,6 @@ export function EthereumReducer (state = initialState, action: Actions): Ethereu
     }
   case 'RECEIVE_VARIABLE':
     return extend(state, { [action.name]: action.value })
-  case 'RECEIVE_PERSISTED_STATE':
-    return {
-      ...state,
-      lastUpdatedAt: action.persistedState.lastUpdatedAt,
-      deployedConceptRegistryAt: action.persistedState.deployedConceptRegistryAt,
-      deployedFathomTokenAt: action.persistedState.deployedFathomTokenAt
-    }
   default:
     return state
   }

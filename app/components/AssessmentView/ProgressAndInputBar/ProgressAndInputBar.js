@@ -37,25 +37,9 @@ export class ProgressAndInputBar extends Component {
         invalidScoreRange: false
       }
     }
+    // to trigger visual feedback of assessment transactions
     this.react = {
       transactionHash: (hash) => { this.setWaiting() },
-      // confirmation: (error, receipt) => {
-      //   if (!error) {
-      //     // show confirmation to first timers only
-      //     // if (!this.props.visits.hasCreatedAssessment) {
-      //     //   this.props.setModal(modalTopic.AssessmentCreation)
-      //     //   this.props.hasDoneX('hasCreatedAssessment')
-      //     // }
-      //     // let receiptAddress = receipt.events[0].raw.topics[2]
-      //     // let assessmentAddress = '0x' + receiptAddress.substring(26, receiptAddress.length)
-      //     // this.props.history.push('/assessment/' + assessmentAddress)
-      //     console.log('cest buen')
-      //   } else {
-      //     // this.props.setModal(modalTopic.AssessmentCreationFailed)
-      //     // this.setState({step: 5})
-      //     console.log('ya error zahef')
-      //   }
-      // },
       error: () => { this.setProgressView()}
     }
   }
@@ -90,12 +74,14 @@ export class ProgressAndInputBar extends Component {
     })
   }
 
+  // notify the user to confirm MetaMask
   setConfirmMM () {
     this.setState({
       view: 'confirmMM'
     })
   }
 
+  // Tell the user to wait for transaction confirmation
   setWaiting () {
     this.setState({
       view: 'waiting'
@@ -188,7 +174,7 @@ export class ProgressAndInputBar extends Component {
         ]))
       case 'waiting':
         return (h(rowObjectText, [
-          h(Warning, "Waiting for confirmation..."),
+          h(Body, "Waiting for confirmation..."),
         ]))
       case 'stageView': {
         return (

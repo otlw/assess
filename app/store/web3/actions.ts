@@ -4,8 +4,7 @@ export type Actions =
   ReturnType<typeof web3Connected> |
   ReturnType<typeof web3EventsConnected> |
   ReturnType<typeof web3Disconnected> |
-  ReturnType<typeof receiveVariable> |
-  ReturnType<typeof receivePersistedState>
+  ReturnType<typeof receiveVariable> 
 
 // action to save the connedted web3-instance in state
 export function web3Connected (web3: EthereumState['web3']) {
@@ -47,16 +46,3 @@ export function receiveVariable (name: string, value: any) {
   }
 }
 
-// to save something from the chain in state
-interface IPersistedState {
-  lastUpdatedAt: number
-  deployedFathomTokenAt: number
-  deployedConceptRegistryAt: number
-}
-export function receivePersistedState (persistedState: IPersistedState) {
-  let type: 'RECEIVE_PERSISTED_STATE' = 'RECEIVE_PERSISTED_STATE'
-  return {
-    type,
-    persistedState
-  }
-}
