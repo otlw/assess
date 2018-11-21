@@ -20,9 +20,13 @@ export function loadConceptsFromConceptRegistery () {
       let conceptInstance = getInstance.concept(getState(), conceptAddress)
 
       // get and decode data
+      let decodedConceptDataHash, decodedConceptData
       let hash = await conceptInstance.methods.data().call()
-      let decodedConceptDataHash = Buffer.from(hash.slice(2), 'hex').toString('utf8')
-      let decodedConceptData
+      if (hash) {
+        decodedConceptDataHash = Buffer.from(hash.slice(2), 'hex').toString('utf8')
+      } else {
+        decodedConceptDataHash = 'No concept data hash'
+      }
 
       // retrieve JSON from IPFS if the data is an IPFS hash
       if (decodedConceptDataHash.substring(0, 2) === 'Qm') {
