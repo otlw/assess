@@ -377,9 +377,13 @@ export function fetchAssessmentData (assessmentAddress) {
       let stage = Number(await assessmentInstance.methods.assessmentStage().call())
 
       // handle concept data
-      let conceptDataHex = await conceptInstance.methods.data().call()
-      let decodedConceptDataHash = Buffer.from(conceptDataHex.slice(2), 'hex').toString('utf8')
-      let decodedConceptData
+      let decodedConceptDataHash, decodedConceptData
+      let hash = await conceptInstance.methods.data().call()
+      if (hash) {
+        decodedConceptDataHash = Buffer.from(hash.slice(2), 'hex').toString('utf8')
+      } else {
+        decodedConceptDataHash = 'No concept data hash'
+      }
 
       // retrieve JSON from IPFS if the concept data is an IPFS hash
       if (decodedConceptDataHash.substring(0, 2) === 'Qm') {
