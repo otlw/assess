@@ -99,10 +99,8 @@ whether the user needs to be active, the assessment was cancelled and the phase 
 */
 export function statusMessage (isAssessee, assessment, transactions = []) {
   let actionRequired = assessment.stage === assessment.userStage && assessment.stage !== Stage.Done
-  console.log('actionRequired ', actionRequired, assessment )
   let nOtherAssessorsToBeActive = assessment.size - (assessment.stage === Stage.Called ? assessment.assessors.length : assessment.done) - (actionRequired ? 1 : 0)
   let status = ''
-  console.log()
   // assessment Failed?
   if (assessment.violation) {
     if (assessment.userStage >= Stage.Confirmed && actionRequired) {

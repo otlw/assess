@@ -369,8 +369,8 @@ export function fetchAssessmentData (assessmentAddress, getState) {
       let cost = hmmmToAha(await assessmentInstance.methods.cost().call())
       let endTime = await assessmentInstance.methods.endTime().call()
 
-      // checkpoint -> keeps track of timelimits for 1) latest possible time to confirm and 2) earliest time to reveal
-      // TODO make sure that assessment is not an expired offer, if so don't show it...
+      // // checkpoint -> keeps track of timelimits for 1) latest possible time to confirm and 2) earliest time to reveal
+      // // TODO make sure that assessment is not an expired offer, if so don't show it...
       let checkpoint = await assessmentInstance.methods.checkpoint().call()
       let size = await assessmentInstance.methods.size().call()
       let assessee = await assessmentInstance.methods.assessee().call()
@@ -472,6 +472,7 @@ export function fetchAssessmentData (assessmentAddress, getState) {
       }))
       // only watch for changes on the event if it is not done already
       if (stage < Stage.Done) {
+        // console.log('setting up listener for ', assessmentAddress)
         dispatch(setUpAssessmentEventWatcher(assessmentAddress))
       }
     } catch (e) {

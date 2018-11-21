@@ -8,13 +8,6 @@ import {loadAllData} from '../../store/web3/asyncActions.js'
 /* @purpose: read all data necessary from chain
    */
 export class DataLoader extends Component {
-  // constructor (props) {
-  //   super(props)
-  //   this.state = {
-  //     step: 1,
-  //     amountPerAssessor: 0,
-  //     gasEstimate: 0
-  //   }
 
   componentDidMount () {
     if (this.props.dataLoadingState === null) {
