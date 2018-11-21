@@ -38,23 +38,25 @@ export class ProgressAndInputBar extends Component {
       }
     }
     this.react = {
-      transactionHash: (hash) => { this.setProgressView() },
-      confirmation: (error, receipt) => {
-        if (!error) {
-          // show confirmation to first timers only
-          // if (!this.props.visits.hasCreatedAssessment) {
-          //   this.props.setModal(modalTopic.AssessmentCreation)
-          //   this.props.hasDoneX('hasCreatedAssessment')
-          // }
-          // let receiptAddress = receipt.events[0].raw.topics[2]
-          // let assessmentAddress = '0x' + receiptAddress.substring(26, receiptAddress.length)
-          // this.props.history.push('/assessment/' + assessmentAddress)
-        } else {
-          // this.props.setModal(modalTopic.AssessmentCreationFailed)
-          // this.setState({step: 5})
-        }
-      },
-      error: () => { console.log("error zdf") }
+      transactionHash: (hash) => { this.setWaiting() },
+      // confirmation: (error, receipt) => {
+      //   if (!error) {
+      //     // show confirmation to first timers only
+      //     // if (!this.props.visits.hasCreatedAssessment) {
+      //     //   this.props.setModal(modalTopic.AssessmentCreation)
+      //     //   this.props.hasDoneX('hasCreatedAssessment')
+      //     // }
+      //     // let receiptAddress = receipt.events[0].raw.topics[2]
+      //     // let assessmentAddress = '0x' + receiptAddress.substring(26, receiptAddress.length)
+      //     // this.props.history.push('/assessment/' + assessmentAddress)
+      //     console.log('cest buen')
+      //   } else {
+      //     // this.props.setModal(modalTopic.AssessmentCreationFailed)
+      //     // this.setState({step: 5})
+      //     console.log('ya error zahef')
+      //   }
+      // },
+      error: () => { this.setProgressView()}
     }
   }
 
@@ -91,6 +93,12 @@ export class ProgressAndInputBar extends Component {
   setConfirmMM () {
     this.setState({
       view: 'confirmMM'
+    })
+  }
+
+  setWaiting () {
+    this.setState({
+      view: 'waiting'
     })
   }
 
@@ -175,9 +183,13 @@ export class ProgressAndInputBar extends Component {
     let activeUser = this.props.userStage === this.props.stage
     switch (view) {
       case 'confirmMM':
-      return (h(rowObjectText, [
-        h(Warning, "Please confirm MetaMask transaction"),
-      ]))
+        return (h(rowObjectText, [
+          h(Warning, "Please confirm MetaMask transaction"),
+        ]))
+      case 'waiting':
+        return (h(rowObjectText, [
+          h(Warning, "Waiting for confirmation..."),
+        ]))
       case 'stageView': {
         return (
           this.props.userStage === Stage.None

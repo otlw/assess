@@ -15,7 +15,6 @@ export function loadConceptsFromConceptRegistery () {
 
     let concepts = {}
     await Promise.all(pastevents.map(async (event) => {
-      console.log(event)
       let conceptAddress = event.returnValues._concept
       // instanciate Concept Contract to get 'data' (ie the name of the concept)
       let conceptInstance = getInstance.concept(getState(), conceptAddress)
