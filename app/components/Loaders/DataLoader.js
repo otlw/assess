@@ -1,14 +1,12 @@
 import { Component } from 'react'
 import { LoadingStage } from '../../constants.js'
 import { connect } from 'react-redux'
-import styled from 'styled-components'
 import h from 'react-hyperscript'
 import {loadAllData} from '../../store/web3/asyncActions.js'
 
 /* @purpose: read all data necessary from chain
    */
 export class DataLoader extends Component {
-
   componentDidMount () {
     if (this.props.dataLoadingState === null) {
       this.props.loadAllData()
@@ -37,7 +35,7 @@ const mapStateToProps = (state) => {
   }
 }
 const mapDispatchToProps = {
-  loadAllData,
+  loadAllData
 }
 
 const isAllDataLoaded = (state) => {

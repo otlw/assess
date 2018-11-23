@@ -1,10 +1,9 @@
 import { getInstance, convertFromOnChainScoreToUIScore, hmmmToAha } from '../../utils'
 import { sendAndReactToTransaction } from '../transaction/asyncActions'
-import { setUpAssessmentEventWatcher } from '../web3/asyncActions'
 import { setHelperBar } from '../navigation/actions'
 import { receiveVariable } from '../web3/actions'
-import { fetchUserBalance } from '../web3/asyncActions'
-import { Stage, UserStageAction, LoadingStage, NotificationTopic, TimeOutReasons } from '../../constants'
+import { fetchUserBalance, setUpAssessmentEventWatcher } from '../web3/asyncActions'
+import { Stage, UserStageAction, NotificationTopic, TimeOutReasons } from '../../constants'
 import {
   receiveAssessor,
   receiveAssessment,
@@ -189,7 +188,7 @@ export function fetchCredentials (address) {
 */
 export function fetchLatestAssessments () {
   return async (dispatch, getState) => {
-    let userAddress = getState().ethereum.userAddress // 
+    let userAddress = getState().ethereum.userAddress
     dispatch(beginLoadingAssessments())
 
     // get notification events from fathomToken contract
@@ -197,7 +196,7 @@ export function fetchLatestAssessments () {
     let lastUpdatedAt = 0
     const fathomTokenInstance = getInstance.fathomToken(getState())
     let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {
-      fromBlock: 0,// getState().ethereum.deployedFathomTokenAt,
+      fromBlock: 0, // getState().ethereum.deployedFathomTokenAt,
       toBlock: 'latest'
     })
     console.log('pastNotifications ', pastNotifications.length)
@@ -214,7 +213,6 @@ export function fetchLatestAssessments () {
       }
       return accumulator
     }, [])
-    console.log('assessmentAddresses ', assessmentAddresses )
 
     // // filter out destructed-assessments
     let destructedAssessments = pastNotifications.reduce((accumulator, notification) => {
@@ -435,7 +433,7 @@ export function fetchAssessmentData (assessmentAddress, getState) {
 
       // see if assessment on track (not over timelimit)
       let realNow = Date.now() / 1000
-      let violation = 0
+      let violation = false
       switch (stage) {
         case Stage.Called:
           if (realNow > Number(checkpoint)) { violation = TimeOutReasons.NotEnoughAssessors }
@@ -455,7 +453,7 @@ export function fetchAssessmentData (assessmentAddress, getState) {
         cost,
         checkpoint,
         stage,
-        violation: false,
+        violation,
         refunded: false,
         userStage,
         endTime,
@@ -540,19 +538,6 @@ export function fetchStoredData (selectedAssessment) {
   }
 }
 
-function cancelSubscription (assessmentAddress) {
-  return async (dispatch, getState) => {
-    let subs = getState().ethereum.subscriptions
-    if (subs[assessmentAddress]) {
-      subs[assessmentAddress].unsubscribe((err, success) => {
-        if (success) console.log('Successfully unsubscribed from assessment ', assessmentAddress)
-        else {console.log('whoooops, could not unsubscribe...')}
-      })
-      dispatch(deleteSubscription(assessmentAddress))
-    }
-  }
-}
-
 /*
   Updates the store by calling the respective function for each type of event.
 */
@@ -562,7 +547,7 @@ export function processEvent (user, sender, topic, blockNumber) {
     let isUser = user === userAddress
     // if the user has already looked at the dashboard, meaning we have fetched all latest assessments
     // then we want to save the lastUpdatedAt parameter
-    if (getState().loading.assessments > LoadingStage.None) dispatch(receiveVariable('lastUpdatedAt', blockNumber))
+    dispatch(receiveVariable('lastUpdatedAt', blockNumber))
     switch (topic) {
       case NotificationTopic.AssessmentCreated:
         dispatch(fetchUserBalance())

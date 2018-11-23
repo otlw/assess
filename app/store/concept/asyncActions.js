@@ -21,7 +21,9 @@ export function loadConceptsFromConceptRegistry () {
 
       // get and decode data
       let hash = await conceptInstance.methods.data().call()
-      let decodedConceptDataHash = Buffer.from(hash.slice(2), 'hex').toString('utf8')
+      console.log('hash ', hash)
+      // temp solution, as this is currently being addressed in a separate MR
+      let decodedConceptDataHash = hash !== '0x00' && hash ? Buffer.from(hash.slice(2), 'hex').toString('utf8') : 'No Concept Name'
       let decodedConceptData
 
       // retrieve JSON from IPFS if the data is an IPFS hash
@@ -40,13 +42,13 @@ export function loadConceptsFromConceptRegistry () {
         // if no ipfs hash, just use data string decodedConceptDataHash
         decodedConceptData = {
           name: decodedConceptDataHash,
-          description: decodedConceptDataHash
+          description: 'No description given'
         }
       }
 
       return (concepts[conceptAddress] = decodedConceptData)
     }))
-    dispatch(receiveConcepts(concepts))
+    if (Object.keys(concepts).length > 0) dispatch(receiveConcepts(concepts))
     dispatch(endLoadingConcepts())
   }
 }

@@ -1,12 +1,11 @@
 import Web3 from 'web3'
 import { getInstance, hmmmToAha, getBlockDeployedAt } from '../../utils'
-import { networkName, LoadingStage, NotificationTopic } from '../../constants'
-import { processEvent } from '../assessment/asyncActions'
+import { networkName, NotificationTopic } from '../../constants'
+import { processEvent, fetchLatestAssessments } from '../assessment/asyncActions'
 import { setModal } from '../navigation/actions'
 import { web3EventsConnected, receiveVariable } from './actions'
 import { modalTopic } from '../../components/Helpers/helperContent'
 import {setBlockDataLoadingStage} from '../../store/loading/actions.ts'
-import {fetchLatestAssessments} from '../../store/assessment/asyncActions.js'
 import {loadConceptsFromConceptRegistry} from '../../store/concept/asyncActions.js'
 
 var Dagger = require('eth-dagger')
@@ -21,11 +20,11 @@ export const loadAllData = () => {
 
     // listen to events by setting up a second web3 instance to subscribe to events via websocket
     let network = networkName(getState().ethereum.networkID)
-    console.log('network ', network )
     let providerAddress
     let web3events = new Web3()
     if (network === 'Kovan') {
       // providerAddress = 'wss://kovan.infura.io/v3/b5afe7c5e5a34359a1852ad30d50fa48'
+      // leads to error 404 unexpected response code
     } else {
       // local testnet
       providerAddress = 'ws://localhost:8545'
@@ -53,7 +52,7 @@ export const loadAllData = () => {
       dispatch(receiveVariable('deployedConceptRegistryAt', deployedConceptRegistryAt))
     } else {
       // NOTE remove when no longer debugging
-      console.log('deployedFathomTokenAt exits:', deployedFathomTokenAt )
+      console.log('deployedFathomTokenAt exits:', deployedFathomTokenAt)
     }
     // fetch Assessments
     dispatch(fetchLatestAssessments())
@@ -71,28 +70,25 @@ export const setUpAssessmentEventWatcher = (assessmentAddress) => {
     if (network === 'Kovan') {
       // TODO try the websocket thing for kovan/rinkeby/mainnet
       // providerAddress = 'wss://kovan.infura.io/v3/b5afe7c5e5a34359a1852ad30d50fa48' // NOTE any contract we want to subscribe to needs to be whitelisted on the infura-site
-        const dagger = new Dagger('wss://kovan.dagger.matic.network')
-        const fathomTokenInstance = getInstance.fathomToken(getState())
-        let fathomTokenDagger = dagger.contract(fathomTokenInstance)
-        console.log('TODO THE FILTER NEEDS TO BE TESTED')
-        var filter = fathomTokenDagger.events.Notification({
-          room: 'latest',
-          filter: {sender: assessmentAddress}
-        })
-        // console.log('filter ', filter )
-        filter.watch((data, removed) => {
-          console.log('assessmnet specific dagger-event found', data)
-          dispatch(processEvent(
-            data.returnValues.user,
-            data.returnValues.sender,
-            Number(data.returnValues.topic),
-            data.blockNumber
-          ))
-        })
+      const dagger = new Dagger('wss://kovan.dagger.matic.network')
+      const fathomTokenInstance = getInstance.fathomToken(getState())
+      let fathomTokenDagger = dagger.contract(fathomTokenInstance)
+      var filter = fathomTokenDagger.events.Notification({
+        room: 'latest',
+        filter: {sender: assessmentAddress}
+      })
+      filter.watch((data, removed) => {
+        console.log('assessmnet specific dagger-event found', data)
+        dispatch(processEvent(
+          data.returnValues.user,
+          data.returnValues.sender,
+          Number(data.returnValues.topic),
+          data.blockNumber
+        ))
+      })
     } else {
       // local testnet
       let web3WS = getState().ethereum.web3events
-      let userAddress = getState().ethereum.userAddress
       let web3 = getState().ethereum.web3
       let notificationJSON = FathomToken.abi.filter(x => x.name === 'Notification')[0]
       let fathomTokenAddress = FathomToken.networks[getState().ethereum.networkID].address
@@ -124,34 +120,53 @@ export const setUpAssessmentEventWatcher = (assessmentAddress) => {
 const initializeEventWatcher = () => {
   return async (dispatch, getState) => {
     let networkID = getState().ethereum.networkID
-    let network = networkName(getState().ethereum.networkID)
-    let userAddress = getState().ethereum.userAddress
-    if (networkID === 'Kovan') {
+    let network = networkName(networkID)
+    let userAddress = (getState().ethereum.userAddress).toLowerCase()
+    if (network === 'Kovan') {
       // kovan
       const dagger = new Dagger('wss://kovan.dagger.matic.network')
       const fathomTokenInstance = getInstance.fathomToken(getState())
       let fathomTokenDagger = dagger.contract(fathomTokenInstance)
       console.log('TODO THE FILTER NEEDS TO BE TESTED')
-      var filter = fathomTokenDagger.events.Notification({
+      var filter1 = fathomTokenDagger.events.Notification({
         room: 'latest',
-        filter: {user: userAddress, topic: [NotificationTopic.AssessmentCreated, NotificationTopic.CalledAsAssessor]} 
+        filter: {
+          user: userAddress,
+          topic: NotificationTopic.AssessmentCreated
+        }
       })
-      // console.log('filter ', filter )
-      filter.watch((data, removed) => {
-        console.log('dagger-event found', data)
-          dispatch(processEvent(
-            data.returnValues.user,
-            data.returnValues.sender,
-            Number(data.returnValues.topic),
-            data.blockNumber
-          ))
+      var filter2 = fathomTokenDagger.events.Notification({
+        room: 'latest',
+        filter: {
+          user: userAddress,
+          topic: NotificationTopic.CalledAsAssessor
+        }
+      })
+      filter2.watch((data, removed) => {
+        // console.log('dagger-event found', data)
+        dispatch(processEvent(
+          data.returnValues.user,
+          data.returnValues.sender,
+          Number(data.returnValues.topic),
+          data.blockNumber
+        ))
+      })
+
+      filter1.watch((data, removed) => {
+        // console.log('dagger-event found', data)
+        dispatch(processEvent(
+          data.returnValues.user,
+          data.returnValues.sender,
+          Number(data.returnValues.topic),
+          data.blockNumber
+        ))
       })
     } else {
       // local testnet
       let web3WS = getState().ethereum.web3events
       let web3 = getState().ethereum.web3
       let notificationJSON = FathomToken.abi.filter(x => x.name === 'Notification')[0]
-      let fathomTokenAddress = FathomToken.networks[getState().ethereum.networkID].address
+      let fathomTokenAddress = FathomToken.networks[networkID].address
       let userAsTopic = web3.utils.padLeft(web3.utils.toHex(userAddress), 64)
       let newAssessmentTopics = [
         web3.utils.padLeft(web3.utils.toHex(NotificationTopic.AssessmentCreated), 64),
