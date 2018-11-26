@@ -4,7 +4,7 @@ import { setMetamaskLoadingStage } from './actions'
 import { setModal } from '../navigation/actions'
 import { web3Connected, receiveVariable } from '../web3/actions'
 
-export const ConnectMetamask = () => {
+export const ConnectData = () => {
   return async (dispatch: Dispatch<any, any>) => {
     // Modern dapp browsers...
     let web3: any
