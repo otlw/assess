@@ -9,7 +9,7 @@ export function loadConceptsFromConceptRegistery () {
     const conceptRegistryInstance = getInstance.conceptRegistry(getState())
     // get concepts from registry
     let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {
-      fromBlock: getState().ethereum.deployedConceptRegistryAt,
+      fromBlock: 0, // getState().ethereum.deployedConceptRegistryAt,
       toBlock: 'latest'
     })
 
@@ -36,11 +36,7 @@ export function getDecodedConceptData (conceptAddress) {
     // get and decode data to retrieve ipfs hash, else keep the string
     let decodedConceptDataHash, decodedConceptData
     let hash = await conceptInstance.methods.data().call()
-    if (hash) {
-      decodedConceptDataHash = Buffer.from(hash.slice(2), 'hex').toString('utf8')
-    } else {
-      decodedConceptDataHash = 'No concept data hash'
-    }
+    decodedConceptDataHash = hash ? Buffer.from(hash.slice(2), 'hex').toString('utf8') : 'No concept data hash'
 
     // retrieve JSON from IPFS if the data is an IPFS hash
     if (decodedConceptDataHash.substring(0, 2) === 'Qm') {
@@ -61,6 +57,7 @@ export function getDecodedConceptData (conceptAddress) {
         description: decodedConceptDataHash
       }
     }
+    console.log(decodedConceptData)
     return decodedConceptData
   }
 }
