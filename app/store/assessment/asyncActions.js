@@ -1,5 +1,6 @@
 import { getInstance, convertFromOnChainScoreToUIScore, hmmmToAha } from '../../utils'
 import { sendAndReactToTransaction } from '../transaction/asyncActions'
+import { getDecodedConceptData } from '../concept/asyncActions'
 import { setHelperBar } from '../navigation/actions'
 import { receiveVariable } from '../web3/actions'
 import { fetchUserBalance } from '../web3/asyncActions'
@@ -13,10 +14,7 @@ import {
 import { beginLoadingAssessments, endLoadingAssessments } from '../loading/actions'
 import {helperBarTopic} from '../../components/Helpers/helperContent.ts'
 
-// setup ipfs api
 const ethereumjsABI = require('ethereumjs-abi')
-const ipfsAPI = require('ipfs-api')
-const ipfs = ipfsAPI('ipfs.infura.io', '5001', {protocol: 'https'})
 
 export function hashScoreAndSalt (_score, _salt) {
   return '0x' + ethereumjsABI.soliditySHA3(
@@ -373,33 +371,10 @@ export function fetchAssessmentData (assessmentAddress) {
       let size = await assessmentInstance.methods.size().call()
       let assessee = await assessmentInstance.methods.assessee().call()
       let conceptAddress = await assessmentInstance.methods.concept().call()
-      let conceptInstance = getInstance.concept(getState(), conceptAddress)
       let stage = Number(await assessmentInstance.methods.assessmentStage().call())
 
-      // handle concept data
-      let decodedConceptDataHash, decodedConceptData
-      let hash = await conceptInstance.methods.data().call()
-      if (hash) {
-        decodedConceptDataHash = Buffer.from(hash.slice(2), 'hex').toString('utf8')
-      } else {
-        decodedConceptDataHash = 'No concept data hash'
-      }
-
-      // retrieve JSON from IPFS if the concept data is an IPFS hash
-      if (decodedConceptDataHash.substring(0, 2) === 'Qm') {
-        // verify that description is correctly stord and log it
-        let resp = await ipfs.get(decodedConceptDataHash)
-        decodedConceptData = resp[0].content.toString()
-
-        // parse JSON
-        decodedConceptData = JSON.parse(decodedConceptData)
-      } else {
-        // if no ipfs hash, just use data string decodedConceptDataHash
-        decodedConceptData = {
-          name: decodedConceptDataHash,
-          description: decodedConceptDataHash
-        }
-      }
+      // get concept data
+      let decodedConceptData = await getDecodedConceptData(conceptAddress)
 
       // Dynamic Info
       let done = Number(await assessmentInstance.methods.done().call())
