@@ -24,14 +24,14 @@ export class ProgressAndInputBar extends Component {
     // state is set to default score-salt only if the cache is empty for that assessment address
     if (cacheCommitData) {
       this.state = {
-        view: this.props.inputType || 'stageView',
+        view: this.props.inputType || 'normalView',
         score: Number(cacheCommitData.score),
         salt: cacheCommitData.salt,
         invalidScoreRange: false
       }
     } else {
       this.state = {
-        view: 'stageView',
+        view: 'normalView',
         score: 0,
         salt: 'hihi',
         invalidScoreRange: false
@@ -39,9 +39,13 @@ export class ProgressAndInputBar extends Component {
     }
     // to trigger visual feedback of assessment transactions
     this.react = {
-      transactionHash: (hash) => { this.setWaiting() },
-      error: () => { this.setProgressView() }
+      transactionHash: (hash) => { this.setView('waiting') },
+      error: () => { this.setView('normalView') }
     }
+  }
+
+  setView (view) {
+    this.setState({view})
   }
 
   setStakeAction () {
@@ -68,29 +72,9 @@ export class ProgressAndInputBar extends Component {
     })
   }
 
-  setProgressView () {
-    this.setState({
-      view: 'stageView'
-    })
-  }
-
-  // notify the user to confirm MetaMask
-  setConfirmMM () {
-    this.setState({
-      view: 'confirmMM'
-    })
-  }
-
-  // Tell the user to wait for transaction confirmation
-  setWaiting () {
-    this.setState({
-      view: 'waiting'
-    })
-  }
-
   stake () {
     this.props.confirmAssessor(this.props.assessmentAddress, {callbck: this.react})
-    this.setConfirmMM()
+    this.setView('confirmMM')
   }
 
   commit () {
@@ -102,7 +86,7 @@ export class ProgressAndInputBar extends Component {
     // save salt and score in local storage
     let cacheCommitData = JSON.stringify({score: this.state.score, salt: this.state.salt})
     window.localStorage.setItem(this.props.assessmentAddress + this.props.userAddress, cacheCommitData)
-    this.setConfirmMM()
+    this.setView('confirmMM')
   }
 
   reveal () {
@@ -110,7 +94,7 @@ export class ProgressAndInputBar extends Component {
     // convert score to onChain score (FE:0-100, BE: -100,100)
     let onChainScore = convertFromUIScoreToOnChainScore(this.state.score)
     this.props.reveal(this.props.assessmentAddress, onChainScore, this.state.salt, {callbck: this.react})
-    this.setConfirmMM()
+    this.setView('confirmMM')
   }
 
   setScore (e) {
@@ -125,16 +109,7 @@ export class ProgressAndInputBar extends Component {
 
   closeInputBar () {
     if (this.props.inputType) this.props.setInputBar('')
-    else this.setProgressView()
-  }
-
-  stageFunctions (stage) {
-    let stageFunctions = {
-      [Stage.Called]: this.setStakeAction.bind(this),
-      [Stage.Confirmed]: this.setCommitAction.bind(this),
-      [Stage.Committed]: this.setRevealAction.bind(this)
-    }
-    return stageFunctions(stage)
+    else this.setView('normalView')
   }
 
   // helper function to return the right kind of actionBar
@@ -176,7 +151,7 @@ export class ProgressAndInputBar extends Component {
         return (h(rowObjectText, [
           h(Body, 'Waiting for confirmation...')
         ]))
-      case 'stageView': {
+      case 'normalView': {
         return (
           this.props.userStage === Stage.None
             ? null
