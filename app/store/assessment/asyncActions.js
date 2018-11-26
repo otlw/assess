@@ -38,7 +38,7 @@ export function confirmAssessor (assessmentAddress, customReact = false) {
     sendAndReactToTransaction(
       dispatch,
       () => { return assessmentInstance.methods.confirmAssessor().send(params) }, // transaction
-      customReact ? customReact.purpose : UserStageAction[Stage.Called], // tx purpose
+      customReact && customReact.purpose ? customReact.purpose : UserStageAction[Stage.Called], // tx purpose
       userAddress,
       assessmentAddress,
       customReact
@@ -65,7 +65,7 @@ export function commit (assessmentAddress, score, salt, customReact = false) {
     sendAndReactToTransaction(
       dispatch,
       () => { return assessmentInstance.methods.commit(hashScoreAndSalt(score, salt)).send(params) }, // transaction
-      customReact ? customReact.purpose : UserStageAction[Stage.Confirmed], // tx purpose
+      customReact && customReact.purpose ? customReact.purpose : UserStageAction[Stage.Confirmed], // tx purpose
       userAddress,
       assessmentAddress,
       customReact
@@ -91,7 +91,7 @@ export function reveal (assessmentAddress, score, salt, customReact = false) {
     sendAndReactToTransaction(
       dispatch,
       () => { return assessmentInstance.methods.reveal(score, salt).send(params) }, // transaction
-      customReact ? customReact.purpose : UserStageAction[Stage.Committed], // tx purpose
+      customReact && customReact.purpose ? customReact.purpose : UserStageAction[Stage.Committed], // tx purpose
       userAddress,
       assessmentAddress,
       customReact

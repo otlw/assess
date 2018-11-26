@@ -89,7 +89,7 @@ export class ProgressAndInputBar extends Component {
   }
 
   stake () {
-    this.props.confirmAssessor(this.props.assessmentAddress, {callbck: this.react, purpose: 'stake'})
+    this.props.confirmAssessor(this.props.assessmentAddress, {callbck: this.react})
     this.setConfirmMM()
   }
 
@@ -98,7 +98,7 @@ export class ProgressAndInputBar extends Component {
     window.alert('Please write down your salt:' + this.state.salt)
     // convert score to onChain score (FE:0-100, BE: -100,100)
     let onChainScore = convertFromUIScoreToOnChainScore(this.state.score)
-    this.props.commit(this.props.assessmentAddress, onChainScore, this.state.salt, {callbck: this.react, purpose: 'commit'})
+    this.props.commit(this.props.assessmentAddress, onChainScore, this.state.salt, {callbck: this.react})
     // save salt and score in local storage
     let cacheCommitData = JSON.stringify({score: this.state.score, salt: this.state.salt})
     window.localStorage.setItem(this.props.assessmentAddress + this.props.userAddress, cacheCommitData)
@@ -109,7 +109,7 @@ export class ProgressAndInputBar extends Component {
     console.log('reveal', this.props.assessmentAddress, this.state.score, this.state.salt)
     // convert score to onChain score (FE:0-100, BE: -100,100)
     let onChainScore = convertFromUIScoreToOnChainScore(this.state.score)
-    this.props.reveal(this.props.assessmentAddress, onChainScore, this.state.salt, {callbck: this.react, purpose: 'reveal'})
+    this.props.reveal(this.props.assessmentAddress, onChainScore, this.state.salt, {callbck: this.react})
     this.setConfirmMM()
   }
 
