@@ -31,7 +31,7 @@ export const ConnectMetamask = () => {
     }
 
     dispatch(web3Connected(web3))
-    dispatch(receiveVariable('userAddress', accounts[0]))
+    dispatch(receiveVariable('userAddress', web3.utils.toChecksumAddress(accounts[0])))
     dispatch(receiveVariable('networkID', networkID))
     return dispatch(setMetamaskLoadingStage('Loaded'))
   }
