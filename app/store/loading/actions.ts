@@ -4,7 +4,7 @@ export type Actions =
 
 export function setDataLoadingStage (stage: LoadingStage) {
   let type: 'SET_DATA_LOADING_STAGE' = 'SET_DATA_LOADING_STAGE'
-  return {z
+  return {
     type,
     stage
   }

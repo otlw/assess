@@ -5,7 +5,9 @@ import { beginLoadingConcepts, endLoadingConcepts } from '../loading/actions.ts'
 
 export function loadConceptsFromConceptRegistery () {
   return async (dispatch, getState) => {
-    dispatch(beginLoadingConcepts())
+    console.log('load concepts')
+    //dispatch(beginLoadingConcepts())
+
     const conceptRegistryInstance = getInstance.conceptRegistry(getState())
     // get concepts from registry
     let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {
@@ -46,8 +48,10 @@ export function loadConceptsFromConceptRegistery () {
 
       return (concepts[conceptAddress] = decodedConceptData)
     }))
-    dispatch(receiveConcepts(concepts))
-    dispatch(endLoadingConcepts())
+  console.log(concepts)
+    return concepts
+    // dispatch(receiveConcepts(concepts))
+    // dispatch(endLoadingConcepts())
   }
 }
 

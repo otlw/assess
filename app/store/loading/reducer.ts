@@ -1,14 +1,14 @@
 import { Actions } from './actions'
-import { LoadingStage as LoadingConst } from '../../constants'
+//import { LoadingStage as LoadingConst } from '../../constants'
 
-export type LoadingStage = null | 'Loading' | 'Loaded' | 'Error' | 'MetaMask Loaded' | 'MetaMask Error'
+export type LoadingStage = null | 'Initial' | 'Loading' | 'Loaded' | 'Error' | 'MetaMask Loaded' | 'MetaMask Error'
 
 export type LoadingState = {
   stage: LoadingStage
 }
 
 let initialState: LoadingState = {
-  stage: LoadingConst.None,
+  stage: 'Initial',
 }
 
 export function LoadingReducer (state = initialState, action: Actions): LoadingState {

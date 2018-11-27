@@ -1,11 +1,15 @@
 import { Dispatch } from 'redux'
 import Web3 from 'web3'
-import { setMetamaskLoadingStage } from './actions'
+import { setDataLoadingStage } from './actions'
 import { setModal } from '../navigation/actions'
-import { web3Connected, receiveVariable } from '../web3/actions'
+import { loadConceptsFromConceptRegistery } from '../concept/asyncActions'
+//import { web3Connected, receiveVariable } from '../web3/actions'
 
 export const ConnectData = () => {
   return async (dispatch: Dispatch<any, any>) => {
+
+    // First, load web3; TODO : web3 is already loaded in the PersistStoreInstantiator, we could save into the window object and get it here (lets not forget the loop check of address)
+    console.log('start')
     // Modern dapp browsers...
     let web3: any
     if ((window as any)['ethereum']) {
@@ -27,12 +31,20 @@ export const ConnectData = () => {
 
     if (accounts.length === 0) {
       dispatch(setModal('UnlockMetaMask')) // TODO this modal shouldnt be able to be closed
-      return dispatch(setMetamaskLoadingStage('Error'))
+      return dispatch(setDataLoadingStage('MetaMask Error'))
     }
 
-    dispatch(web3Connected(web3))
-    dispatch(receiveVariable('userAddress', accounts[0]))
-    dispatch(receiveVariable('networkID', networkID))
-    return dispatch(setMetamaskLoadingStage('Loaded'))
+    // dispatch(web3Connected(web3))
+    // dispatch(receiveVariable('userAddress', accounts[0]))
+    // dispatch(receiveVariable('networkID', networkID))
+
+    // Then, check if
+    console.log('1')
+    let concepts=await loadConceptsFromConceptRegistery()
+    console.log('1')
+    console.log(concepts)
+
+    return dispatch(setDataLoadingStage('Loaded'))
   }
 }
+
