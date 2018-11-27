@@ -14,7 +14,7 @@ type Props = {
 }
 export class DataLoader extends Component<Props> {
   componentDidMount () {
-    if (this.props.DataLoadingState === null) {
+    if (this.props.DataLoadingState === 'Initial') {
       this.props.ConnectData()
     }
   }

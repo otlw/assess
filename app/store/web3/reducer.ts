@@ -35,6 +35,7 @@ let initialState: EthereumState = {
 export function EthereumReducer (state = initialState, action: Actions): EthereumState {
   switch (action.type) {
   case 'WEB3_CONNECTED':
+  console.log("connection")
     return {
       ...state,
       web3: action.payload.web3,
