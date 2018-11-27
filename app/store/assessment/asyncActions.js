@@ -235,7 +235,6 @@ export function fetchLatestAssessments (currentBlock) {
       await Promise.all(assessmentAddresses.map(async (assessmentAddress) => {
         await fetchAssessmentData(assessmentAddress)(dispatch,getState)
       }))
-      dispatch(receiveVariable('lastUpdatedAt', currentBlock))
       return currentBlock;
       //dispatch(endLoadingAssessments())
     //}

@@ -51,10 +51,28 @@ export const ConnectData = () => {
     // Then, load concepts from concept registery
     await loadConceptsFromConceptRegistery(currentBlock)(dispatch,getState)
 
-    // Then, load concepts from concept registery
-    let res=await fetchLatestAssessments(currentBlock)(dispatch,getState)
-console.log(res)
+    // Then, load assessments from fathmToken events
+    await fetchLatestAssessments(currentBlock)(dispatch,getState)
+
+    // We now kno that our data is up to date until currentBlock
+    dispatch(receiveVariable('lastUpdatedAt', currentBlock))
+
+    // Start verifying assessment state reglarly TODO: calculate the blocktime depending on network
+    let timePeriod=5000 // Period set to 5sec
+    setInterval(async ()=>{
+      // look up the current block
+      currentBlock = await web3.eth.getBlockNumber()
+      console.log('new loop; block # is '+currentBlock)
+      // Then, load assessments from fathmToken events
+      await fetchLatestAssessments(currentBlock)(dispatch,getState)
+      dispatch(receiveVariable('lastUpdatedAt', currentBlock))
+    },timePeriod)
+
     return dispatch(setDataLoadingStage('Loaded'))
   }
 }
+// export const ConnectData = () => {
+//   return async (dispatch: Dispatch<any, any>,getState:any) => {
 
+//   }
+// }
