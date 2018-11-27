@@ -37,9 +37,9 @@ export const connect = () => {
   }
 }
 
-const loadFathomNetworkParams = () => {
+export const loadFathomNetworkParams = () => {
   return async (dispatch, getState) => {
-    console.log('ONLY ONCE!: looking up when stuff was deployed kk')
+    console.log('ONLY ONCE!: looking up when contracts were deployed')
     let deployedFathomTokenAt = Number(await getBlockDeployedAt.fathomToken(getState()))
     let deployedConceptRegistryAt = Number(await getBlockDeployedAt.conceptRegistry(getState()))
     dispatch(receiveVariable('deployedFathomTokenAt', deployedFathomTokenAt))

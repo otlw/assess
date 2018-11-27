@@ -3,7 +3,7 @@ import { sendAndReactToTransaction } from '../transaction/asyncActions'
 import { receiveConcepts } from './actions'
 //import { beginLoadingConcepts, endLoadingConcepts } from '../loading/actions.ts'
 
-export function loadConceptsFromConceptRegistery () {
+export function loadConceptsFromConceptRegistery (currentBlock) {
   return async (dispatch, getState) => {
     console.log('load concepts')
     //dispatch(beginLoadingConcepts())
@@ -11,8 +11,8 @@ export function loadConceptsFromConceptRegistery () {
     const conceptRegistryInstance = getInstance.conceptRegistry(getState())
     // get concepts from registry
     let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {
-      fromBlock: 0,//getState().ethereum.deployedConceptRegistryAt,
-      toBlock: 'latest'
+      fromBlock: getState().ethereum.deployedConceptRegistryAt,
+      toBlock: currentBlock
     })
 
     let concepts = {}
@@ -48,7 +48,6 @@ export function loadConceptsFromConceptRegistery () {
 
       return (concepts[conceptAddress] = decodedConceptData)
     }))
-  console.log("concepts in concept laoding function",concepts)
     dispatch(receiveConcepts(concepts))
     return concepts
     // dispatch(endLoadingConcepts())

@@ -3,14 +3,17 @@ import Web3 from 'web3'
 import { setDataLoadingStage } from './actions'
 import { setModal } from '../navigation/actions'
 import { loadConceptsFromConceptRegistery } from '../concept/asyncActions'
+//import { loadConceptsFromConceptRegistery } from '../assessment/asyncActions'
 import { web3Connected, receiveVariable } from '../web3/actions'
+import { loadFathomNetworkParams } from '../web3/asyncActions'
 
 export const ConnectData = () => {
   return async (dispatch: Dispatch<any, any>,getState:any) => {
-
-    // First, load web3; TODO : web3 is already loaded in the PersistStoreInstantiator, we could save into the window object and get it here (lets not forget the loop check of address)
     console.log('start')
     dispatch(setDataLoadingStage('Loading'))
+    
+    // First, load web3; TODO : web3 is already loaded in the PersistStoreInstantiator, we could save into the window object and get it here (lets not forget the loop check of address)
+
     // Modern dapp browsers...
     let web3: any
     if ((window as any)['ethereum']) {
@@ -39,8 +42,17 @@ export const ConnectData = () => {
     dispatch(receiveVariable('userAddress', accounts[0]))
     dispatch(receiveVariable('networkID', networkID))
 
+    // Then look up the current block, to be constistant across the loading functions
+    let currentBlock = await web3.eth.getBlockNumber()
+
+    // Then, look up at which blocks contracts were deployed
+    await loadFathomNetworkParams()(dispatch,getState)
+
     // Then, load concepts from concept registery
-    await loadConceptsFromConceptRegistery()(dispatch,getState)
+    await loadConceptsFromConceptRegistery(currentBlock)(dispatch,getState)
+
+    // Then, load concepts from concept registery
+    //await loadConceptsFromConceptRegistery(currentBlock)(dispatch,getState)
 
     return dispatch(setDataLoadingStage('Loaded'))
   }
