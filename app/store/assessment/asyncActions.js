@@ -529,59 +529,59 @@ export function fetchStoredData (selectedAssessment) {
 
 /*
   Updates the store by calling the respective function for each type of event.
-*/
-export function processEvent (user, sender, topic, blockNumber) {
-  return async (dispatch, getState) => {
-    let userAddress = getState().ethereum.userAddress
-    let isUser = user === userAddress
-    // if the user has already looked at the dashboard, meaning we have fetched all latest assessments
-    // then we want to save the lastUpdatedAt parameter
-    if (getState().loading.assessments > LoadingStage.None) dispatch(receiveVariable('lastUpdatedAt', blockNumber))
-    switch (topic) {
-      case NotificationTopic.AssessmentCreated:
-        dispatch(fetchUserBalance())
-        dispatch(fetchAssessmentData(sender))
-        break
-      case NotificationTopic.CalledAsAssessor:
-        dispatch(fetchAssessmentData(sender))
-        break
-      case NotificationTopic.ConfirmedAsAssessor:
-        if (isUser) {
-          dispatch(fetchUserStage(sender))
-          dispatch(fetchUserBalance())
-        }
-        dispatch(receiveAssessor(sender, user))
-        break
-      case NotificationTopic.AssessmentStarted:
-        if (isUser) {
-          dispatch(updateAssessmentVariable(sender, 'stage', Stage.Confirmed))
-          dispatch(fetchUserStage(sender))
-        }
-        break
-      case NotificationTopic.RevealScore:
-        if (isUser) {
-          dispatch(updateAssessmentVariable(sender, 'stage', Stage.Committed))
-          dispatch(fetchUserStage(sender))
-        }
-        break
-      case NotificationTopic.TokensPaidOut:
-      case NotificationTopic.AssessmentFinished:
-        if (isUser) {
-          dispatch(updateAssessmentVariable(sender, 'stage', Stage.Done))
-          dispatch(fetchUserStage(sender))
-          dispatch(fetchPayout(sender, user))
-          dispatch(fetchFinalScore(sender, user))
-          dispatch(fetchUserBalance())
-        }
-        break
-      case NotificationTopic.AssessmentCancelled:
-        if (isUser) {
-          dispatch(updateAssessmentVariable(sender, 'refunded', true))
-          dispatch(fetchUserBalance())
-        }
-        break
-      default:
-        console.log('no condition applied!', user, sender, topic)
-    }
-  }
-}
+// */
+// export function processEvent (user, sender, topic, blockNumber) {
+//   return async (dispatch, getState) => {
+//     let userAddress = getState().ethereum.userAddress
+//     let isUser = user === userAddress
+//     // if the user has already looked at the dashboard, meaning we have fetched all latest assessments
+//     // then we want to save the lastUpdatedAt parameter
+//     if (getState().loading.assessments > LoadingStage.None) dispatch(receiveVariable('lastUpdatedAt', blockNumber))
+//     switch (topic) {
+//       case NotificationTopic.AssessmentCreated:
+//         dispatch(fetchUserBalance())
+//         dispatch(fetchAssessmentData(sender))
+//         break
+//       case NotificationTopic.CalledAsAssessor:
+//         dispatch(fetchAssessmentData(sender))
+//         break
+//       case NotificationTopic.ConfirmedAsAssessor:
+//         if (isUser) {
+//           dispatch(fetchUserStage(sender))
+//           dispatch(fetchUserBalance())
+//         }
+//         dispatch(receiveAssessor(sender, user))
+//         break
+//       case NotificationTopic.AssessmentStarted:
+//         if (isUser) {
+//           dispatch(updateAssessmentVariable(sender, 'stage', Stage.Confirmed))
+//           dispatch(fetchUserStage(sender))
+//         }
+//         break
+//       case NotificationTopic.RevealScore:
+//         if (isUser) {
+//           dispatch(updateAssessmentVariable(sender, 'stage', Stage.Committed))
+//           dispatch(fetchUserStage(sender))
+//         }
+//         break
+//       case NotificationTopic.TokensPaidOut:
+//       case NotificationTopic.AssessmentFinished:
+//         if (isUser) {
+//           dispatch(updateAssessmentVariable(sender, 'stage', Stage.Done))
+//           dispatch(fetchUserStage(sender))
+//           dispatch(fetchPayout(sender, user))
+//           dispatch(fetchFinalScore(sender, user))
+//           dispatch(fetchUserBalance())
+//         }
+//         break
+//       case NotificationTopic.AssessmentCancelled:
+//         if (isUser) {
+//           dispatch(updateAssessmentVariable(sender, 'refunded', true))
+//           dispatch(fetchUserBalance())
+//         }
+//         break
+//       default:
+//         console.log('no condition applied!', user, sender, topic)
+//     }
+//   }
+// }

@@ -71,8 +71,3 @@ export const ConnectData = () => {
     return dispatch(setDataLoadingStage('Loaded'))
   }
 }
-// export const ConnectData = () => {
-//   return async (dispatch: Dispatch<any, any>,getState:any) => {
-
-//   }
-// }
