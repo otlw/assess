@@ -21,19 +21,19 @@ export class DataLoader extends Component<Props> {
 
   render () {
     switch (this.props.DataLoadingState) {
-      case null:
-      case 'Loading': {
-        return h('div', 'Loading Data')
-      }
-      case 'Error': {
-        return h(Modal)
-      }
-      case 'Loaded': {
-        return this.props.children
-      }
-      default: {
-        return h('div', 'Loading Data')
-      }
+    case null:
+    case 'Loading': {
+      return h('div', 'Loading Data')
+    }
+    case 'Error': {
+      return h(Modal)
+    }
+    case 'Loaded': {
+      return this.props.children
+    }
+    default: {
+      return h('div', 'Loading Data')
+    }
     }
   }
 }

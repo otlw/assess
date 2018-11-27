@@ -1,13 +1,10 @@
 import { getInstance } from '../../utils'
 import { sendAndReactToTransaction } from '../transaction/asyncActions'
 import { receiveConcepts } from './actions'
-//import { beginLoadingConcepts, endLoadingConcepts } from '../loading/actions.ts'
+// import { beginLoadingConcepts, endLoadingConcepts } from '../loading/actions.ts'
 
 export function loadConceptsFromConceptRegistery (currentBlock) {
   return async (dispatch, getState) => {
-    console.log('load concepts')
-    //dispatch(beginLoadingConcepts())
-
     const conceptRegistryInstance = getInstance.conceptRegistry(getState())
     // get concepts from registry
     let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {
@@ -23,7 +20,7 @@ export function loadConceptsFromConceptRegistery (currentBlock) {
 
       // get and decode data
       let hash = await conceptInstance.methods.data().call()
-      let decodedConceptDataHash = hash? Buffer.from(hash.slice(2), 'hex').toString('utf8'):"no data"
+      let decodedConceptDataHash = hash ? Buffer.from(hash.slice(2), 'hex').toString('utf8') : 'no data'
       let decodedConceptData
 
       // retrieve JSON from IPFS if the data is an IPFS hash
@@ -50,7 +47,6 @@ export function loadConceptsFromConceptRegistery (currentBlock) {
     }))
     dispatch(receiveConcepts(concepts))
     return concepts
-    // dispatch(endLoadingConcepts())
   }
 }
 

@@ -1,16 +1,13 @@
 import { getInstance, convertFromOnChainScoreToUIScore, hmmmToAha } from '../../utils'
 import { sendAndReactToTransaction } from '../transaction/asyncActions'
 import { setHelperBar } from '../navigation/actions'
-import { receiveVariable } from '../web3/actions'
 import { fetchUserBalance } from '../web3/asyncActions'
-import { Stage, UserStageAction, LoadingStage, NotificationTopic, TimeOutReasons } from '../../constants'
+import { Stage, UserStageAction, NotificationTopic, TimeOutReasons } from '../../constants'
 import {
-  receiveAssessor,
   receiveAssessment,
   updateAssessmentVariable,
   setAssessmentAsInvalid
 } from './actions'
-import { beginLoadingAssessments, endLoadingAssessments } from '../loading/actions'
 import {helperBarTopic} from '../../components/Helpers/helperContent.ts'
 
 // setup ipfs api
@@ -188,56 +185,52 @@ export function fetchCredentials (address) {
 */
 export function fetchLatestAssessments (currentBlock) {
   return async (dispatch, getState) => {
-    //if (getState().loading.assessments === LoadingStage.None) { // only do this once
-      let userAddress = getState().ethereum.userAddress
-      //dispatch(beginLoadingAssessments())
+    let userAddress = getState().ethereum.userAddress
 
-      // get notification events from fathomToken contract
-      const fathomTokenInstance = getInstance.fathomToken(getState())
-      let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {
-        fromBlock: getState().ethereum.lastUpdatedAt,
-        toBlock: currentBlock
-      })
+    // get notification events from fathomToken contract
+    const fathomTokenInstance = getInstance.fathomToken(getState())
+    let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {
+      fromBlock: getState().ethereum.lastUpdatedAt,
+      toBlock: currentBlock
+    })
 
-      // filter out all assessments where the user is involved
-      let assessmentAddresses = pastNotifications.reduce((accumulator, notification) => {
-        let assessment = notification.returnValues.sender
-        // save all addressess where the user is involved
-        if (notification.returnValues.user === userAddress && accumulator.indexOf(assessment) === -1) {
-          accumulator.push(assessment)
-        }
-        return accumulator
-      }, [])
-
-      // filter out destructed-assessments
-      let destructedAssessments = pastNotifications.reduce((accumulator, notification) => {
-        let assessment = notification.returnValues.sender
-        // save all addressess where the user is involved but which were destructed
-        if (assessmentAddresses.indexOf(assessment) !== -1 &&
-          Number(notification.returnValues.topic) === NotificationTopic.AssessmentCancelled) {
-          accumulator.push(assessment)
-        }
-        return accumulator
-      }, [])
-
-      // remove destructed assessments from list (TODO NOTE: in a future refactor this could potentially be done with less code)
-      for (let add of destructedAssessments) {
-        let idx = assessmentAddresses.indexOf(add)
-        if (idx > -1) { assessmentAddresses.splice(idx, 1) }
+    // filter out all assessments where the user is involved
+    let assessmentAddresses = pastNotifications.reduce((accumulator, notification) => {
+      let assessment = notification.returnValues.sender
+      // save all addressess where the user is involved
+      if (notification.returnValues.user === userAddress && accumulator.indexOf(assessment) === -1) {
+        accumulator.push(assessment)
       }
+      return accumulator
+    }, [])
 
-      // and fetch the data for them by reconstruction from events
-      await Promise.all(destructedAssessments.map((assessmentAddress) => {
-        dispatch(reconstructAssessment(assessmentAddress, pastNotifications.filter(x => x.returnValues.sender === assessmentAddress)))
-      }))
+    // filter out destructed-assessments
+    let destructedAssessments = pastNotifications.reduce((accumulator, notification) => {
+      let assessment = notification.returnValues.sender
+      // save all addressess where the user is involved but which were destructed
+      if (assessmentAddresses.indexOf(assessment) !== -1 &&
+          Number(notification.returnValues.topic) === NotificationTopic.AssessmentCancelled) {
+        accumulator.push(assessment)
+      }
+      return accumulator
+    }, [])
 
-      // fetch data for assessments
-      await Promise.all(assessmentAddresses.map(async (assessmentAddress) => {
-        await fetchAssessmentData(assessmentAddress)(dispatch,getState)
-      }))
-      return currentBlock;
-      //dispatch(endLoadingAssessments())
-    //}
+    // remove destructed assessments from list (TODO NOTE: in a future refactor this could potentially be done with less code)
+    for (let add of destructedAssessments) {
+      let idx = assessmentAddresses.indexOf(add)
+      if (idx > -1) { assessmentAddresses.splice(idx, 1) }
+    }
+
+    // and fetch the data for them by reconstruction from events
+    await Promise.all(destructedAssessments.map((assessmentAddress) => {
+      dispatch(reconstructAssessment(assessmentAddress, pastNotifications.filter(x => x.returnValues.sender === assessmentAddress)))
+    }))
+
+    // fetch data for assessments
+    await Promise.all(assessmentAddresses.map(async (assessmentAddress) => {
+      await fetchAssessmentData(assessmentAddress)(dispatch, getState)
+    }))
+    return currentBlock
   }
 }
 
@@ -526,62 +519,3 @@ export function fetchStoredData (selectedAssessment) {
     }
   }
 }
-
-/*
-  Updates the store by calling the respective function for each type of event.
-// */
-// export function processEvent (user, sender, topic, blockNumber) {
-//   return async (dispatch, getState) => {
-//     let userAddress = getState().ethereum.userAddress
-//     let isUser = user === userAddress
-//     // if the user has already looked at the dashboard, meaning we have fetched all latest assessments
-//     // then we want to save the lastUpdatedAt parameter
-//     if (getState().loading.assessments > LoadingStage.None) dispatch(receiveVariable('lastUpdatedAt', blockNumber))
-//     switch (topic) {
-//       case NotificationTopic.AssessmentCreated:
-//         dispatch(fetchUserBalance())
-//         dispatch(fetchAssessmentData(sender))
-//         break
-//       case NotificationTopic.CalledAsAssessor:
-//         dispatch(fetchAssessmentData(sender))
-//         break
-//       case NotificationTopic.ConfirmedAsAssessor:
-//         if (isUser) {
-//           dispatch(fetchUserStage(sender))
-//           dispatch(fetchUserBalance())
-//         }
-//         dispatch(receiveAssessor(sender, user))
-//         break
-//       case NotificationTopic.AssessmentStarted:
-//         if (isUser) {
-//           dispatch(updateAssessmentVariable(sender, 'stage', Stage.Confirmed))
-//           dispatch(fetchUserStage(sender))
-//         }
-//         break
-//       case NotificationTopic.RevealScore:
-//         if (isUser) {
-//           dispatch(updateAssessmentVariable(sender, 'stage', Stage.Committed))
-//           dispatch(fetchUserStage(sender))
-//         }
-//         break
-//       case NotificationTopic.TokensPaidOut:
-//       case NotificationTopic.AssessmentFinished:
-//         if (isUser) {
-//           dispatch(updateAssessmentVariable(sender, 'stage', Stage.Done))
-//           dispatch(fetchUserStage(sender))
-//           dispatch(fetchPayout(sender, user))
-//           dispatch(fetchFinalScore(sender, user))
-//           dispatch(fetchUserBalance())
-//         }
-//         break
-//       case NotificationTopic.AssessmentCancelled:
-//         if (isUser) {
-//           dispatch(updateAssessmentVariable(sender, 'refunded', true))
-//           dispatch(fetchUserBalance())
-//         }
-//         break
-//       default:
-//         console.log('no condition applied!', user, sender, topic)
-//     }
-//   }
-// }
