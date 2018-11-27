@@ -186,18 +186,17 @@ export function fetchCredentials (address) {
   Fetches all data for all assessments (static, dynamic info & assessor-related info)
   using different methods for existing and cancelled (self-destructed) assessments
 */
-export function fetchLatestAssessments () {
+export function fetchLatestAssessments (currentBlock) {
   return async (dispatch, getState) => {
-    if (getState().loading.assessments === LoadingStage.None) { // only do this once
+    //if (getState().loading.assessments === LoadingStage.None) { // only do this once
       let userAddress = getState().ethereum.userAddress
-      dispatch(beginLoadingAssessments())
+      //dispatch(beginLoadingAssessments())
 
       // get notification events from fathomToken contract
-      let lastUpdatedAt = getState().ethereum.lastUpdatedAt
       const fathomTokenInstance = getInstance.fathomToken(getState())
       let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {
         fromBlock: getState().ethereum.lastUpdatedAt,
-        toBlock: 'latest'
+        toBlock: currentBlock
       })
 
       // filter out all assessments where the user is involved
@@ -206,10 +205,6 @@ export function fetchLatestAssessments () {
         // save all addressess where the user is involved
         if (notification.returnValues.user === userAddress && accumulator.indexOf(assessment) === -1) {
           accumulator.push(assessment)
-        }
-        // and save the greatest blockNumber
-        if (notification.blockNumber > lastUpdatedAt) {
-          lastUpdatedAt = notification.blockNumber
         }
         return accumulator
       }, [])
@@ -225,24 +220,25 @@ export function fetchLatestAssessments () {
         return accumulator
       }, [])
 
-      // remove destructed assessments from list (NOTE: in a future refactor this could potentially be done with less code)
+      // remove destructed assessments from list (TODO NOTE: in a future refactor this could potentially be done with less code)
       for (let add of destructedAssessments) {
         let idx = assessmentAddresses.indexOf(add)
         if (idx > -1) { assessmentAddresses.splice(idx, 1) }
       }
 
       // and fetch the data for them by reconstruction from events
-      destructedAssessments.forEach((assessmentAddress) => {
+      await Promise.all(destructedAssessments.map((assessmentAddress) => {
         dispatch(reconstructAssessment(assessmentAddress, pastNotifications.filter(x => x.returnValues.sender === assessmentAddress)))
-      })
+      }))
 
       // fetch data for assessments
-      assessmentAddresses.forEach((assessmentAddress) => {
-        dispatch(fetchAssessmentData(assessmentAddress))
-      })
-      dispatch(receiveVariable('lastUpdatedAt', lastUpdatedAt))
-      dispatch(endLoadingAssessments())
-    }
+      await Promise.all(assessmentAddresses.map(async (assessmentAddress) => {
+        await fetchAssessmentData(assessmentAddress)(dispatch,getState)
+      }))
+      dispatch(receiveVariable('lastUpdatedAt', currentBlock))
+      return currentBlock;
+      //dispatch(endLoadingAssessments())
+    //}
   }
 }
 

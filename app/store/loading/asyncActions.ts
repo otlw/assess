@@ -3,7 +3,7 @@ import Web3 from 'web3'
 import { setDataLoadingStage } from './actions'
 import { setModal } from '../navigation/actions'
 import { loadConceptsFromConceptRegistery } from '../concept/asyncActions'
-//import { loadConceptsFromConceptRegistery } from '../assessment/asyncActions'
+import { fetchLatestAssessments } from '../assessment/asyncActions'
 import { web3Connected, receiveVariable } from '../web3/actions'
 import { loadFathomNetworkParams } from '../web3/asyncActions'
 
@@ -52,8 +52,8 @@ export const ConnectData = () => {
     await loadConceptsFromConceptRegistery(currentBlock)(dispatch,getState)
 
     // Then, load concepts from concept registery
-    //await loadConceptsFromConceptRegistery(currentBlock)(dispatch,getState)
-
+    let res=await fetchLatestAssessments(currentBlock)(dispatch,getState)
+console.log(res)
     return dispatch(setDataLoadingStage('Loaded'))
   }
 }
