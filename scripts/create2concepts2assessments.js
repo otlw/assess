@@ -73,9 +73,10 @@ async function create () {
 
   // deploy one concept
   console.log('Creating first concept....')
+  let zeroAddress = '0x0000000000000000000000000000000000000000'
   // use ipfsHash for concept creation
   let encryptedHash1 = '0x' + (Buffer.from(ipfsHash1, 'utf8')).toString('hex')
-  let txResultConcept1 = await conceptRegContract.methods.makeConcept([mewAddress], [500], 60 * 60 * 24, encryptedHash1, accounts[0]).send({from: accounts[0], gas: 3200000})
+  let txResultConcept1 = await conceptRegContract.methods.makeConcept([mewAddress], [1000], 60 * 60 * 24, encryptedHash1, accounts[0], zeroAddress).send({from: accounts[0], gas: 3200000})
   // use the tx to get deployed concept address
   let concept1Address = txResultConcept1.events.ConceptCreation.returnValues._concept
   console.log('New concept created as child of mew concept at ' + concept1Address)
@@ -86,7 +87,7 @@ async function create () {
   console.log('Deploying second concept....')
   // use ipfsHash for concept creation
   let encryptedHash2 = '0x' + (Buffer.from(ipfsHash2, 'utf8')).toString('hex')
-  let txResultConcept2 = await conceptRegContract.methods.makeConcept([mewAddress], [500], 60 * 60 * 24, encryptedHash2, accounts[0]).send({from: accounts[0], gas: 3200000})
+  let txResultConcept2 = await conceptRegContract.methods.makeConcept([mewAddress], [1000], 60 * 60 * 24, encryptedHash2, accounts[0], zeroAddress).send({from: accounts[0], gas: 3200000})
   // use the tx to get deployed concept address
   let concept2Address = txResultConcept2.events.ConceptCreation.returnValues._concept
   console.log('New concept created as child of mew concept at ' + concept2Address)

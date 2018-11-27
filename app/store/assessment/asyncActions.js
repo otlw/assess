@@ -176,7 +176,7 @@ export function fetchCredentials (address) {
     })
 
     pastNotifications.map((notification) => {
-      dispatch(fetchAssessmentData(notification.returnValues.sender))
+      dispatch(fetchAssessmentData(notification.returnValues.assessmentAddress))
     })
   }
 }
@@ -196,13 +196,13 @@ export function fetchLatestAssessments () {
       let lastUpdatedAt = getState().ethereum.lastUpdatedAt
       const fathomTokenInstance = getInstance.fathomToken(getState())
       let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {
-        fromBlock: getState().ethereum.lastUpdatedAt,
+        fromBlock: 0, //getState().ethereum.lastUpdatedAt,
         toBlock: 'latest'
       })
 
       // filter out all assessments where the user is involved
       let assessmentAddresses = pastNotifications.reduce((accumulator, notification) => {
-        let assessment = notification.returnValues.sender
+        let assessment = notification.returnValues.assessment
         // save all addressess where the user is involved
         if (notification.returnValues.user === userAddress && accumulator.indexOf(assessment) === -1) {
           accumulator.push(assessment)
@@ -216,7 +216,7 @@ export function fetchLatestAssessments () {
 
       // filter out destructed-assessments
       let destructedAssessments = pastNotifications.reduce((accumulator, notification) => {
-        let assessment = notification.returnValues.sender
+        let assessment = notification.returnValues.assessment
         // save all addressess where the user is involved but which were destructed
         if (assessmentAddresses.indexOf(assessment) !== -1 &&
           Number(notification.returnValues.topic) === NotificationTopic.AssessmentCancelled) {
@@ -233,7 +233,7 @@ export function fetchLatestAssessments () {
 
       // and fetch the data for them by reconstruction from events
       destructedAssessments.forEach((assessmentAddress) => {
-        dispatch(reconstructAssessment(assessmentAddress, pastNotifications.filter(x => x.returnValues.sender === assessmentAddress)))
+        dispatch(reconstructAssessment(assessmentAddress, pastNotifications.filter(x => x.returnValues.assessmentAddress === assessmentAddress)))
       })
 
       // fetch data for assessments
@@ -340,7 +340,7 @@ export function validateAndFetchAssessmentData (assessmentAddress) {
       let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {
         fromBlock: getState().ethereum.deployedFathomTokenAt,
         toBlock: 'latest',
-        filter: {sender: assessmentAddress}
+        filter: {assessmentAddress: assessmentAddress}
       })
       console.log('pastNotifications', pastNotifications)
       if (pastNotifications.length !== 0) {
@@ -400,7 +400,7 @@ export function fetchAssessmentData (assessmentAddress) {
       // Dynamic Info
       let done = Number(await assessmentInstance.methods.done().call())
       let userAddress = getState().ethereum.userAddress
-      let userStage = (userAddress !== assessee) ? Number(await assessmentInstance.methods.assessorState(userAddress).call()) : 0
+      let userStage = (userAddress !== assessee) ? Number(await assessmentInstance.methods.assessorStage(userAddress).call()) : 0
 
       let dataBytes = await assessmentInstance.methods.data(assessee).call()
       let data = dataBytes ? getState().ethereum.web3.utils.hexToUtf8(dataBytes) : ''
@@ -408,8 +408,8 @@ export function fetchAssessmentData (assessmentAddress) {
       const fathomTokenInstance = getInstance.fathomToken(getState())
       const deployedFathomTokenAt = getState().ethereum.deployedFathomTokenAt
       let pastEvents = await fathomTokenInstance.getPastEvents('Notification', {
-        filter: {sender: assessmentAddress, topic: 2},
-        fromBlock: deployedFathomTokenAt,
+        filter: {assessmentAddress: assessmentAddress, topic: 2},
+        fromBlock: 0, //deployedFathomTokenAt,
         toBlock: 'latest'
       })
       let assessors = pastEvents.map(x => x.returnValues.user)
@@ -495,7 +495,7 @@ export function fetchUserStage (assessmentAddress) {
   return async (dispatch, getState) => {
     let assessmentInstance = getInstance.assessment(getState(), assessmentAddress)
     let userAddress = getState().ethereum.userAddress
-    let userStage = Number(await assessmentInstance.methods.assessorState(userAddress).call())
+    let userStage = Number(await assessmentInstance.methods.assessorStage(userAddress).call())
     let done = Number(await assessmentInstance.methods.done().call())
     if (getState().assessments[assessmentAddress].done !== done) {
       dispatch(updateAssessmentVariable(assessmentAddress, 'done', done))
@@ -535,7 +535,7 @@ export function fetchStoredData (selectedAssessment) {
 /*
   Updates the store by calling the respective function for each type of event.
 */
-export function processEvent (user, sender, topic, blockNumber) {
+export function processEvent (user, assessmentAddress, topic, blockNumber) {
   return async (dispatch, getState) => {
     let userAddress = getState().ethereum.userAddress
     let isUser = user === userAddress
@@ -545,48 +545,48 @@ export function processEvent (user, sender, topic, blockNumber) {
     switch (topic) {
       case NotificationTopic.AssessmentCreated:
         dispatch(fetchUserBalance())
-        dispatch(fetchAssessmentData(sender))
+        dispatch(fetchAssessmentData(assessmentAddress))
         break
       case NotificationTopic.CalledAsAssessor:
-        dispatch(fetchAssessmentData(sender))
+        dispatch(fetchAssessmentData(assessmentAddress))
         break
       case NotificationTopic.ConfirmedAsAssessor:
         if (isUser) {
-          dispatch(fetchUserStage(sender))
+          dispatch(fetchUserStage(assessmentAddress))
           dispatch(fetchUserBalance())
         }
-        dispatch(receiveAssessor(sender, user))
+        dispatch(receiveAssessor(assessmentAddress, user))
         break
       case NotificationTopic.AssessmentStarted:
         if (isUser) {
-          dispatch(updateAssessmentVariable(sender, 'stage', Stage.Confirmed))
-          dispatch(fetchUserStage(sender))
+          dispatch(updateAssessmentVariable(assessmentAddress, 'stage', Stage.Confirmed))
+          dispatch(fetchUserStage(assessmentAddress))
         }
         break
       case NotificationTopic.RevealScore:
         if (isUser) {
-          dispatch(updateAssessmentVariable(sender, 'stage', Stage.Committed))
-          dispatch(fetchUserStage(sender))
+          dispatch(updateAssessmentVariable(assessmentAddress, 'stage', Stage.Committed))
+          dispatch(fetchUserStage(assessmentAddress))
         }
         break
       case NotificationTopic.TokensPaidOut:
       case NotificationTopic.AssessmentFinished:
         if (isUser) {
-          dispatch(updateAssessmentVariable(sender, 'stage', Stage.Done))
-          dispatch(fetchUserStage(sender))
-          dispatch(fetchPayout(sender, user))
-          dispatch(fetchFinalScore(sender, user))
+          dispatch(updateAssessmentVariable(assessmentAddress, 'stage', Stage.Done))
+          dispatch(fetchUserStage(assessmentAddress))
+          dispatch(fetchPayout(assessmentAddress, user))
+          dispatch(fetchFinalScore(assessmentAddress, user))
           dispatch(fetchUserBalance())
         }
         break
       case NotificationTopic.AssessmentCancelled:
         if (isUser) {
-          dispatch(updateAssessmentVariable(sender, 'refunded', true))
+          dispatch(updateAssessmentVariable(assessmentAddress, 'refunded', true))
           dispatch(fetchUserBalance())
         }
         break
       default:
-        console.log('no condition applied!', user, sender, topic)
+        console.log('no condition applied!', user, assessmentAddress, topic)
     }
   }
 }

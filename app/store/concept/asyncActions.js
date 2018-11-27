@@ -21,7 +21,8 @@ export function loadConceptsFromConceptRegistery () {
 
       // get and decode data
       let hash = await conceptInstance.methods.data().call()
-      let decodedConceptDataHash = Buffer.from(hash.slice(2), 'hex').toString('utf8')
+      // temporary fix until other MR is merged
+      let decodedConceptDataHash = hash ? Buffer.from(hash.slice(2), 'hex').toString('utf8') : 'no data saved'
       let decodedConceptData
 
       // retrieve JSON from IPFS if the data is an IPFS hash

@@ -66,11 +66,11 @@ const initializeEventWatcher = () => {
         // they come from an assessment the user is involved in AND one of the following
         // a) the user is looking at it
         // b) the user has already been on the dashboard page once
-        if ((getState().assessments[data.returnValues.sender] || data.returnValues.user === userAddress) &&
+        if ((getState().assessments[data.returnValues.assessment] || data.returnValues.user === userAddress) &&
              getState().loading.assessments >= LoadingStage.None) {
           dispatch(processEvent(
             data.returnValues.user,
-            data.returnValues.sender,
+            data.returnValues.assessment,
             Number(data.returnValues.topic),
             data.blockNumber
           ))
@@ -83,7 +83,7 @@ const initializeEventWatcher = () => {
       let fathomTokenAddress = FathomToken.networks[getState().ethereum.networkID].address
       web3WS.eth.subscribe('logs', {
         address: fathomTokenAddress,
-        topics: ['0xe41f8f86e0c2a4bb86f57d2698c1704cd23b5f42a84336cdb49377cdca96d876'] // notification topic
+        topics: ['0x61be7a191fce9c12da97e5ba5978e5d31e3a8374012c731682182c5102faac9d'] // notification topic
       }, (error, log) => {
         if (error) {
           console.log('event subscirption error!:')
@@ -98,11 +98,10 @@ const initializeEventWatcher = () => {
         // they come from an assessment the user is involved in AND one of the following
         // a) the user is looking at it
         // b) the user has already been on the dashboard page once
-        if ((getState().assessments[decodedLog.sender] || decodedLog.user === userAddress)) {
-          dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic)))
-          dispatch(processEvent(decodedLog.user, decodedLog.sender, Number(decodedLog.topic), log.blockNumber))
+        if ((getState().assessments[decodedLog.assessment] || decodedLog.user === userAddress)) {
+          dispatch(processEvent(decodedLog.user, decodedLog.assessment, Number(decodedLog.topic), log.blockNumber))
         } else {
-          console.log('not updating!')
+          console.log('not updating!', decodedLog)
         }
       })
     }

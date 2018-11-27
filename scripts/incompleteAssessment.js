@@ -176,7 +176,7 @@ async function test () {
   })
   const conceptDataHash= await uploadDescriptionToIPFS(stringifiedJson)
   let encryptedHash = '0x' + (Buffer.from(conceptDataHash, 'utf8')).toString('hex')
-  let txResultConcept1 = await conceptRegContract.methods.makeConcept([mewAddress], [500], 60 * 60 * 24, encryptedHash, accounts[0]).send({from: accounts[0], gas: 3200000})
+  let txResultConcept1 = await conceptRegContract.methods.makeConcept([mewAddress], [500], 60 * 60 * 24, encryptedHash, accounts[0], '0x00').send({from: accounts[0], gas: 3200000})
   // use the tx to get deployed concept address
   conceptAddress = txResultConcept1.events.ConceptCreation.returnValues._concept
   console.log('New concept created as child of mew concept at ' + conceptAddress)
