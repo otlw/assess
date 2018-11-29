@@ -1,14 +1,13 @@
 import { getInstance } from '../../utils'
 import { sendAndReactToTransaction } from '../transaction/asyncActions'
 import { receiveConcepts } from './actions'
-// import { beginLoadingConcepts, endLoadingConcepts } from '../loading/actions.ts'
 
 export function loadConceptsFromConceptRegistery (currentBlock) {
   return async (dispatch, getState) => {
     const conceptRegistryInstance = getInstance.conceptRegistry(getState())
     // get concepts from registry
     let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {
-      fromBlock: getState().ethereum.deployedConceptRegistryAt,
+      fromBlock: 0, // getState().ethereum.deployedConceptRegistryAt, // reset this correctly in https://gitlab.com/fathom/app/issues/411
       toBlock: currentBlock
     })
 

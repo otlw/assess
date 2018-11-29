@@ -44,11 +44,11 @@ export const ConnectData = () => {
     dispatch(receiveVariable('networkID', networkID))
     dispatch(fetchUserBalance())
 
+    // Then, look up at which blocks contracts were deployed // NB: We really need those variables to be set before loadConceptsFromConceptRegistery...
+    await loadFathomNetworkParams()(dispatch, getState)
+
     // Then look up the current block, to be constistant across the loading functions
     let currentBlock = await web3.eth.getBlockNumber()
-
-    // Then, look up at which blocks contracts were deployed
-    await loadFathomNetworkParams()(dispatch, getState)
 
     // Then, load concepts from concept registery
     await loadConceptsFromConceptRegistery(currentBlock)(dispatch, getState)
@@ -66,6 +66,8 @@ export const ConnectData = () => {
       currentBlock = await web3.eth.getBlockNumber()
       // Then, load assessments from fathmToken events
       await fetchLatestAssessments(currentBlock)(dispatch, getState)
+      // And fetch balance
+      dispatch(fetchUserBalance())
       dispatch(receiveVariable('lastUpdatedAt', currentBlock))
     }, timePeriod)
 
