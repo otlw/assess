@@ -47,28 +47,27 @@ export const ConnectData = () => {
     // Then, look up at which blocks contracts were deployed // NB: We really need those variables to be set before loadConceptsFromConceptRegistery...
     await loadFathomNetworkParams()(dispatch, getState)
 
-    // Then look up the current block, to be constistant across the loading functions
-    let currentBlock = await web3.eth.getBlockNumber()
+    // this is the loading sequence we repeat
+    let updateCycle = async () => {
+      // Then look up the current block, to be constistant across the loading functions
+      let currentBlock = await web3.eth.getBlockNumber()
 
-    // Then, load concepts from concept registery
-    await loadConceptsFromConceptRegistery(currentBlock)(dispatch, getState)
+      // Then, load concepts from concept registery
+      await loadConceptsFromConceptRegistery(currentBlock)(dispatch, getState)
 
-    // Then, load assessments from fathmToken events
-    await fetchLatestAssessments(currentBlock)(dispatch, getState)
+      // Then, load assessments from fathmToken events
+      await fetchLatestAssessments(currentBlock)(dispatch, getState)
 
-    // We now kno that our data is up to date until currentBlock
-    dispatch(receiveVariable('lastUpdatedAt', currentBlock))
+      // We now kno that our data is up to date until currentBlock
+      dispatch(receiveVariable('lastUpdatedAt', currentBlock))
+    }
+
+    await updateCycle()
 
     // Start verifying assessment state reglarly TODO: calculate the blocktime depending on network
     let timePeriod = 5000 // Period set to 5sec
     setInterval(async () => {
-      // look up the current block
-      currentBlock = await web3.eth.getBlockNumber()
-      // Then, load assessments from fathmToken events
-      await fetchLatestAssessments(currentBlock)(dispatch, getState)
-      // And fetch balance
-      dispatch(fetchUserBalance())
-      dispatch(receiveVariable('lastUpdatedAt', currentBlock))
+      await updateCycle()
     }, timePeriod)
 
     return dispatch(setDataLoadingStage('Loaded'))
