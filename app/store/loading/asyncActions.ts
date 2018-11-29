@@ -5,7 +5,7 @@ import { setModal } from '../navigation/actions'
 import { loadConceptsFromConceptRegistery } from '../concept/asyncActions'
 import { fetchLatestAssessments } from '../assessment/asyncActions'
 import { web3Connected, receiveVariable } from '../web3/actions'
-import { loadFathomNetworkParams } from '../web3/asyncActions'
+import { loadFathomNetworkParams, fetchUserBalance } from '../web3/asyncActions'
 
 export const ConnectData = () => {
   return async (dispatch: Dispatch<any, any>, getState: any) => {
@@ -38,8 +38,11 @@ export const ConnectData = () => {
     }
 
     dispatch(web3Connected(web3))
+
+    // get the user info, fetchBalance doesn't need to be async
     dispatch(receiveVariable('userAddress', accounts[0]))
     dispatch(receiveVariable('networkID', networkID))
+    dispatch(fetchUserBalance())
 
     // Then look up the current block, to be constistant across the loading functions
     let currentBlock = await web3.eth.getBlockNumber()
