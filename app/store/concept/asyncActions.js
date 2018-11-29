@@ -7,7 +7,7 @@ export function loadConceptsFromConceptRegistery (currentBlock) {
     const conceptRegistryInstance = getInstance.conceptRegistry(getState())
     // get concepts from registry
     let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {
-      fromBlock: 0, // getState().ethereum.deployedConceptRegistryAt, // reset this correctly in https://gitlab.com/fathom/app/issues/411
+      fromBlock: getState().ethereum.lastUpdatedAt,
       toBlock: currentBlock
     })
 
