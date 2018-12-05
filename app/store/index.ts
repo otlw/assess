@@ -23,7 +23,7 @@ export default function rootReducer (networkID: number, userAddress: string) {
   const EthereumPersistConfig: PersistConfig = {
     key: 'ethereum' + networkID + userAddress,
     storage: storage,
-    whitelist: ['lastUpdatedAt', 'deployedConceptRegistryAt', 'deployedFathomTokenAt']
+    whitelist: ['lastUpdatedAt']
   }
 
   // only used for helpers atm so we don't need to add the network

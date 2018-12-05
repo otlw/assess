@@ -1,16 +1,14 @@
 import { getInstance } from '../../utils'
 import { sendAndReactToTransaction } from '../transaction/asyncActions'
 import { receiveConcepts } from './actions'
-import { beginLoadingConcepts, endLoadingConcepts } from '../loading/actions.ts'
 
-export function loadConceptsFromConceptRegistery () {
+export function loadConceptsFromConceptRegistery (currentBlock) {
   return async (dispatch, getState) => {
-    dispatch(beginLoadingConcepts())
     const conceptRegistryInstance = getInstance.conceptRegistry(getState())
     // get concepts from registry
     let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {
-      fromBlock: getState().ethereum.deployedConceptRegistryAt,
-      toBlock: 'latest'
+      fromBlock: getState().ethereum.lastUpdatedAt,
+      toBlock: currentBlock
     })
 
     let concepts = {}
@@ -21,7 +19,7 @@ export function loadConceptsFromConceptRegistery () {
 
       // get and decode data
       let hash = await conceptInstance.methods.data().call()
-      let decodedConceptDataHash = Buffer.from(hash.slice(2), 'hex').toString('utf8')
+      let decodedConceptDataHash = hash ? Buffer.from(hash.slice(2), 'hex').toString('utf8') : 'no data'
       let decodedConceptData
 
       // retrieve JSON from IPFS if the data is an IPFS hash
@@ -47,7 +45,7 @@ export function loadConceptsFromConceptRegistery () {
       return (concepts[conceptAddress] = decodedConceptData)
     }))
     dispatch(receiveConcepts(concepts))
-    dispatch(endLoadingConcepts())
+    return concepts
   }
 }
 

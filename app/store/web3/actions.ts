@@ -2,7 +2,6 @@ import { EthereumState } from './reducer'
 
 export type Actions =
   ReturnType<typeof web3Connected> |
-  ReturnType<typeof web3EventsConnected> |
   ReturnType<typeof web3Disconnected> |
   ReturnType<typeof receiveVariable> |
   ReturnType<typeof receivePersistedState>
@@ -18,16 +17,6 @@ export function web3Connected (web3: EthereumState['web3']) {
   }
 }
 
-// action to save the websocket web3-instance in state
-export function web3EventsConnected (web3: EthereumState['web3']) {
-  let type: 'WEB3EVENTS_CONNECTED' = 'WEB3EVENTS_CONNECTED'
-  return {
-    type,
-    payload: {
-      web3events: web3
-    }
-  }
-}
 // to save in state that one could not connect
 export function web3Disconnected () {
   let type: 'WEB3_DISCONNECTED' = 'WEB3_DISCONNECTED'
