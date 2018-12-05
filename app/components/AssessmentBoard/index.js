@@ -1,9 +1,6 @@
 import { connect } from 'react-redux'
-import { compose } from 'redux'
-import { LoadComponent } from '../hocs/loadComponent.js'
 import AssessmentBoard from './AssessmentBoard.js'
 import { setDashboardTab, toggleHidden } from '../../store/navigation/actions'
-import { fetchLatestAssessments } from '../../store/assessment/asyncActions'
 
 const mapStateToProps = state => {
   return {
@@ -16,11 +13,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   setDashboardTab,
-  toggleHidden: toggleHidden,
-  load: fetchLatestAssessments
+  toggleHidden: toggleHidden
 }
 
-export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  LoadComponent
-)(AssessmentBoard)
+export default connect(mapStateToProps, mapDispatchToProps)(AssessmentBoard)

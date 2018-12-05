@@ -19,7 +19,7 @@ export const AssessmentBoard = (props) => {
       return false
     }),
     Available: assessmentsAsList.filter(assessment => {
-      return (assessment.userStage === Stage.Called &&
+      return (assessment.userStage >= Stage.Called &&
               assessment.stage === Stage.Called &&
               !assessment.violation &&
               (!assessment.hidden || (assessment.hidden && props.showHidden)))
