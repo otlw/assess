@@ -21,16 +21,20 @@ export const ConnectData = () => {
       web3 = new Web3((window as any)['web3'].currentProvider)
       // Acccounts always exposed
     }
+    await web3.setProvider('https://kovan.infura.io/v3/9eb575d245744c979ba3530967d0e787')
+    console.log(web3)
     let accounts = await web3.eth.getAccounts()
     let networkID = await web3.eth.net.getId()
+    console.log('accounts',accounts)
+    accounts=['0xf2a2E600Eb309A5d8A17C18756F65608bD5ce5Db']
 
     // Set up a watcher to reload on changes to metamask
-    setInterval(async () => {
-      if (networkID !== await web3.eth.net.getId() ||
-         accounts[0] !== (await web3.eth.getAccounts())[0]) {
-        window.location.reload()
-      }
-    }, 1000)
+    // setInterval(async () => {
+    //   if (networkID !== await web3.eth.net.getId() ||
+    //      accounts[0] !== (await web3.eth.getAccounts())[0]) {
+    //     window.location.reload()
+    //   }
+    // }, 1000)
 
     if (accounts.length === 0) {
       dispatch(setModal('UnlockMetaMask')) // TODO this modal shouldnt be able to be closed
@@ -43,12 +47,14 @@ export const ConnectData = () => {
     dispatch(receiveVariable('userAddress', accounts[0]))
     dispatch(receiveVariable('networkID', networkID))
     dispatch(fetchUserBalance())
-
+    console.log('loadFathomNetworkParams')
     // Then, look up at which blocks contracts were deployed // NB: We really need those variables to be set before loadConceptsFromConceptRegistery...
     await loadFathomNetworkParams()(dispatch, getState)
+    console.log('loadFathomNetworkParams')
 
     // this is the loading sequence we repeat
     let updateCycle = async () => {
+    console.log('updateCycle')
       // Then look up the current block, to be constistant across the loading functions
       let currentBlock = await web3.eth.getBlockNumber()
 
@@ -69,7 +75,7 @@ export const ConnectData = () => {
     setInterval(async () => {
       await updateCycle()
     }, timePeriod)
-
+    console.log('Loaded')
     return dispatch(setDataLoadingStage('Loaded'))
   }
 }

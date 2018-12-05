@@ -7,9 +7,10 @@ export function loadConceptsFromConceptRegistery (currentBlock) {
     const conceptRegistryInstance = getInstance.conceptRegistry(getState())
     // get concepts from registry
     let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {
-      fromBlock: getState().ethereum.lastUpdatedAt,
+      fromBlock: 0,//getState().ethereum.lastUpdatedAt,
       toBlock: currentBlock
     })
+    console.log('pastevents',pastevents)
 
     let concepts = {}
     await Promise.all(pastevents.map(async (event) => {
