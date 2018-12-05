@@ -1,3 +1,4 @@
+import extend from 'xtend'
 import { Actions } from './actions'
 export type ConceptsState = {
   [prop: string]: {
@@ -11,7 +12,7 @@ let initialState = {}
 export function ConceptsReducer (state = initialState, action: Actions): ConceptsState {
   switch (action.type) {
   case 'RECEIVE_CONCEPTS':
-    return action.concepts
+    return extend(state, action.concepts)
   default:
     return state
   }
