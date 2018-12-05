@@ -16,7 +16,7 @@ export function loadConceptsFromConceptRegistery (currentBlock) {
       let conceptAddress = event.returnValues._concept
 
       // get concept data
-      let decodedConceptData = await getDecodedConceptData(conceptAddress)(dispatch,getState)
+      let decodedConceptData = await getDecodedConceptData(conceptAddress)(dispatch, getState)
 
       return (concepts[conceptAddress] = decodedConceptData)
     }))
