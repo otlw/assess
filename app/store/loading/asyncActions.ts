@@ -57,9 +57,6 @@ export const ConnectData = () => {
 
       // Then, load assessments from fathmToken events
       await fetchLatestAssessments(currentBlock)(dispatch, getState)
-
-      // We now kno that our data is up to date until currentBlock
-      dispatch(receiveVariable('lastUpdatedAt', currentBlock))
     }
 
     await updateCycle()

@@ -9,6 +9,7 @@ import {
   setAssessmentAsInvalid
 } from './actions'
 import {helperBarTopic} from '../../components/Helpers/helperContent.ts'
+import { receiveVariable } from '../web3/actions'
 
 // setup ipfs api
 const ethereumjsABI = require('ethereumjs-abi')
@@ -190,7 +191,7 @@ export function fetchLatestAssessments (currentBlock) {
     // get notification events from fathomToken contract
     const fathomTokenInstance = getInstance.fathomToken(getState())
     let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {
-      fromBlock: getState().ethereum.lastUpdatedAt,
+      fromBlock: getState().ethereum.assessmentsLastUpdatedAt,
       toBlock: currentBlock
     })
 
@@ -230,6 +231,11 @@ export function fetchLatestAssessments (currentBlock) {
     await Promise.all(assessmentAddresses.map(async (assessmentAddress) => {
       await fetchAssessmentData(assessmentAddress)(dispatch, getState)
     }))
+
+    // We now know that our assessment data is up to date until currentBlock
+    // only updated if pastevents are not an empty object, since infura soemtimes sends an empty object
+    if (pastNotifications !== {}) { dispatch(receiveVariable('assessmentsLastUpdatedAt', currentBlock)) }
+
     return currentBlock
   }
 }

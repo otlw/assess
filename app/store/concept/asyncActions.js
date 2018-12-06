@@ -1,13 +1,14 @@
 import { getInstance } from '../../utils'
 import { sendAndReactToTransaction } from '../transaction/asyncActions'
 import { receiveConcepts } from './actions'
+import { receiveVariable } from '../web3/actions'
 
 export function loadConceptsFromConceptRegistery (currentBlock) {
   return async (dispatch, getState) => {
     const conceptRegistryInstance = getInstance.conceptRegistry(getState())
     // get concepts from registry
     let pastevents = await conceptRegistryInstance.getPastEvents('ConceptCreation', {
-      fromBlock: getState().ethereum.lastUpdatedAt,
+      fromBlock: getState().ethereum.conceptsLastUpdatedAt,
       toBlock: currentBlock
     })
 
@@ -45,6 +46,11 @@ export function loadConceptsFromConceptRegistery (currentBlock) {
       return (concepts[conceptAddress] = decodedConceptData)
     }))
     dispatch(receiveConcepts(concepts))
+
+    // We now kno that our concept data is up to date until currentBlock
+    // only updated if pastevents are not an empty object, since infura soemtimes sends an empty object
+    if (pastevents !== {}) { dispatch(receiveVariable('conceptsLastUpdatedAt', currentBlock)) }
+
     return concepts
   }
 }
