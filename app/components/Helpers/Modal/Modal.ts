@@ -10,7 +10,7 @@ import { ButtonPrimary, ButtonSecondary } from '../../Global/Buttons.ts'
 // idea: if this is styled to be transparent, the user see's that stuff changes and that he has to click to close it.
 export class Modal extends Component<Props> {
   closeScreen () {
-    if (this.props.setModal){
+    if (this.props.setModal) {
       this.props.setModal(null)
     }
   }
@@ -18,7 +18,7 @@ export class Modal extends Component<Props> {
   nextScreen () {
     this.closeScreen()
     if (!this.props.topic) return
-    if (this.props.topic.followUp&&this.props.setModal) {
+    if (this.props.topic.followUp && this.props.setModal) {
       this.props.setModal(this.props.topic.followUp.target)
     }
   }
@@ -39,7 +39,7 @@ export class Modal extends Component<Props> {
             h(Body, this.props.topic.text)
           ]),
           h(modalFooter, [
-            this.props.setModal? h(ButtonSecondary, { onClick: this.closeScreen.bind(this) }, 'Close'):null,
+            this.props.setModal ? h(ButtonSecondary, { onClick: this.closeScreen.bind(this) }, 'Close') : null,
             this.props.topic.followUp
               ? h(ButtonPrimary, { onClick: this.nextScreen.bind(this), active: true }, 'Learn More')
               : null
