@@ -17,9 +17,9 @@ export function sendAndReactToTransaction (
   userAddress: string,
   contractAddress: string,
   callbacks: {
-    transactionHash: (hash: string) => void | null,
-    confirmation: (status: boolean, receipt: TransactionReceipt | Error) => void,
-    error: (error: Error) => void
+  transactionHash: (hash: string) => void | null,
+  confirmation: (status: boolean, receipt: TransactionReceipt | Error) => void,
+  error: (error: Error) => void
   }
 ) {
   transaction()
