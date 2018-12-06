@@ -7,48 +7,57 @@ import { TransactionReceipt, EventLog } from 'web3/types'
 export function loadConceptsFromConceptRegistery (currentBlock: number) {
   return async (dispatch: Dispatch<any, any>, getState: any) => {
     const conceptRegistryInstance: any = getInstance.conceptRegistry(getState())
-    // get concepts from registry
+    // get concept events from registry
     let pastevents: EventLog[] = await conceptRegistryInstance.getPastEvents('ConceptCreation', {
       fromBlock: getState().ethereum.lastUpdatedAt,
       toBlock: currentBlock
     })
 
+    // process concept creations into the redux store
     let concepts: any = {}
     await Promise.all(pastevents.map(async (event: EventLog) => {
       let conceptAddress: string = event.returnValues._concept
-      // instanciate Concept Contract to get 'data' (ie the name of the concept)
-      let conceptInstance: any = getInstance.concept(getState(), conceptAddress)
 
-      // get and decode data
-      let hash: string = await conceptInstance.methods.data().call()
-      let decodedConceptDataHash: string = hash ? Buffer.from(hash.slice(2), 'hex').toString('utf8') : 'no data'
-      let decodedConceptData: any
-
-      // retrieve JSON from IPFS if the data is an IPFS hash
-      if (decodedConceptDataHash.substring(0, 2) === 'Qm') {
-        // setup ipfs api
-        const ipfsAPI: any = require('ipfs-api')
-        const ipfs: any = ipfsAPI('ipfs.infura.io', '5001', { protocol: 'https' })
-
-        // verify that description is correctly stord and log it
-        let resp: any[] = await ipfs.get(decodedConceptDataHash)
-        decodedConceptData = resp[0].content.toString()
-
-        // parse JSON
-        decodedConceptData = JSON.parse(decodedConceptData)
-      } else {
-        // if no ipfs hash, just use data string decodedConceptDataHash
-        decodedConceptData = {
-          name: decodedConceptDataHash,
-          description: decodedConceptDataHash
-        }
-      }
+      // get concept data
+      let decodedConceptData = await getDecodedConceptData(conceptAddress, getState)
 
       return (concepts[conceptAddress] = decodedConceptData)
     }))
     dispatch(receiveConcepts(concepts))
     return concepts
   }
+}
+
+// get the concept data and decode it
+export async function getDecodedConceptData (conceptAddress: string, getState: any) {
+  // instanciate Concept Contract to get 'data' (ie the name of the concept)
+  let conceptInstance = getInstance.concept(getState(), conceptAddress)
+
+  // get and decode data to retrieve ipfs hash, else keep the string
+  let decodedConceptDataHash, decodedConceptData
+  let hash = await conceptInstance.methods.data().call()
+  decodedConceptDataHash = hash ? Buffer.from(hash.slice(2), 'hex').toString('utf8') : 'No concept data hash'
+
+  // retrieve JSON from IPFS if the data is an IPFS hash
+  if (decodedConceptDataHash.substring(0, 2) === 'Qm') {
+    // setup ipfs api
+    const ipfsAPI = require('ipfs-api')
+    const ipfs = ipfsAPI('ipfs.infura.io', '5001', { protocol: 'https' })
+
+    // verify that description is correctly stord and log it
+    let resp = await ipfs.get(decodedConceptDataHash)
+    decodedConceptData = resp[0].content.toString()
+
+    // parse JSON
+    decodedConceptData = JSON.parse(decodedConceptData)
+  } else {
+    // if no ipfs hash, just use data string decodedConceptDataHash
+    decodedConceptData = {
+      name: decodedConceptDataHash,
+      description: decodedConceptDataHash
+    }
+  }
+  return decodedConceptData
 }
 
 type callbacksType = {
