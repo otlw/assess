@@ -9,22 +9,18 @@ import { NavTabs } from '../NavTabs'
 
 export class ConceptBoard extends Component {
   render () {
-    if (this.props.loadedConcepts) {
-      let concepts = this.props.concepts
+    let concepts = this.props.concepts
 
-      let ConceptHeader = h(Subheadline, 'Choose a Concept')
-      return h('div', [
-        h(NavTabs),
-        h(ConceptHeaderBox, [
-          ConceptHeader
-        ]),
-        h(ConceptList, {
-          concepts
-        })
-      ])
-    } else {
-      return h('div', 'Loading Concepts')
-    }
+    let ConceptHeader = h(Subheadline, 'Choose a Concept')
+    return h('div', [
+      h(NavTabs),
+      h(ConceptHeaderBox, [
+        ConceptHeader
+      ]),
+      h(ConceptList, {
+        concepts
+      })
+    ])
   }
 }
 

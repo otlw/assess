@@ -3,27 +3,27 @@ import { connect } from 'react-redux'
 import h from 'react-hyperscript'
 
 import { State } from '../../store'
-import { ConnectMetamask } from '../../store/loading/asyncActions'
+import { ConnectData } from '../../store/loading/asyncActions'
 import { LoadingStage } from '../../store/loading/reducer'
 
 import Modal from '../Helpers/Modal'
 
 type Props = {
-  MetamaskLoadingState: LoadingStage // LoadingState['metamask'],
-  ConnectMetamask: typeof ConnectMetamask
+  DataLoadingState: LoadingStage // LoadingState['Data'],
+  ConnectData: typeof ConnectData
 }
-export class MetamaskLoader extends Component<Props> {
+export class DataLoader extends Component<Props> {
   componentDidMount () {
-    if (this.props.MetamaskLoadingState === null) {
-      this.props.ConnectMetamask()
+    if (this.props.DataLoadingState === 'Initial') {
+      this.props.ConnectData()
     }
   }
 
   render () {
-    switch (this.props.MetamaskLoadingState) {
+    switch (this.props.DataLoadingState) {
     case null:
     case 'Loading': {
-      return h('div', 'Loadin metamask')
+      return h('div', 'Loading Data')
     }
     case 'Error': {
       return h(Modal)
@@ -31,17 +31,20 @@ export class MetamaskLoader extends Component<Props> {
     case 'Loaded': {
       return this.props.children
     }
+    default: {
+      return h('div', 'Loading Data')
+    }
     }
   }
 }
 
 const mapStateToProps = (state: State) => {
   return {
-    MetamaskLoadingState: state.loading.metamask
+    DataLoadingState: state.loading.stage
   }
 }
 const mapDispatchToProps = {
-  ConnectMetamask
+  ConnectData
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MetamaskLoader)
+export default connect(mapStateToProps, mapDispatchToProps)(DataLoader)
