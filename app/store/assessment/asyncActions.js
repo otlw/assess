@@ -193,6 +193,7 @@ export function fetchLatestAssessments (currentBlock) {
       fromBlock: getState().ethereum.lastUpdatedAt,
       toBlock: currentBlock
     })
+    console.log('pastNotifications',pastNotifications)
 
     // filter out all assessments where the user is involved
     let assessmentAddresses = pastNotifications.reduce((accumulator, notification) => {
@@ -228,6 +229,7 @@ export function fetchLatestAssessments (currentBlock) {
 
     // fetch data for assessments
     await Promise.all(assessmentAddresses.map(async (assessmentAddress) => {
+      console.log(assessmentAddress)
       await fetchAssessmentData(assessmentAddress)(dispatch, getState)
     }))
     return currentBlock
