@@ -1,4 +1,4 @@
-import { ModalTopics, helperBarTopics } from '../../store/navigation/reducer'
+import { ModalTopics, helperBarTopic } from '../../store/navigation/reducer'
 
 export const modalTopic = Object.freeze({
   UnlockMetaMask: 'UnlockMetaMask',
@@ -10,7 +10,20 @@ export const modalTopic = Object.freeze({
   AssessmentCreationFailed: 'AssessmentCreationFailed'
 })
 
-export const helperBarTopic = Object.freeze({
+type helperBarTopics={
+  Staking: helperBarTopic,
+  Committing: helperBarTopic,
+  Revealing: helperBarTopic,
+  ConfirmedStake: helperBarTopic,
+  ConfirmedCommit: helperBarTopic,
+  ConfirmedReveal: helperBarTopic,
+  FirstTimeMeetingPointSet: helperBarTopic,
+  MeetingPointChanged: helperBarTopic,
+  ChallengePeriodActive: helperBarTopic,
+  Smues: helperBarTopic
+}
+
+export const helperBarTopic:helperBarTopics = Object.freeze({
   Staking: 'Staking',
   Committing: 'Committing',
   Revealing: 'Revealing',

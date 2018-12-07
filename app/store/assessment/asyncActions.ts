@@ -11,7 +11,10 @@ import {
 } from './actions'
 import {helperBarTopic} from '../../components/Helpers/helperContent.ts'
 import { Dispatch } from 'redux'
-import { TransactionReceipt, EventLog } from 'web3/types'
+import { 
+  //TransactionReceipt, 
+  EventLog 
+} from 'web3/types'
 
 const ethereumjsABI = require('ethereumjs-abi')
 
@@ -22,13 +25,13 @@ export function hashScoreAndSalt (_score:number, _salt:string) {
   ).toString('hex')
 }
 
-type callbacksType = {
-  transactionHash?: (hash: string) => void | null
-  confirmation?: (status: boolean, receipt: TransactionReceipt | Error) => void
-  error?: (error: Error) => void
-  gas?:number
-  purpose?:string
-}
+// type callbacksType = {
+//   transactionHash?: (hash: string) => void | null
+//   confirmation?: (status: boolean, receipt: TransactionReceipt | Error) => void
+//   error?: (error: Error) => void
+//   gas?:number
+//   purpose?:string
+// }
 
 type callParams={
   from:string
@@ -42,23 +45,18 @@ export function confirmAssessor (assessmentAddress:string) {
     let assessmentInstance:any = getInstance.assessment(getState(), assessmentAddress)
     // TODO figure out how high this needs to be so fucking high for refund to work
     let params:callParams = {from: userAddress}
-    if (customReact && customReact.gas) {
-      params.gas = customReact.gas
-    }
     sendAndReactToTransaction(
       dispatch,
       () => { return assessmentInstance.methods.confirmAssessor().send(params) }, // transaction
-      customReact ? customReact.purpose : UserStageAction[Stage.Called], // tx purpose
+      UserStageAction[Stage.Called], // tx purpose
       userAddress,
       assessmentAddress,
-      customReact
-        ? customReact.callbck
-        : {
+      {
           confirmation: () => {
             dispatch(fetchUserStage(assessmentAddress))
             dispatch(setHelperBar(helperBarTopic.ConfirmedStake))
           }
-        }
+      }
     )
   }
 }
@@ -69,23 +67,18 @@ export function commit (assessmentAddress:string, score:number, salt:string) {
     let assessmentInstance:any = getInstance.assessment(getState(), assessmentAddress)
     // TODO figure out how high this needs to be so fucking high for refund to work
     let params:callParams = {from: userAddress}
-    if (customReact && customReact.gas) {
-      params.gas = customReact.gas
-    }
     sendAndReactToTransaction(
       dispatch,
       () => { return assessmentInstance.methods.commit(hashScoreAndSalt(score, salt)).send(params) }, // transaction
-      customReact ? customReact.purpose : UserStageAction[Stage.Confirmed], // tx purpose
+      UserStageAction[Stage.Confirmed], // tx purpose
       userAddress,
       assessmentAddress,
-      customReact
-        ? customReact.callbck
-        : {
+      {
           confirmation: () => {
             dispatch(fetchUserStage(assessmentAddress))
             dispatch(setHelperBar(helperBarTopic.ConfirmedCommit))
           }
-        }
+      }
     )
   }
 }
@@ -95,23 +88,18 @@ export function reveal (assessmentAddress:string, score:number, salt:string) {
     let userAddress:string = getState().ethereum.userAddress
     let assessmentInstance:any = getInstance.assessment(getState(), assessmentAddress)
     let params:callParams = {from: userAddress}
-    if (customReact && customReact.gas) {
-      params.gas = customReact.gas
-    }
     sendAndReactToTransaction(
       dispatch,
       () => { return assessmentInstance.methods.reveal(score, salt).send(params) }, // transaction
-      customReact ? customReact.purpose : UserStageAction[Stage.Committed], // tx purpose
+      UserStageAction[Stage.Committed], // tx purpose
       userAddress,
       assessmentAddress,
-      customReact
-        ? customReact.callbck
-        : {
+      {
           confirmation: () => {
             dispatch(fetchUserStage(assessmentAddress))
             dispatch(setHelperBar(helperBarTopic.ConfirmedReveal))
           }
-        }
+      }
     )
   }
 }

@@ -11,7 +11,7 @@ export type ModalTopics =
   'AssessmentCreationFailed' |
   'Smues'
 
-export type helperBarTopics =
+export type helperBarTopic =
     null |
     'Staking' |
     'Committing' |
