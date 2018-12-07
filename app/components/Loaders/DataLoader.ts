@@ -12,6 +12,8 @@ type Props = {
   DataLoadingState: LoadingStage // LoadingState['Data'],
   ConnectData: typeof ConnectData
 }
+
+// load new onChain data that hasn't been persisted before
 export class DataLoader extends Component<Props> {
   componentDidMount () {
     if (this.props.DataLoadingState === 'Initial') {
@@ -32,7 +34,7 @@ export class DataLoader extends Component<Props> {
       return this.props.children
     }
     default: {
-      return h('div', 'Loading Data')
+      return h('div', 'Loading Data') // TODO Loading component
     }
     }
   }
