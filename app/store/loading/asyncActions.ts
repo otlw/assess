@@ -24,7 +24,7 @@ export const ConnectData = () => {
     let accounts = await web3.eth.getAccounts()
     let networkID = await web3.eth.net.getId()
 
-    // Set up a watcher to reload on changes to metamask
+    // Set up a watcher to reload on changes to metamask, every second
     setInterval(async () => {
       if (networkID !== await web3.eth.net.getId() ||
          accounts[0] !== (await web3.eth.getAccounts())[0]) {
