@@ -92,7 +92,7 @@ export function loadConceptContractAndCreateAssessment (conceptAddress: string, 
 // estimate the gas of the transaction above
 export function estimateAssessmentCreationGasCost (conceptAddress: string, cost: number, callBack: any) {
   // NB : typescript throws an error if dispatch is not used
-  return async (dispatch: Dispatch<any, any>, getState: any) => {
+  return async (_dispatch: Dispatch<any, any>, getState: any) => {
     // instanciate Concept Contract
     let userAddress = getState().ethereum.userAddress
     let conceptInstance = getInstance.concept(getState(), conceptAddress)
@@ -104,6 +104,6 @@ export function estimateAssessmentCreationGasCost (conceptAddress: string, cost:
     // then get current gasPrice
     let gasPrice: number = await getState().ethereum.web3.eth.getGasPrice()
     // then convert it to eth from wei and multiply it by the estimate
-    callBack(estimate * getState().ethereum.web3.utils.fromWei(gasPrice.toString(), 'ether'), dispatch)
+    callBack(estimate * getState().ethereum.web3.utils.fromWei(gasPrice.toString(), 'ether'))
   }
 }
