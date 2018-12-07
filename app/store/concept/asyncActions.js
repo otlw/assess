@@ -49,7 +49,7 @@ export function loadConceptsFromConceptRegistery (currentBlock) {
 
     // We now kno that our concept data is up to date until currentBlock
     // only updated if pastevents are not an empty object, since infura soemtimes sends an empty object
-    if (pastevents !== {}) { dispatch(receiveVariable('conceptsLastUpdatedAt', currentBlock)) }
+    if (pastevents.length > 0) { dispatch(receiveVariable('conceptsLastUpdatedAt', currentBlock)) }
 
     return concepts
   }

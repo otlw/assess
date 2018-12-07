@@ -234,7 +234,7 @@ export function fetchLatestAssessments (currentBlock) {
 
     // We now know that our assessment data is up to date until currentBlock
     // only updated if pastevents are not an empty object, since infura soemtimes sends an empty object
-    if (pastNotifications !== {}) { dispatch(receiveVariable('assessmentsLastUpdatedAt', currentBlock)) }
+    if (pastNotifications.length > 0) { dispatch(receiveVariable('assessmentsLastUpdatedAt', currentBlock)) }
 
     return currentBlock
   }
