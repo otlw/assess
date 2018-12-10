@@ -171,7 +171,7 @@ export function fetchCredentials (address) {
     })
 
     pastNotifications.map((notification) => {
-      dispatch(fetchAssessmentData(notification.returnValues.sender))(dispatch, getState)
+      dispatch(fetchAssessmentData(notification.returnValues.sender))
     })
   }
 }
@@ -363,7 +363,7 @@ export function fetchAssessmentData (assessmentAddress) {
       let stage = Number(await assessmentInstance.methods.assessmentStage().call())
 
       // get concept data
-      let decodedConceptData = await getDecodedConceptData(conceptAddress)
+      let decodedConceptData = await getDecodedConceptData(conceptAddress)(dispatch, getState)
       console.log("decodedConceptData",decodedConceptData)
 
       // Dynamic Info
