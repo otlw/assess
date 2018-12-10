@@ -9,7 +9,6 @@ import {
   updateAssessmentVariable,
   setAssessmentAsInvalid
 } from './actions'
-import {helperBarTopic} from '../../components/Helpers/helperContent.ts'
 import { Dispatch } from 'redux'
 import { 
   //TransactionReceipt, 
@@ -53,8 +52,9 @@ export function confirmAssessor (assessmentAddress:string) {
       assessmentAddress,
       {
           confirmation: () => {
+            dispatch(fetchUserBalance())
             dispatch(fetchUserStage(assessmentAddress))
-            dispatch(setHelperBar(helperBarTopic.ConfirmedStake))
+            dispatch(setHelperBar('ConfirmedStake'))
           }
       }
     )
@@ -76,7 +76,7 @@ export function commit (assessmentAddress:string, score:number, salt:string) {
       {
           confirmation: () => {
             dispatch(fetchUserStage(assessmentAddress))
-            dispatch(setHelperBar(helperBarTopic.ConfirmedCommit))
+            dispatch(setHelperBar('ConfirmedCommit'))
           }
       }
     )
@@ -97,7 +97,7 @@ export function reveal (assessmentAddress:string, score:number, salt:string) {
       {
           confirmation: () => {
             dispatch(fetchUserStage(assessmentAddress))
-            dispatch(setHelperBar(helperBarTopic.ConfirmedReveal))
+            dispatch(setHelperBar('ConfirmedReveal'))
           }
       }
     )
@@ -120,8 +120,8 @@ export function storeDataOnAssessment (assessmentAddress:string, newData:string)
       {
         confirmation: () => {
           dispatch(fetchStoredData(assessmentAddress))
-          if (firstEdit) dispatch(setHelperBar(helperBarTopic.FirstTimeMeetingPointSet))
-          else { dispatch(setHelperBar(helperBarTopic.MeetingPointChanged)) }
+          if (firstEdit) dispatch(setHelperBar('FirstTimeMeetingPointSet'))
+          else { dispatch(setHelperBar('MeetingPointChanged')) }
         }
       }
     )
@@ -131,32 +131,36 @@ export function storeDataOnAssessment (assessmentAddress:string, newData:string)
 // refunds the user & cancels the assessment by calling the stage-specific action
 // then updates the userStage & marks the assessment as refunded
 export function refund (assessmentAddress:string, stage:number) {
-  return async (dispatch: Dispatch<any, any>, getState: any) => {
-    const reactToRefund:()=>void = (err:Error) => {
-      if (!err) {
-        dispatch(updateAssessmentVariable(assessmentAddress, 'refunded', true))
-        dispatch(fetchUserBalance(assessmentAddress))
-      } else {
-        console.log('error while refunding', err)
-      }
-    }
-    const react:any = {
-      gas: 320000,
-      purpose: 'refund',
-      callbck: {
-        confirmation: reactToRefund
-      }
-    }
+  return async (dispatch: Dispatch<any, any>, _getState: any) => {
+
+    // NB why do we have a custom react for the refund?
+
+    // const reactToRefund:(any)=>void = (err:Error) => {
+    //   if (!err) {
+    //     dispatch(updateAssessmentVariable(assessmentAddress, 'refunded', true))
+    //     dispatch(fetchUserBalance())
+    //   } else {
+    //     console.log('error while refunding', err)
+    //   }
+    // }
+    // const react:any = {
+    //   gas: 320000,
+    //   purpose: 'refund',
+    //   callbck: {
+    //     confirmation: reactToRefund
+    //   }
+    // }
+
     // TODO: stage should be a type
     switch (stage) {
       case Stage.Called:
-        dispatch(confirmAssessor(assessmentAddress, react))
+        dispatch(confirmAssessor(assessmentAddress))
         break
       case Stage.Confirmed:
-        dispatch(commit(assessmentAddress, 10, 'hihi', true))
+        dispatch(commit(assessmentAddress, 10, 'hihi'))
         break
       case Stage.Committed:
-        dispatch(reveal(assessmentAddress, 10, 'hihi', true))
+        dispatch(reveal(assessmentAddress, 10, 'hihi'))
         break
       default:
         console.log('something went wrong with the refunding!!!')

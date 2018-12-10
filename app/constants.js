@@ -44,6 +44,7 @@ export const UserStageAction = Object.freeze({
   5: 'burn'
 })
 
+
 export const LoadingStage = Object.freeze({
   None: 0,
   Loading: 1,

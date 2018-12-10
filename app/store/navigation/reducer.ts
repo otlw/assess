@@ -34,7 +34,7 @@ export type VisitState = {
 export type NavigationState = {
   dashboardTab: 'Current' | 'Available' | 'Past'
   modal: ModalTopics
-  helperBar: helperBarTopics
+  helperBar: helperBarTopic
   inputBar: string
   showHiddenCards: boolean
   visits: VisitState

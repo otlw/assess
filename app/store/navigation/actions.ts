@@ -1,4 +1,4 @@
-import { NavigationState, VisitState } from './reducer'
+import { NavigationState, VisitState, helperBarTopic } from './reducer'
 
 export type Action =
   ReturnType<typeof setDashboardTab> |
@@ -28,7 +28,7 @@ export function setModal (modal: NavigationState["modal"]) {
   }
 }
 
-export function setHelperBar (helperBar: NavigationState["helperBar"]) {
+export function setHelperBar (helperBar: helperBarTopic) {
   let type: 'SET_HELPERBAR' = 'SET_HELPERBAR'
   return {
     type,

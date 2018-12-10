@@ -11,7 +11,6 @@ import progressDots from '../Global/progressDots.ts'
 import { Headline, Label, Body } from '../Global/Text.ts'
 import { ButtonHelp } from '../Global/Buttons'
 import { LinkClose } from '../Global/Links'
-import { helperBarTopic } from '../../components/Helpers/helperContent'
 
 var h = require('react-hyperscript')
 
@@ -24,7 +23,7 @@ export class AssessmentData extends Component {
       if (userActionRequired) {
         switch (props.assessment.userStage) {
           case Stage.Called:
-            props.setHelperBar(helperBarTopic.Staking)
+            props.setHelperBar('Staking')
             break
           case Stage.Confirmed:
             props.setHelperBar('Committing')
