@@ -35,17 +35,3 @@ export function receiveVariable (name: string, value: any) {
     value
   }
 }
-
-// to save something from the chain in state
-interface IPersistedState {
-  lastUpdatedAt: number
-  deployedFathomTokenAt: number
-  deployedConceptRegistryAt: number
-}
-export function receivePersistedState (persistedState: IPersistedState) {
-  let type: 'RECEIVE_PERSISTED_STATE' = 'RECEIVE_PERSISTED_STATE'
-  return {
-    type,
-    persistedState
-  }
-}
