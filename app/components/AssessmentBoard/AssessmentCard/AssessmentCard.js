@@ -70,7 +70,7 @@ export class AssessmentCard extends Component {
 
       // set assessee/assessor view
       let status = statusMessage(this.isAssessee, assessment, this.props.transactions)
-      console.log(assessment)
+
       return h(cardContainer, [
         h(cardContainerInfo, [
           h(cardTextObject, [
