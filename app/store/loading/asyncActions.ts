@@ -10,7 +10,6 @@ import { loadFathomNetworkParams, fetchUserBalance } from '../web3/asyncActions'
 export const ConnectData = () => {
   return async (dispatch: Dispatch<any, any>, getState: any) => {
     dispatch(setDataLoadingStage('Loading'))
-
     // First, load web3; TODO : web3 is already loaded in the PersistStoreInstantiator, we could save into the window object and get it here (lets not forget the loop check of address)
 
     // Modern dapp browsers...

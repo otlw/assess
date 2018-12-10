@@ -171,7 +171,7 @@ export function fetchCredentials (address) {
     })
 
     pastNotifications.map((notification) => {
-      dispatch(fetchAssessmentData(notification.returnValues.sender))
+      dispatch(fetchAssessmentData(notification.returnValues.sender))(dispatch, getState)
     })
   }
 }
@@ -191,7 +191,6 @@ export function fetchLatestAssessments (currentBlock) {
       fromBlock: getState().ethereum.lastUpdatedAt,
       toBlock: currentBlock
     })
-    console.log('pastNotifications', pastNotifications)
 
     // filter out all assessments where the user is involved
     let assessmentAddresses = pastNotifications.reduce((accumulator, notification) => {
@@ -365,6 +364,7 @@ export function fetchAssessmentData (assessmentAddress) {
 
       // get concept data
       let decodedConceptData = await getDecodedConceptData(conceptAddress)
+      console.log("decodedConceptData",decodedConceptData)
 
       // Dynamic Info
       let done = Number(await assessmentInstance.methods.done().call())

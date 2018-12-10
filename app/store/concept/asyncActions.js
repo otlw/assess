@@ -48,6 +48,7 @@ export function getDecodedConceptData (conceptAddress) {
 
       // parse JSON
       decodedConceptData = JSON.parse(decodedConceptData)
+      console.log(decodedConceptData)
     } else {
       // if no ipfs hash, just use data string decodedConceptDataHash
       decodedConceptData = {
@@ -55,6 +56,7 @@ export function getDecodedConceptData (conceptAddress) {
         description: decodedConceptDataHash
       }
     }
+      console.log(decodedConceptData)
     return decodedConceptData
   }
 }
