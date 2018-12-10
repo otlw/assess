@@ -3,6 +3,7 @@ import { Dispatch } from 'redux'
 import { sendAndReactToTransaction } from '../transaction/asyncActions'
 import { receiveConcepts } from './actions'
 import { TransactionReceipt, EventLog } from 'web3/types'
+import { ConceptsState } from './reducer'
 
 export function loadConceptsFromConceptRegistery (currentBlock: number) {
   return async (dispatch: Dispatch<any, any>, getState: any) => {
@@ -14,7 +15,7 @@ export function loadConceptsFromConceptRegistery (currentBlock: number) {
     })
 
     // process concept creations into the redux store
-    let concepts: any = {}
+    let concepts: ConceptsState = {}
     await Promise.all(pastevents.map(async (event: EventLog) => {
       let conceptAddress: string = event.returnValues._concept
 
@@ -71,9 +72,9 @@ export function loadConceptContractAndCreateAssessment (conceptAddress: string, 
   return async (dispatch: Dispatch<any, any>, getState: any) => {
     let userAddress: string = getState().ethereum.userAddress
     let conceptInstance: any = getInstance.concept(getState(), conceptAddress)
-    const size: number = 5
-    const endTime: number = 7 * 24 * 3600
-    const startTime: number = 3 * 24 * 3600
+    const size = 5
+    const endTime = 7 * 24 * 3600
+    const startTime = 3 * 24 * 3600
     sendAndReactToTransaction(
       dispatch,
       () => {
