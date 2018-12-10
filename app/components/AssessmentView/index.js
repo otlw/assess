@@ -26,7 +26,7 @@ class AssessmentViewUnconnected extends Component {
       assessment: this.props.assessment,
       userAddress: this.props.userAddress,
       setHelperBar: this.props.setHelperBar,
-      transactions: this.props.transactions,
+      transactions: this.props.transactions
     })
   }
 }

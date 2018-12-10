@@ -11,7 +11,8 @@ export type EthereumState = {
   userAddress: string
   networkID: number
   AhaBalance: number
-  lastUpdatedAt: number
+  assessmentsLastUpdatedAt: number
+  conceptsLastUpdatedAt: number
   deployedFathomTokenAt: number | null
   deployedConceptRegistryAt: number | null
 }
@@ -23,7 +24,8 @@ let initialState: EthereumState = {
   userAddress: '',
   networkID: 4,
   AhaBalance: 0,
-  lastUpdatedAt: 0,
+  assessmentsLastUpdatedAt: 0,
+  conceptsLastUpdatedAt: 0,
   deployedFathomTokenAt: null,
   deployedConceptRegistryAt: null
 }

@@ -132,10 +132,7 @@ export class AssessmentData extends Component {
                 cost: assessment.cost
               })
               // regular ProgressBar
-              : h(ProgressAndInputBar, {
-                assessmentAddress: assessment.address,
-                //userStage: assessment.userStage,
-              })
+              : h(ProgressAndInputBar, {assessmentAddress: assessment.address})
         ])
       ])
     ])

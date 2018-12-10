@@ -44,11 +44,10 @@ export class ProgressAndInputBar extends Component {
     }
   }
 
-  componentWillUpdate(nextProps, nextState){
-    console.log("this.props",this.props)
-    console.log("this.state",this.state)
-    console.log("nextProps",nextProps)
-    console.log("nextState",nextState)
+  componentWillUpdate (nextProps, nextState) {
+    if (nextProps.userStage > this.props.userStage) {
+      this.setState({view: 'normalView'})
+    }
   }
 
   setView (view) {

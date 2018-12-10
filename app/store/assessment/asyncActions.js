@@ -189,7 +189,7 @@ export function fetchLatestAssessments (currentBlock) {
     // get notification events from fathomToken contract
     const fathomTokenInstance = getInstance.fathomToken(getState())
     let pastNotifications = await fathomTokenInstance.getPastEvents('Notification', {
-      fromBlock: 0,//getState().ethereum.assessmentsLastUpdatedAt,
+      fromBlock: 0, // getState().ethereum.assessmentsLastUpdatedAt,
       toBlock: currentBlock
     })
 

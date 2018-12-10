@@ -11,8 +11,6 @@ export function loadConceptsFromConceptRegistery (currentBlock) {
       fromBlock: getState().ethereum.conceptsLastUpdatedAt,
       toBlock: currentBlock
     })
-    console.log("getState().ethereum.conceptsLastUpdatedAt",getState().ethereum.conceptsLastUpdatedAt)
-    console.log(pastevents)
 
     let concepts = {}
     await Promise.all(pastevents.map(async (event) => {
