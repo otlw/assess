@@ -20,9 +20,9 @@ export class AssessmentData extends Component {
     if (this.props.assessment && !this.props.assessment.invalid) {
       let props = this.props
       // let visits = props.visits
-      setInterval(()=>{
-        console.log('props.userStage, assessmentView setInterval',props.userStage)
-      },3000)
+      setInterval(() => {
+        console.log('props.userStage, assessmentView setInterval', props.userStage)
+      }, 3000)
       let userActionRequired = props.userStage === props.assessment.stage
       if (userActionRequired) {
         switch (props.assessment.userStage) {

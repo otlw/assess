@@ -6,9 +6,8 @@ import { setHelperBar } from '../../store/navigation/actions'
 var h = require('react-hyperscript')
 
 const mapStateToProps = (state, ownProps) => {
-  console.log('state.assessments[ownProps.match.params.id].userStage',state.assessments[ownProps.match.params.id].userStage)
+  console.log('state.assessments[ownProps.match.params.id].userStage', state.assessments[ownProps.match.params.id].userStage)
   return {
-    assessment: state.assessments[ownProps.match.params.id],
     assessment: state.assessments[ownProps.match.params.id],
     userStage: state.assessments[ownProps.match.params.id].userStage,
     userAddress: state.ethereum.userAddress,

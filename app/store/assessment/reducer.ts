@@ -36,8 +36,8 @@ export function AssessmentsReducer (state = initialState, action: Actions): Asse
   }
   case 'RECEIVE_ASSESSMENT': {
     let assessmentAddress = action.assessment.address
-    console.log('old assessment',state[assessmentAddress])
-    console.log('new assessment',action.assessment)
+    console.log('old assessment', state[assessmentAddress])
+    console.log('new assessment', action.assessment)
     return extend(state, { [assessmentAddress]: extend(state[assessmentAddress], action.assessment) })
   }
   case 'REMOVE_ASSESSMENT': {
