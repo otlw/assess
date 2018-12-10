@@ -55,7 +55,7 @@ export class AssessmentCreation extends Component {
     this.props.estimateGasCost(
       this.props.match.params.address,
       this.state.amountPerAssessor,
-      (cost, dispatch) => {
+      (cost) => {
         this.setState({gasEstimate: cost, step: 2})
       }
     )
