@@ -370,7 +370,6 @@ export function fetchAssessmentData (assessmentAddress) {
 
       // get concept data
       let decodedConceptData = await getDecodedConceptData(conceptAddress)(dispatch, getState)
-      console.log("decodedConceptData",decodedConceptData)
 
       // Dynamic Info
       let done = Number(await assessmentInstance.methods.done().call())
