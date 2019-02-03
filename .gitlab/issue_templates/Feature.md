@@ -1,27 +1,27 @@
-## Feature Description 
-<!-- Describe the feature and how it changes the current state -->
+<!-- This is to propose a new feature, addition to docs, etc. -->
 
-## Motivation and Context
-<!-- Provide context (e.g., examples and use cases). Why is this feature valuable -->
+## Feature Description 
+<!-- Describe the feature or enhancement -->
+
+
+## Motivation
+<!-- What problem does it solve? -->
+
 
 ## Possible Implementation
-<!-- Suggest a solution -- describe your proposed change + any key implementation details -->
+<!-- Suggest a way of implementing it -->
 
-## Related Issues/Tasks
-<!-- Reference open issues by their issue number --> 
 
-  * **Depends On:**  
-  <!-- List anything that should be completed BEFORE addressing this one as check boxes -->
+## Links and Resources
+<!-- Add relevant images, links, code-snippets -->
+
+
+## Checklist
+<!-- List any items to complete -->
 
 - [ ] 
 
-  * **Enables:**  
-  <!-- List anything that could/should be addressed AFTER completing this one --> 
-  
-
-## External Resources and Context
-<!-- Images, links, code-snippets -->
 
 --------------------------------------------------------------------------------
-/label ~"feature"
-
+<!-- Please don't delete!  -->
+/label ~"Feature"

@@ -1,20 +1,21 @@
-<!-- This is a catch-all for discussions that fall out of existing templates -->
+<!-- This is to open discussions on various project-related topics -->
 
-## Discussion Topic/Question
-<!-- Describe the current behavior/state that makes this topic important to address -->
+## Discussion Topic
+<!-- What is the topic you are opening for discussion? -->
 
-## Motivation and Context
-<!-- How has this issue effected you? Provide context (e.g. examples, use
-cases) -->
 
-## Next Steps
-<!-- Suggest a concrete way to explore this issue or a possible implementation -->
+## Actionable Goals
+<!-- What sort of actionable decisions can result from the discussion? -->
 
-## External Resources
-<!-- Images, links, code-snippets -->
+
+## Food for Discussion
+<!-- Add ideas, questions, info to feed the discussion -->
+
+
+## Links, Resources
+<!-- Add relevant links, images, references -->
+
 
 --------------------------------------------------------------------------------
-
-/label ~"discussion"
-
-**Disclaimer:** This form is a work in progress. Feedback on its components is welcomed!
+<!-- Please don't delete!  -->
+/label ~"Discussion"     
