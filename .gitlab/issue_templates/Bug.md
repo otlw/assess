@@ -1,27 +1,26 @@
+<!-- This is to report bugs in code, errors in documentation, things to fix -->
+
 ## Bug Description
-<!-- What is the "Bug" behavior you are seeing? -->
+<!-- What is the "Bug" behavior or mistake you are seeing? -->
 
 
 ## Expected Behavior 
-<!-- What is the "Correct" behavior you should see instead? -->
-
-
-## Possible Source
-<!-- If you can, provide a link to the line of code that may be causing the problem -->
+<!-- What should you see instead? -->
 
 
 ## Steps to Reproduce the Bug
-<!-- How can the bug/problem be reproduced? (this is very important) -->
-<!-- Provide a link to a live example, or an unambiguous set of steps to reproduce the bug -->
-1.  
-2.  
-3.  
+<!-- How can the bug/problem be encountered? -->  
 
 
-## Possible Solution
+## Possible Source / Solution
+<!-- If you can, link to the problem's source (e.g., line of code) and/or suggest a solution -->
 
 
-## Links, Screenshots, Logs
+## Logs, Screenshots
+<!-- Please use code blocks (```) to format console output, logs, or code --> 
+
+
 
 --------------------------------------------------------------------------------
-/label ~"bug"
+<!-- Please don't delete!  -->
+/label ~"Bug"

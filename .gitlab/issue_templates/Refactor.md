@@ -1,23 +1,24 @@
+<!-- This is to propose a refactor or edit -->
+
 ## Refactor Description 
-<!-- Describe the refactor -->
+<!-- Describe the refactor. -->
+
 
 ## Motivation
-<!-- Why is this refactor valuable? -->
+<!-- How does it improve what's currently there? -->
+
 
 ## Implementation
-<!-- Describe any key implementation details or code snippets -->
+<!-- Suggest a possible implementation. Use code blocks (```) to format code. -->
 
-## Related Issues/Tasks
-<!-- Reference open issues by their issue number --> 
 
-  * **Depends On:**  
-  <!-- List anything that should be completed BEFOREHAND, in check boxes -->
+## Checklist
+<!-- List any items to complete -->
 
 - [ ] 
 
-  * **Enables:**  
-  <!-- List anything that could/should FOLLOW the refactor --> 
-  
 
 --------------------------------------------------------------------------------
-/label ~"refactor"
+<!-- Please don't delete!  -->
+/label ~"Refactor"
+

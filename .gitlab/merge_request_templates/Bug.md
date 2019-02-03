@@ -1,7 +1,7 @@
-`Refactor` Merge Request (MR)
+`Bug` Merge Request (MR)
 --------------------------------------------------------------------------------
 
-## Description of Refactor
+## What does this MR fix?
 <!-- Briefly describe what this MR is about -->
 
 
@@ -17,7 +17,6 @@
 - [ ] 
 
 
-
 --------------------------------------------------------------------------------
 <!-- Please don't delete!  -->
-/label ~"Refactor"
+/label ~"Bug"

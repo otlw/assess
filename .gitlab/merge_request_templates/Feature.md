@@ -1,7 +1,7 @@
-`Refactor` Merge Request (MR)
+`Feature` Merge Request (MR)
 --------------------------------------------------------------------------------
 
-## Description of Refactor
+## What does this MR add?
 <!-- Briefly describe what this MR is about -->
 
 
@@ -20,4 +20,4 @@
 
 --------------------------------------------------------------------------------
 <!-- Please don't delete!  -->
-/label ~"Refactor"
+/label ~"Feature"
